@@ -3,8 +3,10 @@
 // repository could have told the gate its compiler options. What it measures is how far the gate is
 // from a decided verdict on code nobody configured for it, and which reader would close the gap.
 //   node diag/build-corpus.mjs <corpus-root> [--out rows.ndjson] [--from <repo>] [--limit n]
-//                              [--repos <list.tsv>]
+//                              [--repos <list.tsv>] [--policy <floor.json>]
 // --repos names a sample: a TSV whose `folder` column, or first column, holds the directory names.
+// --policy is the floor every repository is judged under, outside the corpus: {"options":"block"}
+// shows what the options readers decide, which the default policy passes relaxed.
 import { appendFileSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
 import { build } from '../lib/build.mjs';
@@ -14,11 +16,12 @@ import { optionCards } from '../lib/options.mjs';
 
 const args = process.argv.slice(2);
 const flag = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
-const root = resolve(args.find((a, i) => !a.startsWith('--') && !['--out', '--from', '--limit', '--repos'].includes(args[i - 1])) || '.');
+const root = resolve(args.find((a, i) => !a.startsWith('--') && !['--out', '--from', '--limit', '--repos', '--policy'].includes(args[i - 1])) || '.');
 const sample = flag('--repos');
 const out = resolve(flag('--out') || 'build-corpus.ndjson');
 const from = flag('--from');
 const limit = Number(flag('--limit') || Infinity);
+const floor = flag('--policy') ? resolve(flag('--policy')) : null;
 
 // Build scripts that could name cobc's options: a Makefile, a shell or batch script, a CI workflow.
 const SCRIPT = /(^|\/)(makefile|gnumakefile|[^/]*\.(mk|sh|bash|bat|cmd|ps1|ya?ml|json|groovy|gradle|xml))$/i;
@@ -67,14 +70,16 @@ for (const name of repos.slice(start)) {
   const t0 = Date.now();
   const row = { repo: name };
   try {
-    const { doc, report } = build(repo, { now: '2026-09-27T00:00:00.000Z' });
+    const { doc, report } = build(repo, { now: '2026-09-27T00:00:00.000Z', ...(floor ? { policy: floor } : {}) });
     const because = {};
     for (const f of doc.blocking) because[f.because] = (because[f.because] || 0) + 1;
     const blockingByTier = {};
     for (const f of doc.blocking) blockingByTier[f.tier] = (blockingByTier[f.tier] || 0) + 1;
     Object.assign(row, {
       verdict: doc.verdict,
+      relaxed: doc.relaxed || [],
       checks: doc.checks,
+      byRule: report.summary.byRule,
       byTier: doc.summary.byTier,
       blocking: doc.blocking.length,
       blockingByTier,

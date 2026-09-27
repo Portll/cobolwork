@@ -47,6 +47,12 @@
    "observed": "GnuCOBOL 3.2.0, 2026-09-26: -debug and -d each stop an out-of-range subscript and an out-of-range OCCURS DEPENDING ON"
   },
   {
+   "option": "-o <file>, -I <directory>, -L <directory>, -l <lib>, -A <options>, -Q <options>",
+   "meaning": "Each takes the next argument as its value: the output file, a copybook directory, a library directory, a library, and options for the C compiler and for the linker. The value is not a source file.",
+   "source": { "title": "cobc(1), GnuCOBOL 3.2", "url": "https://manpages.debian.org/unstable/gnucobol3/cobc.1.en.html", "retrieved": "2026-09-28" },
+   "observed": "GnuCOBOL 3.2.0, 2026-09-28: cobc -x -free <option> other.cob prog.cob, for each option in turn, wrote its output to other.cob (-o), took it as a directory (-I, -L), or handed it to the C compiler or the linker (-A, -Q, -l); none read it as COBOL source"
+  },
+  {
    "check": "subscript",
    "condition": "EC-BOUND-SUBSCRIPT",
    "observed": "GnuCOBOL 3.2.0, 2026-09-26: stops a subscript past a table of 3, and an OCCURS DEPENDING ON object of 9 on a table of 1 TO 3; -fec=EC-BOUND-ODO alone stops neither"

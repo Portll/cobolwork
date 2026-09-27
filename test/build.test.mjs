@@ -515,6 +515,38 @@ test('B5.14 An editor\'s task file and a script with no extension are build scri
   assert.ok(!doc.reasons.some((r) => /^scripts\/run/.test(r)), 'the script with -debug generates the checks');
 });
 
+test('B5.23 A task\'s command line is read command by command, with its arguments and its Windows variant', { skip }, () => {
+  const tasks = [
+    '{',
+    '  // the build',
+    '  "version": "2.0.0",',
+    '  "tasks": [{',
+    '    "label": "Build", "type": "shell",',
+    '    "command": "mkdir -p bin && cobc -x -free -o bin/prog",',
+    '    "args": ["${workspaceFolder}/prog.cbl"],',
+    '    "windows": { "command": "if (!(Test-Path bin)) { New-Item -ItemType Directory bin }; cobc -x -free -o bin\\\\prog.exe ${workspaceFolder}\\\\prog.cbl" },',
+    '  }],',
+    '}',
+  ].join('\n');
+  const doc = absolute(strict(repo({ ...NO_SITE, 'prog.cbl': QUIET, '.vscode/tasks.json': tasks })));
+  assert.equal(doc.checks.options, false);
+  assert.ok(doc.reasons.some((r) => /^\.vscode\/tasks\.json:6: subscript needs/.test(r)), doc.reasons.join('\n'));
+  assert.ok(doc.reasons.some((r) => /^\.vscode\/tasks\.json:8: subscript needs/.test(r)), doc.reasons.join('\n'));
+});
+
+test('B5.24 A Makefile\'s compiler and options reach the command through the variables it assigns', { skip }, () => {
+  const make = ['COBC ?= cobc', 'COBC ?= gcobol', 'FLAGS := -x', 'FLAGS += -debug', 'prog: prog.cbl', '\tPATH="/usr/local/bin:$$PATH" ${COBC} $(FLAGS) prog.cbl', ''].join('\n');
+  const doc = absolute(strict(repo({ ...NO_SITE, 'prog.cbl': QUIET, Makefile: make })));
+  assert.equal(doc.checks.options, true, doc.reasons.join('\n'));
+  assert.deepEqual(doc.relaxed, []);
+});
+
+test('B5.25 A cobc command that names no source compiles nothing', { skip }, () => {
+  const script = ['#!/bin/sh', 'if ! command -v cobc >/dev/null 2>&1; then', '  echo "cobc is not on PATH: install GnuCOBOL"', '  exit 1', 'fi', 'cobc --version', 'cobc -x -debug prog.cbl', ''].join('\n');
+  const doc = absolute(strict(repo({ ...NO_SITE, 'prog.cbl': QUIET, 'build.sh': script })));
+  assert.equal(doc.checks.options, true, doc.reasons.join('\n'));
+});
+
 // B6 - The compiler
 
 test('B6.1 A compiler inside the repository is refused', { skip: skip || posix }, () => {

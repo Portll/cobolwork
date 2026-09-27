@@ -262,6 +262,33 @@ assigns substituted. A program with no Enterprise COBOL level of its own takes i
 from those commands, and every command must generate the required checks: a script is a build the
 repository declares, so a check it leaves out is missing, not undecided.
 
+**How a build script is read.** Each line is read as the shell that runs it reads it:
+
+- It is split into commands at `&&`, `||`, `;`, `|` and `&` outside quotes and `$( )`, so
+  `mkdir -p bin && cobc -x -free …` is two commands, and the `|` in `$(shell find src … | sort)` is
+  not a separator. A command held in one quoted word (`sh -c "cobc …"`, an alias, a `CMD` string) is
+  read as a command line of its own, and a Dockerfile's `RUN ["cobc", …]` as its argument list.
+- The variables the file assigns are substituted where they are used, until none the file assigns
+  is left: in a Makefile `=`, `:=`, `+=`, and `?=` only where the variable is not yet set, used as
+  `$(VAR)` or `${VAR}`, with `$(wildcard …)` read as its pattern; in a shell script `NAME=value`,
+  `$NAME`, `${NAME}` and `${NAME:-default}`; in a batch file `set NAME=value` and `%NAME%`; in
+  PowerShell `$name = …`; in a Dockerfile `ENV` and `ARG`. A shell assignment in front of a command
+  on the same line, `PATH="…" $(COBC) …`, belongs to that command. A Makefile line opening with a
+  tab is a recipe line while a rule is open, and make's `@`, `-` and `+` before it are not part of
+  the command. A Makefile whose compiler variable ends up naming another compiler, `CBLC ?= gcobol`,
+  runs no `cobc`.
+- A task in `.vscode/tasks.json` is its `command` followed by its `args`, read the same way, and its
+  `windows`, `linux` and `osx` variants are tasks too. Comments and trailing commas are accepted.
+  `${workspaceFolder}` is the folder that holds `.vscode`, where the task runs unless its
+  `options.cwd` says otherwise; a variable naming the open file, `${file}`, stands for any file.
+- A `cd` before a command on the same line, and in a shell or batch script on an earlier line, moves
+  where the command's files are read from.
+- A command that names no source file compiles nothing and is not read: `cobc --version`,
+  `command -v cobc`, `echo "cobc is not installed"`. A source file is an operand with a program
+  extension, or one that a variable, a batch argument, a glob or `find`'s `{}` supplies. The values
+  of `-o`, `-I`, `-L`, `-l`, `-A` and `-Q` are not operands: each takes the next argument
+  (`provenance/compiler-options.json`).
+
 **The checks.** The Enterprise COBOL rows are from IBM's documentation for 6.3 and 6.4. The GnuCOBOL
 rows rest on observed behaviour, not on GnuCOBOL's source (§16):
 
@@ -820,6 +847,18 @@ are about what the default, `warn`, does with them.
     Given a .vscode/tasks.json task running cobc without checks, and a script named run holding cobc -x -debug
     Then  options is false, and the reason names the task file
 
+#### B5.23 A task's command line is read command by command, with its arguments and its Windows variant
+    Given a tasks.json with a comment and trailing commas, whose task runs mkdir -p bin && cobc -x -free -o bin/prog with ${workspaceFolder}/prog.cbl in its args, and whose Windows variant runs the same cobc after a PowerShell test
+    Then  options is false, and the reasons name both lines
+
+#### B5.24 A Makefile's compiler and options reach the command through the variables it assigns
+    Given COBC ?= cobc then COBC ?= gcobol, FLAGS := -x then FLAGS += -debug, and the recipe PATH="…" ${COBC} $(FLAGS) prog.cbl
+    Then  options is true
+
+#### B5.25 A cobc command that names no source compiles nothing
+    Given a script holding command -v cobc, echo "cobc is not on PATH…", cobc --version and cobc -x -debug prog.cbl
+    Then  options is true
+
 ### B6 - The compiler
 
 #### B6.1 A compiler inside the repository is refused
@@ -1018,9 +1057,11 @@ two, because GPL §10 forbids adding the restrictions those licences are made of
 - **Nothing from GnuCOBOL's source tree.** No table, list or text from `cobc/flag.def`,
   `cobc/config.def`, `libcob/exception.def`, the `config/*.words` files, `cobc --help` or the manual
   enters the repository, in code, fixtures or comments. The exception-condition names are already
-  attested by ISO drafts in `provenance/words.json`. The handful of `cobc` option names the check
-  needs (`-debug`, `-fec=`, `-fno-ec`, `-fnotrunc`) are recorded with the document that attests
-  each, and what each generates is established by compiling, as in §7.
+  attested by ISO drafts in `provenance/words.json`. The handful of `cobc` option names the gate
+  reads (`-debug`, `-fec=`, `-fno-ec`, `-fnotrunc`, and `-o`, `-I`, `-L`, `-l`, `-A`, `-Q`, whose
+  values are not source files) are
+  recorded with the attesting document , and what each does is established by compiling, as
+  in §7.
 - **`cobc` runs as a separate program.** The gate passes it arguments and reads its exit status.
   Nothing links to it or loads it.
 - **IBM's option names and meanings** are interface facts of the kind `lib/words.mjs` already takes

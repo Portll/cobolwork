@@ -1,0 +1,23 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. HANDTHRU.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-I                PIC 9(4).
+       01 WS-LEN              PIC S9(4) COMP VALUE 4.
+       01 WS-MSG              PIC X(20).
+       01 WS-TABLE.
+          05 WS-ENTRY         PIC X(10) OCCURS 10.
+       PROCEDURE DIVISION.
+       A000-MAIN.
+           EXEC CICS RECEIVE INTO(WS-I) LENGTH(WS-LEN) END-EXEC
+           PERFORM B000-RETURN THRU B000-EXIT
+           MOVE 'X' TO WS-ENTRY(WS-I)
+           EXEC CICS RETURN END-EXEC.
+       B000-RETURN.
+           EXEC CICS HANDLE CONDITION INVREQ(B000-FAILED)
+           END-EXEC
+           EXEC CICS RETURN TRANSID('ABCD') END-EXEC.
+       B000-FAILED.
+           MOVE 'RETURN FAILED' TO WS-MSG.
+       B000-EXIT.
+           EXIT.

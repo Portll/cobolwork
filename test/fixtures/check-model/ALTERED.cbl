@@ -1,0 +1,19 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ALTERED.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-I                PIC 9(4).
+       01 WS-TABLE.
+          05 WS-ENTRY         PIC X(10) OCCURS 10.
+       PROCEDURE DIVISION.
+       MAIN-PARA.
+           ACCEPT WS-I FROM COMMAND-LINE
+           ALTER SWITCH-PARA TO PROCEED TO USE-PARA
+           GO TO SWITCH-PARA.
+       SWITCH-PARA.
+           GO TO DONE-PARA.
+       USE-PARA.
+           MOVE 'X' TO WS-ENTRY(WS-I)
+           GO TO DONE-PARA.
+       DONE-PARA.
+           STOP RUN.

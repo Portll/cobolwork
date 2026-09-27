@@ -71,23 +71,26 @@ test('an index written after the bound is not covered by the flag', () => {
   assert.equal(stopped('FLAGMOVED.cbl').length, 0);
 });
 
-test('a count set to zero and tallied over a field is bounded by its length', () => {
+test('a count started at 1 and tallied over fewer bytes than the table has entries is a bound', () => {
   assert.deepEqual(found('TALLY.cbl'), []);
   const [c] = stopped('TALLY.cbl');
-  assert.equal(c.rule, 'argv-or-env-to-reference-modification');
-  assert.equal(c.guard.line, 13);
+  assert.equal(c.rule, 'argv-or-env-to-subscript');
+  assert.equal(c.guard.line, 14);
 });
 
-test('INITIALIZE starts a count at zero, and a reversed field is as long as the field', () => {
-  assert.deepEqual(found('TALLYREV.cbl'), []);
-  const [c] = stopped('TALLYREV.cbl');
-  assert.equal(c.guard.item, 'WS-BLANKS');
-  assert.equal(c.guard.line, 15);
+test('a tally is no bound where it can be 0 or pass the table or field it indexes', () => {
+  for (const file of ['TALCSV.cbl', 'TALZERO.cbl', 'TALLYREV.cbl']) {
+    const [f] = found(file);
+    assert.equal(f.sev, 'high', file);
+    assert.equal(stopped(file).length, 0, file);
+  }
 });
 
-test('a tally with no known starting value, or one NEXT SENTENCE can skip, is not bounded', () => {
-  assert.equal(found('TALLYUNSET.cbl').length, 1);
-  assert.equal(found('TALLYNEXT.cbl').length, 1);
+test('a tally with no known starting value, one NEXT SENTENCE can skip, or one a REDEFINES rewrites, is not bounded', () => {
+  for (const file of ['TALLYUNSET.cbl', 'TALLYNEXT.cbl', 'TALREDEF.cbl']) {
+    assert.equal(found(file).length, 1, file);
+    assert.equal(stopped(file).length, 0, file);
+  }
 });
 
 test('a sink no route reaches is info, says so, and is in no consequence class', () => {
@@ -114,4 +117,44 @@ test('code past EXIT PROGRAM, a SORT input procedure and a NOT AT END phrase is 
 test('an XCTL with RESP can come back; one without cannot', () => {
   assert.deepEqual(found('XCTLRESP.cbl').map((f) => [f.rule, f.sev]), [['cics-terminal-to-subscript', 'high']]);
   assert.deepEqual(found('XCTLDONE.cbl').map((f) => [f.rule, f.sev, f.unreached]), [['cics-terminal-to-subscript', 'info', true]]);
+});
+
+// Every way into code the graph once lacked, each found by reading the branch adversarially.
+test('code a run can reach is never called unreached', () => {
+  const cases = {
+    'HANDSECT.cbl': 'a HANDLE CONDITION label falls to the end of a performed section, so the PERFORM returns',
+    'HANDTHRU.cbl': 'the same inside a PERFORM THRU range',
+    'HANDABND.cbl': 'a HANDLE ABEND label does the same after an EXEC CICS ABEND',
+    'DECLSTOP.cbl': 'a run starts after END DECLARATIVES, whatever the declaratives end with',
+    'DECLGOBK.cbl': 'the same with no section after the declaratives',
+    'ATENDIF.cbl': 'NOT AT END after an IF whose branches both leave',
+    'ONEXCP.cbl': 'NOT ON EXCEPTION after an EXEC CICS RETURN',
+    'IGNCOND.cbl': 'an XCTL that fails returns once IGNORE CONDITION has run',
+    'CEEDMP.cbl': 'CEE3DMP dumps and returns',
+    'ALTERED.cbl': 'ALTER sends a GO TO somewhere else',
+  };
+  for (const [file, why] of Object.entries(cases)) {
+    const f = found(file);
+    assert.equal(f.length, 1, file);
+    assert.equal(f[0].sev, 'high', `${file}: ${why}`);
+    assert.equal(f[0].unreached, undefined, `${file}: ${why}`);
+  }
+});
+
+test('the least-checked use of an arithmetic operand is reported, not the first one reached', () => {
+  const f = report.findings.filter((x) => x.path === 'ARITH.cbl');
+  assert.deepEqual(f.map((x) => [x.rule, x.line, x.guardedFrom]), [['argv-or-env-to-arithmetic', 19, 'low']]);
+  assert.deepEqual(report.checked.filter((x) => x.path === 'ARITH.cbl'), []);
+});
+
+test('a flag is no bound where its value is written another way or compares otherwise than it reads', () => {
+  const cases = {
+    'FLGROUP.cbl': 'the flag is rewritten through an 01 REDEFINES of its record',
+    'FLNUMLIT.cbl': "PIC 99 set to 1 holds 01, which is not the literal '1'",
+    'FLJUST.cbl': "a JUSTIFIED RIGHT PIC XX set to 'Y' holds ' Y'",
+  };
+  for (const [file, why] of Object.entries(cases)) {
+    assert.equal(found(file).length, 1, `${file}: ${why}`);
+    assert.equal(stopped(file).length, 0, `${file}: ${why}`);
+  }
 });

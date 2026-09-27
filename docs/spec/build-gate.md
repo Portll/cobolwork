@@ -501,7 +501,8 @@ The routes to `subscript` and `reference-modification` are data-mutation (§5a),
 build. The check model (`lib/control.mjs`) credits a check only where it has run on every route to
 the use. A reading of six `cics-terminal-to-subscript` findings on 2026-09-27 found five false, from
 four things the model did not read. Each becomes a fact the model holds where it is true on every
-route, and nowhere else.
+route, and nowhere else. Where the model cannot be sure, it claims nothing: no credit, and no code
+called unreached.
 
 - **An earlier operand of the same condition.** `IF WS-I > 0 AND WS-I <= 10 AND T(WS-I) = X`. A name
   used inside an `IF` or `UNTIL` condition is judged with what holds before the condition and what
@@ -528,40 +529,54 @@ route, and nowhere else.
   gives*. The test's other outcome makes it, as does any assignment of that value to the flag; any
   write to either field destroys it. A later test whose outcome says the flag does not hold that value
   turns it into the bound. On every route to that test one half was made and neither field written
-  since, and the test rules the first half out. Which flags to follow is read from the failing branch's
-  own statements, so a flag set in a paragraph it performs is not followed; that limits what is
-  credited, not whether it is true. The bound is destroyed by every write that destroys its premise,
-  and the test that yields it writes nothing, so a performed paragraph's summary stays sound.
+  since, and the test rules the first half out. Values are compared only where nothing but the literal
+  decides the comparison: an alphanumeric literal that fills an alphanumeric item, so `JUSTIFIED`
+  cannot move it, compared with alphanumeric literals, and an integer that fits a numeric item,
+  compared with numeric literals. `PIC 99` given `1` holds `01`, which is not `'1'`; `PIC XX JUSTIFIED
+  RIGHT` given `'Y'` holds `' Y'`. A write is any write to the bytes, through a `REDEFINES` of the
+  whole record or a `RENAMES` as much as by name. Which flags to follow is read from the failing
+  branch's own statements, so a flag set in a paragraph it performs is not followed; that limits what
+  is credited, not whether it is true. The bound is destroyed by every write that destroys its
+  premise, and the test that yields it writes nothing, so a performed paragraph's summary stays sound.
 - **An `INSPECT … TALLYING` count.** A count holding a constant *n* before `INSPECT F TALLYING count`
-  holds at most *n* plus the length of F after it. Each comparison cycle adds at most one to a count
-  and moves past at least one character position of F (Language Reference 6.4, `INSPECT`, "Comparison
-  cycle"). The count's value is known only where the assignment comes first on every route: a `MOVE` of
-  the constant, or an `INITIALIZE` of the numeric count alone, which sets it to zero, earlier in the
-  same paragraph, with nothing between that writes the count or can be
-  entered other than from the statement before it - no label, `ENTRY`, `NEXT SENTENCE`, `PERFORM`,
-  `CALL`, `UNSTRING` or other tally. F is a data item, or `FUNCTION REVERSE`, `UPPER-CASE`,
-  `LOWER-CASE` or `TRIM` of one; a reference-modified F gives no bound. Like every bound the model
-  credits, it is not compared with the size of the table it indexes.
-- **A sink no route reaches.** A statement no route reaches from an entry - the start of the program,
-  an `ENTRY` statement, a paragraph that `HANDLE CONDITION`, `HANDLE AID`, `HANDLE ABEND` or `EXEC SQL
-  WHENEVER … GO TO` names, a declarative - does not run. A route to a sink there is reported at INFO,
-  marked `unreached`, in no consequence class, and asserts no defect. The claim is only as good as the
-  graph's over-approximation of control, so every way in the graph lacked is added before the claim
-  is made: a `SORT` or `MERGE` performs its input and output procedures; `AT END EXIT PERFORM NOT AT
-  END …` keeps its second phrase; an `EXEC CICS RETURN` or `XCTL` with `RESP` or `NOHANDLE` can come
-  back; an `EXIT PROGRAM` with no `CALL` active carries on to the next statement (Language Reference
-  6.4, `EXIT PROGRAM`), which only reachability follows, so a check that ends in one still turns a
-  value away in a called program. A `GO TO` the graph cannot resolve goes to every paragraph, and a
-  `PERFORM` of a paragraph it cannot find returns having done anything. Nothing in a program is called
-  unreached where a `PERFORM`, `GO TO` or `SORT` names a paragraph the parse did not find or found
-  twice, or the analysis stopped at a step limit. What remains is code behind `STOP RUN`, `GOBACK`,
-  `EXEC CICS RETURN` or a `PERFORM` that never returns, and paragraphs nothing performs or falls into.
+  holds between *n* and *n* plus the length of F after it. Each comparison cycle adds at most one to a
+  count and moves past at least one character position of F (Language Reference 6.4, `INSPECT`,
+  "Comparison cycle"). The count's value is known only where a `MOVE` of the constant comes first on
+  every route, earlier in the same paragraph, with nothing between that writes the count's storage or
+  can be entered other than from the statement before it - no label, `ENTRY`, `NEXT SENTENCE`,
+  `PERFORM`, `CALL`, `UNSTRING` or other tally - and where the count has the digits to hold *n* plus
+  that length. F is a data item, or `FUNCTION REVERSE`, `UPPER-CASE`, `LOWER-CASE` or `TRIM` of one; a
+  reference-modified F gives no bound. This bound is the program's data, not a check it made, so it
+  counts only where it keeps the index in range for its own sink: at least 1, and at most the entries
+  of a one-dimensional table of fixed size, or the length of the item a reference modification
+  starts in. A count of commas in an 80-byte line is no bound on a table of 10, and a count from zero
+  can stay zero, which no subscript or reference modification may be.
+- **A sink no route reaches.** A statement no route reaches from an entry - the first statement after
+  `END DECLARATIVES`, or of the program where there are none, an `ENTRY` statement, a paragraph that
+  `HANDLE CONDITION`, `HANDLE AID`, `HANDLE ABEND` or `EXEC SQL WHENEVER … GO TO` names, a declarative -
+  does not run. A route to a sink there is reported at INFO, marked `unreached`, in no consequence
+  class, and asserts no defect. Reach is worked out from the control-flow graph alone, not from the
+  facts, and the graph must over-approximate control, so every way in it lacked is added before the
+  claim is made: a `SORT` or `MERGE` performs its input and output procedures; a conditional phrase
+  - `NOT AT END`, `NOT ON EXCEPTION` - begins at its own words, whatever the phrase before it ends
+  with; a `PERFORM` returns once anything reaches the end of its range, a handler's label inside it
+  included; `CALL 'CEE3DMP'` returns; an `EXEC CICS RETURN` or `XCTL` with `RESP` or `NOHANDLE`, or in
+  a program that issues `IGNORE CONDITION`, can come back to the next statement, and in a program
+  that issues `HANDLE CONDITION` reach assumes it may. An `EXIT PROGRAM` with no `CALL` active carries
+  on to the next statement (Language Reference 6.4, `EXIT PROGRAM`); only reach follows those last
+  two, so a check that ends in one still turns a value away where the program runs as intended. A
+  `GO TO` the graph cannot resolve goes to every paragraph, as does every `GO TO` in a program that
+  uses `ALTER`, and a `PERFORM` of a paragraph it cannot find returns having done anything. Nothing in
+  a program is called unreached where it uses `ALTER`, where a `PERFORM`, `GO TO` or `SORT` names a
+  paragraph the parse did not find or found twice, or where the analysis stopped at a step limit. What
+  remains is code behind `STOP RUN`, `GOBACK`, `EXEC CICS RETURN` or a `PERFORM` that never returns,
+  and paragraphs nothing performs or falls into.
 
 A table indexed by the same name at several statements was one sink, at the first. Judged per use,
 the first can be the guarded or the dead one and hide a later use that is neither. Every use of a
 subscript or reference modification is now a sink, and the route from one source to one table
 through one name is reported once, at its least-checked reachable use. A loop bound and an
-arithmetic operand stay one sink per name, at the first statement a route reaches. The check named
+arithmetic operand are the same: every use a sink, one reported per source and name. The check named
 on a stopped route is one whose outcome alone makes the value safe, where there is one.
 
 **Measured.** Over the 500-repository corpus on 2026-09-27, against `main` at 30d9149, findings at

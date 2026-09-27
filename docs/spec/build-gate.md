@@ -564,6 +564,28 @@ through one name is reported once, at its least-checked reachable use. A loop bo
 arithmetic operand stay one sink per name, at the first statement a route reaches. The check named
 on a stopped route is one whose outcome alone makes the value safe, where there is one.
 
+**Measured.** Over the 500-repository corpus on 2026-09-27, against `main` at 30d9149, findings at
+their tier, and routes a check stops:
+
+| Rule | Findings before | after | at INFO after | Checked before | after |
+|---|---|---|---|---|---|
+| `cics-terminal-to-subscript` | 25 | 7 | 3 | 22 | 37 |
+| `cics-terminal-to-reference-modification` | 9 | 6 | 0 | 2 | 5 |
+| `argv-or-env-to-reference-modification` | 48 | 54 | 0 | 11 | 5 |
+| `cics-terminal-to-arithmetic` | 81 | 78 | 3 | 2 | 2 |
+| `jcl-instream-to-arithmetic` | 241 | 239 | 6 | 0 | 0 |
+
+The other subscript, reference-modification, loop-bound and `OCCURS DEPENDING ON` rules did not
+move. Every finding that left its tier was read, 29 in all: twelve were bounded by a flag (CardDemo's
+two menus, six copies each), six by an earlier operand of their condition, three by a tally, and
+eight are in code that does not run - a program that performs its own first paragraph and so never
+returns from it, and two paragraphs nothing performs. The seven
+`argv-or-env-to-reference-modification` routes that stopped being checked read a field inside an
+`UNTIL` whose index the loop increments until the input shows a space: the check that credited them
+described the index before the loop began, and the index is the input's to choose. Two other routes
+rose from MED to HIGH for the same reason, and are false in a way the model does not read: a
+`VARYING` counter restarted from a constant and counting down.
+
 ## 12. Invariants
 
 1. **B-I1** No model, network request or clock decides a verdict. Advisory feeds and the known

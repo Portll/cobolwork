@@ -1,7 +1,7 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. FLAGGED.
       * A failed check sets a flag, and the flag is tested later. The
-      * check ran first; whether the flag stops the value is not read.
+      * flag carries what the check found, digits, which stop no command.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        01 WS-IN               PIC X(8).

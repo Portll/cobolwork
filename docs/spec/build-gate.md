@@ -495,6 +495,75 @@ before it loads. Until then the default policy treats it as `warn`, and an estat
 blocking says so in `rules`. A gate that fails builds on a rule nobody measured is switched off the
 first time the rule is wrong.
 
+### 11e. What counts as a check on an index
+
+The routes to `subscript` and `reference-modification` are data-mutation (§5a), so a false one fails a
+build. The check model (`lib/control.mjs`) credits a check only where it has run on every route to
+the use. A reading of six `cics-terminal-to-subscript` findings on 2026-09-27 found five false, from
+four things the model did not read. Each becomes a fact the model holds where it is true on every
+route, and nowhere else.
+
+- **An earlier operand of the same condition.** `IF WS-I > 0 AND WS-I <= 10 AND T(WS-I) = X`. A name
+  used inside an `IF` or `UNTIL` condition is judged with what holds before the condition and what
+  every operand evaluated before it said: the left side of an `AND` true, the left side of an `OR`
+  false, through any `NOT`. A name more than one relation reads is judged by the weakest of them:
+  `I <= 10 AND T(I) = 'A' OR 'B'` reads `T(I)` a second time with nothing guarding it. A subscript in
+  an `UNTIL` is judged where the loop tests it, not before the loop starts. The order is documented:
+  "evaluation of that hierarchical level terminates as soon as a truth value for it is determined",
+  and "values are established for arithmetic expressions and functions if and when the conditions
+  that contain them are evaluated" (*Enterprise COBOL for z/OS 6.4 Language Reference*, p. 286, "Order
+  of evaluation of conditions", <https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf>; the 6.3 text
+  and the 2009 ISO draft, §8.8.4.3, say the same). Where IBM's compiler places the `SSRANGE` check for
+  `T(I)` in a later conjunct is not documented, and the same ISO draft resolves a statement's
+  identifiers, subscripts included, as its first operation (§14.6.4); whether `SSRANGE(ABD)` can stop
+  such a statement is unobserved on z/OS. Credit is right under either reading. The rules report input
+  deciding where a program reads or writes; the element behind a false conjunct is at most read, never
+  written, and cannot change the condition's value, so what remains is an abend, which is what
+  `SSRANGE` is for. GnuCOBOL 3.2.0 was observed on 2026-09-27: compiled with `-debug`, with `I` at 20
+  and a table of 10, the first condition above runs, and `T(I) = 'X' AND I <= 10` and the `OR 'B'`
+  form stop with a subscript error.
+- **A check that sets a flag.** `IF WS-I > 10 SET WS-ERR TO TRUE END-IF … IF NOT WS-ERR … T(WS-I)`.
+  Where a test's failing branch assigns a flag a literal, by `MOVE` or by `SET` of a condition-name,
+  the model holds *the flag has that value, or the field is within the bound the test's other outcome
+  gives*. The test's other outcome makes it, as does any assignment of that value to the flag; any
+  write to either field destroys it. A later test whose outcome says the flag does not hold that value
+  turns it into the bound. On every route to that test one half was made and neither field written
+  since, and the test rules the first half out. Which flags to follow is read from the failing branch's
+  own statements, so a flag set in a paragraph it performs is not followed; that limits what is
+  credited, not whether it is true. The bound is destroyed by every write that destroys its premise,
+  and the test that yields it writes nothing, so a performed paragraph's summary stays sound.
+- **An `INSPECT … TALLYING` count.** A count holding a constant *n* before `INSPECT F TALLYING count`
+  holds at most *n* plus the length of F after it. Each comparison cycle adds at most one to a count
+  and moves past at least one character position of F (Language Reference 6.4, `INSPECT`, "Comparison
+  cycle"). The count's value is known only where the assignment comes first on every route: a `MOVE` of
+  the constant, or an `INITIALIZE` of the numeric count alone, which sets it to zero, earlier in the
+  same paragraph, with nothing between that writes the count or can be
+  entered other than from the statement before it - no label, `ENTRY`, `NEXT SENTENCE`, `PERFORM`,
+  `CALL`, `UNSTRING` or other tally. F is a data item, or `FUNCTION REVERSE`, `UPPER-CASE`,
+  `LOWER-CASE` or `TRIM` of one; a reference-modified F gives no bound. Like every bound the model
+  credits, it is not compared with the size of the table it indexes.
+- **A sink no route reaches.** A statement no route reaches from an entry - the start of the program,
+  an `ENTRY` statement, a paragraph that `HANDLE CONDITION`, `HANDLE AID`, `HANDLE ABEND` or `EXEC SQL
+  WHENEVER … GO TO` names, a declarative - does not run. A route to a sink there is reported at INFO,
+  marked `unreached`, in no consequence class, and asserts no defect. The claim is only as good as the
+  graph's over-approximation of control, so every way in the graph lacked is added before the claim
+  is made: a `SORT` or `MERGE` performs its input and output procedures; `AT END EXIT PERFORM NOT AT
+  END …` keeps its second phrase; an `EXEC CICS RETURN` or `XCTL` with `RESP` or `NOHANDLE` can come
+  back; an `EXIT PROGRAM` with no `CALL` active carries on to the next statement (Language Reference
+  6.4, `EXIT PROGRAM`), which only reachability follows, so a check that ends in one still turns a
+  value away in a called program. A `GO TO` the graph cannot resolve goes to every paragraph, and a
+  `PERFORM` of a paragraph it cannot find returns having done anything. Nothing in a program is called
+  unreached where a `PERFORM`, `GO TO` or `SORT` names a paragraph the parse did not find or found
+  twice, or the analysis stopped at a step limit. What remains is code behind `STOP RUN`, `GOBACK`,
+  `EXEC CICS RETURN` or a `PERFORM` that never returns, and paragraphs nothing performs or falls into.
+
+A table indexed by the same name at several statements was one sink, at the first. Judged per use,
+the first can be the guarded or the dead one and hide a later use that is neither. Every use of a
+subscript or reference modification is now a sink, and the route from one source to one table
+through one name is reported once, at its least-checked reachable use. A loop bound and an
+arithmetic operand stay one sink per name, at the first statement a route reaches. The check named
+on a stopped route is one whose outcome alone makes the value safe, where there is one.
+
 ## 12. Invariants
 
 1. **B-I1** No model, network request or clock decides a verdict. Advisory feeds and the known

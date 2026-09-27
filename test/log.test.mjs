@@ -42,6 +42,50 @@ test('a field whose name says it was already made safe is not the defect', () =>
   }
 });
 
+test('a name that holds something about a credential does not hold the credential', () => {
+  for (const n of ['WS-PASSWORD-PROMPT', 'WS-PASSWORD-ERROR', 'WS-PASSWORD-VALID', 'WS-DIR-TOKEN-CNT', 'PASSWORD-LENGTH']) {
+    assert.equal(classify(n), null, n);
+  }
+  for (const n of ['WS-INPUT-PASSWORD', 'W-EXE-PWD-UTE', 'WS-PASSWORD-USUARIO']) assert.equal(classify(n), 'credential', n);
+  assert.deepEqual(of('MESSAGES.cbl'), []);
+});
+
+test('a token is a credential only beside a word of authentication or where only a credential comes from', () => {
+  // A lexer's token, and the handle CICS gives an outbound web session, are not credentials.
+  assert.deepEqual(of('LEXER.cbl'), []);
+  // One CICS verifies as a token is, and so is one from an environment variable or a file named for secrets.
+  assert.deepEqual(of('CICSTOK.cbl'), [['log-writes-a-credential', 12, 'high']]);
+  assert.deepEqual(of('TOKENS.cbl'), [
+    ['log-writes-a-credential', 21, 'high'],
+    ['log-writes-a-credential', 22, 'high'],
+    ['log-writes-a-credential', 23, 'high'],
+  ]);
+});
+
+test('a numeric field is a number, and only a PIN of four digits or more is a numeric credential', () => {
+  assert.deepEqual(of('NUMBERS.cbl'), [['log-writes-a-credential', 20, 'high']]);
+});
+
+test('a password shown back to the person who typed it is not written to a log', () => {
+  assert.deepEqual(of('ECHO.cbl'), []);
+});
+
+test('a typed password is still logged when it goes to the console, or when something else can fill its bytes', () => {
+  assert.deepEqual(of('ECHOLOG.cbl'), [
+    ['log-writes-a-credential', 24, 'high'],
+    ['log-writes-a-credential', 29, 'high'],
+    ['log-writes-a-credential', 34, 'high'],
+  ]);
+});
+
+test('a password on file is reported where it is displayed, though the same field is typed elsewhere', () => {
+  assert.deepEqual(of('STORED.cbl'), [['log-writes-a-credential', 29, 'high']]);
+});
+
+test('a CGI program displays its HTTP response, and its DISPLAY UPON SYSERR goes to the server log', () => {
+  assert.deepEqual(of('CGISID.cbl'), [['log-writes-a-credential', 14, 'high']]);
+});
+
 test('a program that logs only what it made safe is reported as nothing', () => {
   assert.deepEqual(of('PAYSAFE.cbl'), []);
 });

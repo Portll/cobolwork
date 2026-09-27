@@ -133,12 +133,22 @@ loading from a library the estate calls authorised (`apfLibraries`).
 
 **What a field's name says it holds, written to a log.** A `DISPLAY`, `WRITEQ TD`, `WRITE
 JOURNALNAME` or `WRITE OPERATOR` of a field named as a credential is high, and of one named as
-personal data is medium (CWE-532), wherever it runs and whatever reached it. The rule is its
-matcher: a name counts only by whole hyphen-delimited components, so `COMPANY-NAME` does not hold a
-`PAN`, some components count only in pairs (`CARD` with `NUM`), and `ACCT-NO` is left out, because
-in COBOL it is almost always a general-ledger account - over the corpus it was 83 of 90
-personal-data hits, all of them in one payroll program. Measured over 22,800 `DISPLAY` statements,
-11 were real.
+personal data is medium (CWE-532), wherever it runs. The rule is its matcher: a name counts only by
+whole hyphen-delimited components, so `COMPANY-NAME` does not hold a `PAN`, some components count
+only in pairs (`CARD` with `NUM`), and `ACCT-NO` is left out, because in COBOL it is almost always a
+general-ledger account - over the corpus it was 83 of 90 personal-data hits, all of them in one
+payroll program. Measured over 22,800 `DISPLAY` statements, 11 were real.
+
+A credential name also has to fit the field. A name that is about a credential
+(`WS-PASSWORD-PROMPT`, `WS-TOKEN-COUNT`, `WS-PASSWORD-VALID`) is not one, and a field declared
+numeric holds a number unless it is a `PIN` of four digits or more. `TOKEN` is a lexer's word as
+often as a credential, so it counts only beside a word such as `AUTH`, `ACCESS`, `BEARER`, `API` or
+`SESSION`, or where the value came from something that only yields credentials: an environment
+variable, a masked or credential-prompted terminal entry, a CICS `VERIFY` or `SIGNON`, or a file
+named for secrets. Two writes are not to a log: a plain `DISPLAY` of what the person at the terminal
+typed at a prompt in the same program, and a plain `DISPLAY` in a CGI program, which writes a
+`Content-Type` header and so answers the request. A password read from a file and displayed is
+still reported, prompt or no prompt, and so is anything sent `UPON CONSOLE` or `UPON SYSERR`.
 
 ## JCL and the estate
 

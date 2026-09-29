@@ -556,6 +556,19 @@ first time the rule is wrong.
 
 ### 11e. What counts as a check on an index
 
+An index in a subscript or a reference modification is bounded only where the check keeps it at 1 or
+more as well as at or below the top of the table: both ends. Position counts from 1, so an upper
+bound alone leaves 0, which addresses the entry before the table, and a reference-modification
+length of 0 is a zero-length move that can overrun. A set of literal values bounds an index only if
+every value is 1 or more. An `OCCURS DEPENDING ON` count and a loop bound accept 0, and an upper
+bound alone bounds them.
+
+A check that ran on every route and did not bound the index does not lower an index finding (a rule
+ending `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or
+`-to-loop-bound`), because the index can still be out of range on the route where the check failed.
+The finding keeps its tier, `guard` names the check, and `guardedFrom` is not set. For every other
+sink kind a check that ran lowers the finding one step and sets `guardedFrom` to the tier it left.
+
 The routes to `subscript` and `reference-modification` are data-mutation (§5a), so a false one fails a
 build. The check model (`lib/control.mjs`) credits a check only where it has run on every route to
 the use. A reading of six `cics-terminal-to-subscript` findings on 2026-09-27 found five false, from

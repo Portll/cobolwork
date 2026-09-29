@@ -24,15 +24,19 @@ control-flow graph - `IF`, `EVALUATE`, `SEARCH`, `PERFORM` of a paragraph or a `
 `GOBACK` and `EXEC CICS RETURN`. A check counts only where it has run, on every route, since the
 field was last written, and before the value is used. A check that restricts a field - a class test
 such as `IS NOT NUMERIC`, a bound, a condition-name - and has run first lowers the finding one step
-and names itself. Where what the check leaves is safe for the sink, the route is not a finding at
+and names itself; on a subscript, reference modification, `OCCURS DEPENDING ON` count or loop bound
+it names itself and the finding keeps its tier, since the index can still be out of range on the
+route where the check failed. Where what the check leaves is safe for the sink, the route is not a finding at
 all: a value that can only be one of a list of literals, digits where a command, a statement or a
-job is built, a bound where a table is indexed. Such routes are listed under `checked`, with the
+job is built, a bound at both ends where a subscript or reference modification indexes a table
+(at least 1 and at most the table's size). Such routes are listed under `checked`, with the
 check that stops them. A buffer tested for one prompt and used for another, or tested in a paragraph
 performed after the use, keeps its full severity and says where the check it did not get is
 (`checkElsewhere`). Equality counts only where it pins the value: inside `IF X = 'A'`, or after an
 `EVALUATE` whose `WHEN OTHER` ends the run or leaves; `IF X = SPACES` before a use, and an
 `EVALUATE` that only chooses what else to do, check nothing. A check that only sets a flag has run,
-but the flag's later test is not read as stopping the value, so it lowers and does not clear. A sink
+but the flag's later test is not read as stopping the value, so it lowers and does not clear (on an
+index sink it is named and does not lower). A sink
 that another route reaches without the check keeps its full severity.
 
 **What starts each program.** A finding carries `startedBy`: the CICS transactions the CSD defines
@@ -55,8 +59,10 @@ COBOL says `ASSIGN TO SYSIN` and the job says `//SYSIN DD *`.
 modification, or the count an `OCCURS DEPENDING ON` table is sized by, taken from the command line,
 a terminal, the web or a job. Without `SSRANGE`, which is not the Enterprise COBOL default, an index
 out of range reads or writes the storage beside the table; with it, set on a `CBL` or `PROCESS`
-card, the program abends, and the finding says so and is one step lower. A bound on the index (`IF
-WS-IDX > 10`) lowers it as any check does. File records and database values are not followed into
+card, the program abends, and the finding says so and is one step lower. A test of the index that
+leaves some value out of range (`IF WS-IDX > 10` leaves 0) is named and does not lower it; a bound
+at both ends stops the route. An index counts from 1: entry 0 is the storage before the table, and a
+reference-modification length of 0 is a zero-length move that can overrun. File records and database values are not followed into
 these: in batch COBOL nearly every subscript descends from one.
 
 **The internal reader.** Input written where the internal reader will submit it as a job: through a

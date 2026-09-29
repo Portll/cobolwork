@@ -181,9 +181,9 @@ translated.
    and `provenance/words.json` by `diag/generate-precompile.mjs`, and a test holds the two equal.
 7. **Facts from IBM's documentation, confirmed by compiling.** Each verb's operands and their
    direction are recorded in `provenance/precompile.json` with the document that attests them, and
-   each translated family is confirmed with `cobc`. IBM Z Xplore's agreement bars commercial use
-   and uploading programs, so IBM's own behaviour waits on a licensed z/OS system; until then an IBM
-   behaviour the documentation states is recorded as unobserved. Unobserved for SQL: the code Db2
+   each translated family is confirmed with `cobc`. IBM's own behaviour waits on a z/OS system
+   whose terms of use permit it; until then an IBM behaviour the documentation states is recorded
+   as unobserved. Unobserved for SQL: the code Db2
    generates for WHENEVER and the order of its tests; WHENEVER with only a standalone SQLCODE; which
    nested arrays Db2 accepts; nested INCLUDE under the coprocessor, where IBM's manuals disagree.
    Unobserved for CICS: the HANDLE branch (5c); whether READ with GENERIC or GTEQ, STARTBR or RESETBR

@@ -354,3 +354,52 @@ test('a flag moved from an item the program writes is no constant', () => {
   assert.deepEqual(stopped('FLAGCMOVED.cbl'), []);
 });
 
+// A relation whose side is an arithmetic expression bounds a field by what the rest of the expression
+// allows, where that is known: a constant, a LENGTH OF, a picture that rules out a sign, or a bound a
+// check on the other field has set and nothing has undone.
+test('a sum failing its bound bounds an operand when the other operand is not negative', () => {
+  for (const file of ['EXPRSUM.cbl', 'EXPRPLUS.cbl', 'EXPRCHUNK.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+});
+
+test('a sum failing its bound bounds nothing when the other operand can be negative', () => {
+  const [f] = found('EXPRSIGNED.cbl');
+  assert.equal(f.sev, 'med');
+  assert.deepEqual(stopped('EXPRSIGNED.cbl'), []);
+});
+
+test('an index tested against LENGTH OF or FUNCTION LENGTH less a constant is bounded', () => {
+  for (const file of ['EXPRLEN.cbl', 'EXPRFLEN.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+});
+
+test('an index tested against another field is bounded by that field\'s bound, in either order of the two checks', () => {
+  for (const file of ['EXPRREL.cbl', 'EXPRRELLATE.cbl', 'EXPRRELOFF.cbl', 'EXPRRELWRITE.cbl', 'EXPRMINUSB.cbl', 'EXPRFACT.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+});
+
+test('a relation against a field with no known upper bound, or one written between the two checks, bounds nothing', () => {
+  for (const file of ['EXPRRELUNB.cbl', 'EXPRRELKILL.cbl', 'EXPRRELLATEKILL.cbl', 'EXPRMINUS.cbl', 'EXPRFACTKILL.cbl']) {
+    assert.equal(found(file).length, 1, file);
+    assert.deepEqual(stopped(file), [], file);
+  }
+});
+
+test('an expression that can outrun exact arithmetic, or multiplies two fields, bounds nothing', () => {
+  for (const file of ['EXPROVER.cbl', 'EXPRMUL.cbl']) {
+    assert.equal(found(file).length, 1, file);
+    assert.deepEqual(stopped(file), [], file);
+  }
+});
+
+test('an ordering against another field that bounds nothing does not lower the finding', () => {
+  const [f] = found('EXPRTIER.cbl');
+  assert.equal(f.sev, 'high');
+  assert.equal(f.guard, undefined);
+});

@@ -581,6 +581,18 @@ room. A performed paragraph's summary assumes no such room.
 
 A lower bound of `k` or more, set by a `MOVE` of a whole constant from 0 up or held by an `INSPECT ... TALLYING` count starting from a constant, rises to `k + n` through `ADD n TO`, `SET UP BY n` and `COMPUTE x = x + n`, where `n` is a literal or constant of 1 or more, on the same terms as the survival above: an upper bound live before the increment that leaves room for the sum. `ON SIZE ERROR` leaves the field unchanged, so it raises nothing. A counter from 0 is at least 1 after its first `ADD 1` and is only 0 or more before it. The lower bound of a `VARYING` counter holds at the loop's own `UNTIL` test as well as in the body, together with the credit for operands to the left of a use in that condition; a counter varied from 0 is not bounded below there. A bound that a field is capped at in another paragraph is no fact on a route that does not pass through that paragraph, so a loop up to such a field is not bounded above by it.
 
+A relation whose side is an arithmetic expression bounds each field in it that has coefficient 1 or -1,
+where the rest of the expression is known: `+`, `-`, `*` by a constant, parentheses, constants,
+`LENGTH OF x` and `FUNCTION LENGTH(x)` (the item's size). `A + B > K` failing bounds `A` at `K` less
+the lowest `B` can be, which is 0 for an unsigned `B` and unknown for a signed one; `A - B` and
+`A > B + k` need the highest `B`. A bound on `B` that only a check gives, `IF B > 100` before or after
+`IF A > B`, joins the two: it holds until `A` is written, and is not made if `B` was written between
+the checks. A constant the program moves into `B` does not count. An expression with a division, a
+power, a product of two fields, a subscript or a non-numeric name, or a constant past 10^15, where the
+compiler's intermediate precision could give way, bounds nothing. Such a bound joins the others that
+hold at the use and can complete a bound, but an outcome that says something only this way does not
+by itself lower a finding a tier.
+
 A check that ran on every route and did not bound the index lowers an index finding (a rule ending
 `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or `-to-loop-bound`) one
 step only where one of its outcomes holds on every route to the use. Where both outcomes reach the

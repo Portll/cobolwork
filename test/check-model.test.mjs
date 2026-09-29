@@ -253,3 +253,39 @@ test('a counter varied from a field that was set to 1 is bounded below in its lo
   assert.deepEqual(found('MONOFROM.cbl'), []);
   assert.equal(stopped('MONOFROM.cbl').length, 1);
 });
+
+// A VARYING counter's lower bound holds at the loop's own UNTIL test, and an increment raises a lower bound.
+test('a counter varied from 1 is at least 1 where the UNTIL condition reads it after its bound', () => {
+  assert.deepEqual(found('UNTILFROM1.cbl'), []);
+  assert.equal(stopped('UNTILFROM1.cbl').length, 1);
+});
+
+test('a counter varied from 0 is not bounded below in the UNTIL condition', () => {
+  assert.equal(found('UNTILFROM0.cbl').length, 1);
+});
+
+test('a use in the UNTIL condition to the left of the bound is not credited', () => {
+  assert.equal(found('UNTILRIGHT.cbl').length, 1);
+});
+
+test('a counter from 0 that is added to before its use is at least 1 there', () => {
+  assert.deepEqual(found('ADDFROM0.cbl'), []);
+  assert.equal(stopped('ADDFROM0.cbl').length, 1);
+});
+
+test('a counter from 0 used before its first ADD is reported', () => {
+  assert.equal(found('ADDAFTERUSE.cbl').length, 1);
+});
+
+test('an increment that can wrap to 0 leaves the counter unbounded below', () => {
+  assert.equal(found('ADDWRAP0.cbl').length, 1);
+});
+
+test('a tally of 0 or more that is then added to by 12 is at least 12', () => {
+  assert.deepEqual(found('TALLYADD.cbl'), []);
+  assert.equal(stopped('TALLYADD.cbl').length, 1);
+});
+
+test('a tally added to by nothing stays at 0 or more, which addresses nothing', () => {
+  assert.equal(found('TALLYPLAIN.cbl').length, 1);
+});

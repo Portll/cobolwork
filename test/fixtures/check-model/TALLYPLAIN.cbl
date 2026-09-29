@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TALLYPLAIN.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-I                PIC 9(5).
+       01 WS-BUF              PIC X(512).
+       PROCEDURE DIVISION.
+           ACCEPT WS-BUF FROM COMMAND-LINE
+           MOVE 0 TO WS-I
+           INSPECT WS-BUF TALLYING WS-I FOR CHARACTERS BEFORE INITIAL "SID="
+           ADD 0 TO WS-I
+           PERFORM UNTIL WS-I > 512 OR WS-BUF(WS-I:1) = ";"
+              ADD 1 TO WS-I
+           END-PERFORM
+           GOBACK.

@@ -347,7 +347,8 @@ test('lib/cics-commands.mjs is what provenance/precompile.json generates, and ev
   const out = join(dir, 'cics-commands.mjs');
   const gen = spawnSync(process.execPath, [join(root, 'diag', 'generate-precompile.mjs'), join(root, 'provenance', 'precompile.json'), join(root, 'provenance', 'words.json'), out], { encoding: 'utf8' });
   assert.equal(gen.status, 0, gen.stderr);
-  assert.equal(readFileSync(join(root, 'lib', 'cics-commands.mjs'), 'utf8'), readFileSync(out, 'utf8'), 'regenerate lib/cics-commands.mjs');
+  const lf = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
+  assert.equal(lf(join(root, 'lib', 'cics-commands.mjs')), lf(out), 'regenerate lib/cics-commands.mjs');
   const prov = JSON.parse(readFileSync(join(root, 'provenance', 'precompile.json'), 'utf8'));
   for (const [name, c] of Object.entries(prov.commands)) {
     assert.match(c.doc || '', /^https:\/\/www\.ibm\.com\/docs\//, `${name}: no IBM documentation URL`);

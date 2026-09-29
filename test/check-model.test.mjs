@@ -34,6 +34,15 @@ test('a subscript read before its bound in the same condition is not credited', 
   assert.equal(f.guard, undefined);
 });
 
+test('a bound an OR can skip has not run, and one whose outcome passes the table bounds nothing', () => {
+  const [skipped] = found('CPAREN.cbl');
+  assert.equal(skipped.sev, 'high');
+  assert.equal(skipped.guard, undefined);
+  const [past] = found('CNOTOR.cbl');
+  assert.equal(past.sev, 'high');
+  assert.equal(past.guard, undefined);
+});
+
 // The bound ran before both readings, so each is lowered a step; only the first is bounded by it.
 test('an abbreviated relation reads its subject again, and that reading is not bounded', () => {
   const [f] = found('ABBREV.cbl');

@@ -215,3 +215,18 @@ test('a bound against a VALUE item the program writes, alone or through its grou
     assert.deepEqual(stopped(file), [], file);
   }
 });
+
+test('constants moved into an index on every route bound it where each is between 1 and the field length', () => {
+  for (const file of ['CONSTONE.cbl', 'CONSTREF.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+});
+
+test('a constant past the field, or a route that moves none, leaves the index unbounded', () => {
+  for (const file of ['CONSTBIG.cbl', 'CONSTMIX.cbl', 'CONSTACC.cbl']) {
+    const [f] = found(file);
+    assert.equal(f.sev, 'high', file);
+    assert.equal(f.guard, undefined, file);
+  }
+});

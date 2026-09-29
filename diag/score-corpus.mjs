@@ -21,6 +21,7 @@ import { gunzipSync } from 'node:zlib';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { verifyRow } from '../feed/verify.mjs';
+import { EXPLOITABILITY } from '../lib/kernel/findings.mjs';
 
 export function readKey(path) {
   const buf = readFileSync(path);
@@ -169,6 +170,8 @@ export const NOT_COVERED = [
     + 'real uncertainty is wider.',
   'The answers are those of the engine that generated the sheet, named at the top. A later engine is not '
     + 'measured by this key.',
+  'A rate per verdict measures the route half of the verdict only. A public corpus declares no access facts, so '
+    + 'no site there is exploitable or restricted, and whether an entry is open to an attacker is not measured.',
 ];
 
 export function score(labels, key, { partial = false } = {}) {
@@ -237,13 +240,26 @@ export function score(labels, key, { partial = false } = {}) {
     }
   }
   const table = (t) => Object.fromEntries(Object.keys(t).sort().map((k) => [k, measures(t[k])]));
+  // A verdict that names a route holds where the labeller says reachable; refuted holds where they say not.
+  const byVerdict = {};
+  for (const { row, site } of first.values()) {
+    if (!site?.verdict) continue;
+    const v = (byVerdict[site.verdict] ||= { sites: 0, holds: 0, wrong: 0, undecidable: 0 });
+    v.sites++;
+    const answer = said(row.reachable);
+    if (answer === 'undecidable') v.undecidable++;
+    else if ((answer === 'yes') === (site.verdict !== 'refuted')) v.holds++;
+    else v.wrong++;
+  }
+  for (const v of Object.values(byVerdict)) Object.assign(v, { rate: ratio(v.holds, v.holds + v.wrong), interval: wilson(v.holds, v.holds + v.wrong) });
   const notCovered = [...NOT_COVERED];
   if (unattributed) notCovered.push(`${unattributed} site(s) labelled reachable without from count overall and per sink kind, but in no rule.`);
+  if (!key.sites.some((s) => 'verdict' in s)) notCovered.push('This key predates exploitability verdicts, so no rate per verdict is given.');
   if (partial && (refused.length || unlabelled.length)) {
     notCovered.unshift(`PARTIAL: ${unlabelled.length} site(s) have no accepted label; these figures are over the ${first.size} that do.`);
   }
   return { ...result, scored: true, partial: Boolean(partial && (refused.length || unlabelled.length)),
-    overall: measures(overall), byKind: table(byKind), byRule: table(byRule), unattributed, disagreements, notCovered };
+    overall: measures(overall), byKind: table(byKind), byRule: table(byRule), byVerdict, unattributed, disagreements, notCovered };
 }
 
 const pct = (x) => (x === null ? '-' : x.toFixed(3));
@@ -290,6 +306,14 @@ export function report(r) {
   };
   rows('by sink kind', r.byKind, true);
   rows('by rule', r.byRule, false);
+  const verdicts = Object.keys(EXPLOITABILITY).filter((v) => r.byVerdict?.[v]);
+  if (verdicts.length) {
+    out.push('', 'by verdict        sites  holds  wrong  undec  rate', '  (a verdict naming a route holds where the site is reachable; refuted holds where it is not)');
+    for (const v of verdicts) {
+      const m = r.byVerdict[v];
+      out.push(`${v.padEnd(16)}${[m.sites, m.holds, m.wrong, m.undecidable].map((x) => String(x).padStart(7)).join('')}  ${pct(m.rate)} ${span(m.interval)}`);
+    }
+  }
   const list = (title, xs, tail) => {
     if (!xs.length) return;
     out.push('', title);

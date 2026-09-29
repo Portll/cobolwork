@@ -254,3 +254,12 @@ lacking an outcome, who, when or where is refused and named under `summary.witne
   `summary.witnessUnmatched`.
 
 `summary.byWitness` counts the two outcomes. Nothing in it changes what a build blocks.
+
+### 9.6 Measuring it
+
+The sealed answer key `diag/label-sheet.mjs` writes records each site's verdict, and
+`diag/score-corpus.mjs` gives a rate per verdict against blind human labels
+(`feed/specs/06-corpus.md`): how often a verdict that names a route sits at a reachable site, and how
+often `refuted` sits at one that is not. That is the route half, the part §7.3 says a public corpus
+can witness; the reach half still needs an estate's facts. The labels are not started, so no rate is
+published.

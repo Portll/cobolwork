@@ -116,8 +116,12 @@ tells whoever chose it the answer for every site, so someone else labels that sh
 a site lacks an accepted label, because the scores show the engine's answers. It reports precision,
 recall, the undecidable count and the confusion matrix overall, per sink kind and per rule, and what
 the figures do not cover. The per-rule figures need `from`, the kinds of source the labeller found
-reaching a site. `--rows` writes the accepted labels as corpus rows. Neither the worksheet nor the
-key belongs in this repository.
+reaching a site. The key also holds the exploitability verdict the engine gives each site it
+reports (`docs/spec/reach.md` §9), and the scorer gives a rate per verdict: how often a verdict that
+names a route is at a reachable site, and how often `refuted` is at one that is not. With no access
+facts in a public corpus, that measures the route half of the verdict and not whether an entry is
+open. `--rows` writes the accepted labels as corpus rows. Neither the worksheet nor the key belongs
+in this repository.
 
 ## Done when
 

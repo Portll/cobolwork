@@ -33,7 +33,10 @@ import { gzipSync } from 'node:zlib';
 import { join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { analyze } from '../lib/dataflow.mjs';
-import { byText } from '../lib/kernel/findings.mjs';
+import { byText, EXPLOITABILITY } from '../lib/kernel/findings.mjs';
+import { scan as flowScan } from '../lib/sets/flow.mjs';
+import { stampExploitability } from '../lib/exploitability.mjs';
+import { kindsOf } from '../lib/consequence.mjs';
 import { directoryTree } from '../lib/kernel/source-tree.mjs';
 import { inScope, isProgram, readSource } from '../lib/sources.mjs';
 import { FLOW_MODEL, TOOL_VERSION } from '../lib/version.mjs';
@@ -119,6 +122,25 @@ function sitesByProgramFile(res) {
       .sort((a, b) => byText(a.file, b.file) || a.line - b.line || byText(a.sink, b.sink) || byText(String(a.program), String(b.program))));
   }
   return out;
+}
+
+// The exploitability verdict the engine gives each site, the most urgent where several paths end
+// there, from the flow report a scan prints. No access facts are declared for a public corpus, so a
+// verdict here is the route half only: never exploitable or restricted.
+const sitePlace = (program, file, line, sink) => `${program}|${file}|${line}|${sink}`;
+function verdictsBySite(base, tree) {
+  const report = flowScan(base, { tree });
+  stampExploitability(report.findings, null, report.checked);
+  const order = Object.keys(EXPLOITABILITY);
+  const at = new Map();
+  for (const f of [...report.findings, ...report.checked]) {
+    const kinds = f.exploitability && kindsOf(f.rule);
+    if (!kinds) continue;
+    const k = sitePlace(f.program, f.path, f.line, kinds.sink);
+    const held = at.get(k);
+    if (!held || order.indexOf(f.exploitability.verdict) < order.indexOf(held)) at.set(k, f.exploitability.verdict);
+  }
+  return at;
 }
 
 // A graph the memory guard or the byte budget cut short would answer for part of a repository, and
@@ -241,6 +263,7 @@ export function labelSheet(root, opts = {}) {
     repositories[repo] = { files: res.stats.files, programs: res.stats.programs, unparsed: res.stats.unparsedFiles || [],
       unreadable: res.stats.unreadableFiles || [] };
     const sitesOf = sitesByProgramFile(res);
+    const verdictAt = verdictsBySite(base, tree);
     const lines = new Map();
     // A site's line is where its statement starts, and the operand is often on a continuation, so
     // the code runs on to the first line that names one.
@@ -266,6 +289,7 @@ export function labelSheet(root, opts = {}) {
         sheetSites.push({ ...where, operands: s.operands, sourcesThatCount: s.sourcesThatCount, code: codeOf(s.file, s.line, s.operands),
           reachable: '', from: [], reasoning: '', labelledAt: '' });
         keySites.push({ ...where, sourcesThatCount: s.sourcesThatCount, reached: s.findings.length > 0,
+          verdict: verdictAt.get(sitePlace(s.program, s.file, s.line, s.sink)) || null,
           sources: [...new Set(s.findings.map((f) => f.source.kind))], rules: [...new Set(s.findings.map((f) => f.rule))],
           findings: s.findings.map((f) => ({ rule: f.rule, source: f.source, hops: f.hops, crossProgram: f.crossProgram,
             ...(f.guard ? { guard: f.guard } : {}), path: f.path })) });

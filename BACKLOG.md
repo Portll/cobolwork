@@ -66,7 +66,9 @@ as `COBOLWORK_WITNESS`, make a verdict `confirmed`. What is left, in order:
    what to watch for (an S0C7 abend; the other record displayed). For command, SQL and job sinks it
    shows only a marker value arriving at the statement under CEDF or a debugger, never a payload that
    runs, and never in the default report.
-2. **A measured rate per verdict**, from the hand-labelled corpus below: until then a verdict is a
+2. **A measured rate per verdict.** `diag/score-corpus.mjs` gives one from the sealed key, which now
+   records each site's verdict, over the route half a public corpus can witness. The labels are
+   what is missing: the hand-labelled corpus below is not started, and until it is a verdict is a
    claim over reading and records with no independent precision.
 
 ## Vulnerability classes, in the order they can be measured

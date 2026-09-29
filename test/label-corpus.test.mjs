@@ -10,7 +10,8 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { labelSheet, writeSheet, select, FILES } from '../diag/label-sheet.mjs';
-import { score, readKey, readLabels, rowsFromWorksheet, wilson } from '../diag/score-corpus.mjs';
+import { score, readKey, readLabels, rowsFromWorksheet, wilson, report } from '../diag/score-corpus.mjs';
+import { EXPLOITABILITY } from '../lib/kernel/findings.mjs';
 import { analyze } from '../lib/dataflow.mjs';
 import { scan } from '../lib/sets/flow.mjs';
 import { setMemoryReaders } from '../lib/kernel/memory.mjs';
@@ -283,6 +284,41 @@ test('precision, recall and the undecidable rate are counted as defined, overall
   assert.deepEqual(r.disagreements.falseNegatives.map((x) => x.site), ['s3', 's8']);
   assert.deepEqual(r.second, [{ site: 's2', at: 'again', first: false, then: true, agree: false }]);
   assert.equal(r.labels.accepted, 9);
+});
+
+test('the key holds the verdict the engine gives each site, and none where it reports nothing', () => {
+  const verdicts = new Set(Object.keys(EXPLOITABILITY));
+  for (const s of key.sites) {
+    if (s.reached) assert.ok(verdicts.has(s.verdict), `${s.id} has a verdict`);
+    else assert.equal(s.verdict, null, `${s.id}`);
+    assert.ok(!['exploitable', 'restricted', 'confirmed'].includes(s.verdict), 'a public corpus declares no access facts or witness');
+  }
+  assert.ok(key.sites.some((s) => s.verdict === 'attacker-driven'));
+  assert.ok(!sheetText.includes('attacker-driven') && !sheetText.includes('"verdict"'), 'the worksheet gives no verdict away');
+});
+
+test('a rate per verdict: a route verdict holds where the site is reachable, refuted where it is not', () => {
+  const site = (n, verdict, sources) => ({ id: `v${n}`, repo: 'r', program: 'P', file: 'P.cbl', line: n, sink: 'os-command',
+    sourcesThatCount: ['argv-or-env'], reached: sources.length > 0, sources, rules: sources.map((k) => `${k}-to-os-command`), verdict });
+  const hand = {
+    sheet: 'verdicts', toolVersion: 'x', flowModel: 'x', programs: [{ repo: 'r', file: 'P.cbl', programs: ['P'] }],
+    sourceKinds: { 'argv-or-env': '' }, sinkKinds: { 'os-command': '' },
+    sites: [
+      site(1, 'attacker-driven', ['argv-or-env']), site(2, 'attacker-driven', ['argv-or-env']), site(3, 'attacker-driven', ['argv-or-env']),
+      site(4, 'refuted', ['argv-or-env']), site(5, 'refuted', ['argv-or-env']),
+      site(6, 'mitigated', ['argv-or-env']), site(7, null, []),
+    ],
+  };
+  const said = [true, true, false, false, true, 'undecidable', false];
+  const labels = hand.sites.map((s, i) => ({ at: s.id, row: row(s, said[i], said[i] === true ? { from: ['argv-or-env'] } : {}) }));
+  const r = score(labels, hand);
+  assert.equal(r.scored, true);
+  assert.deepEqual(r.byVerdict['attacker-driven'], { sites: 3, holds: 2, wrong: 1, undecidable: 0, rate: 0.667, interval: wilson(2, 3) });
+  assert.deepEqual(r.byVerdict.refuted, { sites: 2, holds: 1, wrong: 1, undecidable: 0, rate: 0.5, interval: wilson(1, 2) });
+  assert.deepEqual(r.byVerdict.mitigated, { sites: 1, holds: 0, wrong: 0, undecidable: 1, rate: null, interval: null });
+  assert.equal(Object.keys(r.byVerdict).length, 3, 'a site the engine reports nothing at has no verdict to measure');
+  assert.match(report(r), /by verdict[\s\S]*attacker-driven\s+3\s+2\s+1\s+0\s+0\.667/);
+  assert.ok(r.notCovered.some((n) => /route half of the verdict only/.test(n)));
 });
 
 test('the two scripts run from the command line, and the scorer knows the key the selection sealed', () => {

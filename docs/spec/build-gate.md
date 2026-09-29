@@ -588,6 +588,11 @@ use, the program carried on past a failed check, the index can be out of range t
 finding keeps its tier. For every other sink kind a check that ran lowers the finding one step. In
 both, `guard` names the check and `guardedFrom` the tier it left.
 
+A source's route reports one use per table and index name: the least checked, then the first in file
+order. The uses left out are listed in the kept finding's `related` after the source, each with how far
+it is checked, and `alsoUses` counts them. A line is credited no further than the least checked use on
+it that any source reaches, whether the report lists that use or leaves it out.
+
 The routes to `subscript` and `reference-modification` are data-mutation (§5a), so a false one fails a
 build. The check model (`lib/control.mjs`) credits a check only where it has run on every route to
 the use. A reading of six `cics-terminal-to-subscript` findings on 2026-09-27 found five false, from

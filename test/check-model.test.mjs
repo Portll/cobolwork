@@ -289,3 +289,31 @@ test('a tally of 0 or more that is then added to by 12 is at least 12', () => {
 test('a tally added to by nothing stays at 0 or more, which addresses nothing', () => {
   assert.equal(found('TALLYPLAIN.cbl').length, 1);
 });
+
+// The report keeps one use of an index per table and names the others on it (§11e).
+test('the uses of an index left out of the report are named on the one kept', () => {
+  const [f] = found('ALSOUSES.cbl');
+  assert.equal(f.line, 12);
+  assert.equal(f.alsoUses, 2);
+  const others = f.related.slice(1);
+  assert.deepEqual(others.map((r) => r.line), [16, 17]);
+  assert.match(others[0].detail, /checked at line 13/);
+});
+
+test('a use left out that is not checked is named as such on the finding kept', () => {
+  const [f] = found('ALSOSRC.cbl');
+  assert.equal(f.alsoUses, 1);
+  assert.match(f.related[1].detail, /^also .*: not checked$/);
+  assert.deepEqual(stopped('ALSOSRC.cbl'), []);
+});
+
+test('a line is credited no further than an unchecked use of another index that the report leaves out', () => {
+  const at = found('ALSOLINE.cbl').map((x) => [x.line, x.sev, x.guardedFrom]);
+  assert.deepEqual(at, [[16, 'high', undefined], [20, 'high', undefined]]);
+  assert.deepEqual(stopped('ALSOLINE.cbl'), []);
+});
+
+test('a line stays checked beside a use left out that is checked as far', () => {
+  assert.deepEqual(found('ALSOLINEOK.cbl'), []);
+  assert.equal(stopped('ALSOLINEOK.cbl').length, 2);
+});

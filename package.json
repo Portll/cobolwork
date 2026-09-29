@@ -1,6 +1,6 @@
 {
   "name": "cobolwork",
-  "version": "0.2.73",
+  "version": "0.2.74",
   "description": "COBOL, JCL and CICS security analysis with zero runtime dependencies: reference-format parser, cross-program data flow, mainframe credential rules. Plugs into commitwork.",
   "license": "AGPL-3.0-or-later",
   "author": "Portll <john@portll.net>",
@@ -31,6 +31,8 @@
     "schema",
     "LICENSE",
     "NOTICE",
+    "LICENSING.md",
+    "THIRD-PARTY-NOTICES.md",
     "README.md"
   ],
   "scripts": {
@@ -50,6 +52,5 @@
     "sast",
     "taint",
     "sarif"
-  ],
-  "private": true
+  ]
 }

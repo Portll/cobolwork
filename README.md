@@ -22,6 +22,12 @@ COBOL, exits zero and reports a clean result.
 
 ## Install
 
+    npm install -g https://github.com/Portll/cobolwork/releases/latest/download/cobolwork.tgz
+
+That installs the latest [release](https://github.com/Portll/cobolwork/releases). Each release
+carries the package twice: as `cobolwork.tgz`, which the command above follows, and as
+`cobolwork-<version>.tgz`, which is the one to pin. To run from a checkout instead:
+
     git clone https://github.com/Portll/cobolwork && cd cobolwork && npm link
 
 Node 18 or later. No dependencies, runtime or development. `npm link` puts `cobolwork` on your PATH;

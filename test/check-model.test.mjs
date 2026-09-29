@@ -451,3 +451,48 @@ test('a loop counted up to the length of an item is inside that item, and inside
   assert.equal(loopBound('ARLENTABBIG.cbl').length, 1);
   assert.equal(loopBound('ARLENADD.cbl').length, 1);
 });
+
+
+// A loop bound the input decides cannot push the counter out of the table when the counter's own
+// subscripts are kept in range by the loop's condition, whatever that bound is.
+const exitBound = (file) => report.findings.filter((f) => f.path === file && /-to-loop-bound$/.test(f.rule));
+const loopBoundStopped = (file) => report.checked.filter((f) => f.path === file && /-to-loop-bound$/.test(f.rule));
+
+test('a second exit that holds the counter within the table stops the input-bound loop', () => {
+  assert.deepEqual(exitBound('LOOPEXIT.cbl'), []);
+  const [c] = loopBoundStopped('LOOPEXIT.cbl');
+  assert.equal(c.rule, 'argv-or-env-to-loop-bound');
+  assert.equal(c.guard.item, 'WS-I');
+});
+
+test('a second exit that bounds the counter above the table is reported', () => {
+  assert.equal(exitBound('LOOPEXITBIG.cbl').length, 1);
+});
+
+test('exits joined by AND both have to hold, so the second bounds nothing', () => {
+  assert.equal(exitBound('LOOPEXITAND.cbl').length, 1);
+});
+
+test('an exit that bounds a different index leaves the counter unbounded', () => {
+  assert.equal(exitBound('LOOPEXITOTHER.cbl').length, 1);
+});
+
+test('only the subscripts the loop body makes count, not the counter\'s uses in other loops', () => {
+  assert.deepEqual(exitBound('LOOPEXITTWO.cbl'), []);
+});
+
+test('a paragraph the body performs that also runs unbounded from elsewhere is not credited', () => {
+  assert.equal(exitBound('LOOPEXITPERF.cbl').length, 1);
+});
+
+test('an index beside the counter in a subscript has to be in range too', () => {
+  assert.equal(exitBound('LOOPEXITMATE.cbl').length, 1);
+});
+
+test('an OCCURS DEPENDING ON count is stopped by a check against the table maximum, and not by a larger one', () => {
+  const odo = (file) => report.findings.filter((f) => f.path === file && /-to-occurs-depending-count$/.test(f.rule));
+  assert.deepEqual(odo('ODOCHECKED.cbl'), []);
+  assert.equal(report.checked.filter((f) => f.path === 'ODOCHECKED.cbl' && /occurs-depending-count$/.test(f.rule)).length, 1);
+  assert.equal(odo('ODOUNCHECKED.cbl').length, 1);
+  assert.equal(odo('ODOOVER.cbl').length, 1);
+});

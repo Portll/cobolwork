@@ -569,6 +569,10 @@ not negative or is absent, and the field is a whole number. That lower bound joi
 UNTIL gives. Any statement in the body that writes the counter other than by a rise, and any inner
 `VARYING` or `AFTER` over it, takes the bound away.
 
+A loop bound that input decides is credited when every subscript the loop's own body makes with the counter, and every other index in the same reference, is kept between 1 and the table's size by the loop's condition or the body's checks, the size being one number. The counter is then within the table whatever the bound is, so the credit does not depend on the route the input took. A second exit joined by `OR` gives that bound; exits joined by `AND` give none. A body that can run code outside itself, by `GO TO` or a `PERFORM` of a paragraph, counts every subscript the counter makes in the program, and a `PERFORM VARYING` of a paragraph is not credited by this rule.
+
+An `OCCURS DEPENDING ON` count is judged at each statement that names its table, a part of it or a group holding it. A check credits it as far as the count is kept at or below the table's maximum; a check against a larger number lowers the finding one tier and stops nothing.
+
 A lower bound of 1 or more survives an increment. A field set by `MOVE` to a whole constant that fits it,
 or varied from one, stays at that bound through `ADD n TO`, `SET UP BY n`, `COMPUTE x = x + n` and the
 `VARYING` step, where `n` is a literal or constant that is not negative or an unsigned number; the upper

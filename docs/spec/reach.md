@@ -32,7 +32,8 @@ repository observes until the fact arrives, and is a defect only once it does.
 The join is cheap, because reach hangs off machinery that exists:
 
 - **`startedBy`** on every flow finding (`lib/dataflow.mjs`): the transactions and job steps that
-  reach the finding's program, by `CALL`, `LINK`, `XCTL`, `START` and `EXEC PGM=`.
+  reach the finding's program, by `CALL`, `LINK`, `XCTL`, `START` and `EXEC PGM=`, and the alias
+  transaction a server `URIMAP` serves it under (`CWBA` unless the map names one).
 - **`summary.byTransaction` and `summary.byJob`** (`lib/sets/flow.mjs`): findings counted by the
   entry that starts them - how a mainframe team already triages.
 - **The CSD**, parsed by `lib/csd.mjs`, carrying each transaction's `program`, `ressec` and

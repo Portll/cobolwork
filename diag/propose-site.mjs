@@ -184,7 +184,8 @@ const anonymous = (s) => (s && (!s.authenticate || s.authenticate === 'NO') ? ",
 for (const [name, s] of listeners) if (s.transaction) note(listened, s.transaction, `TCPIPSERVICE ${name} at ${s.at}, port ${s.port || '?'}${anonymous(s)}`);
 for (const u of uriMaps) {
   const where = `URIMAP ${u.name} at ${u.at}${u.path ? `, path ${u.path}` : ''}${u.tcpipservice ? `, through TCPIPSERVICE ${u.tcpipservice}${anonymous(listeners.get(u.tcpipservice))}` : ''}`;
-  if (u.transaction) note(listened, u.transaction, where);
+  // The alias transaction the request runs under, CWBA unless the map names one, as lib/dataflow.mjs reads it.
+  if (u.program) note(listened, u.transaction || 'CWBA', where);
   if (u.program) note(served, u.program, where);
 }
 

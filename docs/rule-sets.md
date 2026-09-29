@@ -36,7 +36,8 @@ but the flag's later test is not read as stopping the value, so it lowers and do
 that another route reaches without the check keeps its full severity.
 
 **What starts each program.** A finding carries `startedBy`: the CICS transactions the CSD defines
-for its program (from a CSD extract or `DFHCSDUP` input), the job steps that run it (`EXEC PGM=`,
+for its program (from a CSD extract or `DFHCSDUP` input), the alias transaction a server `URIMAP`
+serves it under (`CWBA` unless the map names one, with the map and its path), the job steps that run it (`EXEC PGM=`,
 and `RUN PROGRAM` under a TSO batch step), and whatever those reach by `CALL`, `LINK`, `XCTL`, or
 `START` and `RETURN TRANSID`. `summary.byTransaction` and `summary.byJob` count findings by the
 entry that reaches them, which is how a mainframe team triages. Where the tree holds any of those

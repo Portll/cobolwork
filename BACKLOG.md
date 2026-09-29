@@ -57,9 +57,8 @@ none `exploitable`, because no repository says who may start a transaction. Each
 test the check model credits placed before the operation. It names the value at the operation, not
 the input before it was folded into a statement, so for a built SQL or command string the test it
 names is on the whole string; naming the input field instead is open. `diag/propose-site.mjs` lists
-the transactions and jobs to classify, with any listener or URI map in front of each. A program a
-`URIMAP` serves is named there but is not yet an entry the flow graph starts from, so its findings
-carry no `startedBy` and stay `attacker-driven` whatever is declared. What is left, in order:
+the transactions and jobs to classify, with any listener or URI map in front of each; a program a
+server `URIMAP` serves is started by its alias transaction. What is left, in order:
 
 1. **A verification plan per finding, in `explain`.** The transaction, the map and field, a harmless
    value that shows the defect (a letter in a numeric field; a key belonging to another record), and

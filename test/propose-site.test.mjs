@@ -190,12 +190,13 @@ test('who may start an entry is handed over as candidates, most findings first, 
   const draft = JSON.parse(readFileSync(join(dir, SITE_FILE), 'utf8'));
   for (const k of ['openTransactions', 'restrictedTransactions', 'openJobs', 'restrictedJobs']) assert.deepEqual(draft[k], [], k);
   const tx = draft._toClassify.openOrRestrictedTransactions;
-  assert.deepEqual(Object.keys(tx).sort(), ['INQ1', 'MNU1']);
+  assert.deepEqual(Object.keys(tx).sort(), ['CWBA', 'INQ1', 'MNU1']);
   assert.match(tx.INQ1, /starts 1 finding\(s\) an attacker drives, first cics-terminal-to-dynamic-sql at INQUIRY\.cbl:13; runs INQUIRY/);
   assert.match(tx.INQ1, /the network reaches it: TCPIPSERVICE HTTPIN .*port 8080, AUTHENTICATE\(NO\)/);
   assert.doesNotMatch(tx.MNU1, /network/);
+  assert.match(tx.CWBA, /argv-or-env-to-os-command at ORPHAN\.cbl:9; the network reaches it: URIMAP ORPHURI .*path \/api\/orphan\/\*, through TCPIPSERVICE HTTPIN, AUTHENTICATE\(NO\)/,
+    'a program a URI map serves is started by its alias transaction');
   assert.match(draft._toClassify.openOrRestrictedJobs.NIGHTJOB, /jcl-parm-to-os-command/);
-  assert.match(r.stdout, /ORPHAN .*served by URIMAP ORPHURI .*path \/api\/orphan\/\*/, 'a program only a URI map serves is named');
   assert.equal(loadSite(dir).openTransactions.length, 0);
 }));
 

@@ -163,6 +163,23 @@ test('an EXEC SQL host variable is a reference, qualified by its dots, and writt
   assert.equal(read({ hostVariables: false })['WS-FETCHED'], 'none');
 });
 
+test('an EXEC CICS option argument is a reference, written where the option receives', () => {
+  const src = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. CX.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
+    '       01 WS-REC.', '          05 WS-KEY PIC X(8).', '       01 WS-RESP PIC S9(8) COMP.', '       01 WS-OUT PIC X(80).',
+    '       01 WS-IDLE PIC X.', '       01 MAPAI.', '          02 FLDI PIC X.', '       PROCEDURE DIVISION.',
+    "           EXEC CICS READ DATASET('CUST') INTO(WS-REC) RIDFLD(WS-KEY)", '                RESP(WS-RESP) END-EXEC',
+    "           EXEC CICS WRITEQ TS QUEUE('Q1') FROM(WS-OUT)", '                LENGTH(LENGTH OF WS-OUT) END-EXEC',
+    "           EXEC CICS RECEIVE MAP('MAPA') MAPSET('MAPS') END-EXEC",
+    '           EXEC CICS HANDLE CONDITION NOTFND(DONE) END-EXEC', '           GOBACK.', '       DONE.', '           GOBACK.', ''].join('\n');
+  const read = (opts) => {
+    const [p] = parseSource(src, 'CX.cbl', { format: 'fixed', ...opts }).programs;
+    return Object.fromEntries(p.items.map((it) => [it.name, `${it.refState}${it.receiving ? ' written' : ''}`]));
+  };
+  assert.deepEqual(read({}), { 'WS-REC': 'refs written', 'WS-KEY': 'refs written', 'WS-RESP': 'refs written', 'WS-OUT': 'refs',
+    'WS-IDLE': 'none', MAPAI: 'refs written', FLDI: 'parent' });
+  assert.equal(read({ hostVariables: false })['WS-OUT'], 'none');
+});
+
 // cobc -std=ibm accepts hdrnop.cbl in the dialect's own source format but refuses it under
 // -fformat=fixed, so fixed form has no golden; the default dialect refuses it in fixed form.
 test('in fixed form a header in Area A ends the sentence before it under the IBM dialect only', () => {

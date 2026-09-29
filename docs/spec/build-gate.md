@@ -593,6 +593,30 @@ compiler's intermediate precision could give way, bounds nothing. Such a bound j
 hold at the use and can complete a bound, but an outcome that says something only this way does not
 by itself lower a finding a tier.
 
+An integer field an arithmetic statement writes holds the interval its operands give. `COMPUTE`, `ADD`,
+`SUBTRACT`, `MULTIPLY` and `DIVIDE`, and a `MOVE` of a field, `FUNCTION LENGTH`, `LENGTH OF`,
+`FUNCTION ORD` or `FUNCTION MOD`, leave the receiving field between the least and the greatest value
+the expression takes, and the interval is a fact after the statement. An operand is bounded by the
+tightest bounds among the facts that hold at the statement, or by its picture: `PIC 9(n)` is 0 to
+10^n - 1, a signed picture is symmetric, and a binary field can hold what its bytes can. A constant is
+itself; `FUNCTION LENGTH` of an item, or of `FUNCTION TRIM` of one, is 0 to the item's size, `LENGTH OF`
+its size, `FUNCTION ORD` 1 to 256, and `FUNCTION MOD` by a divisor of 1 or more is 0 to one below the
+divisor. Arithmetic is exact: a `COMPUTE` keeps the fraction of an intermediate quotient and truncates
+once, when it stores, or rounds outward for `ROUNDED`; a quotient whose divisor has a prime factor other
+than 2 and 5 is cut short in its last digit, so its interval widens, and it cannot be multiplied or
+divided again. The interval is a fact only where the result fits the receiving picture and its binary
+storage, so that nothing is truncated, wrapped or stored as an absolute value, and where no divisor can
+be zero. A statement whose result can overflow bounds nothing, with or without `ON SIZE ERROR`, which
+leaves the field as it was on the path that overflows. A statement with several receivers that one of
+its operands overlaps, or with `REMAINDER` or `CORRESPONDING`, bounds nothing. The interval counts as a
+bound for an index only where it lies between 1 and the sink's limit, as a constant moved into the
+index does. A statement's interval is worked out from the facts that held at it on every route, so it
+holds only where those facts held; a performed paragraph's summary carries only the intervals that need
+none. An ordering test between two integer fields, `IF A < B` or `UNTIL A > B`, makes `A` at most the
+greatest `B` can hold, and `B` at least the least `A` can hold, on the outcome that makes the relation
+true. Every interval a fact rests on also gives every looser fact about the field, so routes that
+reached different intervals meet at the looser.
+
 A check that ran on every route and did not bound the index lowers an index finding (a rule ending
 `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or `-to-loop-bound`) one
 step only where one of its outcomes holds on every route to the use. Where both outcomes reach the

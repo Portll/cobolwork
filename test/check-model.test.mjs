@@ -403,3 +403,51 @@ test('an ordering against another field that bounds nothing does not lower the f
   assert.equal(f.sev, 'high');
   assert.equal(f.guard, undefined);
 });
+
+
+// What an arithmetic statement leaves in a field (§11e): the interval of its operands, kept only where
+// the result fits the receiving picture and no divisor can be zero.
+const loopBound = (file) => report.findings.filter((f) => f.path === file && f.rule === 'argv-or-env-to-loop-bound');
+const loopChecked = (file) => report.checked.filter((f) => f.path === file && f.rule === 'argv-or-env-to-loop-bound');
+
+test('a byte divided and added to is an index into the sixteen digits, and a full word is not', () => {
+  assert.deepEqual(found('ARDIVBYTE.cbl'), []);
+  assert.ok(stopped('ARDIVBYTE.cbl').length > 0);
+  assert.equal(found('ARDIVWIDE.cbl').length, 1);
+});
+
+test('a value tested below the table and added to is inside it, and one tested below a larger bound is not', () => {
+  assert.deepEqual(found('ARGUARDADD.cbl'), []);
+  assert.equal(stopped('ARGUARDADD.cbl').length, 1);
+  assert.equal(found('ARGUARDBIG.cbl').length, 1);
+  assert.deepEqual(stopped('ARGUARDBIG.cbl'), []);
+});
+
+test('ADD and SUBTRACT GIVING bound an index, and a later ADD or MULTIPLY that reaches past the table does not', () => {
+  assert.deepEqual(found('ARGIVING.cbl'), []);
+  assert.equal(stopped('ARGIVING.cbl').length, 2);
+  assert.equal(found('ARGIVBIG.cbl').length, 1);
+  assert.equal(found('ARKILLED.cbl').length, 1);
+});
+
+test('a result the receiving picture cannot hold, a negative quotient and a divisor that can be zero bound nothing', () => {
+  for (const file of ['ARTRUNC.cbl', 'ARNEG.cbl', 'ARZERO.cbl']) {
+    assert.equal(found(file).length, 1, file);
+    assert.deepEqual(stopped(file), [], file);
+  }
+});
+
+test('an interval only some routes computed is no bound', () => {
+  assert.equal(found('ARONEWAY.cbl').length, 1);
+  assert.deepEqual(stopped('ARONEWAY.cbl'), []);
+});
+
+test('a loop counted up to the length of an item is inside that item, and inside a table only if the item is no longer', () => {
+  assert.deepEqual(found('ARLENLOOP.cbl'), []);
+  assert.equal(stopped('ARLENLOOP.cbl').length, 1);
+  assert.equal(found('ARLENOTHER.cbl').length, 1);
+  assert.deepEqual(loopBound('ARLENTAB.cbl'), []);
+  assert.equal(loopChecked('ARLENTAB.cbl').length, 1);
+  assert.equal(loopBound('ARLENTABBIG.cbl').length, 1);
+  assert.equal(loopBound('ARLENADD.cbl').length, 1);
+});

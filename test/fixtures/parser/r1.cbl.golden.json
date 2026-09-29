@@ -1,0 +1,99 @@
+{
+ "case": {
+  "file": "r1.cbl",
+  "note": "directives after a sequence area, DEFINE OVERRIDE, evaluated IF/ELIF"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "T1",
+    "size": 80,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "T1-E",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "T2",
+    "size": 6,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "T2-E",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "BR-B",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "ND-B",
+    "size": 6,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "T1",
+    "line": 8,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "T1-E",
+    "line": 9,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "T2",
+    "line": 10,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "T2-E",
+    "line": 11,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BR-B",
+    "line": 15,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "ND-B",
+    "line": 22,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

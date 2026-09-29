@@ -1,0 +1,141 @@
+{
+ "case": {
+  "file": "o.cbl",
+  "note": "OCCURS with a constant bound, constant pictures, larger REDEFINES"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "E1",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "G1",
+    "size": 6,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G1-E",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "BIGTAB",
+    "size": 524288,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "BIG-E",
+    "size": 524288,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "CONSTPIC",
+    "size": 65536,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R0",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R1",
+    "size": 24,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "R1-A",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "E1",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "G1",
+    "line": 7,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "G1-E",
+    "line": 8,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BIGTAB",
+    "line": 9,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BIG-E",
+    "line": 10,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "CONSTPIC",
+    "line": 11,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R0",
+    "line": 12,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R1",
+    "line": 13,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R1-A",
+    "line": 14,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

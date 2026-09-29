@@ -1,0 +1,11 @@
+{
+ "id": "081-an-ftp-logon-password-in-the-job",
+ "title": "An FTP step logs on with a user ID and password written into its in-stream input",
+ "cwe": "CWE-798",
+ "expect": [
+  {
+   "rule": "jcl-instream-credential",
+   "file": "NIGHTXFR.jcl"
+  }
+ ]
+}

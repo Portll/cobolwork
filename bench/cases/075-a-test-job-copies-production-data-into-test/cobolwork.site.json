@@ -1,0 +1,11 @@
+{
+ "productionQualifiers": [
+  "PROD"
+ ],
+ "productionJobPaths": [
+  "P*.jcl"
+ ],
+ "nonProductionJobPaths": [
+  "T*.jcl"
+ ]
+}

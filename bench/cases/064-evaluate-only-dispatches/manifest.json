@@ -1,0 +1,8 @@
+{
+ "id": "064-evaluate-only-dispatches",
+ "title": "An EVALUATE on the report name only chooses a message, and every name goes on to the command",
+ "cwe": "CWE-78",
+ "expect": [
+  { "rule": "argv-or-env-to-os-command", "file": "DISPATCH.cbl" }
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "id": "033-a-step-runs-a-program-nothing-defines",
+ "title": "A step runs a program that is neither a system utility nor defined in the tree",
+ "cwe": "CWE-1104",
+ "expect": [
+  {
+   "rule": "jcl-exec-pgm-unresolved",
+   "file": "RUN.jcl"
+  }
+ ]
+}

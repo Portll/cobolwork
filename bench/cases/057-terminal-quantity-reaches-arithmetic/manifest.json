@@ -1,0 +1,8 @@
+{
+ "id": "057-terminal-quantity-reaches-arithmetic",
+ "title": "A quantity typed at the terminal is moved into a zoned field and multiplied, never tested as numeric",
+ "cwe": "CWE-1287",
+ "expect": [
+  { "rule": "cics-terminal-to-arithmetic", "file": "ARITH.cbl" }
+ ]
+}

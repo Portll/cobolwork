@@ -1,0 +1,6 @@
+{
+ "productionQualifiers": ["PROD"],
+ "surrogateUsers": ["BATCHID"],
+ "restrictedDatasets": ["SECURE.RACF"],
+ "apfLibraries": ["SYS1.LINKLIB"]
+}

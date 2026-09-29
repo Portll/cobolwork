@@ -1,0 +1,30 @@
+name: Parser disagreement
+description: cobolwork read a source file differently from the compiler
+labels: [parser, accuracy]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The parser is graded against GnuCOBOL's own listing. If you have GnuCOBOL,
+        `node diag/grade-against-gnucobol.mjs <path>` produces the comparison directly.
+  - type: textarea
+    id: code
+    attributes:
+      label: The source
+      render: cobol
+    validations:
+      required: true
+  - type: input
+    id: dialect
+    attributes:
+      label: Dialect and format
+      description: For example, IBM Enterprise COBOL, fixed reference format. Say if it is free format or EBCDIC.
+    validations:
+      required: true
+  - type: textarea
+    id: disagreement
+    attributes:
+      label: What the compiler says, and what cobolwork says
+      description: Field sizes and offsets if it is a layout disagreement; the listing extract if you have one.
+    validations:
+      required: true

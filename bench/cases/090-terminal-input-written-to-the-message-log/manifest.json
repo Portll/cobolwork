@@ -1,0 +1,11 @@
+{
+ "id": "090-terminal-input-written-to-the-message-log",
+ "title": "Whatever a terminal sends is written to the CSMT message log as it arrived, as IBM GenApp's LGSTSQ does",
+ "cwe": "CWE-117",
+ "expect": [
+  {
+   "rule": "cics-terminal-to-log",
+   "file": "MSGLOG.cbl"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "085-a-protected-row-id-chooses-the-record-deleted",
+ "title": "The account number a list program kept in a protected field chooses the record the next program reads for update and deletes",
+ "cwe": "CWE-639",
+ "expect": [
+  {
+   "rule": "cics-protected-field-to-record-update",
+   "file": "ACCTVIEW.cbl"
+  }
+ ],
+ "alsoExpected": [
+  "cics-transfer-to-variable-program"
+ ]
+}

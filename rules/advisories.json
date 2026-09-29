@@ -1,0 +1,264 @@
+{
+ "schemaVersion": 1,
+ "retrieved": "2026-09-23",
+ "source": "NVD API 2.0 by CPE, and OSV for packages NVD carries no CPE for; swept by diag/sweep-advisories.mjs over feed/worklists/components.json",
+ "coverage": {
+  "gnucobol": "complete at the retrieval date: 6 of 6 results NVD returned for the keyword",
+  "ibm-enterprise-cobol": "none found. No CVE in NVD and no IBM security bulletin names the compiler itself as of 2026-09-20. An absence of published advisories is not an absence of defects",
+  "opentext-cobol": "searched 2026-09-20 via NVD CPE microfocus:visual_cobol. 2 advisories, both against the Enterprise Server family (Visual COBOL, COBOL Server, Enterprise Developer, Enterprise Server, Enterprise Test Server) which share a version line. Vendor advisories behind an OpenText support account were not read, so this is NVD's view rather than OpenText's",
+  "cics-ts": "searched 2026-09-20 via NVD CPE ibm:cics_transaction_server. 1 advisory, from 2014. A single result for a product this size is more likely to mean IBM reports through its own bulletins than that the product has one defect",
+  "db2-zos": "searched 2026-09-20. No CVE names the Db2 for z/OS engine itself. The five results mentioning z/OS name adjacent products - DB2 Content Manager, Guardium S-TAP, DB2 Tools - and one names Db2 for Linux, UNIX and Windows. Absence of a published advisory is not absence of a defect",
+  "cics-transaction-gateway": "searched 2026-09-23 via NVD CPE ibm:cics_transaction_gateway. 4 advisories, all loaded. The gateway runs off the mainframe, so unlike CICS TS its defects are published",
+  "zowe": "searched 2026-09-23 via OSV for @zowe/cli, @zowe/imperative and @zowe/zos-files-for-zowe-sdk, because Zowe CVEs carry no CPE data and an NVD CPE sweep finds none of them. 2 advisories, both loaded from their NVD records; source.foundVia names the package that found each. An OSV row with no CVE identifier cannot be loaded, because the gate resolves every row against NVD",
+  "db2-connect": "searched 2026-09-23 via NVD CPE ibm:db2_connect. 17 advisories found and none loaded: they are matched to the Db2 Connect product family, and NVD does not say whether one reaches the JDBC driver a repository actually pins. diag/sweep-advisories.mjs prints them for an estate that knows what it runs",
+  "ibm-mq": "searched 2026-09-23 via NVD CPE ibm:mq. 48 advisories found and none loaded, for the same reason as db2-connect: the client jar carries the queue manager version, and the record does not separate them",
+  "che4z": "searched 2026-09-23 via OSV for @broadcom/cobol-language-support. None found"
+ },
+ "advisories": [
+  {
+   "kind": "advisory",
+   "product": "gnucobol",
+   "id": "CVE-2019-14468",
+   "affected": "2.2",
+   "fixedIn": null,
+   "severity": "high",
+   "cvss": 7.8,
+   "summary": "GnuCOBOL 2.2 has a buffer overflow in cb_push_op in cobc/field.c via crafted COBOL source code.",
+   "source": {
+    "doc": "nvd-gnucobol",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-14468",
+    "retrieved": "2026-09-20",
+    "quote": "GnuCOBOL 2.2 has a buffer overflow in cb_push_op in cobc/field.c via crafted COBOL source code."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "gnucobol",
+   "id": "CVE-2019-14486",
+   "affected": "2.2",
+   "fixedIn": null,
+   "severity": "high",
+   "cvss": 7.8,
+   "summary": "GnuCOBOL 2.2 has a buffer overflow in cb_evaluate_expr in cobc/field.c via crafted COBOL source code.",
+   "source": {
+    "doc": "nvd-gnucobol",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-14486",
+    "retrieved": "2026-09-20",
+    "quote": "GnuCOBOL 2.2 has a buffer overflow in cb_evaluate_expr in cobc/field.c via crafted COBOL source code."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "gnucobol",
+   "id": "CVE-2019-14528",
+   "affected": "2.2",
+   "fixedIn": null,
+   "severity": "high",
+   "cvss": 7.8,
+   "summary": "GnuCOBOL 2.2 has a heap-based buffer overflow in read_literal in cobc/scanner.l via crafted COBOL source code.",
+   "source": {
+    "doc": "nvd-gnucobol",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-14528",
+    "retrieved": "2026-09-20",
+    "quote": "GnuCOBOL 2.2 has a heap-based buffer overflow in read_literal in cobc/scanner.l via crafted COBOL source code."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "gnucobol",
+   "id": "CVE-2019-14541",
+   "affected": "2.2",
+   "fixedIn": null,
+   "severity": "high",
+   "cvss": 7.8,
+   "summary": "GnuCOBOL 2.2 has a stack-based buffer overflow in cb_encode_program_id in cobc/typeck.c via crafted COBOL source code.",
+   "source": {
+    "doc": "nvd-gnucobol",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-14541",
+    "retrieved": "2026-09-20",
+    "quote": "GnuCOBOL 2.2 has a stack-based buffer overflow in cb_encode_program_id in cobc/typeck.c via crafted COBOL source code."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "gnucobol",
+   "id": "CVE-2019-16395",
+   "affected": "2.2",
+   "fixedIn": null,
+   "severity": "high",
+   "cvss": 7.8,
+   "summary": "GnuCOBOL 2.2 has a stack-based buffer overflow in the cb_name() function in cobc/tree.c via crafted COBOL source code.",
+   "source": {
+    "doc": "nvd-gnucobol",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-16395",
+    "retrieved": "2026-09-20",
+    "quote": "GnuCOBOL 2.2 has a stack-based buffer overflow in the cb_name() function in cobc/tree.c via crafted COBOL source code."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "gnucobol",
+   "id": "CVE-2019-16396",
+   "affected": "2.2",
+   "fixedIn": null,
+   "severity": "high",
+   "cvss": 7.8,
+   "summary": "GnuCOBOL 2.2 has a use-after-free in the end_scope_of_program_name() function in cobc/parser.y via crafted COBOL source code.",
+   "source": {
+    "doc": "nvd-gnucobol",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-16396",
+    "retrieved": "2026-09-20",
+    "quote": "GnuCOBOL 2.2 has a use-after-free in the end_scope_of_program_name() function in cobc/parser.y via crafted COBOL source code."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "cics-ts",
+   "id": "CVE-2014-3042",
+   "affected": "3.1||3.2||4.1||5.1",
+   "fixedIn": null,
+   "severity": "med",
+   "cvss": 4,
+   "discrepancy": "The description names 3.1, 3.2, 4.1, 4.2 and 5.1; NVD's CPE list omits 4.2. This row follows the CPE list. Treat 4.2 as probably affected.",
+   "summary": "IBM CICS Transaction Server 3.1, 3.2, 4.1, 4.2, and 5.1 on z/OS does not properly implement CEMT transactions, which allows remote authenticated users to cause a denial of service (storage overlay) by using a 3270 emulator to send an invalid 3270 data stream.",
+   "source": {
+    "doc": "nvd-cics",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3042",
+    "retrieved": "2026-09-20",
+    "quote": "IBM CICS Transaction Server 3.1, 3.2, 4.1, 4.2, and 5.1 on z/OS does not properly implement CEMT transactions, which allows remote authenticated users to cause a denial of service (storage overlay) by using a 3270 emulator to send an invalid 3270 data stream."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "opentext-cobol",
+   "id": "CVE-2023-32265",
+   "affected": "6.0||7.0||8.0",
+   "fixedIn": null,
+   "severity": "high",
+   "cvss": 7.1,
+   "summary": "A potential security vulnerability has been identified in the Enterprise Server Common Web Administration (ESCWA) component used in Enterprise Server, Enterprise Test Server, Enterprise Developer, Visual COBOL, and COBOL Server.\nAn attacker would need to be authenticated into ESCWA to attempt to exploit this vulnerability. As described in the hardening guide in the product documentation, other mitigations including restricting network access to ESCWA and restricting usersâ€™ permissions in the Micro Focus Directory Server also reduce the exposure to this issue.\n\nGiven the right conditions this vulnerability could be exploited to expose a service account password. The account corresponding to the exposed credentials usually has limited privileges and, in many cases would only be useful for extracting details of other user accounts and similar information.",
+   "source": {
+    "doc": "nvd-opentext",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-32265",
+    "retrieved": "2026-09-20",
+    "quote": "A potential security vulnerability has been identified in the Enterprise Server Common Web Administration (ESCWA) component used in Enterprise Server, Enterprise Test Server, Enterprise Developer, Visual COBOL, and COBOL Server.\nAn attacker would need to be authenticated into ESCWA to attempt to exploit this vulnerability. As described in the hardening guide in the product documentation, other mitigations including restricting network access to ESCWA and restricting usersâ€™ permissions in the Micro Focus Directory Server also reduce the exposure to this issue.\n\nGiven the right conditions this vulnerability could be exploited to expose a service account password. The account corresponding to the exposed credentials usually has limited privileges and, in many cases would only be useful for extracting details of other user accounts and similar information."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "opentext-cobol",
+   "id": "CVE-2023-4501",
+   "affected": "7.0||8.0||9.0",
+   "fixedIn": null,
+   "severity": "crit",
+   "cvss": 9.8,
+   "summary": "User authentication with username and password credentials is ineffective in OpenText (Micro Focus) Visual COBOL, COBOL Server, Enterprise Developer, and Enterprise Server (including product variants such as Enterprise Test Server), versions 7.0 patch updates 19 and 20, 8.0 patch updates 8 and 9, and 9.0 patch update 1, when LDAP-based authentication is used with certain configurations. When the vulnerability is active, authentication succeeds with any valid username, regardless of whether the password is correct; it may also succeed with an invalid username (and any password). This allows an attacker with access to the product to impersonate any user.\n\nMitigations: The issue is corrected in the upcoming patch update for each affected product. Product overlays and workaround instructions are available through OpenText Support. The vulnerable configurations are believed to be uncommon.\n\nAdministrators can test for the vulnerability in their installations by attempting to sign on to a Visual COBOL or Enterprise Server component such as ESCWA using a valid username and incorrect password.",
+   "source": {
+    "doc": "nvd-opentext",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-4501",
+    "retrieved": "2026-09-20",
+    "quote": "User authentication with username and password credentials is ineffective in OpenText (Micro Focus) Visual COBOL, COBOL Server, Enterprise Developer, and Enterprise Server (including product variants such as Enterprise Test Server), versions 7.0 patch updates 19 and 20, 8.0 patch updates 8 and 9, and 9.0 patch update 1, when LDAP-based authentication is used with certain configurations. When the vulnerability is active, authentication succeeds with any valid username, regardless of whether the password is correct; it may also succeed with an invalid username (and any password). This allows an attacker with access to the product to impersonate any user.\n\nMitigations: The issue is corrected in the upcoming patch update for each affected product. Product overlays and workaround instructions are available through OpenText Support. The vulnerable configurations are believed to be uncommon.\n\nAdministrators can test for the vulnerability in their installations by attempting to sign on to a Visual COBOL or Enterprise Server component such as ESCWA using a valid username and incorrect password."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "cics-transaction-gateway",
+   "id": "CVE-2023-47140",
+   "affected": "9.3",
+   "fixedIn": null,
+   "severity": "med",
+   "cvss": 4,
+   "summary": "IBM CICS Transaction Gateway 9.3 could allow a user to transfer or view files due to improper access controls.",
+   "source": {
+    "doc": "nvd-cics-transaction-gateway",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-47140",
+    "retrieved": "2026-09-23",
+    "quote": "IBM CICS Transaction Gateway 9.3 could allow a user to transfer or view files due to improper access controls."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "cics-transaction-gateway",
+   "id": "CVE-2023-50311",
+   "affected": "9.2||9.3",
+   "fixedIn": null,
+   "severity": "low",
+   "cvss": 3.1,
+   "summary": "IBM CICS Transaction Gateway for Multiplatforms 9.2 and 9.3 could disclose sensitive path information to an attacker that could reveal through debugging or error messages.",
+   "source": {
+    "doc": "nvd-cics-transaction-gateway",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50311",
+    "retrieved": "2026-09-23",
+    "quote": "IBM CICS Transaction Gateway for Multiplatforms 9.2 and 9.3 could disclose sensitive path information to an attacker that could reveal through debugging or error messages."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "cics-transaction-gateway",
+   "id": "CVE-2023-50310",
+   "affected": "9.2||9.3",
+   "fixedIn": null,
+   "severity": "med",
+   "cvss": 4.9,
+   "summary": "IBM CICS Transaction Gateway for Multiplatforms 9.2 and 9.3 transmits or stores authentication credentials, but it uses an insecure method that is susceptible to unauthorized interception and/or retrieval.",
+   "source": {
+    "doc": "nvd-cics-transaction-gateway",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-50310",
+    "retrieved": "2026-09-23",
+    "quote": "IBM CICS Transaction Gateway for Multiplatforms 9.2 and 9.3 transmits or stores authentication credentials, but it uses an insecure method that is susceptible to unauthorized interception and/or retrieval."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "cics-transaction-gateway",
+   "id": "CVE-2026-0977",
+   "affected": "9.3||10.1",
+   "fixedIn": null,
+   "severity": "med",
+   "cvss": 5.1,
+   "summary": "IBM CICS Transaction Gateway for Multiplatforms 9.3 and 10.1 could allow a user to transfer or view files due to improper access controls.",
+   "source": {
+    "doc": "nvd-cics-transaction-gateway",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-0977",
+    "retrieved": "2026-09-23",
+    "quote": "IBM CICS Transaction Gateway for Multiplatforms 9.3 and 10.1 could allow a user to transfer or view files due to improper access controls."
+   }
+  },
+  {
+   "kind": "advisory",
+   "product": "zowe",
+   "id": "CVE-2024-6833",
+   "affected": "[7.18.0,7.23.5)",
+   "fixedIn": null,
+   "severity": "med",
+   "cvss": 5.9,
+   "summary": "A vulnerability in Zowe CLI allows local, privileged actors to store previously entered secure credentials in a plaintext file as part of an auto-init operation.",
+   "source": {
+    "doc": "nvd-zowe",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-6833",
+    "retrieved": "2026-09-23",
+    "quote": "A vulnerability in Zowe CLI allows local, privileged actors to store previously entered secure credentials in a plaintext file as part of an auto-init operation.",
+    "foundVia": "osv-npm-@zowe/cli"
+   },
+   "pinnedAs": "npm:@zowe/cli"
+  },
+  {
+   "kind": "advisory",
+   "product": "zowe",
+   "id": "CVE-2021-4326",
+   "affected": "[5.0.0,5.7.1)||<4.18.10",
+   "fixedIn": null,
+   "severity": "low",
+   "cvss": 3.3,
+   "summary": "A vulnerability in Imperative framework which allows already-privileged local actors to execute arbitrary shell commands via plugin install/update commands, or maliciously formed environment variables. Impacts Zowe CLI.",
+   "source": {
+    "doc": "nvd-zowe",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-4326",
+    "retrieved": "2026-09-23",
+    "quote": "A vulnerability in Imperative framework which allows already-privileged local actors to execute arbitrary shell commands via plugin install/update commands, or maliciously formed environment variables. Impacts Zowe CLI.",
+    "foundVia": "osv-npm-@zowe/imperative"
+   },
+   "pinnedAs": "npm:@zowe/imperative"
+  }
+ ]
+}

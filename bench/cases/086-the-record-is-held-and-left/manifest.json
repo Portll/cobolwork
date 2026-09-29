@@ -1,0 +1,17 @@
+{
+ "id": "086-the-record-is-held-and-left",
+ "title": "The same program reads the record for update and never changes it, which is a read",
+ "cwe": "CWE-639",
+ "expect": [
+  {
+   "rule": "cics-protected-field-to-record-key",
+   "file": "ACCTVIEW.cbl"
+  }
+ ],
+ "negativeFor": [
+  "cics-protected-field-to-record-update"
+ ],
+ "alsoExpected": [
+  "cics-transfer-to-variable-program"
+ ]
+}

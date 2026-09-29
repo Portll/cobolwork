@@ -1,0 +1,9 @@
+{
+ "id": "022-terminal-input-relayed-to-queue",
+ "title": "Terminal input is relayed to a queue — the program passing on its caller's data, not data at rest",
+ "cwe": "CWE-201",
+ "expect": [],
+ "negativeFor": [
+  "cics-terminal-to-message-queue"
+ ]
+}

@@ -1,0 +1,193 @@
+{
+ "case": {
+  "file": "f.cbl",
+  "note": "files, qualification, dynamic and literal calls, two programs"
+ },
+ "programs": [
+  "FILEP",
+  "SECOND"
+ ],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "FILEP",
+    "lvl": "FD",
+    "name": "CUST-FILE",
+    "size": 36
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "1",
+    "name": "CUST-REC",
+    "size": 36,
+    "type": "GROUP"
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "5",
+    "name": "CUST-ID",
+    "size": 6,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "5",
+    "name": "CUST-NAME",
+    "size": 30,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "1",
+    "name": "WS-FS",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "1",
+    "name": "WS-PGM",
+    "size": 8,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "1",
+    "name": "A-VERY-LONG-DATA-NAME-THAT-EXC",
+    "size": 5,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "1",
+    "name": "TBL",
+    "size": 60,
+    "type": "GROUP"
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "5",
+    "name": "TBL-ROW",
+    "size": 60,
+    "type": "GROUP"
+   },
+   {
+    "prog": "FILEP",
+    "lvl": "10",
+    "name": "CUST-ID",
+    "size": 6,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "SECOND",
+    "lvl": "1",
+    "name": "S-X",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "FILEP",
+    "name": "CUST-FILE",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "FILEP",
+    "name": "CUST-REC",
+    "line": 12,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "FILEP",
+    "name": "CUST-ID",
+    "line": 13,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "FILEP",
+    "name": "CUST-NAME",
+    "line": 14,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "FILEP",
+    "name": "WS-FS",
+    "line": 17,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "FILEP",
+    "name": "WS-PGM",
+    "line": 18,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "FILEP",
+    "name": "A-VERY-LONG-DATA-NAME-THAT-EXC",
+    "line": 19,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "FILEP",
+    "name": "TBL",
+    "line": 20,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "FILEP",
+    "name": "TBL-ROW",
+    "line": 21,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "FILEP",
+    "name": "CUST-ID",
+    "line": 22,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "SECOND",
+    "name": "S-X",
+    "line": 38,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [
+   {
+    "prog": "SECOND",
+    "kind": "P",
+    "name": "S-PARA"
+   }
+  ],
+  "calls": [
+   {
+    "prog": "FILEP",
+    "kind": "L",
+    "name": "MYPROG"
+   },
+   {
+    "prog": "FILEP",
+    "kind": "I",
+    "name": "WS-PGM"
+   },
+   {
+    "prog": "FILEP",
+    "kind": "L",
+    "name": "CBL_OC_DUMP"
+   }
+  ]
+ }
+}

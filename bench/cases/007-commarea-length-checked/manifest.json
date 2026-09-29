@@ -1,0 +1,11 @@
+{
+ "id": "007-commarea-length-checked",
+ "title": "The same shape with the length checked before the area is read",
+ "cwe": "CWE-1284",
+ "expect": [],
+ "negativeFor": [
+  "cics-commarea-without-length-check",
+  "cics-commarea-length-exceeds-area",
+  "cics-transfer-to-variable-program"
+ ]
+}

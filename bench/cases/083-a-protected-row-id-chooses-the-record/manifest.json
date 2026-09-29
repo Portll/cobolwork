@@ -1,0 +1,14 @@
+{
+ "id": "083-a-protected-row-id-chooses-the-record",
+ "title": "A list program reads back the account number it put in a protected field and passes it on as the key another program reads",
+ "cwe": "CWE-639",
+ "expect": [
+  {
+   "rule": "cics-protected-field-to-record-key",
+   "file": "ACCTVIEW.cbl"
+  }
+ ],
+ "alsoExpected": [
+  "cics-transfer-to-variable-program"
+ ]
+}

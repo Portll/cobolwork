@@ -1,0 +1,10 @@
+{
+ "id": "054-a-file-record-chooses-a-table-row",
+ "title": "A month number read from a file subscripts the monthly totals, which is batch COBOL rather than input from outside",
+ "cwe": "CWE-129",
+ "expect": [],
+ "negativeFor": [
+  "cics-terminal-to-subscript",
+  "argv-or-env-to-subscript"
+ ]
+}

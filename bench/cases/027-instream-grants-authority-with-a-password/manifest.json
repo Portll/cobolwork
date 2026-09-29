@@ -1,0 +1,15 @@
+{
+ "id": "027-instream-grants-authority-with-a-password",
+ "title": "In-stream job data adds a user with a password and grants it access",
+ "cwe": "CWE-798",
+ "expect": [
+  {
+   "rule": "jcl-instream-credential",
+   "file": "ADMIN.jcl"
+  },
+  {
+   "rule": "jcl-instream-security-command",
+   "file": "ADMIN.jcl"
+  }
+ ]
+}

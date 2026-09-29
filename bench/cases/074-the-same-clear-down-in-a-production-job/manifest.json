@@ -1,0 +1,11 @@
+{
+ "id": "074-the-same-clear-down-in-a-production-job",
+ "title": "The same job, byte for byte, where the estate lists it as a production job",
+ "cwe": "CWE-653",
+ "expect": [],
+ "negativeFor": [
+  "recon-nonproduction-job-writes-production-dataset",
+  "recon-nonproduction-job-reads-production-dataset",
+  "recon-production-name-outside-production"
+ ]
+}

@@ -1,0 +1,142 @@
+{
+ "case": {
+  "file": "r3a.cbl",
+  "std": "mf",
+  "note": "a REDEFINES larger than what it redefines"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "G",
+    "size": 15,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "B",
+    "size": 12,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "B1",
+    "size": 12,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "C",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "H",
+    "size": 13,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "D",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "E",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "G",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A",
+    "line": 6,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "B",
+    "line": 7,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "B1",
+    "line": 8,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "C",
+    "line": 9,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "H",
+    "line": 10,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "D",
+    "line": 11,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "E",
+    "line": 12,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F",
+    "line": 13,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

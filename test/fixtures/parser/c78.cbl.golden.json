@@ -1,0 +1,45 @@
+{
+ "case": {
+  "file": "c78.cbl",
+  "note": "a CALL naming a level-78 constant, a space-padded literal program name, and a genuinely dynamic CALL"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-DYN",
+    "size": 8,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-DYN",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": [
+   {
+    "prog": "",
+    "kind": "L",
+    "name": "CS00002S"
+   },
+   {
+    "prog": "",
+    "kind": "L",
+    "name": "PADDED"
+   },
+   {
+    "prog": "",
+    "kind": "I",
+    "name": "WS-DYN"
+   }
+  ]
+ }
+}

@@ -1,0 +1,99 @@
+{
+ "case": {
+  "file": "cpyqual.cbl",
+  "note": "a COPY REPLACING operand may be a qualified or subscripted identifier"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "REC-A",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FLD",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "REC-B",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FLD",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "TBL",
+    "size": 3,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "ENT",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "REC-A",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FLD",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "REC-B",
+    "line": 7,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FLD",
+    "line": 8,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TBL",
+    "line": 9,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "ENT",
+    "line": 10,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

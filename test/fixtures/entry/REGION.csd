@@ -1,0 +1,3 @@
+* Two transactions: one runs the inquiry program, one the menu.
+ DEFINE TRANSACTION(INQ1) GROUP(ENTRY) PROGRAM(INQUIRY)
+ DEFINE TRANSACTION(MNU1) GROUP(ENTRY) PROGRAM(MENU)

@@ -1,0 +1,9 @@
+{
+ "id": "089-a-transaction-that-runs-system-commands-without-command-security",
+ "title": "A CICS definition installs CECI, and one of its transactions runs a program that issues system commands with no command security; a second transaction runs the same kind of program with CMDSEC(YES) and a third issues nothing CMDSEC governs",
+ "cwe": "CWE-862",
+ "expect": [
+  { "rule": "csd-defines-diagnostic-transaction", "file": "REGION.csd" },
+  { "rule": "csd-transaction-without-command-security", "file": "REGION.csd" }
+ ]
+}

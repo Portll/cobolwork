@@ -1,0 +1,8 @@
+Financial entities shall have sound, comprehensive and well-documented ICT risk management
+framework as part of their overall risk management system, which enables them to address ICT
+risk quickly, efficiently and comprehensively and to ensure a high level of digital operational
+resilience.
+
+Financial entities shall identify, classify and adequately document all ICT supported business
+functions, roles and responsibilities, the information assets and ICT assets supporting those
+functions, and their roles and dependencies in relation to ICT risk.

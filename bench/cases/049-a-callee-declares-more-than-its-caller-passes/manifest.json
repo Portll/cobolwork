@@ -1,0 +1,9 @@
+{
+ "id": "049-a-callee-declares-more-than-its-caller-passes",
+ "title": "A logger declares 120 bytes and is passed 40; a validator declares 10 and is passed 8 of an 18-byte group",
+ "cwe": "CWE-805",
+ "expect": [
+  { "rule": "call-parameter-exceeds-caller-record", "file": "POSTING.cbl" },
+  { "rule": "call-parameter-exceeds-argument", "file": "POSTING.cbl" }
+ ]
+}

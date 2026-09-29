@@ -1,0 +1,8 @@
+{
+ "id": "065-row-written-to-a-queue-that-leaves",
+ "title": "A customer row is written to a transient-data queue the CSD sends out of the region to a DD",
+ "cwe": "CWE-201",
+ "expect": [
+  { "rule": "database-to-extrapartition-queue", "file": "EXTRAQ.cbl" }
+ ]
+}

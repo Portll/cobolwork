@@ -1,0 +1,7 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. EXACT.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-X                PIC X(10).
+       PROCEDURE DIVISION USING LK-X.
+           GOBACK.

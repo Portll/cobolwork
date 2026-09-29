@@ -1,0 +1,11 @@
+{
+ "id": "079-an-ftp-step-sends-a-production-dataset",
+ "title": "An FTP step sends a dataset the estate calls production to a partner, over TLS",
+ "cwe": "CWE-201",
+ "expect": [
+  {
+   "rule": "jcl-ftp-sends-production-dataset",
+   "file": "PAYXFER.jcl"
+  }
+ ]
+}

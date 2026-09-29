@@ -1,0 +1,47 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. RWLAYOUT.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT PRINT-FILE ASSIGN TO "print.txt"
+               ORGANIZATION LINE SEQUENTIAL.
+       DATA DIVISION.
+       FILE SECTION.
+       FD  PRINT-FILE REPORTS ARE LONG-REPORT SHORT-REPORT.
+       WORKING-STORAGE SECTION.
+       01  WS-NAME              PIC X(20) VALUE "SAMPLE".
+       01  WS-AMOUNT            PIC 9(5) VALUE 42.
+       01  WS-KIND              PIC X VALUE "A".
+       REPORT SECTION.
+       RD  LONG-REPORT
+           PAGE LIMIT 60 HEADING 1 FIRST DETAIL 4.
+       01  TYPE PAGE HEADING.
+           05  LINE 1.
+               10  COLUMN 10    PIC X(12) VALUE "LONG REPORT".
+               10  COLUMN 60    PIC X(4) VALUE "PAGE".
+           05  LINE 2.
+               10  COLUMN 1     PIC X(30) VALUE ALL "-".
+       01  LONG-DETAIL TYPE DETAIL.
+           05  LINE PLUS 1.
+               10  COLUMN 1     PIC X(20) SOURCE WS-NAME.
+               10  COLUMN PLUS 2 PIC ZZ,ZZ9 SOURCE WS-AMOUNT.
+       RD  SHORT-REPORT
+           PAGE LIMIT 20 HEADING 1 FIRST DETAIL 2.
+       01  SHORT-DETAIL TYPE DETAIL.
+           05  LINE PLUS 1.
+               10  COLUMN 1     PIC X(10) SOURCE WS-NAME.
+               10  COLUMN 12    PIC X(6) VALUE "ACTIVE"
+                                PRESENT WHEN WS-KIND = "A".
+               10  COLUMN 12    PIC X(8) VALUE "INACTIVE"
+                                PRESENT WHEN WS-KIND = "I".
+       01  TYPE REPORT FOOTING.
+           05  LINE PLUS 2.
+               10  COLUMN 5     PIC X(3) VALUE "END".
+       PROCEDURE DIVISION.
+           OPEN OUTPUT PRINT-FILE
+           INITIATE LONG-REPORT SHORT-REPORT
+           GENERATE LONG-DETAIL
+           GENERATE SHORT-DETAIL
+           TERMINATE LONG-REPORT SHORT-REPORT
+           CLOSE PRINT-FILE
+           STOP RUN.

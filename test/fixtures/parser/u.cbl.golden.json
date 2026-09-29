@@ -1,0 +1,141 @@
+{
+ "case": {
+  "file": "u.cbl",
+  "note": "one occurrence versus whole table by usage"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "A-PTR",
+    "size": 24,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "A-PPTR",
+    "size": 8,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "A-BL",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "A-IDX",
+    "size": 12,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "A-C1",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "G",
+    "size": 60,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G-PTR",
+    "size": 24,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G-PPTR",
+    "size": 8,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G-BL",
+    "size": 4,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "A-PTR",
+    "line": 5,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "A-PPTR",
+    "line": 6,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "A-BL",
+    "line": 7,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "A-IDX",
+    "line": 8,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "A-C1",
+    "line": 9,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "G",
+    "line": 10,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "G-PTR",
+    "line": 11,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "G-PPTR",
+    "line": 12,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "G-BL",
+    "line": 13,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

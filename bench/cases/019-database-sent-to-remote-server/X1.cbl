@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. X1.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-CARD          PIC X(16).
+       01 WS-BUF           PIC X(64).
+       01 WS-SESS          PIC X(8).
+       01 WS-RESP          PIC X(64).
+       PROCEDURE DIVISION.
+           EXEC SQL SELECT CARD_NO INTO :WS-CARD FROM CARDS
+                WHERE ACCT = 1 END-EXEC
+           MOVE WS-CARD TO WS-BUF
+           EXEC CICS WEB CONVERSE SESSTOKEN(WS-SESS) POST
+                FROM(WS-BUF) FROMLENGTH(64)
+                INTO(WS-RESP) TOLENGTH(64) END-EXEC
+           GOBACK.

@@ -1,0 +1,15 @@
+{
+ "id": "031-a-delimiter-hides-the-rest-of-the-stream",
+ "title": "A non-default DLM carries the stream past the /* a line reader would stop at",
+ "cwe": "CWE-1427",
+ "expect": [
+  {
+   "rule": "jcl-dlm-hides-instream",
+   "file": "HIDDEN.jcl"
+  },
+  {
+   "rule": "jcl-instream-credential",
+   "file": "HIDDEN.jcl"
+  }
+ ]
+}

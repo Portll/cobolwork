@@ -1,0 +1,12 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. S1.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-REQUEST.
+          05 WS-IN          PIC X(40).
+          05 WS-PGM         PIC X(8) VALUE 'PAYCALC'.
+       PROCEDURE DIVISION.
+           ACCEPT WS-IN FROM COMMAND-LINE
+           DISPLAY WS-IN
+           CALL WS-PGM
+           GOBACK.

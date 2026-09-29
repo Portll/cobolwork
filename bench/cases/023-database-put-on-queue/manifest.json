@@ -1,0 +1,8 @@
+{
+ "id": "023-database-put-on-queue",
+ "title": "A database value is put on a message queue; the route is listed at low severity so it is visible",
+ "cwe": "CWE-201",
+ "expect": [
+  { "rule": "database-to-message-queue", "file": "X5.cbl" }
+ ]
+}

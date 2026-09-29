@@ -1,0 +1,43 @@
+[
+  { "id": "IDCAMS/DELETE", "utility": "IDCAMS", "parameter": "DELETE", "note": "172 IDCAMS steps counted in the 2026-09-18 evaluation corpus" },
+  { "id": "IDCAMS/REPRO", "utility": "IDCAMS", "parameter": "REPRO" },
+  { "id": "IDCAMS/DEFINE", "utility": "IDCAMS", "parameter": "DEFINE CLUSTER" },
+  { "id": "IDCAMS/ALTER", "utility": "IDCAMS", "parameter": "ALTER" },
+  { "id": "IDCAMS/PRINT", "utility": "IDCAMS", "parameter": "PRINT" },
+  { "id": "IDCAMS/LISTCAT", "utility": "IDCAMS", "parameter": "LISTCAT" },
+  { "id": "IDCAMS/EXPORT", "utility": "IDCAMS", "parameter": "EXPORT" },
+  { "id": "IDCAMS/IMPORT", "utility": "IDCAMS", "parameter": "IMPORT" },
+  { "id": "IDCAMS/VERIFY", "utility": "IDCAMS", "parameter": "VERIFY" },
+  { "id": "IDCAMS/SETCACHE", "utility": "IDCAMS", "parameter": "SETCACHE" },
+
+  { "id": "IKJEFT01/ALLOC", "utility": "IKJEFT01", "parameter": "ALLOCATE", "note": "58 IKJEFT01 steps counted" },
+  { "id": "IKJEFT01/ADDUSER", "utility": "IKJEFT01", "parameter": "ADDUSER" },
+  { "id": "IKJEFT01/ALTUSER", "utility": "IKJEFT01", "parameter": "ALTUSER" },
+  { "id": "IKJEFT01/PERMIT", "utility": "IKJEFT01", "parameter": "PERMIT" },
+  { "id": "IKJEFT01/SETROPTS", "utility": "IKJEFT01", "parameter": "SETROPTS" },
+  { "id": "IKJEFT01/RDEFINE", "utility": "IKJEFT01", "parameter": "RDEFINE" },
+  { "id": "IKJEFT01/EXEC", "utility": "IKJEFT01", "parameter": "EXEC (a REXX or CLIST member)" },
+  { "id": "IKJEFT01/CALL", "utility": "IKJEFT01", "parameter": "CALL" },
+
+  { "id": "SORT/OUTFIL", "utility": "SORT", "parameter": "OUTFIL", "note": "39 SORT steps counted" },
+  { "id": "SORT/INCLUDE", "utility": "SORT", "parameter": "INCLUDE COND" },
+  { "id": "SORT/OMIT", "utility": "SORT", "parameter": "OMIT COND" },
+  { "id": "SORT/INREC", "utility": "SORT", "parameter": "INREC" },
+  { "id": "SORT/OUTREC", "utility": "SORT", "parameter": "OUTREC" },
+
+  { "id": "IEBGENER/SYSUT2", "utility": "IEBGENER", "parameter": "SYSUT2", "note": "26 IEBGENER steps counted" },
+  { "id": "IEBGENER/SYSIN", "utility": "IEBGENER", "parameter": "GENERATE" },
+
+  { "id": "IEFBR14/DISP", "utility": "IEFBR14", "parameter": "DISP=(...,DELETE)" },
+
+  { "id": "IEBCOPY/COPY", "utility": "IEBCOPY", "parameter": "COPY INDD/OUTDD" },
+  { "id": "IEBCOPY/COPYMOD", "utility": "IEBCOPY", "parameter": "COPYMOD" },
+
+  { "id": "ADRDSSU/DUMP", "utility": "ADRDSSU", "parameter": "DUMP" },
+  { "id": "ADRDSSU/RESTORE", "utility": "ADRDSSU", "parameter": "RESTORE" },
+  { "id": "ADRDSSU/COPY", "utility": "ADRDSSU", "parameter": "COPY" },
+
+  { "id": "FTP/PUT", "utility": "FTP", "parameter": "PUT", "note": "outbound channel; BACKLOG says FTP steps in JCL are unmodelled" },
+  { "id": "FTP/GET", "utility": "FTP", "parameter": "GET" },
+  { "id": "FTP/SITE", "utility": "FTP", "parameter": "SITE" }
+]

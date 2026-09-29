@@ -1,0 +1,8 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CPYTEST.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       copy WSFIELDS.cpy.
+       PROCEDURE DIVISION.
+           DISPLAY WS-NAME.
+           STOP RUN.

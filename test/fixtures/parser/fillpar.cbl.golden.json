@@ -1,0 +1,239 @@
+{
+ "case": {
+  "file": "fillpar.cbl",
+  "note": "a group reference reaches the items under it, but not through an unnamed FILLER group, a FILLER REDEFINES among them; a reference below one still reaches the group above"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "MAPI",
+    "size": 35,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "FILLER",
+    "size": 12,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "NAMEL",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "NAMEF",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "FILLER",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "NAMEA",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "NAMEI",
+    "size": 20,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "REC",
+    "size": 5,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "R1",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "R2",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "R3",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "R31",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "USED",
+    "size": 2,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 2,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "U1",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "U2",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "OUTX",
+    "size": 40,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "MAPI",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "NAMEL",
+    "line": 7,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "NAMEF",
+    "line": 8,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "NAMEA",
+    "line": 10,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "NAMEI",
+    "line": 11,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "REC",
+    "line": 12,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R1",
+    "line": 14,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R2",
+    "line": 15,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R3",
+    "line": 16,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R31",
+    "line": 17,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "USED",
+    "line": 18,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "U1",
+    "line": 20,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "U2",
+    "line": 21,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "OUTX",
+    "line": 22,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

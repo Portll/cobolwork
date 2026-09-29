@@ -1,0 +1,6 @@
+{
+ "id": "024-overlay-of-tainted-field",
+ "title": "Input lands in one field of a record; a REDEFINES of the record covers the same bytes and is run as a command",
+ "cwe": "CWE-78",
+ "expect": [ { "rule": "argv-or-env-to-os-command", "file": "RDF.cbl" } ]
+}

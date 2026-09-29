@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. EXTRAQ.
+      * A customer row is written to a queue the CSD sends to a DD.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-ROW              PIC X(80).
+       PROCEDURE DIVISION.
+           EXEC SQL SELECT CUST_DATA INTO :WS-ROW FROM CUST END-EXEC
+           EXEC CICS WRITEQ TD QUEUE('RPTQ') FROM(WS-ROW) END-EXEC
+           EXEC CICS RETURN END-EXEC.

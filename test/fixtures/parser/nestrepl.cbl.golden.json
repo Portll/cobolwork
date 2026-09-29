@@ -1,0 +1,85 @@
+{
+ "case": {
+  "file": "nestrepl.cbl",
+  "note": "a COPY REPLACING reaches the copybooks nested in it, except the words their own REPLACING produced"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "REC",
+    "size": 4,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "XX-ONE",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "XX-LEAF1",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "AA-TWO-ID",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "XX-THREE",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "REC",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "XX-ONE",
+    "line": 1,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "XX-LEAF1",
+    "line": 1,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "AA-TWO-ID",
+    "line": 1,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "XX-THREE",
+    "line": 1,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

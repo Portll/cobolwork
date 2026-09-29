@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. N1.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-IN            PIC X(80).
+       01 WS-OTHER         PIC X(80) VALUE 'ls -l'.
+       PROCEDURE DIVISION.
+           ACCEPT WS-IN FROM COMMAND-LINE
+           DISPLAY WS-IN
+           CALL 'N2' USING WS-OTHER
+           GOBACK.

@@ -1,0 +1,14 @@
+{
+ "id": "040-the-dd-names-a-dataset-not-in-stream-data",
+ "title": "The same program and step reading a catalogued dataset instead of in-stream data",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "file-record-to-os-command",
+   "file": "RDSYSIN.cbl"
+  }
+ ],
+ "negativeFor": [
+  "jcl-instream-to-os-command"
+ ]
+}

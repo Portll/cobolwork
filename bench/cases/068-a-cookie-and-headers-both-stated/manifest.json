@@ -1,0 +1,11 @@
+{
+ "id": "068-a-cookie-and-headers-both-stated",
+ "title": "The same page with every cookie attribute and every protective header stated, several statements before the send",
+ "cwe": "CWE-1004",
+ "expect": [],
+ "negativeFor": [
+  "web-cookie-without-secure-attributes",
+  "web-response-without-protective-headers",
+  "web-link-opens-without-noopener"
+ ]
+}

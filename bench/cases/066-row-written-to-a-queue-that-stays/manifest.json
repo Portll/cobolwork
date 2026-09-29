@@ -1,0 +1,7 @@
+{
+ "id": "066-row-written-to-a-queue-that-stays",
+ "title": "The same row written to an intrapartition queue, which stays inside the region",
+ "cwe": "CWE-201",
+ "expect": [],
+ "negativeFor": ["database-to-extrapartition-queue"]
+}

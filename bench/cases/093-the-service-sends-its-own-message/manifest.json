@@ -1,0 +1,9 @@
+{
+ "id": "093-the-service-sends-its-own-message",
+ "title": "The same service tests the SQLCODE and sends a message it chose, which says nothing of the database",
+ "cwe": "CWE-209",
+ "expect": [],
+ "negativeFor": [
+  "system-response-to-web-response"
+ ]
+}

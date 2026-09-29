@@ -1,0 +1,323 @@
+{
+ "case": {
+  "file": "r3b.cbl",
+  "note": "RENAMES spans, including qualified and group operands"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "RDX",
+    "size": 20,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "N1",
+    "size": 5,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "N1A",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "N1B",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "N2",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "N3",
+    "size": 5,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "9",
+    "name": "N3A",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "9",
+    "name": "N3B",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "66",
+    "name": "R1",
+    "size": 20,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "66",
+    "name": "R2",
+    "size": 5,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "66",
+    "name": "R3",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "66",
+    "name": "R4",
+    "size": 16,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "QA",
+    "size": 5,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "AL",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "GRP",
+    "size": 3,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "4",
+    "name": "BOB",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "QB",
+    "size": 12,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "PAD",
+    "size": 7,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "AL",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "2",
+    "name": "GRP2",
+    "size": 3,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "4",
+    "name": "BOB",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "66",
+    "name": "AB",
+    "size": 5,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "RDX",
+    "line": 5,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N1",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N1A",
+    "line": 7,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N1B",
+    "line": 8,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N2",
+    "line": 9,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N3",
+    "line": 10,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N3A",
+    "line": 11,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N3B",
+    "line": 12,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R1",
+    "line": 13,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R2",
+    "line": 14,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R3",
+    "line": 15,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R4",
+    "line": 16,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "QA",
+    "line": 17,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "AL",
+    "line": 18,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "GRP",
+    "line": 19,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BOB",
+    "line": 20,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "QB",
+    "line": 21,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "PAD",
+    "line": 22,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "AL",
+    "line": 23,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "GRP2",
+    "line": 24,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BOB",
+    "line": 25,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "AB",
+    "line": 26,
+    "state": "parent",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

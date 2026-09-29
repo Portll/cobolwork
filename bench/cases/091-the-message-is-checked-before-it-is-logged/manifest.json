@@ -1,0 +1,9 @@
+{
+ "id": "091-the-message-is-checked-before-it-is-logged",
+ "title": "The same log writer refuses a message that is not letters and spaces, which cannot carry a line break",
+ "cwe": "CWE-117",
+ "expect": [],
+ "negativeFor": [
+  "cics-terminal-to-log"
+ ]
+}

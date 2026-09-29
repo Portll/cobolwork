@@ -1,0 +1,114 @@
+{
+ "schemaVersion": 1,
+ "name": "controlm",
+ "vendor": "BMC",
+ "product": "Control-M for z/OS",
+ "validation": {
+  "corpus": {
+   "date": "2026-09-21",
+   "repositories": 127,
+   "repositoriesWithJcl": 45,
+   "filesScanned": 558281,
+   "firedOn": 0,
+   "perRule": {},
+   "rulesThatFired": 0,
+   "rulesTotal": 7,
+   "note": "Measured 2026-09-21 over 127 public GitHub COBOL repositories, 558,281 files, with diag/measure-rules.mjs --packs. Read the denominator before the number: every rule in this pack is JCL-scoped, and only 45 of the 127 repositories contain any JCL at all. WHAT THIS DOES AND DOES NOT SHOW. It shows these rules are not broadly noisy - they do not fire on ordinary COBOL and JCL. It does not show they are quiet where they would actually run, because a public corpus of teaching material, vendor demos and tooling contains essentially no estate running this product. A rule that cannot fire for want of the product is not the same as a rule that sees the product and stays quiet, and this measurement cannot tell those apart. The practitioner review is still the half that would."
+  },
+  "practitioner": null,
+  "_note": "Two different questions. A corpus measurement over public COBOL repositories tells you how often these rules fire, which is their noise. It cannot tell you whether the risk statements are true. Fill corpus with {repositories, firedOn, perRule} from diag/measure-rules.mjs --packs controlm; fill practitioner with {by, date, note} when someone who has administered Control-M has read it."
+ },
+ "retrieved": "2026-09-20",
+ "source": "BMC Control-M for z/OS utility and AutoEdit references. Control-M utilities are invoked as job steps, and their control statements arrive in in-stream data.",
+ "coverage": "Utilities invoked from JCL and the AutoEdit substitution that reaches them. NOT covered: the scheduling definitions themselves, which live in the Control-M database rather than in a repository, and which is where most of a scheduler's real authority sits. A repository sees the jobs, not the schedule.",
+ "why": "A scheduler decides what runs, when, and under whose authority. Most of that is held outside any repository, which is itself the finding worth stating: this pack reads the part that is committed and is explicit that the larger part is not.",
+ "rules": [
+  {
+   "id": "ctm-order-force",
+   "verb": "CTMAPI ORDER/FORCE",
+   "pattern": "^\\s*(?:ORDER|FORCE)\\s+(?:JOB|TABLE)\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "orders or forces a job into the active schedule",
+   "rationale": "ORDER places a job into the active environment and FORCE does so regardless of its scheduling criteria. A job that can force another job has escaped the schedule that was reviewed, and what it forces is named here rather than in the scheduler."
+  },
+  {
+   "id": "ctm-autoedit-variable-in-command",
+   "verb": "%%AUTOEDIT",
+   "pattern": "%%[A-Z0-9_$#@.]{2,}",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "med",
+   "risk": "substitutes a scheduler variable into the statement at run time",
+   "rationale": "An AutoEdit variable is replaced by the scheduler before the statement runs, so what the committed text says is not what executes. The value comes from the scheduler's own tables, which are outside this repository and outside this review."
+  },
+  {
+   "id": "ctm-runas-owner",
+   "verb": "OWNER / RUNAS",
+   "pattern": "^\\s*(?:OWNER|RUN_AS|RUNAS)\\s*=\\s*[A-Z0-9$#@]{1,8}",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "runs work under a named identity other than the submitter's",
+   "rationale": "Naming an owner runs the work with that identity's authority rather than the submitter's. Whether that is a privilege escalation depends on the identity, which is why this is reported rather than judged."
+  },
+  {
+   "id": "ctm-security-utility",
+   "verb": "CTMSEC",
+   "pattern": "\\bCTMSEC\\b|^\\s*(?:DEFINE|UPDATE)\\s+USER\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "crit",
+   "risk": "changes Control-M security definitions",
+   "rationale": "The scheduler's own security definitions decide who may order, force or delete work across the estate. Editing them from a job puts the scheduler's access model in the hands of whoever can commit."
+  },
+  {
+   "id": "ctm-delete-condition",
+   "verb": "DELCOND",
+   "pattern": "^\\s*(?:DELCOND|DELETE\\s+COND(?:ITION)?)\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "med",
+   "risk": "deletes a scheduling condition other work waits on",
+   "rationale": "Conditions are how one job tells another it may start. Deleting one releases whatever was waiting, so the effect of this statement is on jobs it does not name and whose definitions are not in this repository."
+  },
+  {
+   "id": "ctm-file-watcher-command",
+   "verb": "CTMFW",
+   "pattern": "\\bCTMFW\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "low",
+   "risk": "waits on a file and triggers work when it appears",
+   "rationale": "A file watcher turns the arrival of a dataset into the start of work. It is an entry point driven by something outside the job, and it is listed at low severity so the route is visible rather than because arrival is itself suspicious."
+  },
+  {
+   "id": "ctm-utility-step",
+   "verb": "CTMAPI / CTMJSA",
+   "pattern": "^CTM(API|JSA|CSU|LDNRS|BLT)$",
+   "appliesTo": [
+    "jcl-step"
+   ],
+   "severity": "info",
+   "risk": "reaches the scheduler from a job",
+   "rationale": "A Control-M utility invoked as a step is where a job stops being scheduled work and starts being work that changes the schedule. It is listed so a reader can see which jobs reach the scheduler, which is the question that precedes every other rule in this pack."
+  }
+ ],
+ "programs": [
+  "CTMAPI",
+  "CTMJSA",
+  "CTMCSU",
+  "CTMLDNRS",
+  "CTMBLT",
+  "CTMFW",
+  "CTMSEC",
+  "CONTROLM"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "id": "012-comment-links-a-runbook",
+ "title": "An ordinary comment naming a runbook and a link",
+ "cwe": "CWE-1427",
+ "expect": [],
+ "negativeFor": [
+  "agent-directive-in-comment",
+  "encoded-blob"
+ ]
+}

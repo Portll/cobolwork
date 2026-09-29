@@ -1,0 +1,9 @@
+{
+ "vendorPacks": [
+  "connectdirect"
+ ],
+ "allowUnvalidatedPacks": true,
+ "productionQualifiers": [
+  "PROD"
+ ]
+}

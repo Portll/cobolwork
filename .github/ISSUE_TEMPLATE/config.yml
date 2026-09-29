@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a vulnerability in cobolwork itself
+    url: https://github.com/Portll/cobolwork/security/advisories/new
+    about: Privately, never as a public issue. See SECURITY.md for what is in scope.

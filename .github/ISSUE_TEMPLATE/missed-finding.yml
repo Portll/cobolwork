@@ -1,0 +1,33 @@
+name: Missed finding
+description: cobolwork read the code and reported nothing
+labels: [false-negative, recall]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check `coverageIncomplete` and `bySet` in the report first. If a copybook was unresolved,
+        the fields were never parsed, and the miss is a coverage problem rather than a rule one —
+        say so below and it is still worth reporting.
+  - type: textarea
+    id: code
+    attributes:
+      label: The COBOL that should have been flagged
+      description: It must compile — `node bench/run.mjs --validate` is the check.
+      render: cobol
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have been reported, and why
+      description: The source of the untrusted value, the operation it reaches, and the path between them.
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: The report's summary
+      description: The `summary` object from `cobolwork scan <path> --quiet`.
+      render: json
+    validations:
+      required: true

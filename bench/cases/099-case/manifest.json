@@ -1,0 +1,9 @@
+{
+ "id": "099-case",
+ "title": "A credential is put in a URI query rather than a request body, where every proxy log keeps it",
+ "cwe": "CWE-200",
+ "expect": [
+  { "rule": "web-uri-carries-a-credential", "file": "URICRED.cbl" }
+ ],
+ "alsoExpected": ["web-response-without-protective-headers"]
+}

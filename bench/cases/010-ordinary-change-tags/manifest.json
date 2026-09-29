@@ -1,0 +1,10 @@
+{
+ "id": "010-ordinary-change-tags",
+ "title": "The same columns carrying ordinary change tags",
+ "cwe": "CWE-1427",
+ "expect": [],
+ "negativeFor": [
+  "hidden-payload-in-identification-area",
+  "hidden-payload-in-sequence-area"
+ ]
+}

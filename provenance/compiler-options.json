@@ -1,0 +1,70 @@
+{
+ "_comment": "Where each compiler option lib/options.mjs reads comes from, and how its effect was established. Enterprise COBOL rows cite IBM's documentation; GnuCOBOL rows cite the published manual page for the flag's name and were confirmed by compiling a program and running it. Nothing was taken from GnuCOBOL's source (docs/spec/build-gate.md §16). Meanings are this project's own words.",
+ "enterprise": [
+  {
+   "option": "SSRANGE / NOSSRANGE, abbreviated SSR / NOSSR",
+   "meaning": "Checks subscripts, indexes and reference modification at run time, on the address the whole reference resolves to. The bare form means SSRANGE(NOZLEN,ABD), which abends; MSG writes a warning and then executes the out-of-range statement, every time it runs. OCCURS DEPENDING ON objects are checked only against the table's maximum. The default is NOSSRANGE.",
+   "source": { "title": "Enterprise COBOL for z/OS 6.4, SSRANGE", "url": "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=options-ssrange", "retrieved": "2026-09-26" }
+  },
+  {
+   "option": "CHECK(ON|OFF), a Language Environment runtime option",
+   "meaning": "Has no effect on programs compiled with Enterprise COBOL 5.1 or later, whose SSRANGE checks cannot be switched off at run time. CHECK(OFF) still leaves SSRANGE code dormant in programs compiled with 4.2 or earlier, so a run unit mixing the two keeps only the newer programs' checks.",
+   "source": { "title": "Enterprise COBOL for z/OS 6.4 Programming Guide, SSRANGE and runtime options; z/OS 3.2 Language Environment, CHECK", "url": "https://www.ibm.com/docs/en/zos/3.2.0?topic=ulero-check-cobol-only", "retrieved": "2026-09-27" }
+  },
+  {
+   "option": "Fixed installation defaults (IGYCDOPT)",
+   "meaning": "An asterisk before a value in the installation defaults module fixes that option, and ALOWCBL=NO makes any CBL or PROCESS statement an error. A compile step can bypass both with another IGYCDOPT on STEPLIB or JOBLIB. The options a program was compiled with are therefore the ones its compiler listing records; the source and the site defaults are evidence, not proof.",
+   "source": { "title": "Enterprise COBOL for z/OS 6.4 Customization Guide, SC27-8712-03", "url": "https://publibfp.dhe.ibm.com/epubs/pdf/igy6cg40.pdf", "retrieved": "2026-09-27" }
+  },
+  {
+   "option": "PARMCHECK / NOPARMCHECK, abbreviated PC / NOPC",
+   "meaning": "Detects a called program writing past the end of the caller's WORKING-STORAGE; it does not check each argument. The bare form means PARMCHECK(MSG,100), which continues; ABD abends. Base from 6.2.",
+   "source": { "title": "Enterprise COBOL for z/OS 6.4, PARMCHECK; APAR PI78089", "url": "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=ecco-parmcheck", "retrieved": "2026-09-26" }
+  },
+  {
+   "option": "NUMCHECK / NONUMCHECK",
+   "meaning": "An implicit class test on zoned (ZON) and packed (PAC) senders, and a size test on binary ones (BIN). The bare form ends in MSG, which continues; ABD abends. Base from 6.2.",
+   "source": { "title": "Enterprise COBOL for z/OS 6.3, NUMCHECK", "url": "https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=options-numcheck", "retrieved": "2026-09-26" }
+  }
+ ],
+ "gnucobol": [
+  {
+   "option": "-fec=<name>, -fec <name>; the EC- prefix may be dropped",
+   "meaning": "Generates the run-time check for one exception condition and every condition below it: EC-BOUND covers EC-BOUND-SUBSCRIPT. One name per option; a comma list is rejected.",
+   "source": { "title": "cobc(1), GnuCOBOL 3.2", "url": "https://manpages.debian.org/unstable/gnucobol3/cobc.1.en.html", "retrieved": "2026-09-26" },
+   "observed": "GnuCOBOL 3.2.0, 2026-09-26: -fec=EC-BOUND-SUBSCRIPT, -fec=BOUND-SUBSCRIPT and -fec=EC-BOUND each stop MOVE 'Z' TO E(4) on a table of 3; -fec=EC-BOUND-SUBSCRIPT,EC-BOUND-REF-MOD is refused as an invalid exception name"
+  },
+  {
+   "option": "-fno-ec=<name>, -fno-ec <name>",
+   "meaning": "Removes the check for one condition and every condition below it. A later option overrides an earlier one, -debug included.",
+   "source": { "title": "cobc(1), GnuCOBOL 3.2", "url": "https://manpages.debian.org/unstable/gnucobol3/cobc.1.en.html", "retrieved": "2026-09-26" },
+   "observed": "GnuCOBOL 3.2.0, 2026-09-26: -debug -fno-ec=EC-BOUND-SUBSCRIPT and -fec=EC-BOUND-SUBSCRIPT -fno-ec=EC-BOUND both let an out-of-range OCCURS DEPENDING ON through; a bare -fno-ec takes the next argument as its name"
+  },
+  {
+   "option": "-debug, -d",
+   "meaning": "Every run-time check.",
+   "source": { "title": "cobc(1), GnuCOBOL 3.2", "url": "https://manpages.debian.org/unstable/gnucobol3/cobc.1.en.html", "retrieved": "2026-09-26" },
+   "observed": "GnuCOBOL 3.2.0, 2026-09-26: -debug and -d each stop an out-of-range subscript and an out-of-range OCCURS DEPENDING ON"
+  },
+  {
+   "check": "subscript",
+   "condition": "EC-BOUND-SUBSCRIPT",
+   "observed": "GnuCOBOL 3.2.0, 2026-09-26: stops a subscript past a table of 3, and an OCCURS DEPENDING ON object of 9 on a table of 1 TO 3; -fec=EC-BOUND-ODO alone stops neither"
+  },
+  {
+   "check": "reference-modification",
+   "condition": "EC-BOUND-REF-MOD",
+   "observed": "GnuCOBOL 3.2.0, 2026-09-26: stops S(N:1) with N = 12 on a 10-byte item"
+  },
+  {
+   "check": "numeric-data",
+   "condition": "EC-DATA-INCOMPATIBLE",
+   "observed": "GnuCOBOL 3.2.0, 2026-09-26: stops ADD of a PIC 9(3) redefining 'A1B'; without it the ADD computes 0112"
+  },
+  {
+   "check": "argument-length",
+   "condition": "EC-PROGRAM-ARG-MISMATCH",
+   "observed": "GnuCOBOL 3.2.0, 2026-09-26: stops a callee whose LINKAGE item is 20 bytes when the caller passed 2; without it the callee writes 18 bytes past the caller's item"
+  }
+ ]
+}

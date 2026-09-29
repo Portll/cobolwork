@@ -1,0 +1,20 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. WIT.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-REC.
+          05 WS-NAME     PIC X(20).
+          05 WS-AMT      PIC S9(7)V99 COMP-3.
+          05 WS-TAB OCCURS 3 TIMES.
+             10 WS-ITEM  PIC 9(4) COMP.
+       01 WS-CMD         PIC X(80) VALUE SPACES.
+       77 WS-N           PIC 99.
+       PROCEDURE DIVISION.
+       MAIN-SECTION SECTION.
+       START-PARA.
+           ACCEPT WS-NAME FROM COMMAND-LINE
+           STRING 'ls ' WS-NAME DELIMITED BY SIZE INTO WS-CMD
+           CALL 'SYSTEM' USING WS-CMD
+           PERFORM END-PARA.
+       END-PARA.
+           STOP RUN.

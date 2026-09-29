@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DATECHK.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-DATE             PIC X(10).
+       PROCEDURE DIVISION USING LK-DATE.
+           IF LK-DATE = SPACES
+              MOVE ZEROS TO LK-DATE
+           END-IF
+           GOBACK.

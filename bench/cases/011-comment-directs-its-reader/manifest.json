@@ -1,0 +1,16 @@
+{
+ "id": "011-comment-directs-its-reader",
+ "title": "A comment tells its reader to ignore instructions and fetch a script",
+ "cwe": "CWE-1427",
+ "expect": [
+  {
+   "rule": "agent-directive-in-comment",
+   "file": "HCOMMENT.cbl"
+  },
+  {
+   "rule": "agent-directive-in-comment",
+   "file": "HCOMMENT.cbl"
+  }
+ ],
+ "note": "Two lines of the comment fire the rule: one addresses the reader, the next fetches and runs. Both are declared, so a third would fail the case."
+}

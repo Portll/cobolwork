@@ -1,0 +1,9 @@
+{
+ "id": "020-database-returned-to-own-caller",
+ "title": "A database value answers the web request that started the program — its job, not a leak",
+ "cwe": "CWE-201",
+ "expect": [],
+ "negativeFor": [
+  "database-to-outbound-http"
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "case": {
+  "file": "sqlinc.cbl",
+  "witness": "precompiled",
+  "note": "EXEC SQL INCLUDE brings in a copybook whole, its first entry included, in the data and the procedure division"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-COMMAREA",
+    "size": 18,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "CA-REQUEST-ID",
+    "size": 6,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "CA-RETURN-CODE",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "CA-CUSTOMER-NUM",
+    "size": 10,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "CUST-ROW",
+    "size": 39,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "CUST-ID",
+    "size": 9,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "CUST-NAME",
+    "size": 30,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-COMMAREA",
+    "line": 5,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "CA-REQUEST-ID",
+    "line": 1,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "CA-RETURN-CODE",
+    "line": 2,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "CA-CUSTOMER-NUM",
+    "line": 3,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "CUST-ROW",
+    "line": 1,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "CUST-ID",
+    "line": 2,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "CUST-NAME",
+    "line": 3,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "MAIN-PARA"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "SHARED-ERROR"
+   }
+  ],
+  "calls": []
+ }
+}

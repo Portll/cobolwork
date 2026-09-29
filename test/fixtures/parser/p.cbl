@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. OCC2.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 P1 USAGE POINTER OCCURS 3.
+       01 T2.
+          05 T2-E USAGE POINTER OCCURS 3.
+       01 T3.
+          05 T3-E PIC X(3) OCCURS 40000.
+       01 T4 PIC X(4) OCCURS 40000.
+       PROCEDURE DIVISION.
+           DISPLAY T3-E(1) T4(1).
+           SET P1(1) TO NULL
+           SET T2-E(1) TO NULL.
+           GOBACK.

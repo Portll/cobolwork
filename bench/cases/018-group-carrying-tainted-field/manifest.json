@@ -1,0 +1,8 @@
+{
+ "id": "018-group-carrying-tainted-field",
+ "title": "Input lands in one field of a group, and the whole group is moved into a command",
+ "cwe": "CWE-78",
+ "expect": [
+  { "rule": "argv-or-env-to-os-command", "file": "G1.cbl" }
+ ]
+}

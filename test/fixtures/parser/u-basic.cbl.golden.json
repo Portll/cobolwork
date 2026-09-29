@@ -1,0 +1,385 @@
+{
+ "case": {
+  "file": "u-basic.cbl",
+  "note": "usages, sign separate, edited pictures, 88 and REDEFINES"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "G1",
+    "size": 13,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A1",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A2",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A3",
+    "size": 8,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "B1",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "C1",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "C2",
+    "size": 8,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "P1",
+    "size": 8,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "I1",
+    "size": 4,
+    "type": "INDEX"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "S1",
+    "size": 6,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "E1",
+    "size": 10,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "N1",
+    "size": 8,
+    "type": "NATIONAL"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R0",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R1",
+    "size": 10,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "F1",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "88",
+    "name": "F1-YES",
+    "size": null,
+    "type": "CONDITIONAL"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "X1",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "BC",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "D1",
+    "size": 22,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "D1-N",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "D1-T",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "SY",
+    "size": 8,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "SY-A",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "SY-B",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "PK",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "C6",
+    "size": 3,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "G1",
+    "line": 5,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "A1",
+    "line": 6,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "A2",
+    "line": 7,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A3",
+    "line": 8,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "B1",
+    "line": 9,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "C1",
+    "line": 10,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "C2",
+    "line": 11,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "P1",
+    "line": 12,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "I1",
+    "line": 13,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "S1",
+    "line": 14,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "E1",
+    "line": 15,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N1",
+    "line": 16,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R0",
+    "line": 17,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R1",
+    "line": 18,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F1",
+    "line": 19,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F1-YES",
+    "line": 20,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "X1",
+    "line": 21,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BC",
+    "line": 22,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "D1",
+    "line": 23,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "D1-N",
+    "line": 24,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "D1-T",
+    "line": 25,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SY",
+    "line": 26,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SY-A",
+    "line": 27,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SY-B",
+    "line": 28,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "PK",
+    "line": 29,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "C6",
+    "line": 30,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "READ-X"
+   }
+  ],
+  "calls": []
+ }
+}

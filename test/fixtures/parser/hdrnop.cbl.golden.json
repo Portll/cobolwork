@@ -1,0 +1,71 @@
+{
+ "case": {
+  "file": "hdrnop.cbl",
+  "format": "variable",
+  "std": "ibm",
+  "note": "a paragraph or section header in Area A ends the sentence before it without a period, and an Area B word before a period stays an operand"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-A",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-B",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-A",
+    "line": 5,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-B",
+    "line": 6,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "MAIN-PARA"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "STEP-ONE"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "STEP-TWO"
+   },
+   {
+    "prog": "",
+    "kind": "S",
+    "name": "LAST-PART"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "LAST-PARA"
+   }
+  ],
+  "calls": []
+ }
+}

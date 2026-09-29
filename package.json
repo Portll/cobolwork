@@ -1,0 +1,55 @@
+{
+  "name": "cobolwork",
+  "version": "0.2.61",
+  "description": "COBOL, JCL and CICS security analysis with zero runtime dependencies: reference-format parser, cross-program data flow, mainframe credential rules.",
+  "license": "AGPL-3.0-or-later",
+  "author": "Portll <john@portll.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Portll/cobolwork.git"
+  },
+  "homepage": "https://github.com/Portll/cobolwork#readme",
+  "bugs": {
+    "url": "https://github.com/Portll/cobolwork/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "cobolwork": "bin/cobolwork.mjs"
+  },
+  "exports": {
+    ".": "./lib/index.mjs",
+    "./parser": "./lib/parser.mjs",
+    "./dataflow": "./lib/dataflow.mjs"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "rules",
+    "schema",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "prepack": "node diag/stamp-revision.mjs",
+    "postpack": "node diag/stamp-revision.mjs --clear",
+    "diag:grade": "node diag/grade-against-gnucobol.mjs",
+    "diag:tolerance": "node diag/tolerance.mjs",
+    "bench": "node bench/run.mjs"
+  },
+  "keywords": [
+    "cobol",
+    "jcl",
+    "cics",
+    "mainframe",
+    "security",
+    "sast",
+    "taint",
+    "sarif"
+  ],
+  "private": true
+}

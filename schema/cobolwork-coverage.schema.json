@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-coverage.schema.json",
+  "title": "cobolwork/coverage",
+  "description": "A SARIF property-bag convention for analyser coverage: what a run read, what it did not, and why it stopped. SARIF 2.1.0 can say that files could not be read, through invocations[].toolExecutionNotifications, but it has no standard way to state coverage as a ratio with a denominator. This is that denominator. It lives under invocations[].properties['cobolwork/coverage'], namespaced so it cannot be mistaken for a standard field, and it is an addition to the standard notifications rather than a replacement for them: a conforming consumer that ignores this key still learns which files were not read. It is published with one implementation, which is not enough to make it a standard. If a second analyser adopts it, the right venue is a proposed invocation.coverage object at the OASIS SARIF Technical Committee, where the bar is prior use rather than a good argument.",
+  "type": "object",
+  "required": ["coverageIncomplete"],
+  "properties": {
+    "coverageIncomplete": {
+      "type": "boolean",
+      "description": "True when the run did not read everything it selected. The verdict, and the reason this convention exists: a finding count over source nobody read is not a clean result. It is duplicated in invocations[].properties.coverageIncomplete and reflected in executionSuccessful, so a consumer cannot miss it by not knowing about this key."
+    },
+    "filesScanned": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Artifacts whose bytes were read by at least one analysis."
+    },
+    "bySet": {
+      "type": "object",
+      "description": "Per analysis component, keyed by the component's own name. A run whose components read different slices of the tree cannot state one number, and a single total hides which analysis fell short.",
+      "additionalProperties": { "$ref": "#/$defs/componentCoverage" }
+    },
+    "setsIncomplete": {
+      "type": "array",
+      "description": "Components that did not fully run, each with the reason. Two distinct causes share this list and `kind` distinguishes them: a component that could not run for want of configuration, and one that ran and did not reach everything. Only `coverage` bears on whether the scan read what it was given.",
+      "items": {
+        "type": "object",
+        "required": ["set", "kind", "why"],
+        "properties": {
+          "set": { "type": "string" },
+          "kind": { "enum": ["coverage", "configuration"], "description": "coverage: the component ran and did not read everything. configuration: it could not run in full because it was not told enough, such as a missing cobolwork.site.json." },
+          "why": { "type": "string", "description": "Written for a person deciding what to do about it, from the reasons for that kind." }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "componentCoverage": {
+      "type": "object",
+      "description": "filesScanned + filesNotRead + filesUnreadable + filesUnparsed accounts for every artifact the component selected.",
+      "properties": {
+        "filesScanned": { "type": "integer", "minimum": 0, "description": "Read, and contributed." },
+        "filesUnreadable": { "type": "integer", "minimum": 0, "description": "Selected, and the bytes never arrived." },
+        "filesUnparsed": { "type": "integer", "minimum": 0, "description": "Read, and could not be parsed. Distinct from unreadable: counting these as unreadable understates what the run managed to look at." },
+        "filesNotRead": { "type": "integer", "minimum": 0, "description": "Selected and never opened, because the run stopped before reaching them." },
+        "filesBinary": { "type": "integer", "minimum": 0 },
+        "stoppedBy": {
+          "type": "string",
+          "description": "What ended the reading early, in the words of the limit that was hit.",
+          "examples": ["memory reserve", "memory exhausted", "byte budget"]
+        },
+        "unreadable": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "'path: reason', one per artifact. A count names nothing anyone can go and look at, and it cannot tell a permission denied from the analyser being wrong."
+        },
+        "unparsed": { "type": "array", "items": { "type": "string" }, "description": "'path: reason', one per artifact." },
+        "notRead": { "type": "string", "description": "One sentence a report can print verbatim, saying how much was missed and that the result is not a claim about the whole input." }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+ "id": "088-the-same-fields-masked-before-they-are-logged",
+ "title": "The same kinds of field logged after masking or hashing, which is the fix and so is not the finding",
+ "cwe": "CWE-532",
+ "expect": [],
+ "negativeFor": ["log-writes-a-credential", "log-writes-personal-data"]
+}

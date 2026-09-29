@@ -1,0 +1,598 @@
+{
+ "about": "Where the Internet Archive holds a copy of each document the project cites. Written by node diag/sync-sources.mjs --archive, which requests a capture through Save Page Now where none exists.",
+ "captures": {
+  "http://bitsavers.informatik.uni-stuttgart.de/pdf/burroughs/LargeSystems/A-Series/MCP_7.0/86001518-307_COBOL_ANSI-85_Programming_Reference_Manual_Volume_1_Basic_Implementation_Feb2003.pdf": {
+   "capture": "https://web.archive.org/web/20260927094651/http://bitsavers.informatik.uni-stuttgart.de/pdf/burroughs/LargeSystems/A-Series/MCP_7.0/86001518-307_COBOL_ANSI-85_Programming_Reference_Manual_Volume_1_Basic_Implementation_Feb2003.pdf",
+   "timestamp": "20260927094651",
+   "requested": "2026-09-27"
+  },
+  "http://www.3kranger.com/HP3000/mpeix/doc3k/B3150090013.11820/2.htm": {
+   "capture": "https://web.archive.org/web/20260927094717/http://www.3kranger.com/HP3000/mpeix/doc3k/B3150090013.11820/2.htm",
+   "timestamp": "20260927094717",
+   "requested": "2026-09-27"
+  },
+  "http://www.3kranger.com/HP3000/mpeix/doc3k/B3150090013.11820/212.htm": {
+   "capture": "https://web.archive.org/web/20260613072005/http://www.3kranger.com/HP3000/mpeix/doc3k/B3150090013.11820/212.htm",
+   "timestamp": "20260613072005",
+   "checked": "2026-09-27"
+  },
+  "http://www.3kranger.com/HP3000/mpeix/doc3k/B3150090013.11820/39.htm": {
+   "capture": "https://web.archive.org/web/20260927094753/http://www.3kranger.com/HP3000/mpeix/doc3k/B3150090013.11820/39.htm",
+   "timestamp": "20260927094753",
+   "requested": "2026-09-27"
+  },
+  "http://www.nonstoptools.com/manuals/Cobol85.pdf": {
+   "capture": "https://web.archive.org/web/20251008152856/http://nonstoptools.com/manuals/Cobol85.pdf",
+   "timestamp": "20251008152856",
+   "checked": "2026-09-27"
+  },
+  "https://bitsavers.org/": {
+   "capture": "https://web.archive.org/web/20260921163805/https://bitsavers.org/",
+   "timestamp": "20260921163805",
+   "checked": "2026-09-27"
+  },
+  "https://bs2manuals.ts.fujitsu.com/download/manual/1135": {
+   "capture": "https://web.archive.org/web/20260927094832/https://bs2manuals.ts.fujitsu.com/download/manual/1135",
+   "timestamp": "20260927094832",
+   "requested": "2026-09-27"
+  },
+  "https://bs2manuals.ts.fujitsu.com/download/manual/21133": {
+   "capture": "https://web.archive.org/web/20260927094856/https://bs2manuals.ts.fujitsu.com/download/manual/21133",
+   "timestamp": "20260927094856",
+   "requested": "2026-09-27"
+  },
+  "https://bs2manuals.ts.fujitsu.com/psCOBOL2000V16de/cobol2000-sprachbeschreibung-21130/einfuehrung-in-die-cobol-sprache-cobol-1-6-compiler-sprachbeschreibung-2022-11-7/sprachkonzept-cobol-1-6-compiler-sprachbeschreibung-2022-11-15/cobol-woerter-cobol-1-6-compiler-sprachbeschreibung-2022-11-18": {
+   "capture": "https://web.archive.org/web/20260927094927/https://bs2manuals.ts.fujitsu.com/psCOBOL2000V16de/cobol-woerter-cobol-1-6-compiler-sprachbeschreibung-2022-11-18-22039312.html",
+   "timestamp": "20260927094927",
+   "requested": "2026-09-27"
+  },
+  "https://bs2manuals.ts.fujitsu.com/psCOBOL2000V16en/cobol-words-cobol-compiler-reference-manual-2022-11-19-22036718.html": {
+   "capture": "https://web.archive.org/web/20260927095002/https://bs2manuals.ts.fujitsu.com/psCOBOL2000V16en/cobol-words-cobol-compiler-reference-manual-2022-11-19-22036718.html",
+   "timestamp": "20260927095002",
+   "requested": "2026-09-27"
+  },
+  "https://bs2manuals.ts.fujitsu.com/psCOBOL2000V16en/cobol2000-reference-manual-21133/intrinsic-functions-cobol-compiler-reference-manual-2022-11-249/overview-of-intrinsic-functions-cobol-compiler-reference-manual-2022-11-251": {
+   "capture": "https://web.archive.org/web/20260927095035/https://bs2manuals.ts.fujitsu.com/psCOBOL2000V16en/overview-of-intrinsic-functions-cobol-compiler-reference-manual-2022-11-251-22036961.html",
+   "timestamp": "20260927095035",
+   "requested": "2026-09-27"
+  },
+  "https://cdn.standards.iteh.ai/samples/51416/6e181759f5274336bf4fc7bd98754874/ISO-IEC-1989-2014.pdf": {
+   "capture": "https://web.archive.org/web/20260927095107/https://cdn.standards.iteh.ai/samples/51416/6e181759f5274336bf4fc7bd98754874/ISO-IEC-1989-2014.pdf",
+   "timestamp": "20260927095107",
+   "requested": "2026-09-27"
+  },
+  "https://cdn.standards.iteh.ai/samples/51416/86d6a978f5a5416bb7877c768cbc3fec/ISO-IEC-1989-2014.pdf": {
+   "capture": "https://web.archive.org/web/20260927095126/https://cdn.standards.iteh.ai/samples/51416/86d6a978f5a5416bb7877c768cbc3fec/ISO-IEC-1989-2014.pdf",
+   "timestamp": "20260927095126",
+   "requested": "2026-09-27"
+  },
+  "https://cdn.standards.iteh.ai/samples/74527/8c3bd1fa28cd4ba8b3786298facf714a/ISO-IEC-1989-2023.pdf": {
+   "capture": "https://web.archive.org/web/20240902050046/https://cdn.standards.iteh.ai/samples/74527/8c3bd1fa28cd4ba8b3786298facf714a/ISO-IEC-1989-2023.pdf",
+   "timestamp": "20240902050046",
+   "checked": "2026-09-27"
+  },
+  "https://docs-be.rocketsoftware.com/robots.txt": {
+   "capture": "https://web.archive.org/web/20250528170536/https://docs-be.rocketsoftware.com/robots.txt",
+   "timestamp": "20250528170536",
+   "checked": "2026-09-27"
+  },
+  "https://docs.vmssoftware.com/docs/vsi-cobol-for-openvms-reference-guide.pdf": {
+   "capture": "https://web.archive.org/web/20240715153800/https://docs.vmssoftware.com/docs/vsi-cobol-for-openvms-reference-guide.pdf",
+   "timestamp": "20240715153800",
+   "checked": "2026-09-27"
+  },
+  "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html": {
+   "capture": "https://web.archive.org/web/20260927095221/https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+   "timestamp": "20260927095221",
+   "requested": "2026-09-27"
+  },
+  "https://eur-lex.europa.eu/eli/dec/2011/833/oj/eng": {
+   "capture": "https://web.archive.org/web/20260924191617/https://eur-lex.europa.eu/eli/dec/2011/833/oj/eng",
+   "timestamp": "20260924191617",
+   "checked": "2026-09-27"
+  },
+  "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2554": {
+   "capture": "https://web.archive.org/web/20260907233849/https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32022R2554",
+   "timestamp": "20260907233849",
+   "checked": "2026-09-27"
+  },
+  "https://gnucobol.sourceforge.io/HTML/gnucobpg.html": {
+   "capture": "https://web.archive.org/web/20260607044134/https://gnucobol.sourceforge.io/HTML/gnucobpg.html",
+   "timestamp": "20260607044134",
+   "checked": "2026-09-27"
+  },
+  "https://ithandbook.ffiec.gov/it-booklets/architecture-infrastructure-and-operations/": {
+   "capture": "https://web.archive.org/web/20260415060043/https://ithandbook.ffiec.gov/it-booklets/architecture-infrastructure-and-operations",
+   "timestamp": "20260415060043",
+   "checked": "2026-09-27"
+  },
+  "https://ithandbook.ffiec.gov/it-booklets/development-acquisition-and-maintenance/": {
+   "capture": "https://web.archive.org/web/20260325041211/https://ithandbook.ffiec.gov/it-booklets/development-acquisition-and-maintenance/",
+   "timestamp": "20260325041211",
+   "checked": "2026-09-27"
+  },
+  "https://ithandbook.ffiec.gov/it-booklets/information-security/": {
+   "capture": "https://web.archive.org/web/20260918053315/https://ithandbook.ffiec.gov/it-booklets/information-security/",
+   "timestamp": "20260918053315",
+   "checked": "2026-09-27"
+  },
+  "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication500-203.pdf": {
+   "capture": "https://web.archive.org/web/20260726120558/https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication500-203.pdf",
+   "timestamp": "20260726120558",
+   "checked": "2026-09-27"
+  },
+  "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf": {
+   "capture": "https://web.archive.org/web/20260922232252/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf",
+   "timestamp": "20260922232252",
+   "checked": "2026-09-27"
+  },
+  "https://publibfp.boulder.ibm.com/epubs/pdf/c2754030.pdf": {
+   "capture": "https://web.archive.org/web/20260108020404/https://publibfp.boulder.ibm.com/epubs/pdf/c2754030.pdf",
+   "timestamp": "20260108020404",
+   "checked": "2026-09-27"
+  },
+  "https://publibfp.boulder.ibm.com/epubs/pdf/igy3mg31.pdf": {
+   "capture": "https://web.archive.org/web/20260927095349/https://publibfp.boulder.ibm.com/epubs/pdf/igy3mg31.pdf",
+   "timestamp": "20260927095349",
+   "requested": "2026-09-27"
+  },
+  "https://publibfp.dhe.ibm.com/epubs/pdf/dfhp4h00.pdf": {
+   "capture": "https://web.archive.org/web/20260927095414/https://publibfp.dhe.ibm.com/epubs/pdf/dfhp4h00.pdf",
+   "timestamp": "20260927095414",
+   "requested": "2026-09-27"
+  },
+  "https://public.dhe.ibm.com/eserver/zseries/zos/vse/pdf3/manuals/sc268073.pdf": {
+   "capture": "https://web.archive.org/web/20250905155208/https://public.dhe.ibm.com/eserver/zseries/zos/vse/pdf3/manuals/sc268073.pdf",
+   "timestamp": "20250905155208",
+   "checked": "2026-09-27"
+  },
+  "https://raw.githubusercontent.com/usnistgov/oscal-content/main/LICENSE.md": {
+   "capture": "https://web.archive.org/web/20260927095437/https://raw.githubusercontent.com/usnistgov/oscal-content/main/LICENSE.md",
+   "timestamp": "20260927095437",
+   "requested": "2026-09-27"
+  },
+  "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json": {
+   "capture": "https://web.archive.org/web/20260706043211/https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+   "timestamp": "20260706043211",
+   "checked": "2026-09-27"
+  },
+  "https://resources.global.fujitsu/software/manual/b1wd-3304/02enz000/b1wd-3304-02enz0.pdf": {
+   "capture": "https://web.archive.org/web/20260927095458/https://resources.global.fujitsu/software/manual/b1wd-3304/02enz000/b1wd-3304-02enz0.pdf",
+   "timestamp": "20260927095458",
+   "requested": "2026-09-27"
+  },
+  "https://slashdotmedia.com/terms-of-use/": {
+   "capture": "https://web.archive.org/web/20260925025056/https://slashdotmedia.com/terms-of-use/",
+   "timestamp": "20260925025056",
+   "checked": "2026-09-27"
+  },
+  "https://stratadoc.stratus.com/vos/15.1.1/r010-03/appar010-03.html": {
+   "capture": "https://web.archive.org/web/20260927095527/https://stratadoc.stratus.com/vos/15.1.1/r010-03/wwhelp/wwhimpl/common/html/wwhelp.htm?context=r010-03&file=appar010-03.html",
+   "timestamp": "20260927095527",
+   "requested": "2026-09-27"
+  },
+  "https://stratadoc.stratus.com/vos/15.1.1/r010-03/ch1r010-03d.html": {
+   "capture": "https://web.archive.org/web/20180101124942/http://stratadoc.stratus.com:80/vos/15.1.1/r010-03/ch1r010-03d.html",
+   "timestamp": "20180101124942",
+   "checked": "2026-09-27"
+  },
+  "https://support.heirloom.cc/hc/en-us/article_attachments/207171966": {
+   "capture": "https://web.archive.org/web/20241009230204/https://support.heirloom.cc/hc/en-us/article_attachments/207171966",
+   "timestamp": "20241009230204",
+   "checked": "2026-09-27"
+  },
+  "https://support.heirloom.cc/hc/en-us/article_attachments/207171986": {
+   "capture": "https://web.archive.org/web/20250710014738/https://support.heirloom.cc/hc/en-us/article_attachments/207171986",
+   "timestamp": "20250710014738",
+   "checked": "2026-09-27"
+  },
+  "https://support.veryant.com/documentation/2025_R1/documentation/Appendices/appendixa_ReservedWords.html": {
+   "capture": "https://web.archive.org/web/20260927095610/https://support.veryant.com/documentation/2025_R1/documentation/index.html#page/Appendices/appendixa_ReservedWords.html",
+   "timestamp": "20260927095610",
+   "requested": "2026-09-27"
+  },
+  "https://support.veryant.com/documentation/2025_R1/documentation/Language%20Reference.html": {
+   "capture": "https://web.archive.org/web/20260927095612/https://support.veryant.com/documentation/2025_R1/documentation/Language%20Reference.html",
+   "timestamp": "20260927095612",
+   "checked": "2026-09-27"
+  },
+  "https://support.veryant.com/documentation/2025_R1/documentation/Language%20Reference/Chapter7_ProcedureDivisionStatements.10.43.html": {
+   "capture": "https://web.archive.org/web/20260927095610/https://support.veryant.com/documentation/2025_R1/documentation/index.html",
+   "timestamp": "20260927095610",
+   "requested": "2026-09-27"
+  },
+  "https://support.veryant.com/documentation/2025_R1/documentation/Language%20Reference/Copyright.html": {
+   "capture": "https://web.archive.org/web/20260927095610/https://support.veryant.com/documentation/2025_R1/documentation/index.html",
+   "timestamp": "20260927095610",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/acu/813/acugt_appendices_v813.pdf": {
+   "capture": "https://web.archive.org/web/20260927100057/https://supportline.microfocus.com/documentation/books/acu/813/acugt_appendices_v813.pdf",
+   "timestamp": "20260927100057",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/acu/813/acugt_reference_manual_v813.pdf": {
+   "capture": "https://web.archive.org/web/20260927100119/https://supportline.microfocus.com/documentation/books/acu/813/acugt_reference_manual_v813.pdf",
+   "timestamp": "20260927100119",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/acu/813/acugt_user_interface_programming_v813.pdf": {
+   "capture": "https://web.archive.org/web/20260927100143/https://supportline.microfocus.com/documentation/books/acu/813/acugt_user_interface_programming_v813.pdf",
+   "timestamp": "20260927100143",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/ACU/901/gtman1/gt1212.htm": {
+   "capture": "https://web.archive.org/web/20260927095842/https://supportline.microfocus.com/documentation/books/ACU/901/gtman1/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ACUCOBOL_GT_User_s_Guide_Version_9_0_1&file=gt1212.htm",
+   "timestamp": "20260927095842",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/ACU/901/gtman4/gt4b2.htm": {
+   "capture": "https://web.archive.org/web/20260927095917/https://supportline.microfocus.com/documentation/books/ACU/901/gtman4/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ACUCOBOL_GT_Appendices_Version_9_0_1&file=gt4b2.htm",
+   "timestamp": "20260927095917",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/ACU/901/gtman4/gt4b3.htm": {
+   "capture": "https://web.archive.org/web/20260927095947/https://supportline.microfocus.com/documentation/books/ACU/901/gtman4/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ACUCOBOL_GT_Appendices_Version_9_0_1&file=gt4b3.htm",
+   "timestamp": "20260927095947",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/ACU/901/gtman4/gt4f4.htm": {
+   "capture": "https://web.archive.org/web/20260927100019/https://supportline.microfocus.com/documentation/books/ACU/901/gtman4/wwhelp/wwhimpl/common/html/wwhelp.htm?context=ACUCOBOL_GT_Appendices_Version_9_0_1&file=gt4f4.htm",
+   "timestamp": "20260927100019",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/ACU/901/gtman4/wwhdata/common/files.js": {
+   "capture": "https://web.archive.org/web/20260927095920/https://supportline.microfocus.com/documentation/books/ACU/901/gtman4/wwhdata/common/files.js",
+   "timestamp": "20260927095920",
+   "checked": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/liant/Archive/rmclrm80.pdf": {
+   "capture": "https://web.archive.org/web/20260927103609/https://supportline.microfocus.com/documentation/books/liant/Archive/rmclrm80.pdf",
+   "timestamp": "20260927103609",
+   "requested": "2026-09-27"
+  },
+  "https://supportline.microfocus.com/documentation/books/Relativity/v12/rmlangref_e02_v12.pdf": {
+   "capture": "https://web.archive.org/web/20260927113603/https://supportline.microfocus.com/documentation/books/Relativity/v12/rmlangref_e02_v12.pdf",
+   "timestamp": "20260927113603",
+   "requested": "2026-09-27"
+  },
+  "https://techdocs.broadcom.com/us/en/ca-mainframe-software/mainframe-essentials/software-toolkit/1-2/documentation-legal-notice-english-public.html": {
+   "capture": "https://web.archive.org/web/20260927100225/https://techdocs.broadcom.com/us/en/ca-mainframe-software/mainframe-essentials/software-toolkit/1-2/documentation-legal-notice-english-public.html",
+   "timestamp": "20260927100225",
+   "requested": "2026-09-27"
+  },
+  "https://techdocs.broadcom.com/us/en/ca-miscellaneous/legacy_bookshelves_and_pdfs/bookshelves_and_pdfs/bookshelves/ca-realia-ii-workbench.html": {
+   "capture": "https://web.archive.org/web/20260927103629/https://techdocs.broadcom.com/us/en/ca-miscellaneous/legacy_bookshelves_and_pdfs/bookshelves_and_pdfs/bookshelves/ca-realia-ii-workbench.html",
+   "timestamp": "20260927103629",
+   "requested": "2026-09-27"
+  },
+  "https://vmssoftware.com/about/privacy-policy/": {
+   "capture": "https://web.archive.org/web/20260927100314/https://vmssoftware.com/about/privacy-policy/",
+   "timestamp": "20260927100314",
+   "requested": "2026-09-27"
+  },
+  "https://www.bitsavers.org/pdf/ibm/370/OS_VS/cobol/GC26-3857-3_IBM_VS_COBOL_for_OS_VS_Rel_2.4_Aug83.pdf": {
+   "capture": "https://web.archive.org/web/20260105000418/http://www.bitsavers.org/pdf/ibm/370/OS_VS/cobol/GC26-3857-3_IBM_VS_COBOL_for_OS_VS_Rel_2.4_Aug83.pdf",
+   "timestamp": "20260105000418",
+   "checked": "2026-09-27"
+  },
+  "https://www.broadcom.com/api/getjson?url=company/legal/terms-of-use&locale=en-us": {
+   "capture": "https://web.archive.org/web/20260927100359/https://www.broadcom.com/api/getjson?url=company%2Flegal%2Fterms-of-use&locale=en-us",
+   "timestamp": "20260927100359",
+   "requested": "2026-09-27"
+  },
+  "https://www.cobol.gr.jp/": {
+   "capture": "https://web.archive.org/web/20260508112740/https://www.cobol.gr.jp/",
+   "timestamp": "20260508112740",
+   "checked": "2026-09-27"
+  },
+  "https://www.cobol.gr.jp/next_standard/standard006/": {
+   "capture": "https://web.archive.org/web/20260927100438/https://www.cobol.gr.jp/next_standard/standard006/",
+   "timestamp": "20260927100438",
+   "requested": "2026-09-27"
+  },
+  "https://www.gnu.org/licenses/fdl-1.3.txt": {
+   "capture": "https://web.archive.org/web/20260922042534/https://www.gnu.org/licenses/fdl-1.3.txt",
+   "timestamp": "20260922042534",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cics-ts/5.6?topic=commands-cobol-translation-output": {
+   "capture": "https://web.archive.org/web/20260927100850/https://www.ibm.com/docs/en/cics-ts/5.6.0?topic=commands-cobol-translation-output",
+   "timestamp": "20260927100850",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cics-ts/6.x?topic=areas-eib-exec-interface-block": {
+   "capture": "https://web.archive.org/web/20260927100925/https://www.ibm.com/docs/en/cics-ts/6.x?topic=areas-eib-exec-interface-block",
+   "timestamp": "20260927100925",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cics-ts/6.x?topic=reference-eib-fields": {
+   "capture": "https://web.archive.org/web/20240912230632/https://www.ibm.com/docs/en/cics-ts/6.x?topic=reference-eib-fields",
+   "timestamp": "20240912230632",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cics-tx/10.1.0?topic=reference-exec-interface-block-eib-fields": {
+   "capture": "https://web.archive.org/web/20251016123433/https://www.ibm.com/docs/en/cics-tx/10.1.0?topic=reference-exec-interface-block-eib-fields",
+   "timestamp": "20251016123433",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-aix/5.1.0?topic=appendixes-reserved-words": {
+   "capture": "https://web.archive.org/web/20260927101008/https://www.ibm.com/docs/en/cobol-aix/5.1.0?topic=appendixes-reserved-words",
+   "timestamp": "20260927101008",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-linux-x86/1.1.0?topic=appendixes-reserved-words": {
+   "capture": "https://web.archive.org/web/20260927101040/https://www.ibm.com/docs/en/cobol-linux-x86/1.1.0?topic=appendixes-reserved-words",
+   "timestamp": "20260927101040",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-linux-x86/1.2.0?topic=appendixes-reserved-words": {
+   "capture": "https://web.archive.org/web/20260927101115/https://www.ibm.com/docs/en/cobol-linux-x86/1.2.0?topic=appendixes-reserved-words",
+   "timestamp": "20260927101115",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4?topic=appendixes-reserved-words": {
+   "capture": "https://web.archive.org/web/20241110062624/https://www.ibm.com/docs/en/cobol-zos/6.4?topic=appendixes-reserved-words",
+   "timestamp": "20241110062624",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=appendixes-20022014-cobol-standard-features-implemented-in-enterprise-cobol-version-3-later-versions": {
+   "capture": "https://web.archive.org/web/20260927101151/https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=appendixes-20022014-cobol-standard-features-implemented-in-enterprise-cobol-version-3-later-versions",
+   "timestamp": "20260927101151",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=appendixes-extensions-cobol-standards": {
+   "capture": "https://web.archive.org/web/20250521093915/https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=appendixes-extensions-cobol-standards",
+   "timestamp": "20250521093915",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=functions-function-definitions": {
+   "capture": "https://web.archive.org/web/20260923185015/https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=functions-function-definitions",
+   "timestamp": "20260923185015",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=literals-special-registers": {
+   "capture": "https://web.archive.org/web/20260927101234/https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=literals-special-registers",
+   "timestamp": "20260927101234",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=reference-intrinsic-functions": {
+   "capture": "https://web.archive.org/web/20260910102404/https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=reference-intrinsic-functions",
+   "timestamp": "20260910102404",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=registers-debug-item": {
+   "capture": "https://web.archive.org/web/20250514020656/https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=registers-debug-item",
+   "timestamp": "20250514020656",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=section-special-names-paragraph": {
+   "capture": "https://web.archive.org/web/20260927101337/https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=section-special-names-paragraph",
+   "timestamp": "20260927101337",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statement-write-sequential-files": {
+   "capture": "https://web.archive.org/web/20260927101415/https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statement-write-sequential-files",
+   "timestamp": "20260927101415",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=sqlca-description-fields": {
+   "capture": "https://web.archive.org/web/20260215150643/https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=sqlca-description-fields",
+   "timestamp": "20260215150643",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=sqlca-included": {
+   "capture": "https://web.archive.org/web/20260315151639/https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=sqlca-included",
+   "timestamp": "20260315151639",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=sqlda-description-fields": {
+   "capture": "https://web.archive.org/web/20260927101456/https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=sqlda-description-fields",
+   "timestamp": "20260927101456",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=sqlda-included": {
+   "capture": "https://web.archive.org/web/20260421020509/https://www.ibm.com/docs/en/db2-for-zos/13.0.0?topic=sqlda-included",
+   "timestamp": "20260421020509",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SS6SG3_6.2.0/pdf/new.pdf": {
+   "capture": "https://web.archive.org/web/20241007090537/https://www.ibm.com/docs/en/SS6SG3_6.2.0/pdf/new.pdf",
+   "timestamp": "20241007090537",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SS6SG3_6.3.0/pdf/new.pdf": {
+   "capture": "https://web.archive.org/web/20260607075038/https://www.ibm.com/docs/en/SS6SG3_6.3.0/pdf/new.pdf",
+   "timestamp": "20260607075038",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SS6SG3_6.4.0/pdf/lrmvs.pdf": {
+   "capture": "https://web.archive.org/web/20260927100601/https://www.ibm.com/docs/en/SS6SG3_6.4.0/pdf/lrmvs.pdf",
+   "timestamp": "20260927100601",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SS6SG3_6.4.0/pdf/mg.pdf": {
+   "capture": "https://web.archive.org/web/20241007084109/https://www.ibm.com/docs/en/SS6SG3_6.4.0/pdf/mg.pdf",
+   "timestamp": "20241007084109",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SS6SG3_6.4.0/pdf/new.pdf": {
+   "capture": "https://web.archive.org/web/20260927100638/https://www.ibm.com/docs/en/SS6SG3_6.4.0/pdf/new.pdf",
+   "timestamp": "20260927100638",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SS7FZ2_1.2.0/pdf/lrlin.pdf": {
+   "capture": "https://web.archive.org/web/20241102120304/https://www.ibm.com/docs/en/SS7FZ2_1.2.0/pdf/lrlin.pdf",
+   "timestamp": "20241102120304",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SSEPH2_13.1.0/com.ibm.ims13.doc.apg/ims_specifyingdib.htm": {
+   "failed": "Save Page Now answered 520",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SSEPH2_15.4.0/com.ibm.ims154.doc.apg/ims_specifyingdib.htm": {
+   "capture": "https://web.archive.org/web/20260927100752/https://www.ibm.com/docs/en/ims/15.4.0?topic=elements-specifying-dli-interface-block-dib",
+   "timestamp": "20260927100752",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/SSGMCP_5.3.0/com.ibm.cics.ts.applicationprogramming.doc/topics/dfhp4_eibfields.html": {
+   "failed": "Save Page Now answered 520",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/t-tt-and-t?topic=notices-terms-conditions-product-documentation": {
+   "capture": "https://web.archive.org/web/20260927101538/https://www.ibm.com/docs/en/t-tt-and-t?topic=notices-terms-conditions-product-documentation",
+   "timestamp": "20260927101538",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/docs/en/txseries/11.1?topic=reference-exec-interface-block-eib-fields": {
+   "capture": "https://web.archive.org/web/20260927101619/https://www.ibm.com/docs/en/txseries/11.1.0?topic=reference-exec-interface-block-eib-fields",
+   "timestamp": "20260927101619",
+   "requested": "2026-09-27"
+  },
+  "https://www.ibm.com/legal/terms": {
+   "capture": "https://web.archive.org/web/20260918103204/https://www.ibm.com/legal/terms",
+   "timestamp": "20260918103204",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/robots.txt": {
+   "capture": "https://web.archive.org/web/20260925165243/https://www.ibm.com/robots.txt",
+   "timestamp": "20260925165243",
+   "checked": "2026-09-27"
+  },
+  "https://www.ibm.com/support/pages/apar/PI88564": {
+   "capture": "https://web.archive.org/web/20260927101701/https://www.ibm.com/support/pages/apar/PI88564",
+   "timestamp": "20260927101701",
+   "requested": "2026-09-27"
+  },
+  "https://www.incits.org/dotAsset/732f9f1c-f305-4198-b893-95d7d8bbb23e.pdf": {
+   "capture": "https://web.archive.org/web/20260927101747/https://www.incits.org/dotAsset/732f9f1c-f305-4198-b893-95d7d8bbb23e.pdf",
+   "timestamp": "20260927101747",
+   "requested": "2026-09-27"
+  },
+  "https://www.incits.org/news-events/news-coverage/available-now-2023-edition-of-isoiec-1989-cobol": {
+   "capture": "https://web.archive.org/web/20260927101815/https://www.incits.org/news-events/news-coverage/available-now-2023-edition-of-isoiec-1989-cobol",
+   "timestamp": "20260927101815",
+   "requested": "2026-09-27"
+  },
+  "https://www.incits.org/robots.txt": {
+   "capture": "https://web.archive.org/web/20260508181827/https://www.incits.org/robots.txt",
+   "timestamp": "20260508181827",
+   "checked": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/net-express/nx31books/lrares.htm": {
+   "capture": "https://web.archive.org/web/20230930000711/https://www.microfocus.com/documentation/net-express/nx31books/lrares.htm",
+   "timestamp": "20230930000711",
+   "checked": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/net-express/nx31books/lrclan.htm": {
+   "capture": "https://web.archive.org/web/20250914080829/https://www.microfocus.com/documentation/net-express/nx31books/lrclan.htm",
+   "timestamp": "20250914080829",
+   "checked": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/reuze/60d/lhclan.htm": {
+   "capture": "https://web.archive.org/web/20260927101859/https://www.microfocus.com/documentation/reuze/60d/lhclan.htm",
+   "timestamp": "20260927101859",
+   "requested": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/reuze/60d/lhpdf790.htm": {
+   "capture": "https://web.archive.org/web/20260927101938/https://www.microfocus.com/documentation/reuze/60d/lhpdf790.htm",
+   "timestamp": "20260927101938",
+   "requested": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/reuze/60d/lhpdf795.htm": {
+   "capture": "https://web.archive.org/web/20260927102049/https://www.microfocus.com/documentation/reuze/60d/lhpdf795.htm",
+   "timestamp": "20260927102049",
+   "requested": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHARES01.html": {
+   "capture": "https://web.archive.org/web/20260920104225/https://www.opentext.com/about/brands/microfocus",
+   "timestamp": "20260920104225",
+   "requested": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHARES01U005.html": {
+   "capture": "https://web.archive.org/web/20260920104225/https://www.opentext.com/about/brands/microfocus",
+   "timestamp": "20260920104225",
+   "requested": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHARES04.html": {
+   "capture": "https://web.archive.org/web/20251206215131/https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHARES04.html",
+   "timestamp": "20251206215131",
+   "checked": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHCLANU005.html": {
+   "capture": "https://web.archive.org/web/20251109202611/https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHCLANU005.html",
+   "timestamp": "20251109202611",
+   "checked": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHCLANU020.html": {
+   "capture": "https://web.archive.org/web/20251204224624/https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHCLANU020.html",
+   "timestamp": "20251204224624",
+   "checked": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHPDF205.html": {
+   "capture": "https://web.archive.org/web/20260920104225/https://www.opentext.com/about/brands/microfocus",
+   "timestamp": "20260920104225",
+   "requested": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHPDF790.html": {
+   "capture": "https://web.archive.org/web/20260920104225/https://www.opentext.com/about/brands/microfocus",
+   "timestamp": "20260920104225",
+   "requested": "2026-09-27"
+  },
+  "https://www.microfocus.com/documentation/visual-cobol/vc90/EclUNIX/HRLHLHPDF795.html": {
+   "capture": "https://web.archive.org/web/20260920104225/https://www.opentext.com/about/brands/microfocus",
+   "timestamp": "20260920104225",
+   "requested": "2026-09-27"
+  },
+  "https://www.microfocus.com/media/documentation/cobol-it-compiler-suite-enterprise-edition-getting-started-documentation.pdf": {
+   "capture": "https://web.archive.org/web/20260927102431/https://www.microfocus.com/media/documentation/cobol-it-compiler-suite-enterprise-edition-getting-started-documentation.pdf",
+   "timestamp": "20260927102431",
+   "requested": "2026-09-27"
+  },
+  "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications": {
+   "capture": "https://web.archive.org/web/20260926074537/https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+   "timestamp": "20260926074537",
+   "checked": "2026-09-27"
+  },
+  "https://www.open-std.org/jtc1/sc22/open/ISO-IECJTC1-SC22_N4561_ISO_IEC_FCD_1989__Information_technol.pdf": {
+   "capture": "https://web.archive.org/web/20260613024955/https://www.open-std.org/jtc1/sc22/open/ISO-IECJTC1-SC22_N4561_ISO_IEC_FCD_1989__Information_technol.pdf",
+   "timestamp": "20260613024955",
+   "requested": "2026-09-27"
+  },
+  "https://www.open-std.org/jtc1/sc22/open/n3204.pdf": {
+   "capture": "https://web.archive.org/web/20240327061349/https://www.open-std.org/jtc1/sc22/open/n3204.pdf",
+   "timestamp": "20240327061349",
+   "checked": "2026-09-27"
+  },
+  "https://www.open-std.org/jtc1/sc22/open/n3250.html": {
+   "capture": "https://web.archive.org/web/20260927102550/https://www.open-std.org/jtc1/sc22/open/n3250.html",
+   "timestamp": "20260927102550",
+   "requested": "2026-09-27"
+  },
+  "https://www.opentext.com/about/copyright-information": {
+   "capture": "https://web.archive.org/web/20260920101258/https://www.opentext.com/about/copyright-information",
+   "timestamp": "20260920101258",
+   "checked": "2026-09-27"
+  },
+  "https://www.opentext.com/about/legal/website-terms-of-use": {
+   "capture": "https://web.archive.org/web/20260927102638/https://www.opentext.com/about/legal/website-terms-of-use",
+   "timestamp": "20260927102638",
+   "requested": "2026-09-27"
+  },
+  "https://www.stratus.com/about/company-information/legal/": {
+   "capture": "https://web.archive.org/web/20260927102709/https://www.stratus.com/about/company-information/legal/",
+   "timestamp": "20260927102709",
+   "requested": "2026-09-27"
+  },
+  "https://www.veryant.com/legal.html": {
+   "capture": "https://web.archive.org/web/20260618081602/https://www.veryant.com/legal.html",
+   "timestamp": "20260618081602",
+   "checked": "2026-09-27"
+  },
+  "https://www.veryant.com/resources/isCOBOL2023r1_releaseoverview.pdf": {
+   "capture": "https://web.archive.org/web/20240701215632/https://www.veryant.com/resources/isCOBOL2023r1_releaseoverview.pdf",
+   "timestamp": "20240701215632",
+   "checked": "2026-09-27"
+  }
+ }
+}

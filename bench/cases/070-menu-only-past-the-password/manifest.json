@@ -1,0 +1,7 @@
+{
+ "id": "070-menu-only-past-the-password",
+ "title": "The menu is reached only past the password comparison, whatever key is pressed",
+ "cwe": "CWE-288",
+ "expect": [],
+ "negativeFor": ["cics-signon-bypassed"]
+}

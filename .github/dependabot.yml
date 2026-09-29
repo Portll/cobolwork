@@ -1,0 +1,10 @@
+# cobolwork has no runtime or development dependencies, and CI refuses to let one appear. The only
+# versioned things here are the actions the workflow pins.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(ci)"

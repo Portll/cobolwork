@@ -1,0 +1,8 @@
+{
+ "id": "059-terminal-input-bounds-a-loop",
+ "title": "How many rows to list comes from the terminal, and the counter walking to it subscripts a ten-row table",
+ "cwe": "CWE-129",
+ "expect": [
+  { "rule": "cics-terminal-to-loop-bound", "file": "LOOPN.cbl" }
+ ]
+}

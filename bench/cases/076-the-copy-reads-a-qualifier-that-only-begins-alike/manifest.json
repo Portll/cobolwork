@@ -1,0 +1,11 @@
+{
+ "id": "076-the-copy-reads-a-qualifier-that-only-begins-alike",
+ "title": "The same copy from PRODUCTS, a qualifier that only begins with the production one",
+ "cwe": "CWE-653",
+ "expect": [],
+ "negativeFor": [
+  "recon-nonproduction-job-reads-production-dataset",
+  "recon-nonproduction-job-writes-production-dataset",
+  "recon-production-name-outside-production"
+ ]
+}

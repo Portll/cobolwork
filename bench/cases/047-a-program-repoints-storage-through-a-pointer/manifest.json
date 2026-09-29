@@ -1,0 +1,11 @@
+{
+ "id": "047-a-program-repoints-storage-through-a-pointer",
+ "title": "A program addresses storage through a pointer, so flow through it is not followed",
+ "cwe": "CWE-119",
+ "expect": [
+  {
+   "rule": "opaque-pointer-addressing",
+   "file": "OPAQUE1.cbl"
+  }
+ ]
+}

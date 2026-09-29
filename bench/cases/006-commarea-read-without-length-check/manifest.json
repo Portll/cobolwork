@@ -1,0 +1,11 @@
+{
+ "id": "006-commarea-read-without-length-check",
+ "title": "A program reads its communication area without checking EIBCALEN",
+ "cwe": "CWE-1284",
+ "expect": [
+  {
+   "rule": "cics-commarea-without-length-check",
+   "file": "CNOEIB.cbl"
+  }
+ ]
+}

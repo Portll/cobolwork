@@ -1,0 +1,8 @@
+{
+ "id": "021-file-record-written-to-socket",
+ "title": "A customer record is written to a TCP socket",
+ "cwe": "CWE-201",
+ "expect": [
+  { "rule": "file-record-to-socket-send", "file": "X3.cbl" }
+ ]
+}

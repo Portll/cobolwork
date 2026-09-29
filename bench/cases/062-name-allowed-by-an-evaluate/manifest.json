@@ -1,0 +1,7 @@
+{
+ "id": "062-name-allowed-by-an-evaluate",
+ "title": "An EVALUATE lets two report names through and ends the run on any other before the name is run",
+ "cwe": "CWE-78",
+ "expect": [],
+ "negativeFor": ["argv-or-env-to-os-command"]
+}

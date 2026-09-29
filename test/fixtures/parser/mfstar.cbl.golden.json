@@ -1,0 +1,61 @@
+{
+ "case": {
+  "file": "mfstar.cbl",
+  "format": "free",
+  "std": "mf",
+  "note": "in Micro Focus free form a * or / in column 1 makes the line a comment, and an indented * multiplies"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-A",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-B",
+    "size": 2,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-A",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-B",
+    "line": 6,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "FIRST-PARA"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "SECOND-PARA"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "THIRD-PARA"
+   }
+  ],
+  "calls": []
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "case": {
+  "file": "cpyext.cbl",
+  "note": "COPY naming a copybook with its file extension — the period before .cpy is not the statement terminator"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-NAME",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-NAME",
+    "line": 1,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

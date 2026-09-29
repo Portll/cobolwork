@@ -1,0 +1,12 @@
+{
+ "id": "032-the-default-delimiter-ends-the-stream",
+ "title": "The same job ending its stream at /*, with nothing hidden after it",
+ "cwe": "CWE-1427",
+ "expect": [],
+ "negativeFor": [
+  "jcl-dlm-hides-instream",
+  "jcl-instream-credential",
+  "jcl-instream-security-command",
+  "jcl-instream-destructive"
+ ]
+}

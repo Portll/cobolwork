@@ -1,0 +1,46 @@
+name: False positive
+description: cobolwork reported something that is not a flaw
+labels: [false-positive, precision]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Precision is a measured, published number here. A false positive is a wanted report, not a
+        complaint — it usually becomes a benchmark case with the flaw removed.
+  - type: input
+    id: rule
+    attributes:
+      label: Rule
+      description: The `rule` field of the finding, for example `argv-or-env-to-os-command`.
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: The finding
+      description: Paste the finding, including its `trace`. Findings carry no source text, so this is safe to paste.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: The smallest COBOL that reproduces it
+      description: Reduced as far as it still fires. It must compile — `node bench/run.mjs --validate` is the check.
+      render: cobol
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it is not a flaw
+      description: What makes the path unreachable, or the value trusted.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: cobolwork version
+      description: The `toolVersion` field of the report, or `cobolwork --version`.
+    validations:
+      required: true

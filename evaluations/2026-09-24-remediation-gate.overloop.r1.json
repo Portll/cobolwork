@@ -1,0 +1,56 @@
+{
+ "schema": "hand-overloop/v1",
+ "pass": 1,
+ "of": 2,
+ "date": "2026-09-24",
+ "target": "docs/spec/remediation-gate.md, first draft",
+ "sourceEval": "evaluations/2026-09-24-remediation-gate.bifocal.json",
+ "phase1_feedbackHarvest": {
+  "improvementSurface": ["F1 statement-removed rests on text (RPN 192)", "F2 paths in reasons (147)", "F3 compile misses copybook reach (120)", "F4 determinism claim (90)", "F5 exit 0 on fail (90)", "F6 pairing collision (80)", "F7 four flow runs (42)", "F8 cut routes unexplained (36)", "F9 unbuildable witnesses (27)"],
+  "reducedByChallenge": ["Clarity 7.0 -> 6.5: 'no longer flagged' by what; which source of several"],
+  "divergence": ["statement-removed: fractal (engine fact) over edge (text fact)", "compile: fractal (follow copybook reach) over edge (changed files only)"],
+  "lowestDims": { "Robustness": 5.0, "Completeness": 5.5, "Security": 5.5, "DataIntegrity": 5.5, "Efficiency": 5.5 },
+  "blockers": [],
+  "outOfDomain": ["commitwork wrapping reasons in its untrusted-text envelope: commitwork's to build; the spec states the obligation and cobolwork caps what it emits"]
+ },
+ "improvements": [
+  { "id": "I1", "fixes": "F1", "tag": "[STRUCTURAL | CRITICAL | PHI-HIGH | LOAD-BEARING]", "change": "statement-removed and source-removed rest on the engine's own listings: the flow engine lists sources as it lists sinks, and an outcome holds only where the listing says the statement is gone", "files": ["lib/dataflow.mjs (listSources beside listSinks, analyze)", "docs/spec/remediation-gate.md §5"], "linesEst": 20, "cluster": "D Risk", "blastRadius": "dataflow.mjs is the engine every set's findings come from; the listing is opt-in and returns nothing unless asked, so no report changes" },
+  { "id": "I2", "fixes": "F6", "tag": "[BEHAVIORAL | SAFE | PHI-HIGH | ISOLATED]", "change": "pairing is a multiset match: every exact fingerprint match is made first across all findings, then the scope level on what remains, then the route level", "files": ["lib/gate.mjs", "spec §6"], "linesEst": 30, "cluster": "C Pattern" },
+  { "id": "I3", "fixes": "F2", "tag": "[BEHAVIORAL | RISK-BEARING | PHI-HIGH | ISOLATED]", "change": "the spec names reasons as untrusted text because paths are the repository's; each path is capped at 120 characters and passed through printable, and the document lists which of its fields hold repository text", "files": ["lib/gate.mjs", "spec §7"], "linesEst": 10, "cluster": "D Risk" },
+  { "id": "I4", "fixes": "F3", "tag": "[BEHAVIORAL | SAFE | PHI-MEDIUM | ISOLATED]", "change": "the compile set is every program file the patch changed plus every program whose resolved COPYs include a changed file", "files": ["lib/gate.mjs", "spec §9"], "linesEst": 15, "cluster": "B Observation" },
+  { "id": "I5", "fixes": "F4", "tag": "[OBSERVABILITY | SAFE | PHI-MEDIUM | ISOLATED]", "change": "G-I6 holds when both scans are complete; an incomplete scan is undecided whichever way it falls, so the verdict can move only between undecided and the complete answer", "files": ["spec §10"], "linesEst": 2, "cluster": "A Intent" },
+  { "id": "I6", "fixes": "F5", "tag": "[ADDITIVE | SAFE | PHI-MEDIUM | ISOLATED]", "change": "--exit-code: exit 0 on pass, 1 on fail, 3 on undecided; 2 stays could-not-run. Without it, exit 0 whenever the gate ran", "files": ["bin/cobolwork.mjs", "spec §3"], "linesEst": 6, "cluster": "A Intent" },
+  { "id": "I7", "fixes": "F8", "tag": "[OBSERVABILITY | SAFE | PHI-MEDIUM | ISOLATED]", "change": "gone-unexplained names its commonest cause: a route cut between source and sink, which the gate cannot place because trace hops carry no line; its reason says a person decides and why", "files": ["spec §5", "lib/gate.mjs"], "linesEst": 4, "cluster": "B Observation" },
+  { "id": "I8", "fixes": "F9", "tag": "[COMPLETING | SAFE | PHI-HIGH | ISOLATED]", "change": "G1.8's witness is the MOVE between source and sink deleted; G2.6's is a copybook the program copies removed (measured: coverageIncomplete true, compile set kind coverage)", "files": ["spec §11"], "linesEst": 6, "cluster": "E Learning" },
+  { "id": "I9", "fixes": "D8 structural note", "tag": "[OBSERVABILITY | SAFE | PHI-MEDIUM | ISOLATED]", "change": "the document says which pairing level found the target in the head: pairedBy fingerprint, scope or route", "files": ["lib/gate.mjs", "spec §7"], "linesEst": 3, "cluster": "B Observation" },
+  { "id": "I10", "fixes": "F7", "tag": "[STRUCTURAL | SAFE | PHI-MEDIUM | LOAD-BEARING]", "change": "the scan carries the flow engine's sink and source listings when asked, so a gate runs two flow analyses rather than four", "files": ["lib/sets/flow.mjs", "lib/scan.mjs"], "linesEst": 6, "cluster": "C Pattern", "blastRadius": "flow.scan and scanAll build every report; the lists appear only when opts.listSinks is set, and a test holds an ordinary report unchanged" }
+ ],
+ "phase2_5_avoidanceAudit": {
+  "byType": { "STRUCTURAL": 2, "BEHAVIORAL": 3, "OBSERVABILITY": 3, "ADDITIVE": 1, "COMPLETING": 1 },
+  "gapsOver3": ["Robustness 5.0", "Completeness 5.5", "Security 5.5", "DataIntegrity 5.5", "Efficiency 5.5"],
+  "avoidanceFlag": false,
+  "painIndex": [ { "id": "I1", "effort": 3, "impact": 3, "disruption": 2, "pain": 18 }, { "id": "I10", "effort": 2, "impact": 2, "disruption": 2, "pain": 8 }, { "id": "I2", "effort": 2, "impact": 2, "disruption": 1, "pain": 4 } ],
+  "note": "the three highest-pain items are present; every FMEA row has an improvement"
+ },
+ "phase4_critique": [
+  { "id": "I1", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no: opt-in", "simpler": "a text-only check is simpler and is what F1 is about", "phiJustified": true, "survives": true },
+  { "id": "I2", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no", "simpler": "no", "phiJustified": true, "survives": true },
+  { "id": "I3", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no", "simpler": "dropping paths from reasons would make a reason useless to the drafter", "phiJustified": true, "survives": true },
+  { "id": "I4", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no", "simpler": "no", "phiJustified": true, "survives": true },
+  { "id": "I5", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no", "simpler": "no", "phiJustified": true, "survives": true },
+  { "id": "I6", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no: opt-in", "simpler": "no", "phiJustified": true, "survives": true },
+  { "id": "I7", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no", "simpler": "no", "phiJustified": true, "survives": true },
+  { "id": "I8", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no", "simpler": "no", "phiJustified": true, "survives": true },
+  { "id": "I9", "strays": false, "complexityWorthIt": true, "breaksConsumers": "no", "simpler": "no", "phiJustified": "MEDIUM: grounded in D8's structural note", "survives": true },
+  { "id": "I10", "strays": false, "complexityWorthIt": "yes: on large trees the memory guard stops scans, and every avoided flow run is one less chance of an undecided verdict", "breaksConsumers": "no: opt-in", "simpler": "running analyze separately is simpler and doubles the cost", "phiJustified": true, "survives": true }
+ ],
+ "phase5_regressionsSet": {
+  "togetherRisk": "I1 and I10 both touch the path every report is built on; both are opt-in behind one option, and an ordinary scan must produce a byte-identical report",
+  "riskBearingLoadBearing": ["I1 (CRITICAL, LOAD-BEARING)"],
+  "ordering": "I1's listSources before I10 carries it; both before the gate uses them; I2 before I9, which reports its levels",
+  "resourceConflicts": "lib/gate.mjs takes I2, I3, I4, I7, I9; spec takes all",
+  "testGapsCreated": ["listSources returns every source the graph holds", "a scan without listSinks carries no lists", "pairing prefers exact matches when a scope key is shared"],
+  "netDelta": "about +100 lines of engine and gate code beyond the gate itself; dimensions moved: Robustness, Security, DataIntegrity, Efficiency, Testability"
+ },
+ "rankedOrder": ["I8", "I5", "I1", "I10", "I2", "I9", "I3", "I7", "I4", "I6"]
+}

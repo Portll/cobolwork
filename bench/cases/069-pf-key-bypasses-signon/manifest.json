@@ -1,0 +1,8 @@
+{
+ "id": "069-pf-key-bypasses-signon",
+ "title": "PF5 transfers to the menu a successful sign-on grants, without the password comparison",
+ "cwe": "CWE-288",
+ "expect": [
+  { "rule": "cics-signon-bypassed", "file": "SIGNPF5.cbl" }
+ ]
+}

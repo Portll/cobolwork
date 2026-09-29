@@ -1,0 +1,11 @@
+{
+ "id": "004-web-input-built-into-sql",
+ "title": "Web input concatenated into a statement run with EXECUTE IMMEDIATE",
+ "cwe": "CWE-89",
+ "expect": [
+  {
+   "rule": "cics-web-to-dynamic-sql",
+   "file": "S1.cbl"
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+node_modules/
+*.log
+.DS_Store
+._*
+reports/
+scan.json
+*.tgz
+.env
+.env.*
+.claude/
+
+# Written by `npm pack` from the commit it packs, and removed after.
+lib/revision.json
+
+# Feed source documents are other people's copyright - PCI DSS is the Council's, the utility
+# manuals are IBM's - so they are cached for the gate to check quotes against and never committed.
+# The feed ships citations, not text.
+feed/sources/
+feed/out/
+
+# diag/fetch-corpus.mjs defaults to ./corpus: other people's repositories, never ours to commit.
+corpus/
+
+# diag/build-corpus.mjs and diag/precompile-probe.mjs write per-repository rows about the corpus.
+*.ndjson

@@ -1,0 +1,77 @@
+{
+ "case": {
+  "file": "gnuwords2.cbl",
+  "note": "SUBSTITUTE, SUBSTITUTE-CASE and the MODULE-* functions, B-SHIFT-L and B-SHIFT-R, COB-CRT-STATUS, UPON STDOUT and STDERR, and RETURNING NOTHING need no declaration"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-TEXT",
+    "size": 20,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-WHEN",
+    "size": 30,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-BITS",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-STATUS",
+    "size": 4,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-TEXT",
+    "line": 9,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-WHEN",
+    "line": 10,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-BITS",
+    "line": 11,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-STATUS",
+    "line": 12,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": [
+   {
+    "prog": "",
+    "kind": "L",
+    "name": "CBL_OC_NANOSLEEP"
+   }
+  ]
+ }
+}

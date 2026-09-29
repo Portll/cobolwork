@@ -1,0 +1,7 @@
+{
+ "id": "060-loop-stops-at-the-table-size",
+ "title": "The same loop stops at a constant equal to the table's size, whatever was typed",
+ "cwe": "CWE-129",
+ "expect": [],
+ "negativeFor": ["cics-terminal-to-loop-bound"]
+}

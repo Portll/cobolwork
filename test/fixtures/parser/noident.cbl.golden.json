@@ -1,0 +1,97 @@
+{
+ "case": {
+  "file": "noident.cbl",
+  "note": "a program that opens at SPECIAL-NAMES, with no identification division, is one program named for its file"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "KEY-STATUS",
+    "size": 3,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "KEY-TYPE",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "KEY-CODE-1",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "KEY-CODE-2",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-COUNT",
+    "size": 4,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "KEY-STATUS",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "KEY-TYPE",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "KEY-CODE-1",
+    "line": 7,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "KEY-CODE-2",
+    "line": 8,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-COUNT",
+    "line": 9,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "MAIN-PARA"
+   }
+  ],
+  "calls": [
+   {
+    "prog": "",
+    "kind": "L",
+    "name": "CBL_GET_KBD_STATUS"
+   }
+  ]
+ }
+}

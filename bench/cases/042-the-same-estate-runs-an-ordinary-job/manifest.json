@@ -1,0 +1,11 @@
+{
+ "id": "042-the-same-estate-runs-an-ordinary-job",
+ "title": "The same pack loaded, over a job that issues no vendor command",
+ "cwe": "CWE-284",
+ "expect": [],
+ "negativeFor": [
+  "vendor-privileged-command",
+  "jcl-instream-security-command",
+  "jcl-instream-credential"
+ ]
+}

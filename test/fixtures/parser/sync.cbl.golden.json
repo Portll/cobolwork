@@ -1,0 +1,687 @@
+{
+ "case": {
+  "file": "sync.cbl",
+  "note": "SYNCHRONIZED aligns binary, float, pointer and index items to their length, counted from the record's start, with the slack inside the group that holds them; a table entry is rounded up to its widest alignment"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R-FLAT",
+    "size": 18,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-FLAT",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "P-FLAT",
+    "size": 8,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "B-FLAT",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R-NEST",
+    "size": 42,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-NEST",
+    "size": 9,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G-FIRST",
+    "size": 19,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "P-FIRST",
+    "size": 8,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "B-FIRST",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "C-FIRST",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G-LATER",
+    "size": 14,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "B-LATER",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "P-LATER",
+    "size": 8,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "C-LATER",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R-KINDS",
+    "size": 34,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-KINDS",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "L-KINDS",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "D-KINDS",
+    "size": 8,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F-KINDS",
+    "size": 8,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "H-KINDS",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "I-KINDS",
+    "size": 4,
+    "type": "INDEX"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "S-KINDS",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R-NOT-MOVED",
+    "size": 11,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-PACKED",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "C-PACKED",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "X-COMPX",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "N-DISPLAY",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R-TABLE",
+    "size": 19,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-TABLE",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "T-ENTRY",
+    "size": 16,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "X-ENTRY",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "L-ENTRY",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "Z-TABLE",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R-ELEM",
+    "size": 17,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-ELEM",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "L-ELEM",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "Z-ELEM",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R-DEEP",
+    "size": 17,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-DEEP",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G-DEEP",
+    "size": 13,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "X-DEEP",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "G-DEEPER",
+    "size": 12,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "15",
+    "name": "Y-DEEP",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "15",
+    "name": "P-DEEP",
+    "size": 8,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "Z-DEEP",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "R-GROUP",
+    "size": 5,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-GROUP",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "L-GROUP",
+    "size": 4,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "R-FLAT",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-FLAT",
+    "line": 6,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "P-FLAT",
+    "line": 7,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "B-FLAT",
+    "line": 8,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R-NEST",
+    "line": 9,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-NEST",
+    "line": 10,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "G-FIRST",
+    "line": 11,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "P-FIRST",
+    "line": 12,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "B-FIRST",
+    "line": 13,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "C-FIRST",
+    "line": 14,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "G-LATER",
+    "line": 15,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "B-LATER",
+    "line": 16,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "P-LATER",
+    "line": 17,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "C-LATER",
+    "line": 18,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R-KINDS",
+    "line": 19,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-KINDS",
+    "line": 20,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "L-KINDS",
+    "line": 21,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "D-KINDS",
+    "line": 22,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F-KINDS",
+    "line": 23,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "H-KINDS",
+    "line": 24,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "I-KINDS",
+    "line": 25,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "S-KINDS",
+    "line": 26,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R-NOT-MOVED",
+    "line": 27,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-PACKED",
+    "line": 28,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "C-PACKED",
+    "line": 29,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "X-COMPX",
+    "line": 30,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "N-DISPLAY",
+    "line": 31,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R-TABLE",
+    "line": 32,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-TABLE",
+    "line": 33,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "T-ENTRY",
+    "line": 34,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "X-ENTRY",
+    "line": 35,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "L-ENTRY",
+    "line": 36,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "Z-TABLE",
+    "line": 37,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R-ELEM",
+    "line": 38,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-ELEM",
+    "line": 39,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "L-ELEM",
+    "line": 40,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "Z-ELEM",
+    "line": 41,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R-DEEP",
+    "line": 42,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-DEEP",
+    "line": 43,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "G-DEEP",
+    "line": 44,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "X-DEEP",
+    "line": 45,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "G-DEEPER",
+    "line": 46,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "Y-DEEP",
+    "line": 47,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "P-DEEP",
+    "line": 48,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "Z-DEEP",
+    "line": 49,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "R-GROUP",
+    "line": 50,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-GROUP",
+    "line": 51,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "L-GROUP",
+    "line": 52,
+    "state": "parent",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

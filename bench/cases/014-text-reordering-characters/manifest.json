@@ -1,0 +1,11 @@
+{
+ "id": "014-text-reordering-characters",
+ "title": "A right-to-left override makes a comment read differently than it runs",
+ "cwe": "CWE-94",
+ "expect": [
+  {
+   "rule": "bidi-or-invisible-characters",
+   "file": "HBIDI.cbl"
+  }
+ ]
+}

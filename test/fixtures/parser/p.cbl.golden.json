@@ -1,0 +1,99 @@
+{
+ "case": {
+  "file": "p.cbl",
+  "note": "pointer and index tables report whole-table sizes"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "P1",
+    "size": 24,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "T2",
+    "size": 24,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "T2-E",
+    "size": 24,
+    "type": "POINTER"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "T3",
+    "size": 120000,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "T3-E",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "T4",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "P1",
+    "line": 5,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "T2",
+    "line": 6,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "T2-E",
+    "line": 7,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "T3",
+    "line": 8,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "T3-E",
+    "line": 9,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "T4",
+    "line": 10,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

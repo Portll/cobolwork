@@ -1,0 +1,10 @@
+{
+ "id": "036-the-build-pins-a-compiler-nothing-names",
+ "title": "The same build pinning a version no published advisory affects",
+ "cwe": "CWE-1395",
+ "expect": [],
+ "negativeFor": [
+  "build-pins-vulnerable-compiler",
+  "build-pins-exploited-compiler"
+ ]
+}

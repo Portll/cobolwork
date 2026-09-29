@@ -1,0 +1,203 @@
+{
+ "case": {
+  "file": "cpytag.cbl",
+  "note": "a tag written against other text, 'X'-CLE and FS-(), is replaced where it stands, and the text around it joins the replacement into one word"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "BASEB",
+    "size": 15,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "BASEB-CLE",
+    "size": 14,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "BASEB-CODE",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "BASEB-NAME",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "BASEB-FLAG",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "COTIS",
+    "size": 15,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "COTIS-CLE",
+    "size": 14,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "COTIS-CODE",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "COTIS-NAME",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "COTIS-FLAG",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "FILEIN-REC",
+    "size": 8,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILEIN-KEY",
+    "size": 8,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "FS-FILEIN",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "BASEB",
+    "line": 5,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BASEB-CLE",
+    "line": 1,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BASEB-CODE",
+    "line": 2,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BASEB-NAME",
+    "line": 3,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "BASEB-FLAG",
+    "line": 4,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "COTIS",
+    "line": 7,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "COTIS-CLE",
+    "line": 1,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "COTIS-CODE",
+    "line": 2,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "COTIS-NAME",
+    "line": 3,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "COTIS-FLAG",
+    "line": 4,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FILEIN-REC",
+    "line": 1,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FILEIN-KEY",
+    "line": 2,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FS-FILEIN",
+    "line": 3,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "MAIN-PARA"
+   }
+  ],
+  "calls": []
+ }
+}

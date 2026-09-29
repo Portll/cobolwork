@@ -1,0 +1,71 @@
+{
+ "case": {
+  "file": "r2.cbl",
+  "note": "REPLACE substituting inside picture strings"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "A",
+    "size": 80,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "B",
+    "size": 7,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "C",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "D",
+    "size": 12,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "A",
+    "line": 6,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "B",
+    "line": 7,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "C",
+    "line": 8,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "D",
+    "line": 9,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

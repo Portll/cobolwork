@@ -1,0 +1,12 @@
+{
+ "id": "030-instream-only-reads-the-catalogue",
+ "title": "The same shape reading the catalogue instead of deleting from it",
+ "cwe": "CWE-284",
+ "expect": [],
+ "negativeFor": [
+  "jcl-instream-destructive",
+  "jcl-instream-credential",
+  "jcl-instream-security-command",
+  "jcl-dlm-hides-instream"
+ ]
+}

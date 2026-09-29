@@ -1,0 +1,17 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. COK.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-AREA          PIC X(100).
+       01 WS-NUM           PIC X(10).
+       LINKAGE SECTION.
+       01 DFHCOMMAREA.
+          05 CA-CUSTOMER   PIC X(10).
+       PROCEDURE DIVISION.
+           IF EIBCALEN = 0
+               EXEC CICS RETURN END-EXEC
+           END-IF
+           MOVE CA-CUSTOMER TO WS-NUM
+           EXEC CICS LINK PROGRAM('COKCALL') COMMAREA(WS-AREA)
+               LENGTH(100) END-EXEC
+           EXEC CICS RETURN END-EXEC.

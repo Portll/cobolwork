@@ -1,0 +1,19 @@
+{
+ "id": "045-a-job-forces-work-into-the-schedule",
+ "title": "A Control-M utility forces a job into the active schedule and deletes a condition others wait on",
+ "cwe": "CWE-284",
+ "expect": [
+  {
+   "rule": "vendor-privileged-command",
+   "file": "SCHED.jcl"
+  },
+  {
+   "rule": "vendor-privileged-command",
+   "file": "SCHED.jcl"
+  },
+  {
+   "rule": "vendor-privileged-command",
+   "file": "SCHED.jcl"
+  }
+ ]
+}

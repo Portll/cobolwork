@@ -1,0 +1,11 @@
+{
+ "id": "044-a-transfer-only-moves-a-dataset",
+ "title": "The same product moving a file with no remote execution and no credential in the process",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "vendor-privileged-command",
+   "file": "XFER.jcl"
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+{
+ "case": {
+  "file": "idcomm.cbl",
+  "note": "comment-entries after AUTHOR, DATE-WRITTEN and SECURITY run on through every line with Area A blank, a COPY and an apostrophe in them included"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-A",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-A",
+    "line": 12,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "MAIN-PARA"
+   }
+  ],
+  "calls": []
+ }
+}

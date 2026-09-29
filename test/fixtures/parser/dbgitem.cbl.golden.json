@@ -1,0 +1,183 @@
+{
+ "case": {
+  "file": "dbgitem.cbl",
+  "note": "WITH DEBUGGING MODE declares DEBUG-ITEM and its subordinate items, which a program uses without declaring"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "DEBUG-ITEM",
+    "size": 86,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-LINE",
+    "size": 6,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-NAME",
+    "size": 30,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-SUB-1",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-SUB-2",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-SUB-3",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-CONTENTS",
+    "size": 30,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-A",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "DEBUG-ITEM",
+    "line": 5,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-LINE",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-NAME",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-SUB-1",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-SUB-2",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-SUB-3",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-CONTENTS",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-A",
+    "line": 8,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "S",
+    "name": "DEBUG-SECTION"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "DEBUG-PARA"
+   },
+   {
+    "prog": "",
+    "kind": "S",
+    "name": "MAIN-SECTION"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "MAIN-PARA"
+   }
+  ],
+  "calls": []
+ }
+}

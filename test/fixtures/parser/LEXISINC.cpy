@@ -1,0 +1,1 @@
+       01  WS-INCLUDED          PIC X(8) VALUE "INCLUDED".

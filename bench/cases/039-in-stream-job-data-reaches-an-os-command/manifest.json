@@ -1,0 +1,15 @@
+{
+ "id": "039-in-stream-job-data-reaches-an-os-command",
+ "title": "In-stream data on a DD reaches the record the program reads and then CALL SYSTEM",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "jcl-instream-to-os-command",
+   "file": "RDSYSIN.cbl"
+  },
+  {
+   "rule": "file-record-to-os-command",
+   "file": "RDSYSIN.cbl"
+  }
+ ]
+}

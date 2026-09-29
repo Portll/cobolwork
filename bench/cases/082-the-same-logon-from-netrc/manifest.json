@@ -1,0 +1,9 @@
+{
+ "id": "082-the-same-logon-from-netrc",
+ "title": "The same transfer logging on from a NETRC data set, with only subcommands in its input",
+ "cwe": "CWE-798",
+ "expect": [],
+ "negativeFor": [
+  "jcl-instream-credential"
+ ]
+}

@@ -1,0 +1,19 @@
+{
+ "id": "008-commarea-length-exceeds-areas",
+ "title": "A call passes a length longer than both the area and the callee",
+ "cwe": "CWE-805",
+ "expect": [
+  {
+   "rule": "cics-commarea-length-exceeds-area",
+   "file": "CLEN.cbl"
+  },
+  {
+   "rule": "cics-commarea-length-exceeds-callee",
+   "file": "CLEN.cbl"
+  },
+  {
+   "rule": "cics-transfer-to-variable-program",
+   "file": "CLEN.cbl"
+  }
+ ]
+}

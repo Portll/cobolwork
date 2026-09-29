@@ -1,0 +1,9 @@
+{
+ "id": "098-case",
+ "title": "A response names the product and level answering it, which is the first thing an attacker looks up",
+ "cwe": "CWE-200",
+ "expect": [
+  { "rule": "web-response-tells-the-caller-what-it-runs", "file": "TELLS.cbl" }
+ ],
+ "alsoExpected": ["web-response-without-protective-headers"]
+}

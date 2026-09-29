@@ -1,0 +1,7 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. BYVAL.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-V                PIC 9(8) COMP.
+       PROCEDURE DIVISION USING BY VALUE LK-V.
+           GOBACK.

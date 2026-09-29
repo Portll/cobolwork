@@ -1,0 +1,14 @@
+{
+ "id": "034-a-step-runs-a-program-the-tree-defines",
+ "title": "The same job running a program whose source is present, with PARM as its entry point",
+ "cwe": "CWE-1104",
+ "expect": [
+  {
+   "rule": "jcl-parm-is-an-entry-point",
+   "file": "RUN.jcl"
+  }
+ ],
+ "negativeFor": [
+  "jcl-exec-pgm-unresolved"
+ ]
+}

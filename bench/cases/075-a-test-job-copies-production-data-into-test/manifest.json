@@ -1,0 +1,11 @@
+{
+ "id": "075-a-test-job-copies-production-data-into-test",
+ "title": "A test job refreshes its customer file by copying the production one",
+ "cwe": "CWE-653",
+ "expect": [
+  {
+   "rule": "recon-nonproduction-job-reads-production-dataset",
+   "file": "TCUSTCPY.jcl"
+  }
+ ]
+}

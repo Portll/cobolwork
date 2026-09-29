@@ -1,0 +1,12 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOGGER.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-LOG-AREA.
+          05 LK-LOG-CODE      PIC X(2).
+          05 LK-LOG-TEXT      PIC X(38).
+          05 LK-LOG-STAMP     PIC X(80).
+       PROCEDURE DIVISION USING LK-LOG-AREA.
+           MOVE '00' TO LK-LOG-CODE
+           MOVE SPACES TO LK-LOG-STAMP
+           GOBACK.

@@ -1,0 +1,7 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TWICE.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-W                PIC X(100).
+       PROCEDURE DIVISION USING LK-W.
+           GOBACK.

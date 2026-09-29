@@ -1,0 +1,24 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. X3.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT CUSTFILE ASSIGN TO 'CUSTFILE'.
+       DATA DIVISION.
+       FILE SECTION.
+       FD CUSTFILE.
+       01 CUST-REC         PIC X(80).
+       WORKING-STORAGE SECTION.
+       01 WS-LINE          PIC X(80).
+       01 WS-SOCK          PIC 9(4) COMP.
+       01 WS-FLAGS         PIC 9(8) COMP VALUE 0.
+       01 WS-LEN           PIC 9(8) COMP VALUE 80.
+       01 WS-ERRNO         PIC 9(8) COMP.
+       01 WS-RC            PIC S9(8) COMP.
+       PROCEDURE DIVISION.
+           OPEN INPUT CUSTFILE
+           READ CUSTFILE INTO WS-LINE
+           CALL 'EZASOKET' USING 'SEND' WS-SOCK WS-FLAGS WS-LEN
+                WS-LINE WS-ERRNO WS-RC
+           CLOSE CUSTFILE
+           GOBACK.

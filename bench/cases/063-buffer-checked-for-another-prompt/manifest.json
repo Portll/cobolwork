@@ -1,0 +1,8 @@
+{
+ "id": "063-buffer-checked-for-another-prompt",
+ "title": "One buffer is tested as a number for one prompt and run as a command for another",
+ "cwe": "CWE-78",
+ "expect": [
+  { "rule": "argv-or-env-to-os-command", "file": "PROMPTS.cbl" }
+ ]
+}

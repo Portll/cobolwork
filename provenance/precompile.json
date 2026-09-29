@@ -1,0 +1,3744 @@
+{
+ "about": "What lib/precompile.mjs turns EXEC CICS into, and the IBM documents that say so: for each command it translates, each option's argument type and the direction its data moves, which decides whether the CALL passes it BY CONTENT or BY REFERENCE; the numbers DFHRESP and DFHVALUE stand for; and what the translator adds to the LINKAGE SECTION. lib/cics-commands.mjs is generated from this file and provenance/words.json by diag/generate-precompile.mjs, and test/precompile.test.mjs checks that the two agree. The directions and notes are this project's reading of the documents, written in its own words; no text, copybook or translator output of IBM's is reproduced beyond names and numbers.",
+ "method": "Each command's options and argument types were read from its syntax diagram in the CICS TS 5.3 Application Programming Reference (rendered to text with macOS PDFKit); every option-with-argument in the diagram is listed. The reference defines the argument types: a data-value only sends, a data-area receives and also sends where the option's description says so (FROM is its example), a ptr-ref receives, and a name, filename, systemname, hhmmss or ptr-value is given to CICS. Each data-area option's description was read, and one that sends, or sends and receives, carries a note saying why, with the page where the manual says so; a note without a page is an input the description names as the thing the command acts on or writes out. A cvda option's direction is read from its command: ASSIGN returns them, every other listed command is given them. 'identify' and 'default' are this project's rules for telling a command from its namesakes (SEND MAP from SEND), not IBM's. The URL in 'doc' is the command's page in IBM's current CICS TS documentation, for a reader; the facts were read from the 5.3 manuals, whose files are hashed below.",
+ "retrieved": "2026-09-27",
+ "docsChecked": "2026-09-28: each command's 'doc' page was fetched and its title read as EXEC CICS and the command's name.",
+ "sources": {
+  "cics-api-5.3": {
+   "title": "CICS Transaction Server for z/OS Version 5 Release 3, Application Programming Reference (SC34-7402-00)",
+   "publisher": "IBM",
+   "url": "https://publibfp.dhe.ibm.com/epubs/pdf/dfhp4h00.pdf",
+   "sha256": "cad6c1b825ba6999b015f5914eb006a837158309887647fcc538d667ae3bc2b9",
+   "bytes": 5268109,
+   "retrieved": "2026-09-27",
+   "usedFor": "every command's syntax and option descriptions; argument types (p. 4); RESP and RESP2 (p. 11); the EIBRESP numbers (Appendix A)"
+  },
+  "cics-guide-5.3": {
+   "title": "CICS Transaction Server for z/OS Version 5 Release 3, Application Programming Guide (SC34-7401-00)",
+   "publisher": "IBM",
+   "url": "https://publibfp.dhe.ibm.com/epubs/pdf/dfhp3h00.pdf",
+   "sha256": "2c95561c7d1541faa72e2c767815f01831606938e3e9628127b9870347bf606d",
+   "bytes": 5870381,
+   "retrieved": "2026-09-27",
+   "usedFor": "what the translator adds to the LINKAGE SECTION; COMMAREA on LINK; how HANDLE CONDITION applies"
+  },
+  "cics-spr-5.3": {
+   "title": "CICS Transaction Server for z/OS Version 5 Release 3, System Programming Reference (SC34-7429-00)",
+   "publisher": "IBM",
+   "url": "https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf",
+   "sha256": "3decb1fe07f1146d6a3978fb0ac32d4a3b36b6c08e9bb2ed96e22f91d0d41bfa",
+   "bytes": 4639731,
+   "retrieved": "2026-09-27",
+   "usedFor": "the CVDA numbers DFHVALUE stands for"
+  },
+  "cics-eib-6.x": {
+   "title": "CICS TS 6.x: EIB fields including EIBRESP and EIBRESP2",
+   "publisher": "IBM",
+   "url": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=reference-eib-fields",
+   "sha256": "ee5b24be0929299f28a33ea41a8434f527bd809c0c70f33a335c6318de460983",
+   "retrieved": "2026-09-24",
+   "usedFor": "EIBRESP 128, BUSY, which the 5.3 manual predates; the copy read is the one feed/sources holds under this hash"
+  }
+ },
+ "argumentTypes": {
+  "source": "cics-api-5.3",
+  "page": 4,
+  "directions": {
+   "data-value": "sends",
+   "data-area": "receives",
+   "ptr-value": "sends",
+   "ptr-ref": "receives",
+   "name": "sends",
+   "filename": "sends",
+   "systemname": "sends",
+   "hhmmss": "sends",
+   "cvda": "per command",
+   "label": "label"
+  }
+ },
+ "directions": {
+  "sends": "BY CONTENT",
+  "receives": "BY REFERENCE",
+  "both": "BY REFERENCE",
+  "label": "not passed: a paragraph or section to branch to, recorded in the result's handlers"
+ },
+ "everyCommand": {
+  "source": "cics-api-5.3",
+  "page": 11,
+  "options": {
+   "RESP": [
+    "data-area",
+    "receives"
+   ],
+   "RESP2": [
+    "data-area",
+    "receives"
+   ]
+  },
+  "notes": {
+   "RESP": "any command may carry RESP, set on return to the condition's number; RESP implies NOHANDLE",
+   "RESP2": "any command may carry RESP2, set on return to a number qualifying RESP"
+  }
+ },
+ "commands": {
+  "ABEND": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-abend",
+   "page": 32,
+   "options": {
+    "ABCODE": [
+     "name",
+     "sends"
+    ]
+   }
+  },
+  "ADDRESS": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-address",
+   "page": 39,
+   "options": {
+    "ACEE": [
+     "ptr-ref",
+     "receives"
+    ],
+    "COMMAREA": [
+     "ptr-ref",
+     "receives"
+    ],
+    "CWA": [
+     "ptr-ref",
+     "receives"
+    ],
+    "EIB": [
+     "ptr-ref",
+     "receives"
+    ],
+    "TCTUA": [
+     "ptr-ref",
+     "receives"
+    ],
+    "TWA": [
+     "ptr-ref",
+     "receives"
+    ]
+   }
+  },
+  "ADDRESS SET": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-address-set",
+   "page": 41,
+   "identify": [
+    "SET"
+   ],
+   "options": {
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "USING": [
+     "ptr-value",
+     "sends"
+    ]
+   }
+  },
+  "ASKTIME": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-asktime",
+   "page": 50,
+   "options": {
+    "ABSTIME": [
+     "data-area",
+     "receives"
+    ]
+   }
+  },
+  "ASSIGN": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-assign",
+   "page": 51,
+   "options": {
+    "ABCODE": [
+     "data-area",
+     "receives"
+    ],
+    "MAPLINE": [
+     "data-area",
+     "receives"
+    ],
+    "ABDUMP": [
+     "data-area",
+     "receives"
+    ],
+    "MAPWIDTH": [
+     "data-area",
+     "receives"
+    ],
+    "ABOFFSET": [
+     "data-area",
+     "receives"
+    ],
+    "MICROVERSION": [
+     "data-area",
+     "receives"
+    ],
+    "ABPROGRAM": [
+     "data-area",
+     "receives"
+    ],
+    "MINORVERSION": [
+     "data-area",
+     "receives"
+    ],
+    "ACTIVITY": [
+     "data-area",
+     "receives"
+    ],
+    "MSRCONTROL": [
+     "data-area",
+     "receives"
+    ],
+    "ACTIVITYID": [
+     "data-area",
+     "receives"
+    ],
+    "NATLANGINUSE": [
+     "data-area",
+     "receives"
+    ],
+    "ALTSCRNHT": [
+     "data-area",
+     "receives"
+    ],
+    "NETNAME": [
+     "data-area",
+     "receives"
+    ],
+    "ALTSCRNWD": [
+     "data-area",
+     "receives"
+    ],
+    "NEXTTRANSID": [
+     "data-area",
+     "receives"
+    ],
+    "APLKYBD": [
+     "data-area",
+     "receives"
+    ],
+    "NUMTAB": [
+     "data-area",
+     "receives"
+    ],
+    "APLTEXT": [
+     "data-area",
+     "receives"
+    ],
+    "OPCLASS": [
+     "data-area",
+     "receives"
+    ],
+    "APPLICATION": [
+     "data-area",
+     "receives"
+    ],
+    "OPERATION": [
+     "data-area",
+     "receives"
+    ],
+    "APPLID": [
+     "data-area",
+     "receives"
+    ],
+    "OPERKEYS": [
+     "data-area",
+     "receives"
+    ],
+    "ASRAINTRPT": [
+     "data-area",
+     "receives"
+    ],
+    "OPID": [
+     "data-area",
+     "receives"
+    ],
+    "ASRAKEY": [
+     "cvda",
+     "receives"
+    ],
+    "OPSECURITY": [
+     "data-area",
+     "receives"
+    ],
+    "ASRAPSW": [
+     "data-area",
+     "receives"
+    ],
+    "ORGABCODE": [
+     "data-area",
+     "receives"
+    ],
+    "ASRAPSW16": [
+     "data-area",
+     "receives"
+    ],
+    "OUTLINE": [
+     "data-area",
+     "receives"
+    ],
+    "ASRAREGS": [
+     "data-area",
+     "receives"
+    ],
+    "PAGENUM": [
+     "data-area",
+     "receives"
+    ],
+    "ASRAREGS64": [
+     "data-area",
+     "receives"
+    ],
+    "PARTNPAGE": [
+     "data-area",
+     "receives"
+    ],
+    "ASRASPC": [
+     "cvda",
+     "receives"
+    ],
+    "PARTNS": [
+     "data-area",
+     "receives"
+    ],
+    "ASRASTG": [
+     "cvda",
+     "receives"
+    ],
+    "PARTNSET": [
+     "data-area",
+     "receives"
+    ],
+    "BRIDGE": [
+     "data-area",
+     "receives"
+    ],
+    "PLATFORM": [
+     "data-area",
+     "receives"
+    ],
+    "BTRANS": [
+     "data-area",
+     "receives"
+    ],
+    "PRINSYSID": [
+     "data-area",
+     "receives"
+    ],
+    "CHANNEL": [
+     "data-area",
+     "receives"
+    ],
+    "PROCESS": [
+     "data-area",
+     "receives"
+    ],
+    "CMDSEC": [
+     "data-area",
+     "receives"
+    ],
+    "PROCESSTYPE": [
+     "data-area",
+     "receives"
+    ],
+    "COLOR": [
+     "data-area",
+     "receives"
+    ],
+    "PROGRAM": [
+     "data-area",
+     "receives"
+    ],
+    "CWALENG": [
+     "data-area",
+     "receives"
+    ],
+    "PS": [
+     "data-area",
+     "receives"
+    ],
+    "DEFSCRNHT": [
+     "data-area",
+     "receives"
+    ],
+    "QNAME": [
+     "data-area",
+     "receives"
+    ],
+    "DEFSCRNWD": [
+     "data-area",
+     "receives"
+    ],
+    "RESSEC": [
+     "data-area",
+     "receives"
+    ],
+    "DELIMITER": [
+     "data-area",
+     "receives"
+    ],
+    "RESTART": [
+     "data-area",
+     "receives"
+    ],
+    "DESTCOUNT": [
+     "data-area",
+     "receives"
+    ],
+    "RETURNPROG": [
+     "data-area",
+     "receives"
+    ],
+    "DESTID": [
+     "data-area",
+     "receives"
+    ],
+    "SCRNHT": [
+     "data-area",
+     "receives"
+    ],
+    "DESTIDLENG": [
+     "data-area",
+     "receives"
+    ],
+    "SCRNWD": [
+     "data-area",
+     "receives"
+    ],
+    "DSSCS": [
+     "data-area",
+     "receives"
+    ],
+    "SIGDATA": [
+     "data-area",
+     "receives"
+    ],
+    "DS3270": [
+     "data-area",
+     "receives"
+    ],
+    "SOSI": [
+     "data-area",
+     "receives"
+    ],
+    "ERRORMSG": [
+     "data-area",
+     "receives"
+    ],
+    "STARTCODE": [
+     "data-area",
+     "receives"
+    ],
+    "ERRORMSGLEN": [
+     "data-area",
+     "receives"
+    ],
+    "STATIONID": [
+     "data-area",
+     "receives"
+    ],
+    "EWASUPP": [
+     "data-area",
+     "receives"
+    ],
+    "SYSID": [
+     "data-area",
+     "receives"
+    ],
+    "EXTDS": [
+     "data-area",
+     "receives"
+    ],
+    "TASKPRIORITY": [
+     "data-area",
+     "receives"
+    ],
+    "FACILITY": [
+     "data-area",
+     "receives"
+    ],
+    "TCTUALENG": [
+     "data-area",
+     "receives"
+    ],
+    "FCI": [
+     "data-area",
+     "receives"
+    ],
+    "TELLERID": [
+     "data-area",
+     "receives"
+    ],
+    "GCHARS": [
+     "data-area",
+     "receives"
+    ],
+    "TERMCODE": [
+     "data-area",
+     "receives"
+    ],
+    "GCODES": [
+     "data-area",
+     "receives"
+    ],
+    "TERMPRIORITY": [
+     "data-area",
+     "receives"
+    ],
+    "GMMI": [
+     "data-area",
+     "receives"
+    ],
+    "TEXTKYBD": [
+     "data-area",
+     "receives"
+    ],
+    "HILIGHT": [
+     "data-area",
+     "receives"
+    ],
+    "TEXTPRINT": [
+     "data-area",
+     "receives"
+    ],
+    "INITPARM": [
+     "data-area",
+     "receives"
+    ],
+    "TRANPRIORITY": [
+     "data-area",
+     "receives"
+    ],
+    "INITPARMLEN": [
+     "data-area",
+     "receives"
+    ],
+    "TWALENG": [
+     "data-area",
+     "receives"
+    ],
+    "INPARTN": [
+     "data-area",
+     "receives"
+    ],
+    "UNATTEND": [
+     "data-area",
+     "receives"
+    ],
+    "INPUTMSGLEN": [
+     "data-area",
+     "receives"
+    ],
+    "USERID": [
+     "data-area",
+     "receives"
+    ],
+    "INVOKINGPROG": [
+     "data-area",
+     "receives"
+    ],
+    "USERNAME": [
+     "data-area",
+     "receives"
+    ],
+    "KATAKANA": [
+     "data-area",
+     "receives"
+    ],
+    "USERPRIORITY": [
+     "data-area",
+     "receives"
+    ],
+    "LANGINUSE": [
+     "data-area",
+     "receives"
+    ],
+    "VALIDATION": [
+     "data-area",
+     "receives"
+    ],
+    "LDCMNEM": [
+     "data-area",
+     "receives"
+    ],
+    "LDCNUM": [
+     "data-area",
+     "receives"
+    ],
+    "LINKLEVEL": [
+     "data-area",
+     "receives"
+    ],
+    "MAJORVERSION": [
+     "data-area",
+     "receives"
+    ],
+    "MAPCOLUMN": [
+     "data-area",
+     "receives"
+    ],
+    "MAPHEIGHT": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "ASRAKEY": "p. 53: ASSIGN returns a value in each option",
+    "ASRASPC": "p. 53: ASSIGN returns a value in each option",
+    "ASRASTG": "p. 53: ASSIGN returns a value in each option"
+   }
+  },
+  "BIF DEEDIT": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-bif-deedit",
+   "page": 67,
+   "identify": [
+    "DEEDIT"
+   ],
+   "options": {
+    "FIELD": [
+     "data-area",
+     "both"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FIELD": "p. 67: the field to edit, which holds the edited result on return"
+   }
+  },
+  "CANCEL": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-cancel",
+   "page": 77,
+   "options": {
+    "REQID": [
+     "name",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ],
+    "TRANSID": [
+     "name",
+     "sends"
+    ]
+   }
+  },
+  "DEFINE COUNTER": {
+   "title": "DEFINE COUNTER and DEFINE DCOUNTER",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-define-counter-define-dcounter",
+   "page": 134,
+   "identify": [
+    "COUNTER",
+    "DCOUNTER"
+   ],
+   "options": {
+    "COUNTER": [
+     "name",
+     "sends"
+    ],
+    "POOL": [
+     "name",
+     "sends"
+    ],
+    "VALUE": [
+     "data-value",
+     "sends"
+    ],
+    "MINIMUM": [
+     "data-value",
+     "sends"
+    ],
+    "MAXIMUM": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "DELAY": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-delay",
+   "page": 145,
+   "options": {
+    "INTERVAL": [
+     "hhmmss",
+     "sends"
+    ],
+    "TIME": [
+     "hhmmss",
+     "sends"
+    ],
+    "REQID": [
+     "name",
+     "sends"
+    ],
+    "HOURS": [
+     "data-value",
+     "sends"
+    ],
+    "MINUTES": [
+     "data-value",
+     "sends"
+    ],
+    "SECONDS": [
+     "data-value",
+     "sends"
+    ],
+    "MILLISECS": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "DELETE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-delete",
+   "page": 148,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "TOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "RIDFLD": [
+     "data-area",
+     "sends"
+    ],
+    "KEYLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "NUMREC": [
+     "data-area",
+     "receives"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "TOKEN": "p. 150: identifies the READ UPDATE or browse for update this request follows",
+    "RIDFLD": "names the record or records to delete",
+    "NUMREC": "p. 149: set by CICS to the number of records deleted"
+   }
+  },
+  "DELETE CONTAINER": {
+   "title": "DELETE CONTAINER (CHANNEL)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-delete-container-channel",
+   "page": 162,
+   "identify": [
+    "CONTAINER"
+   ],
+   "options": {
+    "CONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "CHANNEL": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "DELETE COUNTER": {
+   "title": "DELETE COUNTER and DELETE DCOUNTER",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-delete-counter-delete-dcounter",
+   "page": 163,
+   "identify": [
+    "COUNTER",
+    "DCOUNTER"
+   ],
+   "options": {
+    "COUNTER": [
+     "name",
+     "sends"
+    ],
+    "POOL": [
+     "name",
+     "sends"
+    ]
+   }
+  },
+  "DELETEQ TD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-deleteq-td",
+   "page": 167,
+   "identify": [
+    "TD"
+   ],
+   "options": {
+    "QUEUE": [
+     "name",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   }
+  },
+  "DELETEQ TS": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-deleteq-ts",
+   "page": 169,
+   "identify": [
+    "TS"
+   ],
+   "default": true,
+   "options": {
+    "QUEUE": [
+     "name",
+     "sends"
+    ],
+    "QNAME": [
+     "name",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   }
+  },
+  "DEQ": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-deq",
+   "page": 171,
+   "options": {
+    "RESOURCE": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "MAXLIFETIME": [
+     "cvda",
+     "sends"
+    ]
+   },
+   "notes": {
+    "RESOURCE": "names the resource",
+    "MAXLIFETIME": "how long the enqueue lasted"
+   }
+  },
+  "DUMP TRANSACTION": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-dump-transaction",
+   "page": 187,
+   "identify": [
+    "TRANSACTION"
+   ],
+   "options": {
+    "DUMPCODE": [
+     "name",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "FLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "SEGMENTLIST": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTHLIST": [
+     "data-area",
+     "sends"
+    ],
+    "NUMSEGMENTS": [
+     "data-area",
+     "sends"
+    ],
+    "DUMPID": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "FROM": "the area dumped",
+    "SEGMENTLIST": "the addresses of the areas dumped",
+    "LENGTHLIST": "the lengths of the areas dumped",
+    "NUMSEGMENTS": "how many areas are dumped"
+   }
+  },
+  "ENDBR": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-endbr",
+   "page": 192,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "REQID": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   }
+  },
+  "ENQ": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-enq",
+   "page": 199,
+   "options": {
+    "RESOURCE": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "MAXLIFETIME": [
+     "cvda",
+     "sends"
+    ]
+   },
+   "notes": {
+    "RESOURCE": "names the resource",
+    "MAXLIFETIME": "how long the enqueue lasts"
+   }
+  },
+  "ENTER TRACENUM": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-enter-tracenum",
+   "page": 202,
+   "identify": [
+    "TRACENUM"
+   ],
+   "options": {
+    "TRACENUM": [
+     "data-value",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "RESOURCE": [
+     "name",
+     "sends"
+    ],
+    "FROMLENGTH": [
+     "data-area",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the trace data",
+    "FROMLENGTH": "the length of the trace data"
+   }
+  },
+  "FORMATTIME": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-formattime",
+   "page": 234,
+   "options": {
+    "DATESTRING": [
+     "data-area",
+     "receives"
+    ],
+    "ABSTIME": [
+     "data-area",
+     "sends"
+    ],
+    "DATE": [
+     "data-area",
+     "receives"
+    ],
+    "FULLDATE": [
+     "data-area",
+     "receives"
+    ],
+    "DATEFORM": [
+     "data-area",
+     "receives"
+    ],
+    "DATESEP": [
+     "data-value",
+     "sends"
+    ],
+    "DAYCOUNT": [
+     "data-area",
+     "receives"
+    ],
+    "STRINGZONE": [
+     "cvda",
+     "sends"
+    ],
+    "DAYOFMONTH": [
+     "data-area",
+     "receives"
+    ],
+    "DAYOFWEEK": [
+     "data-area",
+     "receives"
+    ],
+    "DDMMYY": [
+     "data-area",
+     "receives"
+    ],
+    "DDMMYYYY": [
+     "data-area",
+     "receives"
+    ],
+    "MILLISECONDS": [
+     "data-area",
+     "receives"
+    ],
+    "MMDDYY": [
+     "data-area",
+     "receives"
+    ],
+    "MMDDYYYY": [
+     "data-area",
+     "receives"
+    ],
+    "MONTHOFYEAR": [
+     "data-area",
+     "receives"
+    ],
+    "STRINGFORMAT": [
+     "cvda",
+     "sends"
+    ],
+    "TIME": [
+     "data-area",
+     "receives"
+    ],
+    "YEAR": [
+     "data-area",
+     "receives"
+    ],
+    "YYDDD": [
+     "data-area",
+     "receives"
+    ],
+    "TIMESEP": [
+     "data-value",
+     "sends"
+    ],
+    "YYDDMM": [
+     "data-area",
+     "receives"
+    ],
+    "YYMMDD": [
+     "data-area",
+     "receives"
+    ],
+    "YYYYDDD": [
+     "data-area",
+     "receives"
+    ],
+    "YYYYDDMM": [
+     "data-area",
+     "receives"
+    ],
+    "YYYYMMDD": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "ABSTIME": "the absolute time to format",
+    "STRINGZONE": "the zone DATESTRING is written for",
+    "STRINGFORMAT": "the format DATESTRING is written in"
+   }
+  },
+  "FREEMAIN": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-freemain",
+   "page": 245,
+   "options": {
+    "DATA": [
+     "data-area",
+     "sends"
+    ],
+    "DATAPOINTER": [
+     "ptr-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "DATA": "the storage to release"
+   }
+  },
+  "GET CONTAINER": {
+   "title": "GET CONTAINER (CHANNEL)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-get-container-channel",
+   "page": 284,
+   "identify": [
+    "CONTAINER"
+   ],
+   "options": {
+    "CONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "CHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "FLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "BYTEOFFSET": [
+     "data-value",
+     "sends"
+    ],
+    "INTOCCSID": [
+     "data-value",
+     "sends"
+    ],
+    "INTOCODEPAGE": [
+     "data-value",
+     "sends"
+    ],
+    "CONVERTST": [
+     "cvda",
+     "sends"
+    ],
+    "CCSID": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "FLENGTH": "p. 285: the maximum accepted, and on completion the length of the data",
+    "CONVERTST": "whether the data is converted"
+   }
+  },
+  "GET COUNTER": {
+   "title": "GET COUNTER and GET DCOUNTER",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-get-counter-get-dcounter",
+   "page": 289,
+   "identify": [
+    "COUNTER",
+    "DCOUNTER"
+   ],
+   "options": {
+    "COUNTER": [
+     "name",
+     "sends"
+    ],
+    "VALUE": [
+     "data-area",
+     "receives"
+    ],
+    "POOL": [
+     "name",
+     "sends"
+    ],
+    "INCREMENT": [
+     "data-value",
+     "sends"
+    ],
+    "COMPAREMIN": [
+     "data-value",
+     "sends"
+    ],
+    "COMPAREMAX": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "GETMAIN": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-getmain",
+   "page": 294,
+   "options": {
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "FLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "INITIMG": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "HANDLE ABEND": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-handle-abend",
+   "page": 314,
+   "identify": [
+    "ABEND"
+   ],
+   "options": {
+    "PROGRAM": [
+     "name",
+     "sends"
+    ],
+    "LABEL": [
+     "label",
+     "label"
+    ]
+   }
+  },
+  "HANDLE AID": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-handle-aid",
+   "page": 316,
+   "identify": [
+    "AID"
+   ],
+   "anyOption": "label",
+   "options": {}
+  },
+  "HANDLE CONDITION": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-handle-condition",
+   "page": 318,
+   "identify": [
+    "CONDITION"
+   ],
+   "anyOption": "label",
+   "options": {}
+  },
+  "IGNORE CONDITION": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-ignore-condition",
+   "page": 320,
+   "identify": [
+    "CONDITION"
+   ],
+   "anyOption": "none",
+   "options": {}
+  },
+  "LINK": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-link",
+   "page": 389,
+   "options": {
+    "PROGRAM": [
+     "name",
+     "sends"
+    ],
+    "COMMAREA": [
+     "data-area",
+     "both"
+    ],
+    "CHANNEL": [
+     "name",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "DATALENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "INPUTMSG": [
+     "data-area",
+     "sends"
+    ],
+    "INPUTMSGLEN": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ],
+    "TRANSID": [
+     "name",
+     "sends"
+    ]
+   },
+   "notes": {
+    "COMMAREA": "p. 246: the linking program passes data in it and receives the linked program's results in it",
+    "INPUTMSG": "data for the linked program's first RECEIVE"
+   }
+  },
+  "LOAD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-load",
+   "page": 405,
+   "options": {
+    "PROGRAM": [
+     "name",
+     "sends"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "LENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "FLENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "ENTRY": [
+     "ptr-ref",
+     "receives"
+    ]
+   }
+  },
+  "POP HANDLE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-pop-handle",
+   "page": 418,
+   "identify": [
+    "HANDLE"
+   ],
+   "options": {}
+  },
+  "PURGE MESSAGE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-purge-message",
+   "page": 423,
+   "identify": [
+    "MESSAGE"
+   ],
+   "options": {}
+  },
+  "PUSH HANDLE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-push-handle",
+   "page": 424,
+   "identify": [
+    "HANDLE"
+   ],
+   "options": {}
+  },
+  "PUT CONTAINER": {
+   "title": "PUT CONTAINER (CHANNEL)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-put-container-channel",
+   "page": 428,
+   "identify": [
+    "CONTAINER"
+   ],
+   "options": {
+    "CONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "CHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "FLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "DATATYPE": [
+     "cvda",
+     "sends"
+    ],
+    "FROMCCSID": [
+     "data-value",
+     "sends"
+    ],
+    "FROMCODEPAGE": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the data put",
+    "DATATYPE": "CHAR or BIT"
+   }
+  },
+  "QUERY COUNTER": {
+   "title": "QUERY COUNTER and QUERY DCOUNTER",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-query-counter-query-dcounter",
+   "page": 437,
+   "identify": [
+    "COUNTER",
+    "DCOUNTER"
+   ],
+   "options": {
+    "COUNTER": [
+     "name",
+     "sends"
+    ],
+    "POOL": [
+     "name",
+     "sends"
+    ],
+    "VALUE": [
+     "data-area",
+     "receives"
+    ],
+    "MINIMUM": [
+     "data-area",
+     "receives"
+    ],
+    "MAXIMUM": [
+     "data-area",
+     "receives"
+    ]
+   }
+  },
+  "READ": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-read",
+   "page": 444,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "TOKEN": [
+     "data-area",
+     "receives"
+    ],
+    "RIDFLD": [
+     "data-area",
+     "both"
+    ],
+    "KEYLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "RIDFLD": "p. 445: names the record to read; a generic read of a CICS-maintained data table that finds nothing clears it",
+    "LENGTH": "p. 447: the length of the INTO area on the way in, the record's length on completion"
+   }
+  },
+  "READNEXT": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-readnext",
+   "page": 456,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "TOKEN": [
+     "data-area",
+     "receives"
+    ],
+    "RIDFLD": [
+     "data-area",
+     "both"
+    ],
+    "KEYLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "REQID": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "RIDFLD": "p. 456: the browse position on the way in, the key of the record read on completion",
+    "LENGTH": "the length of the INTO area on the way in, the record's length on completion"
+   }
+  },
+  "READPREV": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-readprev",
+   "page": 467,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "TOKEN": [
+     "data-area",
+     "receives"
+    ],
+    "RIDFLD": [
+     "data-area",
+     "both"
+    ],
+    "KEYLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "REQID": [
+     "data-value",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-area",
+     "both"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "RIDFLD": "p. 467: the browse position on the way in, the key of the record read on completion",
+    "LENGTH": "the length of the INTO area on the way in, the record's length on completion"
+   }
+  },
+  "READQ TD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-readq-td",
+   "page": 477,
+   "identify": [
+    "TD"
+   ],
+   "options": {
+    "QUEUE": [
+     "name",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "LENGTH": [
+     "data-area",
+     "both"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "LENGTH": "the maximum accepted with INTO; set to the record's length on completion"
+   }
+  },
+  "READQ TS": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-readq-ts",
+   "page": 481,
+   "identify": [
+    "TS"
+   ],
+   "default": true,
+   "options": {
+    "QUEUE": [
+     "name",
+     "sends"
+    ],
+    "QNAME": [
+     "name",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "LENGTH": [
+     "data-area",
+     "both"
+    ],
+    "NUMITEMS": [
+     "data-area",
+     "receives"
+    ],
+    "ITEM": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "LENGTH": "p. 481: the maximum accepted with INTO; set to the record's length on completion"
+   }
+  },
+  "RECEIVE": {
+   "title": "RECEIVE (z/OS Communications Server default)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-receive-zos-communications-server-default",
+   "page": 485,
+   "options": {
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "LENGTH": [
+     "data-area",
+     "both"
+    ],
+    "FLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "MAXLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "MAXFLENGTH": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "LENGTH": "p. 498: the maximum accepted when INTO has no MAXLENGTH; set to the length received",
+    "FLENGTH": "an alternative to LENGTH"
+   }
+  },
+  "RECEIVE MAP": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-receive-map",
+   "page": 513,
+   "identify": [
+    "MAP"
+   ],
+   "options": {
+    "MAP": [
+     "name",
+     "sends"
+    ],
+    "MAPSET": [
+     "name",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "INPARTN": [
+     "name",
+     "sends"
+    ]
+   },
+   "defaults": {
+    "INTO": {
+     "name": "MAP",
+     "suffix": "I",
+     "unless": [
+      "SET"
+     ]
+    }
+   },
+   "notes": {
+    "FROM": "p. 514: data already received, to be mapped into INTO",
+    "INTO": "p. 514: without INTO or SET the mapped data goes to the record named by the map suffixed with I"
+   }
+  },
+  "RELEASE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-release",
+   "page": 523,
+   "options": {
+    "PROGRAM": [
+     "name",
+     "sends"
+    ]
+   }
+  },
+  "RESETBR": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-resetbr",
+   "page": 532,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "RIDFLD": [
+     "data-area",
+     "sends"
+    ],
+    "KEYLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "REQID": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "RIDFLD": "the position the browse restarts from"
+   }
+  },
+  "RETRIEVE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-retrieve",
+   "page": 539,
+   "options": {
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "LENGTH": [
+     "data-area",
+     "both"
+    ],
+    "RTRANSID": [
+     "data-area",
+     "receives"
+    ],
+    "RTERMID": [
+     "data-area",
+     "receives"
+    ],
+    "QUEUE": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "LENGTH": "the maximum accepted with INTO; set to the length retrieved"
+   }
+  },
+  "RETURN": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-return",
+   "page": 547,
+   "options": {
+    "TRANSID": [
+     "name",
+     "sends"
+    ],
+    "COMMAREA": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "CHANNEL": [
+     "name",
+     "sends"
+    ],
+    "INPUTMSG": [
+     "data-area",
+     "sends"
+    ],
+    "INPUTMSGLEN": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "COMMAREA": "p. 548: a copy is passed to the next program",
+    "INPUTMSG": "data for the next program's first RECEIVE"
+   }
+  },
+  "REWIND COUNTER": {
+   "title": "REWIND COUNTER and REWIND DCOUNTER",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-rewind-counter-rewind-dcounter",
+   "page": 551,
+   "identify": [
+    "COUNTER",
+    "DCOUNTER"
+   ],
+   "options": {
+    "COUNTER": [
+     "name",
+     "sends"
+    ],
+    "POOL": [
+     "name",
+     "sends"
+    ],
+    "INCREMENT": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "REWRITE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-rewrite",
+   "page": 554,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "TOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the record written",
+    "TOKEN": "p. 555: identifies the READ UPDATE this request follows"
+   }
+  },
+  "SEND": {
+   "title": "SEND (z/OS Communications Server default)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-send-zos-communications-server-default",
+   "page": 568,
+   "options": {
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "FLENGTH": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the data sent"
+   }
+  },
+  "SEND CONTROL": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-send-control",
+   "page": 600,
+   "identify": [
+    "CONTROL"
+   ],
+   "options": {
+    "CURSOR": [
+     "data-value",
+     "sends"
+    ],
+    "MSR": [
+     "data-value",
+     "sends"
+    ],
+    "OUTPARTN": [
+     "name",
+     "sends"
+    ],
+    "ACTPARTN": [
+     "name",
+     "sends"
+    ],
+    "LDC": [
+     "name",
+     "sends"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "REQID": [
+     "name",
+     "sends"
+    ]
+   }
+  },
+  "SEND MAP": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-send-map",
+   "page": 605,
+   "identify": [
+    "MAP"
+   ],
+   "options": {
+    "MAP": [
+     "name",
+     "sends"
+    ],
+    "MAPSET": [
+     "name",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "MSR": [
+     "data-value",
+     "sends"
+    ],
+    "FMHPARM": [
+     "name",
+     "sends"
+    ],
+    "OUTPARTN": [
+     "name",
+     "sends"
+    ],
+    "ACTPARTN": [
+     "name",
+     "sends"
+    ],
+    "LDC": [
+     "name",
+     "sends"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "REQID": [
+     "name",
+     "sends"
+    ],
+    "CURSOR": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "defaults": {
+    "FROM": {
+     "name": "MAP",
+     "suffix": "O",
+     "unless": [
+      "MAPONLY"
+     ]
+    }
+   },
+   "notes": {
+    "FROM": "p. 607: without FROM the data comes from the record named by the map suffixed with O; MAPONLY sends none; the data mapped for output"
+   }
+  },
+  "SEND PAGE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-send-page",
+   "page": 616,
+   "identify": [
+    "PAGE"
+   ],
+   "options": {
+    "TRANSID": [
+     "name",
+     "sends"
+    ],
+    "TRAILER": [
+     "data-area",
+     "sends"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "FMHPARM": [
+     "name",
+     "sends"
+    ]
+   },
+   "notes": {
+    "TRAILER": "trailer data placed on the last page"
+   }
+  },
+  "SEND TEXT": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-send-text",
+   "page": 621,
+   "identify": [
+    "TEXT"
+   ],
+   "options": {
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "CURSOR": [
+     "data-value",
+     "sends"
+    ],
+    "FMHPARM": [
+     "name",
+     "sends"
+    ],
+    "OUTPARTN": [
+     "name",
+     "sends"
+    ],
+    "ACTPARTN": [
+     "name",
+     "sends"
+    ],
+    "MSR": [
+     "data-value",
+     "sends"
+    ],
+    "LDC": [
+     "name",
+     "sends"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "REQID": [
+     "name",
+     "sends"
+    ],
+    "HEADER": [
+     "data-area",
+     "sends"
+    ],
+    "TRAILER": [
+     "data-area",
+     "sends"
+    ],
+    "JUSTIFY": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the text sent",
+    "HEADER": "header data placed on each page",
+    "TRAILER": "trailer data placed on each page"
+   }
+  },
+  "SIGNOFF": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-signoff",
+   "page": 636,
+   "options": {}
+  },
+  "SIGNON": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-signon",
+   "page": 637,
+   "options": {
+    "USERID": [
+     "data-value",
+     "sends"
+    ],
+    "ESMREASON": [
+     "data-area",
+     "receives"
+    ],
+    "ESMRESP": [
+     "data-area",
+     "receives"
+    ],
+    "GROUPID": [
+     "data-value",
+     "sends"
+    ],
+    "LANGUAGECODE": [
+     "data-value",
+     "sends"
+    ],
+    "NATLANG": [
+     "data-value",
+     "sends"
+    ],
+    "LANGINUSE": [
+     "data-area",
+     "receives"
+    ],
+    "NATLANGINUSE": [
+     "data-area",
+     "receives"
+    ],
+    "PASSWORD": [
+     "data-value",
+     "sends"
+    ],
+    "NEWPASSWORD": [
+     "data-value",
+     "sends"
+    ],
+    "PHRASE": [
+     "data-area",
+     "sends"
+    ],
+    "PHRASELEN": [
+     "data-value",
+     "sends"
+    ],
+    "NEWPHRASE": [
+     "data-area",
+     "sends"
+    ],
+    "NEWPHRASELEN": [
+     "data-value",
+     "sends"
+    ],
+    "OIDCARD": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "PHRASE": "the password or phrase",
+    "NEWPHRASE": "the new password or phrase"
+   }
+  },
+  "START": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-start",
+   "page": 671,
+   "options": {
+    "TRANSID": [
+     "name",
+     "sends"
+    ],
+    "INTERVAL": [
+     "hhmmss",
+     "sends"
+    ],
+    "TIME": [
+     "hhmmss",
+     "sends"
+    ],
+    "REQID": [
+     "name",
+     "sends"
+    ],
+    "HOURS": [
+     "data-value",
+     "sends"
+    ],
+    "MINUTES": [
+     "data-value",
+     "sends"
+    ],
+    "SECONDS": [
+     "data-value",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "TERMID": [
+     "name",
+     "sends"
+    ],
+    "USERID": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ],
+    "RTRANSID": [
+     "name",
+     "sends"
+    ],
+    "RTERMID": [
+     "name",
+     "sends"
+    ],
+    "QUEUE": [
+     "name",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "data for the started task to RETRIEVE"
+   }
+  },
+  "STARTBR": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-startbr",
+   "page": 692,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "RIDFLD": [
+     "data-area",
+     "sends"
+    ],
+    "KEYLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "REQID": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "RIDFLD": "the position the browse starts from"
+   }
+  },
+  "SYNCPOINT": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-syncpoint",
+   "page": 710,
+   "options": {}
+  },
+  "SYNCPOINT ROLLBACK": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-syncpoint-rollback",
+   "page": 711,
+   "identify": [
+    "ROLLBACK"
+   ],
+   "options": {}
+  },
+  "UNLOCK": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-unlock",
+   "page": 721,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "TOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "TOKEN": "p. 722: identifies the READ UPDATE this request releases"
+   }
+  },
+  "UPDATE COUNTER": {
+   "title": "UPDATE COUNTER and UPDATE DCOUNTER",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-update-counter-update-dcounter",
+   "page": 725,
+   "identify": [
+    "COUNTER",
+    "DCOUNTER"
+   ],
+   "options": {
+    "COUNTER": [
+     "name",
+     "sends"
+    ],
+    "VALUE": [
+     "data-value",
+     "sends"
+    ],
+    "POOL": [
+     "name",
+     "sends"
+    ],
+    "COMPAREMIN": [
+     "data-value",
+     "sends"
+    ],
+    "COMPAREMAX": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "WRITE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-write",
+   "page": 844,
+   "options": {
+    "FILE": [
+     "filename",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "RIDFLD": [
+     "data-area",
+     "both"
+    ],
+    "KEYLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the record written",
+    "RIDFLD": "p. 846: the key of the record written; with RBA or XRBA an output field set to the record's address"
+   }
+  },
+  "WRITE JOURNALNAME": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-write-journalname",
+   "page": 852,
+   "identify": [
+    "JOURNALNAME"
+   ],
+   "options": {
+    "JOURNALNAME": [
+     "data-value",
+     "sends"
+    ],
+    "JTYPEID": [
+     "data-value",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "FLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "REQID": [
+     "data-area",
+     "receives"
+    ],
+    "PREFIX": [
+     "data-value",
+     "sends"
+    ],
+    "PFXLENG": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the record written"
+   }
+  },
+  "WRITE OPERATOR": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-write-operator",
+   "page": 857,
+   "identify": [
+    "OPERATOR"
+   ],
+   "options": {
+    "TEXT": [
+     "data-value",
+     "sends"
+    ],
+    "TEXTLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "ROUTECODES": [
+     "data-value",
+     "sends"
+    ],
+    "NUMROUTES": [
+     "data-value",
+     "sends"
+    ],
+    "ACTION": [
+     "cvda",
+     "sends"
+    ],
+    "REPLY": [
+     "data-area",
+     "receives"
+    ],
+    "MAXLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "REPLYLENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "TIMEOUT": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "ACTION": "the console action code"
+   }
+  },
+  "WRITEQ TD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-writeq-td",
+   "page": 860,
+   "identify": [
+    "TD"
+   ],
+   "options": {
+    "QUEUE": [
+     "name",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the record written"
+   }
+  },
+  "WRITEQ TS": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-writeq-ts",
+   "page": 863,
+   "identify": [
+    "TS"
+   ],
+   "default": true,
+   "options": {
+    "QUEUE": [
+     "name",
+     "sends"
+    ],
+    "QNAME": [
+     "name",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "NUMITEMS": [
+     "data-area",
+     "receives"
+    ],
+    "ITEM": [
+     "data-area",
+     "both"
+    ],
+    "SYSID": [
+     "systemname",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the record written",
+    "ITEM": "p. 864: the item replaced with REWRITE; otherwise set by CICS"
+   }
+  },
+  "XCTL": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-xctl",
+   "page": 882,
+   "options": {
+    "PROGRAM": [
+     "name",
+     "sends"
+    ],
+    "COMMAREA": [
+     "data-area",
+     "sends"
+    ],
+    "CHANNEL": [
+     "name",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "INPUTMSG": [
+     "data-area",
+     "sends"
+    ],
+    "INPUTMSGLEN": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "COMMAREA": "p. 883: its contents are passed and control does not return",
+    "INPUTMSG": "data for the invoked program's first RECEIVE"
+   }
+  }
+ },
+ "linkage": {
+  "source": "cics-guide-5.3",
+  "pages": [
+   41,
+   89
+  ],
+  "fact": "By default the translator makes sure each program's LINKAGE SECTION, which it creates when there is none, declares DFHEIBLK and DFHCOMMAREA, and adds USING DFHEIBLK DFHCOMMAREA to a top-level program's PROCEDURE DIVISION header when it has no USING; a nested program also gets a DATA DIVISION when it has none, and its header is left alone.",
+  "here": "COPY DFHEIBLK goes after the LINKAGE SECTION header, or before the PROCEDURE DIVISION header under a LINKAGE SECTION (and DATA DIVISION) added for it, in each program unit with CICS in it or naming an EIB field, unless the unit declares DFHEIBLK itself. 01 DFHCOMMAREA PIC X goes with it only where the unit names DFHCOMMAREA without declaring it: a declaration nothing names changes nothing a compiler or reader sees. The one-byte size is this project's choice; the guide gives none. The PROCEDURE DIVISION header is left as written: a compiler needs no USING to accept a program that names a LINKAGE item."
+ },
+ "handle": {
+  "source": "cics-api-5.3",
+  "page": 314,
+  "guide": {
+   "source": "cics-guide-5.3",
+   "page": 361
+  },
+  "fact": "HANDLE CONDITION takes effect when it runs, not where it is written: from then on a condition a later command raises passes control to the label named for it, or for ERROR, until an IGNORE CONDITION or another HANDLE CONDITION for the same condition runs. A command with RESP or NOHANDLE is exempt, the handling is suspended while control is in a program this one LINKs or XCTLs to, and PUSH HANDLE and POP HANDLE save and restore it. For HANDLE ABEND LABEL in COBOL the reference says control returns to the HANDLE ABEND command and a COBOL GO TO then runs.",
+  "secondary": [
+   {
+    "title": "M. G. J. van den Brand, M. P. A. Sellink, C. Verhoef, Control Flow Normalization for COBOL/CICS Legacy Systems (1997), section 7",
+    "url": "https://www.cs.vu.nl/~x/cfn/cfn.html",
+    "retrieved": "2026-09-27",
+    "says": "the translator follows the CALL for a HANDLE with SERVICE LABEL and a GO TO ... DEPENDING ON DFHEIGDI over the HANDLE's labels"
+   },
+   {
+    "title": "M. P. A. Sellink, H. M. Sneed, C. Verhoef, Restructuring of COBOL/CICS Legacy Systems",
+    "url": "https://www.cs.vu.nl/~x/cics/cics.html",
+    "retrieved": "2026-09-27",
+    "says": "the same shape for HANDLE ABEND, HANDLE CONDITION and HANDLE AID, one target per labelled option in the order written"
+   }
+  ],
+  "marks": {
+   "HANDLE ABEND LABEL": "documented that control returns to the HANDLE and a GO TO runs; the DEPENDING ON form is secondary",
+   "HANDLE CONDITION": "secondary, and inferred from HANDLE ABEND",
+   "HANDLE AID": "secondary, and inferred from HANDLE ABEND"
+  },
+  "here": "Each HANDLE CONDITION, HANDLE AID and HANDLE ABEND LABEL becomes its CALL followed by GO TO over its labels, in the order written, DEPENDING ON DFHEIGDI, which the EIB stand-in declares. When the HANDLE runs DFHEIGDI is 0 and control falls through; the branch is taken when CICS returns there. SERVICE LABEL, which IBM's translators put between the two, is left out: GnuCOBOL 3.2 refuses it. Which later command sends control back follows execution order, and is the control model's to draw; nothing is added after the commands themselves. Unobserved: no IBM translator has been run."
+ },
+ "eib": {
+  "fields": "the 29 fields of provenance/words.json eibLayout, as diag/precompiler.mjs declares them",
+  "selector": {
+   "name": "DFHEIGDI",
+   "picture": "S9(4) COMP",
+   "placed": "after EIBTRMID, where the Data Areas topic shows the reserved halfword at offset 20; that DFHEIGDI is that halfword is inferred",
+   "sources": [
+    {
+     "url": "https://www.ibm.com/support/pages/apar/PI88564",
+     "says": "the standalone COBOL translator generates DFHEIGDI, EIBCPOSN and EIBCALEN, COMP or under the new C5 option COMP-5"
+    },
+    {
+     "url": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=translators-translator-options",
+     "says": "C5 changes EIBCALEN, EIBCPOSN and DFHEIGDI from PIC S9(4) COMP to PIC S9(4) COMP-5"
+    }
+   ]
+  }
+ },
+ "dfhresp": {
+  "source": "cics-api-5.3",
+  "page": 902,
+  "values": {
+   "NORMAL": 0,
+   "ERROR": 1,
+   "RDATT": 2,
+   "WRBRK": 3,
+   "EOF": 4,
+   "EODS": 5,
+   "EOC": 6,
+   "INBFMH": 7,
+   "ENDINPT": 8,
+   "NONVAL": 9,
+   "NOSTART": 10,
+   "TERMIDERR": 11,
+   "FILENOTFOUND": 12,
+   "NOTFND": 13,
+   "DUPREC": 14,
+   "DUPKEY": 15,
+   "INVREQ": 16,
+   "IOERR": 17,
+   "NOSPACE": 18,
+   "NOTOPEN": 19,
+   "ENDFILE": 20,
+   "ILLOGIC": 21,
+   "LENGERR": 22,
+   "QZERO": 23,
+   "SIGNAL": 24,
+   "QBUSY": 25,
+   "ITEMERR": 26,
+   "PGMIDERR": 27,
+   "TRANSIDERR": 28,
+   "ENDDATA": 29,
+   "INVTSREQ": 30,
+   "EXPIRED": 31,
+   "RETPAGE": 32,
+   "RTEFAIL": 33,
+   "RTESOME": 34,
+   "TSIOERR": 35,
+   "MAPFAIL": 36,
+   "INVERRTERM": 37,
+   "INVMPSZ": 38,
+   "IGREQID": 39,
+   "OVERFLOW": 40,
+   "INVLDC": 41,
+   "NOSTG": 42,
+   "JIDERR": 43,
+   "QIDERR": 44,
+   "NOJBUFSP": 45,
+   "DSSTAT": 46,
+   "SELNERR": 47,
+   "FUNCERR": 48,
+   "UNEXPIN": 49,
+   "NOPASSBKRD": 50,
+   "NOPASSBKWR": 51,
+   "SEGIDERR": 52,
+   "SYSIDERR": 53,
+   "ISCINVREQ": 54,
+   "ENQBUSY": 55,
+   "ENVDEFERR": 56,
+   "IGREQCD": 57,
+   "SESSIONERR": 58,
+   "SYSBUSY": 59,
+   "SESSBUSY": 60,
+   "NOTALLOC": 61,
+   "CBIDERR": 62,
+   "INVEXITREQ": 63,
+   "INVPARTNSET": 64,
+   "INVPARTN": 65,
+   "PARTNFAIL": 66,
+   "USERIDERR": 69,
+   "NOTAUTH": 70,
+   "VOLIDERR": 71,
+   "SUPPRESSED": 72,
+   "RESIDERR": 75,
+   "NOSPOOL": 80,
+   "TERMERR": 81,
+   "ROLLEDBACK": 82,
+   "END": 83,
+   "DISABLED": 84,
+   "ALLOCERR": 85,
+   "STRELERR": 86,
+   "OPENERR": 87,
+   "SPOLBUSY": 88,
+   "SPOLERR": 89,
+   "NODEIDERR": 90,
+   "TASKIDERR": 91,
+   "TCIDERR": 92,
+   "DSNNOTFOUND": 93,
+   "LOADING": 94,
+   "MODELIDERR": 95,
+   "OUTDESCRERR": 96,
+   "PARTNERIDERR": 97,
+   "PROFILEIDERR": 98,
+   "NETNAMEIDERR": 99,
+   "LOCKED": 100,
+   "RECORDBUSY": 101,
+   "UOWNOTFOUND": 102,
+   "UOWLNOTFOUND": 103,
+   "LINKABEND": 104,
+   "CHANGED": 105,
+   "PROCESSBUSY": 106,
+   "ACTIVITYBUSY": 107,
+   "PROCESSERR": 108,
+   "ACTIVITYERR": 109,
+   "CONTAINERERR": 110,
+   "EVENTERR": 111,
+   "TOKENERR": 112,
+   "NOTFINISHED": 113,
+   "POOLERR": 114,
+   "TIMERERR": 115,
+   "SYMBOLERR": 116,
+   "TEMPLATERR": 117,
+   "NOTSUPERUSER": 118,
+   "CSDERR": 119,
+   "DUPRES": 120,
+   "RESUNAVAIL": 121,
+   "CHANNELERR": 122,
+   "CCSIDERR": 123,
+   "TIMEDOUT": 124,
+   "CODEPAGEERR": 125,
+   "INCOMPLETE": 126,
+   "APPNOTFOUND": 127
+  },
+  "also": {
+   "source": "cics-eib-6.x",
+   "values": {
+    "BUSY": 128
+   }
+  }
+ },
+ "dfhvalue": {
+  "source": "cics-spr-5.3",
+  "pages": [
+   761,
+   785
+  ],
+  "values": {
+   "ABEND": 900,
+   "ACQFAIL": 515,
+   "ACQUIRED": 69,
+   "ACQUIRING": 71,
+   "ACTIVE": 181,
+   "ACTIVITY": 1002,
+   "ADD": 291,
+   "ADDABLE": 41,
+   "ADDFAIL": 519,
+   "ADVANCE": 265,
+   "AINIT": 282,
+   "ALARM": 501,
+   "ALL": 856,
+   "ALLCONN": 169,
+   "ALLOCATD": 81,
+   "ALLOCATED": 81,
+   "ALLQUERY": 431,
+   "ALLVALUES": 860,
+   "ALTERABLE": 52,
+   "ALTERNATE": 197,
+   "ALTPRTCOPY": 446,
+   "ANALYZER": 1126,
+   "AND": 1005,
+   "ANY": 158,
+   "APLKYBD": 391,
+   "APLTEXT": 393,
+   "APPC": 124,
+   "APPCPARALLEL": 374,
+   "APPCSINGLE": 373,
+   "APPEND": 1036,
+   "APPLICATION": 559,
+   "APPLID": 303,
+   "APPLNAME": 338,
+   "ASACTL": 224,
+   "ASCII7": 616,
+   "ASCII8": 617,
+   "ASSEMBLER": 150,
+   "ASSERTED": 1104,
+   "ASYNCHRONOUS": 570,
+   "ATI": 75,
+   "ATOM": 1119,
+   "ATOMSERVICE": 1179,
+   "ATTACH": 576,
+   "ATTENTION": 524,
+   "ATTLSAWARE": 1205,
+   "AUDALARM": 395,
+   "AUTOACTIVE": 630,
+   "AUTOARCH": 262,
+   "AUTOAUTH": 1095,
+   "AUTOCONN": 170,
+   "AUTOINACTIVE": 631,
+   "AUTOINIT": 284,
+   "AUTOINSTALL": 1140,
+   "AUTOPAGE": 80,
+   "AUTOPAGEABLE": 80,
+   "AUTOREGISTER": 1094,
+   "AUTOSTART": 618,
+   "AUTOTERMID": 1120,
+   "AUXILIARY": 247,
+   "AUXPAUSE": 313,
+   "AUXSTART": 312,
+   "AUXSTOP": 314,
+   "AVAILABLE": 95,
+   "BACKOUT": 192,
+   "BACKTRANS": 397,
+   "BACKUPNONBWO": 800,
+   "BASE": 10,
+   "BASE64": 50,
+   "BASEAPI": 1052,
+   "BASESPACE": 664,
+   "BASICAUTH": 1092,
+   "BDAM": 2,
+   "BEGINSESSION": 510,
+   "BELOW": 159,
+   "BGAM": 63,
+   "BINARY": 1038,
+   "BINIT": 283,
+   "BIT": 1020,
+   "BLK": 47,
+   "BLOCKED": 16,
+   "BOTH": 1100,
+   "BRIDGE": 935,
+   "BROWSABLE": 39,
+   "BSAM": 61,
+   "BTAM": 62,
+   "BUNDLE": 1180,
+   "BUSY": 612,
+   "C": 149,
+   "CACHE": 791,
+   "CANCEL": 526,
+   "CANCELLED": 624,
+   "CANCELLING": 1025,
+   "CAPTURESPEC": 1195,
+   "CATEGORY": 474,
+   "CBE": 582,
+   "CBER": 581,
+   "CCE": 583,
+   "CD": 491,
+   "CEDF": 370,
+   "CERTIFICAUTH": 1093,
+   "CERTUSER": 1061,
+   "CFE": 584,
+   "CFTABLE": 833,
+   "CGROUP": 902,
+   "CHANNEL": 1047,
+   "CHAR": 1019,
+   "CHUNKEND": 737,
+   "CHUNKNO": 735,
+   "CHUNKYES": 736,
+   "CICS": 660,
+   "CICSAPI": 1052,
+   "CICSDATAKEY": 379,
+   "CICSECURITY": 195,
+   "CICSEXECKEY": 381,
+   "CICSTABLE": 101,
+   "CKOPEN": 1055,
+   "CLASSCACHE": 1075,
+   "CLEAR": 640,
+   "CLICONVERT": 743,
+   "CLIENT": 1122,
+   "CLIENTAUTH": 1032,
+   "CLIENTCERT": 1087,
+   "CLOSE": 741,
+   "CLOSED": 19,
+   "CLOSEFAILED": 349,
+   "CLOSELEAVE": 261,
+   "CLOSEREQ": 22,
+   "CLOSEREQUEST": 22,
+   "CLOSING": 21,
+   "CLOUD": 848,
+   "CMDPROT": 673,
+   "CMDSECEXT": 207,
+   "CMDSECNO": 205,
+   "CMDSECYES": 207,
+   "COBOL": 151,
+   "COBOLII": 375,
+   "COLD": 788,
+   "COLDACQ": 72,
+   "COLDQUERY": 433,
+   "COLDSTART": 266,
+   "COLLECTION": 473,
+   "COLOR": 399,
+   "COMMAREA": 1048,
+   "COMMIT": 208,
+   "COMMITFAIL": 792,
+   "COMPAT": 107,
+   "COMPLETE": 1026,
+   "COMPOSITE": 1003,
+   "COMPRESS": 1130,
+   "CONFFREE": 82,
+   "CONFRECEIVE": 83,
+   "CONFRECV": 83,
+   "CONFSEND": 84,
+   "CONNECT": 903,
+   "CONNECTED": 690,
+   "CONNECTING": 904,
+   "CONNECTION": 755,
+   "CONSISTENT": 723,
+   "CONSOLE": 66,
+   "CONTAINER": 869,
+   "CONTENTION": 836,
+   "CONTEXT": 574,
+   "CONTROLSHUT": 623,
+   "CONVERSE": 600,
+   "CONVIDLE": 518,
+   "COORDINATOR": 770,
+   "COPID": 908,
+   "COPY": 401,
+   "CORBA": 1101,
+   "CORBASERVER": 1141,
+   "CPLUSPLUS": 148,
+   "CREATE": 67,
+   "CREATESPI": 844,
+   "CRITICAL": 11,
+   "CSDAPI": 840,
+   "CSDBATCH": 841,
+   "CSIGN": 905,
+   "CTERM": 906,
+   "CTLGALL": 632,
+   "CTLGMODIFY": 633,
+   "CTLGNONE": 634,
+   "CTRLABLE": 56,
+   "CTX": 907,
+   "CURRENT": 260,
+   "CURRENTPGM": 870,
+   "CUSERID": 909,
+   "CUSTOM": 579,
+   "DAE": 684,
+   "DAEOPT": 684,
+   "DATA": 508,
+   "DATASET": 756,
+   "DATASETFULL": 793,
+   "DATASTREAM": 543,
+   "DB2CONN": 1142,
+   "DB2ENTRY": 1143,
+   "DB2TRAN": 1184,
+   "DBTRAN": 1184,
+   "DEADLOCK": 794,
+   "DEBUG": 1082,
+   "DEC": 46,
+   "DEFAULT": 198,
+   "DEFAULTUSER": 1070,
+   "DEFINITION": 990,
+   "DEFRESP1": 497,
+   "DEFRESP1OR2": 528,
+   "DEFRESP2": 498,
+   "DEFRESP3": 499,
+   "DELAY": 637,
+   "DELETABLE": 43,
+   "DELETE": 292,
+   "DELETEFAIL": 520,
+   "DELEXITERROR": 795,
+   "DEREGERROR": 679,
+   "DEREGISTERED": 678,
+   "DEST": 235,
+   "DISABLED": 24,
+   "DISABLEDHOST": 1125,
+   "DISABLING": 25,
+   "DISCARDFAIL": 513,
+   "DISCARDING": 1118,
+   "DISCONNING": 910,
+   "DISCREQ": 444,
+   "DISK1": 252,
+   "DISK2": 253,
+   "DISK2PAUSE": 254,
+   "DISPATCHABLE": 228,
+   "DISPATCHER": 1144,
+   "DJAR": 1189,
+   "DOCDELETE": 295,
+   "DOCTEMPLATE": 1145,
+   "DOESNOTEQUAL": 861,
+   "DOESNOTEXIST": 872,
+   "DOESNOTSTART": 862,
+   "DORMANT": 1024,
+   "DPLSUBSET": 383,
+   "DRAINING": 619,
+   "DREPAPI": 843,
+   "DREPBATCH": 845,
+   "DS3270": 615,
+   "DUALCASE": 403,
+   "DUMMY": 781,
+   "DUPERROR": 106,
+   "DUPNOREPLACE": 105,
+   "DUPREPLACE": 104,
+   "DYNAMIC": 178,
+   "EB": 490,
+   "EBCDIC": 1039,
+   "ECI": 1098,
+   "EJB": 1102,
+   "EMERGENCY": 268,
+   "EMPTY": 210,
+   "EMPTYREQ": 31,
+   "ENABLED": 23,
+   "ENABLING": 51,
+   "ENDAFFINITY": 790,
+   "ENQMODEL": 1188,
+   "ENQUEUE": 1146,
+   "ENTRYPOINT": 993,
+   "EPADAPTER": 1196,
+   "EPADAPTERSET": 1200,
+   "EQUAL": 911,
+   "EQUALS": 863,
+   "ESDS": 5,
+   "EVENT": 334,
+   "EVENTBINDING": 1191,
+   "EVENTPROCESS": 1192,
+   "EVENTUAL": 3,
+   "EXCEPT": 332,
+   "EXCEPTRESP": 523,
+   "EXCI": 650,
+   "EXCTL": 48,
+   "EXECENQ": 751,
+   "EXECENQADDR": 752,
+   "EXECINSTALL": 846,
+   "EXISTS": 871,
+   "EXIT": 912,
+   "EXITTRACE": 362,
+   "EXPECT": 747,
+   "EXPIRED": 1017,
+   "EXPORT": 991,
+   "EXTENDED": 1128,
+   "EXTENDEDDS": 405,
+   "EXTRA": 221,
+   "EXTSECURITY": 194,
+   "FAILED": 782,
+   "FAILEDBKOUT": 357,
+   "FAILINGBKOUT": 358,
+   "FAULTTOEPR": 853,
+   "FCLOSE": 273,
+   "FEED": 472,
+   "FILE": 238,
+   "FINALQ": 183,
+   "FINALQUIESCE": 183,
+   "FINPUT": 270,
+   "FIRED": 1001,
+   "FIRSTINIT": 625,
+   "FIRSTQ": 182,
+   "FIRSTQUIESCE": 182,
+   "FIXED": 12,
+   "FLUSH": 783,
+   "FMH": 502,
+   "FMHPARM": 385,
+   "FOPEN": 272,
+   "FORCE": 342,
+   "FORCECANCEL": 655,
+   "FORCECLOSE": 351,
+   "FORCECLOSING": 353,
+   "FORCED": 1013,
+   "FORCEPURGE": 237,
+   "FORCLOSING": 353,
+   "FORMATEDF": 606,
+   "FORMATTED": 542,
+   "FORMFEED": 407,
+   "FOUTPUT": 271,
+   "FREE": 85,
+   "FREEING": 94,
+   "FROMEPR": 850,
+   "FULL": 212,
+   "FULLAPI": 384,
+   "FULLAUTO": 1073,
+   "FWDRECOVABLE": 354,
+   "GENERIC": 651,
+   "GET": 748,
+   "GMT": 604,
+   "GOHIGHERTHAN": 873,
+   "GOINGOUT": 172,
+   "GOLOWERTHAN": 874,
+   "GREATERTHAN": 864,
+   "GROUP": 913,
+   "GROUPRESYNC": 947,
+   "GRPLIST": 842,
+   "GTFSTART": 317,
+   "GTFSTOP": 318,
+   "HEAD": 750,
+   "HEURBACKOUT": 758,
+   "HEURCOMMIT": 757,
+   "HEX": 45,
+   "HFORM": 409,
+   "HFSFILE": 1040,
+   "HIGH": 914,
+   "HILIGHT": 413,
+   "HOLD": 163,
+   "HOME": 1103,
+   "HOSTNAME": 302,
+   "HTTP": 1096,
+   "HTTPNO": 1034,
+   "HTTPS": 1029,
+   "HTTPYES": 1033,
+   "IDENTIFY": 1074,
+   "IDNTY": 328,
+   "IGNORE": 1,
+   "IGNORERR": 816,
+   "IIOP": 1097,
+   "IMMCLOSE": 350,
+   "IMMCLOSING": 352,
+   "IMMEDIATE": 2,
+   "IMMQUIESCED": 706,
+   "IMPORT": 992,
+   "INACTIVE": 378,
+   "INBOUND": 547,
+   "INCOMPLETE": 1014,
+   "INDEXRECFULL": 796,
+   "INDIRECT": 122,
+   "INDOUBT": 620,
+   "INFLIGHT": 621,
+   "INITCOMPLETE": 628,
+   "INITIAL": 789,
+   "INITING": 1112,
+   "INOUT": 532,
+   "INPUT": 226,
+   "INSERVICE": 73,
+   "INSTALLED": 550,
+   "INSTALLFAIL": 512,
+   "INTERNAL": 1058,
+   "INTRA": 222,
+   "INTSTART": 310,
+   "INTSTOP": 311,
+   "INVALID": 359,
+   "IOERROR": 797,
+   "IPCONN": 1176,
+   "IPECI": 936,
+   "IPIC": 1089,
+   "IPV4": 300,
+   "IPV6": 301,
+   "IRC": 121,
+   "ISNOTGREATER": 865,
+   "ISNOTLESS": 866,
+   "ISOLATE": 658,
+   "JAVA": 147,
+   "JOURNALMODEL": 1185,
+   "JOURNALNAME": 1147,
+   "JOURNALNUM": 1148,
+   "JVM": 1080,
+   "JVMPOOL": 1149,
+   "JVMPROFILE": 1150,
+   "JVMPROGRAM": 1151,
+   "JVMSERVER": 1193,
+   "KATAKANA": 415,
+   "KEEP": 786,
+   "KERBEROS": 1105,
+   "KEYED": 8,
+   "KILL": 232,
+   "KSDS": 6,
+   "LCKSTRUCFULL": 832,
+   "LE370": 377,
+   "LEAVE": 811,
+   "LESSTHAN": 867,
+   "LIBRARY": 1177,
+   "LIC": 493,
+   "LIGHTPEN": 417,
+   "LINK": 577,
+   "LOAD": 834,
+   "LOC24": 159,
+   "LOC31": 158,
+   "LOCAL": 605,
+   "LOCKING": 837,
+   "LOG": 54,
+   "LOGICAL": 216,
+   "LOGREPLICATE": 1198,
+   "LOGTERM": 269,
+   "LOSE": 544,
+   "LOW": 915,
+   "LPA": 165,
+   "LSRPOOL": 1152,
+   "LU61": 125,
+   "LUP": 541,
+   "LUSTAT": 525,
+   "LUW": 246,
+   "MAIN": 248,
+   "MAP": 155,
+   "MAPSET": 155,
+   "MCHCTL": 241,
+   "MDT": 506,
+   "MESSAGEID": 1197,
+   "METADATA": 857,
+   "MIXED": 403,
+   "MNPS": 999,
+   "MOD": 813,
+   "MODE24": 190,
+   "MODE31": 191,
+   "MODEANY": 189,
+   "MODEL": 370,
+   "MONITOR": 1153,
+   "MORE": 492,
+   "MQCONN": 1175,
+   "MRO": 938,
+   "MSRCONTROL": 419,
+   "MTOM": 460,
+   "MTOMNOXOP": 469,
+   "MVS": 780,
+   "MVSTCB": 1154,
+   "N906": 931,
+   "N906D": 921,
+   "NEGATIVE": 530,
+   "NEW": 28,
+   "NEWCOPY": 167,
+   "NEWSESSION": 485,
+   "NOALARM": 500,
+   "NOALTPRTCOPY": 447,
+   "NOANALYZER": 1127,
+   "NOAPLKYBD": 392,
+   "NOAPLTEXT": 394,
+   "NOAPPEND": 1037,
+   "NOAPPLNAME": 339,
+   "NOATI": 76,
+   "NOAUDALARM": 396,
+   "NOAUTHENTIC": 1091,
+   "NOAUTO": 1071,
+   "NOAUTOARCH": 263,
+   "NOBACKOUT": 193,
+   "NOBACKTRANS": 398,
+   "NOCEDF": 371,
+   "NOCLASSCACHE": 1076,
+   "NOCLEAR": 641,
+   "NOCLICONVERT": 744,
+   "NOCLOSE": 742,
+   "NOCMDPROT": 674,
+   "NOCOLOR": 400,
+   "NOCOMPAT": 108,
+   "NOCOMPRESS": 1131,
+   "NOCONNECT": 916,
+   "NOCONV": 556,
+   "NOCONVERSE": 601,
+   "NOCONVERT": 734,
+   "NOCOPY": 402,
+   "NOCREATE": 68,
+   "NOCTL": 223,
+   "NODAE": 685,
+   "NODAEOPT": 685,
+   "NODE": 1155,
+   "NODEBUG": 1083,
+   "NODISCREQ": 445,
+   "NODOCDELETE": 296,
+   "NODUALCASE": 404,
+   "NOEMPTYREQ": 32,
+   "NOEVENT": 335,
+   "NOEXCEPT": 333,
+   "NOEXCTL": 49,
+   "NOEXIT": 917,
+   "NOEXITTRACE": 363,
+   "NOEXTENDEDDS": 406,
+   "NOFMH": 503,
+   "NOFMHPARM": 386,
+   "NOFORCE": 1054,
+   "NOFORMATEDF": 607,
+   "NOFORMFEED": 408,
+   "NOHFORM": 410,
+   "NOHILIGHT": 414,
+   "NOHOLD": 164,
+   "NOIDNTY": 329,
+   "NOINCONVERT": 745,
+   "NOISOLATE": 657,
+   "NOJVM": 1081,
+   "NOKATAKANA": 416,
+   "NOKEEP": 787,
+   "NOLIGHTPEN": 418,
+   "NOLOAD": 835,
+   "NOLOG": 55,
+   "NOLOGREPLICA": 1199,
+   "NOLOSTLOCKS": 710,
+   "NOMDT": 507,
+   "NOMSGJRNL": 531,
+   "NOMSRCONTROL": 420,
+   "NOMTOM": 461,
+   "NOMTOMNOXOP": 470,
+   "NONAUTOCONN": 171,
+   "NONCICS": 661,
+   "NONCRITICAL": 1090,
+   "NONE": 496,
+   "NONLE370": 1084,
+   "NONRESIDENT": 1202,
+   "NONTRANS": 572,
+   "NOOBFORMAT": 422,
+   "NOOBOPERID": 388,
+   "NOOUTCONVERT": 746,
+   "NOOUTLINE": 424,
+   "NOPARTITIONS": 426,
+   "NOPERF": 331,
+   "NOPHASEOUT": 1110,
+   "NOPRESETSEC": 243,
+   "NOPRINTADAPT": 428,
+   "NOPROGSYMBOL": 430,
+   "NOPRTCOPY": 449,
+   "NOPS": 997,
+   "NOQUERY": 432,
+   "NORECOVDATA": 700,
+   "NOREENTPROT": 681,
+   "NORELEASE": 918,
+   "NORELREQ": 443,
+   "NORESRCE": 337,
+   "NORESYNC": 934,
+   "NORETAINED": 711,
+   "NOREUSE": 294,
+   "NORMAL": 1016,
+   "NORMALBKOUT": 356,
+   "NORMALRESP": 522,
+   "NORMI": 775,
+   "NOROLLBACK": 919,
+   "NOSECURITY": 196,
+   "NOSENDMTOM": 464,
+   "NOSHUTDOWN": 289,
+   "NOSOSI": 435,
+   "NOSPI": 694,
+   "NOSRVCONVERT": 739,
+   "NOSSL": 1031,
+   "NOSTSN": 487,
+   "NOSWITCH": 285,
+   "NOSYNCPOINT": 603,
+   "NOSYSDUMP": 185,
+   "NOSYSLOG": 784,
+   "NOTADDABLE": 42,
+   "NOTALLOWED": 327,
+   "NOTALTERABLE": 53,
+   "NOTAPPLIC": 1,
+   "NOTASKSTART": 608,
+   "NOTBROWSABLE": 40,
+   "NOTBRWBLE": 40,
+   "NOTBUSY": 613,
+   "NOTCDEB": 495,
+   "NOTCONNECTED": 691,
+   "NOTCTRLABLE": 57,
+   "NOTDEFINED": 659,
+   "NOTDELBLE": 44,
+   "NOTDELETABLE": 44,
+   "NOTDYNAMIC": 1021,
+   "NOTEMPTY": 211,
+   "NOTERMINAL": 214,
+   "NOTEXTENDED": 1129,
+   "NOTEXTKYBD": 437,
+   "NOTEXTPRINT": 439,
+   "NOTFIRED": 1000,
+   "NOTFWDRCVBLE": 361,
+   "NOTHOTPOOL": 1066,
+   "NOTINBOUND": 546,
+   "NOTINIT": 376,
+   "NOTINSTALLED": 551,
+   "NOTKEYED": 9,
+   "NOTLPA": 166,
+   "NOTPENDING": 127,
+   "NOTPURGEABLE": 161,
+   "NOTRANDUMP": 187,
+   "NOTREADABLE": 36,
+   "NOTREADY": 259,
+   "NOTRECOVABLE": 30,
+   "NOTREQUIRED": 667,
+   "NOTRLS": 721,
+   "NOTROUTABLE": 1022,
+   "NOTSOS": 669,
+   "NOTSUPPORTED": 15,
+   "NOTSUSPENDED": 1027,
+   "NOTTABLE": 100,
+   "NOTTI": 78,
+   "NOTUPDATABLE": 38,
+   "NOTUPDBLE": 38,
+   "NOTWAIT": 920,
+   "NOUCTRAN": 451,
+   "NOUSER": 1011,
+   "NOVALIDATION": 441,
+   "NOVFORM": 412,
+   "NOWAIT": 341,
+   "NOWRITE": 275,
+   "NOXOPDIRECT": 466,
+   "NOXOPSUPPORT": 468,
+   "NOZCPTRACE": 365,
+   "NRS": 774,
+   "OBFORMAT": 421,
+   "OBOPERID": 387,
+   "OBTAINING": 96,
+   "OFF": 200,
+   "OK": 274,
+   "OLD": 26,
+   "OLDCOPY": 162,
+   "OLDSESSION": 486,
+   "ON": 201,
+   "OPEN": 18,
+   "OPENAPI": 1053,
+   "OPENERROR": 798,
+   "OPENING": 20,
+   "OPENINPUT": 256,
+   "OPENOUTPUT": 257,
+   "OPID": 933,
+   "OPTIONAL": 326,
+   "OPTIONS": 759,
+   "OR": 1006,
+   "OTS": 1107,
+   "OUTLINE": 423,
+   "OUTPUT": 227,
+   "OUTSERVICE": 74,
+   "OWNER": 753,
+   "PAGEABLE": 79,
+   "PARTITIONS": 425,
+   "PARTITIONSET": 156,
+   "PARTNER": 1182,
+   "PATH": 11,
+   "PDSMEMBER": 1035,
+   "PENDBEGIN": 558,
+   "PENDDATA": 560,
+   "PENDFREE": 86,
+   "PENDING": 126,
+   "PENDINIT": 1113,
+   "PENDPASS": 565,
+   "PENDRECEIVE": 87,
+   "PENDRELEASE": 562,
+   "PENDRESOLVE": 1114,
+   "PENDSTART": 561,
+   "PENDSTSN": 557,
+   "PENDUNSOL": 564,
+   "PERF": 330,
+   "PERMANENT": 484,
+   "PHASEIN": 168,
+   "PHASEOUT": 1111,
+   "PHYSICAL": 215,
+   "PIPELINE": 1124,
+   "PL1": 152,
+   "PLI": 152,
+   "POLICYSCOPE": 994,
+   "POOL": 922,
+   "POSITIVE": 529,
+   "POST": 636,
+   "POSTCOMMAND": 697,
+   "PRECOMMAND": 696,
+   "PRESETSEC": 242,
+   "PRIMARY": 110,
+   "PRINCIPAL": 199,
+   "PRINTADAPT": 427,
+   "PRIVATE": 174,
+   "PROCESS": 1010,
+   "PROCESSTYPE": 1190,
+   "PROFILE": 157,
+   "PROGAUTO": 1072,
+   "PROGRAM": 154,
+   "PROGRAMDEF": 1178,
+   "PROGRAMINIT": 698,
+   "PROGSYMBOL": 429,
+   "PROTECTED": 504,
+   "PROVIDER": 1041,
+   "PRTCOPY": 448,
+   "PUBLISH": 1085,
+   "PURGE": 236,
+   "PURGEABLE": 160,
+   "PUT": 749,
+   "QR": 1057,
+   "QUASIRENT": 1050,
+   "QUEUE": 814,
+   "QUIESCED": 707,
+   "QUIESCING": 708,
+   "READABLE": 35,
+   "READBACK": 209,
+   "READONLY": 275,
+   "READY": 258,
+   "REBUILD": 923,
+   "RECEIVE": 88,
+   "RECEIVER": 1046,
+   "RECONNECT": 924,
+   "RECOVDATA": 701,
+   "RECOVERABLE": 29,
+   "RECOVERED": 277,
+   "RECOVERLOCKS": 712,
+   "RECOVERY": 1156,
+   "REENTPROT": 680,
+   "REFPARMS": 858,
+   "REGERROR": 677,
+   "REGION": 575,
+   "REGISTERED": 670,
+   "REJECT": 815,
+   "RELATED": 675,
+   "RELEASE": 563,
+   "RELEASED": 70,
+   "RELEASING": 549,
+   "RELOAD": 1078,
+   "RELOADING": 1079,
+   "RELREQ": 442,
+   "REMLOSTLOCKS": 713,
+   "REMOTE": 4,
+   "REMOVE": 276,
+   "REMSESSION": 740,
+   "REMTABLE": 103,
+   "REPEATABLE": 724,
+   "REPLYTOEPR": 852,
+   "REQCONTEXT": 854,
+   "REQUEST": 249,
+   "REQUESTER": 1042,
+   "REQUESTMODEL": 1157,
+   "REQUIRED": 666,
+   "REREAD": 812,
+   "RESET": 290,
+   "RESETLOCKS": 714,
+   "RESIDENT": 1201,
+   "RESOLVED": 347,
+   "RESOLVING": 1115,
+   "RESPCONTEXT": 855,
+   "RESPECTED": 1109,
+   "RESRCE": 336,
+   "RESSECEXT": 204,
+   "RESSECINT": 203,
+   "RESSECNO": 202,
+   "RESSECYES": 204,
+   "RESYNC": 702,
+   "RETAINED": 715,
+   "RETRACT": 1086,
+   "RETRY": 716,
+   "REUSE": 293,
+   "REVERTED": 264,
+   "RFC1123": 646,
+   "RFC3339": 647,
+   "RLS": 720,
+   "RLSACTIVE": 730,
+   "RLSGONE": 799,
+   "RLSINACTIVE": 731,
+   "RLSSERVER": 761,
+   "RMI": 771,
+   "ROLLBACK": 89,
+   "ROUTABLE": 1023,
+   "ROUTE": 638,
+   "RPG": 153,
+   "RRCOMMITFAIL": 830,
+   "RRDS": 7,
+   "RRINDOUBT": 831,
+   "RRMS": 1063,
+   "RRSUR": 939,
+   "RTR": 527,
+   "RU": 494,
+   "RUNNING": 229,
+   "RZINSTOR": 940,
+   "SAMESENDMTOM": 462,
+   "SCAN": 1088,
+   "SCHEDULER": 941,
+   "SCS": 614,
+   "SECONDINIT": 626,
+   "SECUSER": 1060,
+   "SEND": 90,
+   "SENDER": 1045,
+   "SENDMTOM": 463,
+   "SERVER": 1123,
+   "SERVICE": 475,
+   "SESSION": 372,
+   "SESSIONFAIL": 517,
+   "SESSIONLOST": 516,
+   "SESSIONS": 1187,
+   "SETFAIL": 514,
+   "SHARE": 27,
+   "SHARED": 173,
+   "SHUNTED": 762,
+   "SHUTDISABLED": 645,
+   "SHUTDOWN": 288,
+   "SHUTENABLED": 644,
+   "SIGN": 925,
+   "SIGNEDOFF": 245,
+   "SIGNEDON": 244,
+   "SINGLEOFF": 324,
+   "SINGLEON": 323,
+   "SKIP": 810,
+   "SMF": 255,
+   "SNPS": 998,
+   "SOAP": 1044,
+   "SOCKET": 942,
+   "SOMEAVAIL": 1204,
+   "SOS": 668,
+   "SOSABOVE": 683,
+   "SOSBELOW": 682,
+   "SOSI": 434,
+   "SPECIAL": 98,
+   "SPECIFIC": 652,
+   "SPECTRACE": 177,
+   "SPI": 693,
+   "SPRSTRACE": 175,
+   "SQLCODE": 926,
+   "SRVCONVERT": 738,
+   "SSL": 1030,
+   "STANDARD": 97,
+   "STANDBY": 629,
+   "STANTRACE": 176,
+   "START": 635,
+   "STARTED": 609,
+   "STARTING": 772,
+   "STARTSWITH": 868,
+   "STARTTERM": 943,
+   "STARTUP": 180,
+   "STATIC": 179,
+   "STATS": 1158,
+   "STOPPED": 610,
+   "STOPPING": 348,
+   "STORAGE": 1159,
+   "STREAMNAME": 1160,
+   "STSN": 509,
+   "STSNSET": 488,
+   "STSNTEST": 489,
+   "SUBORDINATE": 773,
+   "SUBPOOL": 1161,
+   "SUBSPACE": 663,
+   "SUMMUNLIKE": 566,
+   "SUPPORTED": 1106,
+   "SURROGATE": 371,
+   "SUSPENDED": 231,
+   "SWITCH": 188,
+   "SWITCHALL": 287,
+   "SWITCHING": 225,
+   "SWITCHNEXT": 286,
+   "SYNCFREE": 91,
+   "SYNCHRONOUS": 571,
+   "SYNCPOINT": 602,
+   "SYNCRECEIVE": 92,
+   "SYNCRECV": 92,
+   "SYNCSEND": 93,
+   "SYSCONNECT": 653,
+   "SYSDUMP": 184,
+   "SYSDUMPCODE": 1162,
+   "SYSLOG": 785,
+   "SYSPLEX": 656,
+   "SYSTEM": 643,
+   "SYSTEMOFF": 320,
+   "SYSTEMON": 319,
+   "T3278M2": 533,
+   "T3278M3": 534,
+   "T3278M4": 535,
+   "T3278M5": 536,
+   "T3279M2": 537,
+   "T3279M3": 538,
+   "T3279M4": 539,
+   "T3279M5": 540,
+   "TABLE": 847,
+   "TABLEMGR": 1163,
+   "TAKEOVER": 111,
+   "TAPE1": 250,
+   "TAPE2": 251,
+   "TASK": 233,
+   "TASKSTART": 611,
+   "TASKSUBPOOL": 1164,
+   "TCAM": 64,
+   "TCAMSNA": 65,
+   "TCEXITALL": 366,
+   "TCEXITALLOFF": 369,
+   "TCEXITNONE": 368,
+   "TCEXITSYSTEM": 367,
+   "TCLASS": 239,
+   "TCPIP": 802,
+   "TCPIPSERVICE": 1166,
+   "TDQ": 767,
+   "TDQUEUE": 767,
+   "TEMPLATENAME": 1168,
+   "TEMPORARY": 483,
+   "TERM": 234,
+   "TERMINAL": 213,
+   "TERMINATE": 1077,
+   "TEXTKYBD": 436,
+   "TEXTPRINT": 438,
+   "THIRDINIT": 627,
+   "THREADSAFE": 1051,
+   "TIME": 240,
+   "TIMEOUT": 511,
+   "TIMER": 1004,
+   "TOEPR": 851,
+   "TPOOL": 932,
+   "TPS55M2": 552,
+   "TPS55M3": 553,
+   "TPS55M4": 554,
+   "TPS55M5": 555,
+   "TRACE": 760,
+   "TRANCLASS": 1169,
+   "TRANDATA": 944,
+   "TRANDUMP": 186,
+   "TRANDUMPCODE": 1170,
+   "TRANIDONLY": 452,
+   "TRANS": 573,
+   "TRANSACTION": 1171,
+   "TRANSTART": 580,
+   "TSMODEL": 1183,
+   "TSQ": 768,
+   "TSQUEUE": 768,
+   "TTI": 77,
+   "TWAIT": 927,
+   "TX": 929,
+   "TXID": 928,
+   "TYPETERM": 1186,
+   "UCTRAN": 450,
+   "UKOPEN": 1056,
+   "UNATTEMPTED": 820,
+   "UNAVAILABLE": 672,
+   "UNBLOCKED": 17,
+   "UNCOMMITTED": 722,
+   "UNCONNECTED": 703,
+   "UNDEFINED": 14,
+   "UNDETERMINED": 355,
+   "UNENABLED": 33,
+   "UNENABLING": 34,
+   "UNEXPECTED": 1015,
+   "UNEXPIRED": 1018,
+   "UNINSTALLED": 548,
+   "UNKNOWN": 774,
+   "UNPROTECTED": 505,
+   "UNQUIESCED": 709,
+   "UNREGISTERED": 671,
+   "UNRESOLVED": 1116,
+   "UNSOLDATA": 521,
+   "UNUSABLE": 1117,
+   "UOW": 246,
+   "UPDATABLE": 37,
+   "UPDATING": 1049,
+   "URIMAP": 1173,
+   "URMTERMID": 1121,
+   "USER": 642,
+   "USERDATAKEY": 380,
+   "USEREXECKEY": 382,
+   "USERID": 930,
+   "USEROFF": 322,
+   "USERON": 321,
+   "USERTABLE": 102,
+   "UTC": 1203,
+   "VALID": 360,
+   "VALIDATION": 440,
+   "VARIABLE": 13,
+   "VERIFY": 1099,
+   "VFORM": 411,
+   "VRRDS": 732,
+   "VSAM": 3,
+   "VTAM": 60,
+   "WAIT": 340,
+   "WAITCOMMIT": 763,
+   "WAITER": 754,
+   "WAITFORGET": 622,
+   "WAITING": 765,
+   "WAITRMI": 766,
+   "WAITRRMS": 1063,
+   "WARMSTART": 267,
+   "WBE": 585,
+   "WEB": 945,
+   "WEBSERVICE": 1174,
+   "WIN": 545,
+   "WMQ": 578,
+   "XCF": 665,
+   "XM": 123,
+   "XMLTRANSFORM": 1194,
+   "XMRUNTRAN": 946,
+   "XNOTDONE": 144,
+   "XOK": 143,
+   "XOPDIRECT": 465,
+   "XOPSUPPORT": 467,
+   "XPLINK": 1068,
+   "ZCPTRACE": 364
+  },
+  "omitted": {
+   "ADDRESS": "the alphabetic and numeric tables disagree: 859 and 895"
+  },
+  "notes": "Where the alphabetic and numeric tables both list a name they agree except for the names under 'omitted'; a name only one table lists (the alphabetic one abbreviates some, as ALLOCATD for ALLOCATED) is taken from that table."
+ }
+}

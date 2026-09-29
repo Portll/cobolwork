@@ -1,0 +1,23 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LEXIS.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       $SET CONSTANT GREETING "HELLO"
+       01  WS-FLOAT             COMP-2.
+       01  WS-NAT               PIC N(4).
+       01  WS-HEX               PIC 9(4) COMP-5.
+       01  WS-SAY               PIC X(5) VALUE GREETING.
+       01  WS-QUOTED            PIC X(70) VALUE "SPLIT ACROSS THE BREAK"
+      -    "" STAYS INSIDE THE LITERAL".
+       INCLUDE LEXISINC.
+       PROCEDURE DIVISION.
+           MOVE 1.5E3 TO WS-FLOAT
+           COMPUTE WS-FLOAT = 2.5E-2 * 1.0E0
+           MOVE NC"ABCD" TO WS-NAT
+           COMPUTE WS-HEX = WS-HEX B-AND H'FF'
+       $IF NOT-DEFINED-ANYWHERE DEFINED
+           DISPLAY WS-UNDECLARED
+       $ELSE
+           DISPLAY WS-SAY WS-QUOTED WS-INCLUDED
+       $END
+           STOP RUN.

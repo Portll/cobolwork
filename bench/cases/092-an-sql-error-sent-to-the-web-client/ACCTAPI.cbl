@@ -1,0 +1,22 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ACCTAPI.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-ACCT PIC X(11).
+       01 WS-NAME PIC X(40).
+       01 WS-CODE PIC -9(8).
+       01 WS-REPLY PIC X(80).
+       PROCEDURE DIVISION.
+           MOVE '00000000001' TO WS-ACCT.
+           EXEC SQL SELECT CUST_NAME INTO :WS-NAME FROM ACCOUNT
+               WHERE ACCT_ID = :WS-ACCT END-EXEC.
+           IF SQLCODE NOT = 0
+               MOVE SQLCODE TO WS-CODE
+               STRING 'LOOKUP FAILED, SQLCODE ' WS-CODE
+                   DELIMITED BY SIZE INTO WS-REPLY
+           ELSE
+               MOVE WS-NAME TO WS-REPLY
+           END-IF.
+           EXEC CICS WEB SEND FROM(WS-REPLY) MEDIATYPE('text/plain')
+               END-EXEC.
+           EXEC CICS RETURN END-EXEC.

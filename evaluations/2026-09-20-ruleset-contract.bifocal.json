@@ -1,0 +1,161 @@
+{
+  "schema": "bifocal-plan/v1",
+  "target": "docs/spec/ruleset-contract.md",
+  "date": "2026-09-20",
+  "repo": "cobolwork",
+  "treeState": { "tests": 197, "passing": 197, "libLines": 4237, "ruleSets": 8 },
+
+  "phase0_riskTriage": [
+    { "component": "F1 canonical findings", "tier": 2, "why": "pure extraction; 11 call sites; no external contract change beyond gaining fields" },
+    { "component": "F2 guarded traversal", "tier": 2, "why": "changes when a scan stops reading; bounded by existing memory.mjs tests" },
+    { "component": "F3 rule-set contract", "tier": 1, "why": "high coupling — every rule set and the report schema; observable output change; the OOM regression lives here" },
+    { "component": "F4 registry", "tier": 3, "why": "mechanical rewiring behind an already-enforced invariant (ESETNAME)" },
+    { "component": "F5 coverage end to end", "tier": 1, "why": "data integrity — governs whether a report overclaims what was read" }
+  ],
+
+  "phase1_edgeWalk": {
+    "boundaries": [
+      {
+        "name": "ruleSet -> report (scan.mjs bySet projection)",
+        "type": "invoke",
+        "tier": 1,
+        "edge": {
+          "dataCrossing": "findings[], summary{}",
+          "contract": "implicit — no schema, no validation",
+          "failureModes": "summary keys silently absent; scan.mjs compensates with || 0",
+          "attackSurface": "none external; integrity surface is the report's coverage claim"
+        },
+        "fractal": {
+          "siblingConsistency": "BROKEN — 4 of 8 sets return bare stats, 4 return wrapped summaries",
+          "scaleUp": "holds — scanEach merges repo reports uniformly",
+          "scaleDown": "holds — individual rules push uniform finding objects",
+          "mirrorTest": "FAILS — scan.mjs reads keys that half its providers never write"
+        }
+      },
+      {
+        "name": "ruleSet -> memory guard (eachWithinMemory)",
+        "type": "invoke",
+        "tier": 1,
+        "edge": {
+          "dataCrossing": "items[], work(), {maxBytes, label}",
+          "contract": "explicit and documented in memory.mjs",
+          "failureModes": "guard imported but not called — module looks protected and is not",
+          "attackSurface": "resource exhaustion on a large estate"
+        },
+        "fractal": {
+          "siblingConsistency": "BROKEN — 2 of 11 traversals call it, 3 import without calling, 6 untouched",
+          "scaleUp": "the failure only appears at corpus scale, which is where it matters",
+          "mirrorTest": "FAILS — the import asserts a guarantee the code does not provide"
+        }
+      }
+    ],
+
+    "hazop": [
+      { "boundary": "ruleSet->report", "guideWord": "NO", "failureMode": "a set returns no summary key the report needs", "observableEffect": "undefined lands in the report; scan.mjs defaults it to 0 or 'med'", "tierAppropriate": true, "mitigationPresent": false },
+      { "boundary": "ruleSet->report", "guideWord": "MORE", "failureMode": "a set increments filesScanned twice per artifact", "observableEffect": "copybook counts copybooks and programs; Math.max picks the inflated counter as the report's filesScanned", "tierAppropriate": true, "mitigationPresent": false },
+      { "boundary": "ruleSet->report", "guideWord": "LESS", "failureMode": "a set stops early and reports only part of the tree", "observableEffect": "coverageIncomplete is set by cics; the reason is dropped by the bySet projection", "tierAppropriate": true, "mitigationPresent": true, "mitigationPartial": "flag survives, diagnostic does not" },
+      { "boundary": "ruleSet->report", "guideWord": "OTHER THAN", "failureMode": "a finding names a rule id absent from the set's table", "observableEffect": "sev defaults to 'med', cwe to null; the finding is published as real", "tierAppropriate": true, "mitigationPresent": false },
+      { "boundary": "ruleSet->report", "guideWord": "PART OF", "failureMode": "the summary shape changes mid-migration; some sets normalised, some not", "observableEffect": "consumers reading summary.byRule get it from half the sets", "tierAppropriate": true, "mitigationPresent": false },
+      { "boundary": "ruleSet->report", "guideWord": "REVERSE", "failureMode": "n/a — the projection is one-directional", "observableEffect": "n/a", "tierAppropriate": false, "mitigationPresent": true },
+      { "boundary": "ruleSet->report", "guideWord": "EARLY", "failureMode": "severity read before the set attached it", "observableEffect": "already live: standalone scanJcl returns sev undefined", "tierAppropriate": true, "mitigationPresent": false },
+      { "boundary": "ruleSet->report", "guideWord": "LATE", "failureMode": "a consumer caches ALL_RULES from before a set was registered", "observableEffect": "ruleText missing for new rules", "tierAppropriate": false, "mitigationPresent": true },
+
+      { "boundary": "ruleSet->memoryGuard", "guideWord": "NO", "failureMode": "guard never invoked despite import", "observableEffect": "build, recon, vendor read the whole tree; OOM at corpus scale", "tierAppropriate": true, "mitigationPresent": false },
+      { "boundary": "ruleSet->memoryGuard", "guideWord": "MORE", "failureMode": "work() returns no byte count, so the byte budget never advances", "observableEffect": "maxBytes silently ineffective", "tierAppropriate": true, "mitigationPresent": false },
+      { "boundary": "ruleSet->memoryGuard", "guideWord": "OTHER THAN", "failureMode": "perFile returns a parse tree instead of a summary", "observableEffect": "working set grows with the tree; the 8GB OOM returns", "tierAppropriate": true, "mitigationPresent": false }
+    ],
+
+    "fmeaRpn": [
+      { "findingId": "H-01", "desc": "guard imported but not called (build, recon, vendor)", "severity": 8, "probability": 7, "detectability": 9, "rpn": 504, "status": "MANDATORY", "rationale": { "S": "corpus run dies; takes the measurement with it", "P": "triggers on any large estate, which is the target market", "D": "the import reads as protection; nothing tests it" } },
+      { "findingId": "H-02", "desc": "unknown rule id defaults to sev med, cwe null", "severity": 7, "probability": 4, "detectability": 9, "rpn": 252, "status": "MANDATORY", "rationale": { "S": "a published finding carries a fabricated severity", "P": "needs a typo, but nothing catches one", "D": "silent — indistinguishable from a real med finding" } },
+      { "findingId": "H-03", "desc": "perFile returning a parse tree reintroduces the OOM", "severity": 9, "probability": 5, "detectability": 7, "rpn": 315, "status": "MANDATORY", "rationale": { "S": "the exact failure memory.mjs was built to prevent", "P": "a new contributor's natural first implementation", "D": "only appears at corpus scale, not in tests" } },
+      { "findingId": "H-04", "desc": "stoppedBy and filesNotRead dropped by bySet projection", "severity": 6, "probability": 8, "detectability": 6, "rpn": 288, "status": "MANDATORY", "rationale": { "S": "report under-explains; the flag still fires", "P": "every memory-stopped scan", "D": "visible if someone compares the set summary to the report" } },
+      { "findingId": "H-05", "desc": "filesScanned incommensurable across sets, then Math.max", "severity": 5, "probability": 9, "detectability": 8, "rpn": 360, "status": "MANDATORY", "rationale": { "S": "a headline number that means nothing precise", "P": "every scan", "D": "looks plausible; no test pins it" } },
+      { "findingId": "H-06", "desc": "mid-migration summary shape divergence", "severity": 5, "probability": 6, "detectability": 4, "rpn": 120, "status": "MANDATORY", "rationale": { "S": "consumers see inconsistent reports for one release", "P": "guaranteed if F3 lands per-set over time", "D": "tests will catch it if written first" } }
+    ]
+  },
+
+  "phase2_fractalAtam": {
+    "corePattern": "one cross-cutting concern, one module, one vocabulary, one report sentence",
+    "precedent": "lib/memory.mjs — states the pattern explicitly in its own header comment",
+    "macro": "CONSISTENT — lib/ is an acyclic DAG; substrate is genuinely shared",
+    "meso": "BROKEN — the rule-set layer re-solves five concerns privately, eight times",
+    "micro": "CONSISTENT — individual rules push uniform finding objects",
+    "breakClassification": "meso-level pattern break; the macro pattern is correct and the micro pattern is correct, so the fix is additive rather than structural",
+    "tradeoffs": [
+      { "decision": "two-phase perFile/finish rather than one callback", "buys": "bounded working set; preserves the 8GB OOM fix", "costs": "a richer contract a contributor must learn", "verdict": "mandatory — the simpler contract is the one that regresses" },
+      { "decision": "diff.mjs excluded", "buys": "avoids forcing a two-tree model into a one-tree harness", "costs": "byText and parse options stay duplicated in one file", "verdict": "correct — bounded contexts differ" },
+      { "decision": "parser.mjs untouched", "buys": "golden fixtures and GnuCOBOL grading stay valid", "costs": "the largest file keeps its own idioms", "verdict": "correct — risk is concentrated where value is lowest" },
+      { "decision": "filesScanned kept as a derived alias for one release", "buys": "no schema break for existing consumers", "costs": "two names for one number, temporarily", "verdict": "correct — the ambiguity is retired without breaking readers" }
+    ]
+  },
+
+  "phase2_5_adversarialChallenge": [
+    {
+      "dim": "Completeness",
+      "proposed": 8.5,
+      "counter": "The spec never states what happens to lib/rules.mjs (flow), whose RULES table has 43 severity assignments and whose scan is a thin wrapper over dataflow.mjs. F3 step 12 says 'migrate flow' in four words. That is the largest set and the least specified.",
+      "grounded": true,
+      "result": "reduced:1.5",
+      "final": 7.0
+    },
+    {
+      "dim": "Migration",
+      "proposed": 8.0,
+      "counter": "Step 13 says 'update the ~80 summary.* assertions across 11 test files' as one line. That is the single largest mechanical risk in the plan and it has no ordering, no per-file breakdown, and no statement of which assertions are expected to change value rather than shape.",
+      "grounded": true,
+      "result": "reduced:1.5",
+      "final": 6.5
+    },
+    {
+      "dim": "Robustness",
+      "proposed": 7.5,
+      "counter": "F2 changes when a scan stops reading. Adding the guard to hidden, copybook, jcl and inventory means four sets gain early-stop behaviour they never had. On a constrained CI box this could turn currently-complete scans into incomplete ones, changing test outcomes that assert coverageIncomplete is false.",
+      "grounded": true,
+      "result": "reduced:1.0",
+      "final": 6.5
+    },
+    {
+      "dim": "DataIntegrity",
+      "proposed": 8.0,
+      "counter": "Challenged on whether F5 actually closes the overclaim path. It does: bySet widening plus setsIncomplete keying is sufficient, and the flag already fires. No grounded reduction.",
+      "grounded": false,
+      "result": "survived",
+      "final": 8.0
+    }
+  ],
+
+  "phase3_scores": {
+    "rule": "dual-evidence-rule applied; >6.0 requires code-grounded AND structural evidence from different abstraction levels",
+    "dimensions": [
+      { "id": "D1", "name": "Clarity", "score": 8.0, "code": "docs/spec/ruleset-contract.md §5 contract block", "structural": "mirrors memory.mjs's existing header-comment convention of naming the concern before the mechanism", "capped": false },
+      { "id": "D2", "name": "Completeness", "score": 7.0, "code": "§6 covers F1-F5 with 14 scenarios", "structural": "dependency graph in §7 is closed — no feature depends on an unlisted one", "capped": false, "challengeApplied": "reduced:1.5 — flow migration underspecified" },
+      { "id": "D3", "name": "Robustness", "score": 6.5, "code": "F2 scenarios assert the counter reconciliation invariant", "structural": "two-phase contract preserves the documented 8GB OOM fix rather than re-litigating it", "capped": false, "challengeApplied": "reduced:1.0 — four sets gain early-stop behaviour" },
+      { "id": "D4", "name": "Security", "score": 6.0, "code": "no new external surface; no credential, network or auth path touched", "structural": "single evidence only — no independent structural witness", "capped": true, "capReason": "single evidence; capped at 6.0" },
+      { "id": "D5", "name": "Compliance", "score": 6.0, "code": "ruleCompliance mapping in scan.mjs is untouched by every group", "structural": "single evidence only", "capped": true, "capReason": "single evidence; capped at 6.0" },
+      { "id": "D6", "name": "DataIntegrity", "score": 8.0, "code": "F5 closes the bySet projection gap; scan.mjs:136 already ORs coverageIncomplete", "structural": "the invariant table in §4 makes every coverage claim testable rather than conventional", "capped": false, "challengeApplied": "survived" },
+      { "id": "D7", "name": "Testability", "score": 8.5, "code": "every invariant in §4 maps to a named scenario in §6", "structural": "I6 (ESETNAME) is an existing worked example of the same invariant-as-test move", "capped": false },
+      { "id": "D8", "name": "Observability", "score": 7.5, "code": "F5 surfaces stoppedBy and filesNotRead per set to stderr and report", "structural": "memory.mjs already composes the sentence; the plan connects an existing producer to an existing consumer", "capped": false },
+      { "id": "D9", "name": "Migration", "score": 6.5, "code": "§8 gives 19 ordered steps, each leaving the tree green", "structural": "schema bump localised to F3; additive-only change keeps consumers valid", "capped": false, "challengeApplied": "reduced:1.5 — test migration underspecified" },
+      { "id": "D10", "name": "Coherence", "score": 8.5, "code": "§2 retires the filesScanned ambiguity with a stated invariant", "structural": "bounded-context table explains why diff.mjs is excluded rather than overlooked", "capped": false },
+      { "id": "D11", "name": "Efficiency", "score": 7.0, "code": "net -110 lines in lib/ across ~16 files", "structural": "registration points 7 -> 1; the marginal cost of a ninth rule set drops to one file", "capped": false },
+      { "id": "D12", "name": "EvaluationDepth", "score": 7.5, "code": "11 HAZOP entries, 6 scored RPNs, 4 adversarial challenges", "structural": "every claim in the spec traces to a measurement taken on the working tree, not to recollection", "capped": false }
+    ],
+    "total": 87.0,
+    "max": 120,
+    "criticalDims": { "Robustness": 6.5, "Security": 6.0, "Compliance": 6.0, "DataIntegrity": 8.0 },
+    "blockers": []
+  },
+
+  "phase3_evaluationMatrix9": {
+    "quality": 8.0, "completeness": 7.0, "performance": 7.0, "utility": 8.5,
+    "coherence": 8.5, "cohesiveness": 8.0, "elasticity": 8.0, "function": 7.5, "easeOfUse": 7.5
+  },
+
+  "appliedFunctions": ["hazop-guide", "fmea-rpn", "dual-evidence-rule"],
+
+  "notes": [
+    "Every count in this artefact was measured on the working tree on 2026-09-20, not recalled. Standalone sev:undefined and the memory-stop coverage behaviour were both reproduced by direct execution.",
+    "An earlier framing of H-04 as a silent-wrong-answer was wrong and is corrected here: rules-cics.mjs sets coverageIncomplete from run.skipped.length, and scan.mjs ORs it. Only the diagnostic detail is lost, not the flag."
+  ]
+}

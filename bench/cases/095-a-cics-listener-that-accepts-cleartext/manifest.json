@@ -1,0 +1,9 @@
+{
+ "id": "095-a-cics-listener-that-accepts-cleartext",
+ "title": "Four CICS listeners: one with SSL(NO), one silent about SSL and so defaulted to NO, one with SSL(YES) and one with SSL(CLIENTAUTH)",
+ "cwe": "CWE-319",
+ "expect": [
+  { "rule": "cics-listener-accepts-cleartext", "file": "REGION.csd" },
+  { "rule": "cics-listener-accepts-cleartext", "file": "REGION.csd" }
+ ]
+}

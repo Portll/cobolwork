@@ -1,0 +1,15 @@
+{
+ "id": "056-the-reply-is-built-from-a-template",
+ "title": "The same request answered with a fixed page and written to a queue the program names itself",
+ "cwe": "CWE-79",
+ "expect": [],
+ "negativeFor": [
+  "cics-web-to-web-response",
+  "cics-web-to-http-header",
+  "cics-web-to-outbound-host",
+  "cics-web-to-queue-name"
+ ],
+ "alsoExpected": [
+  "web-response-without-protective-headers"
+ ]
+}

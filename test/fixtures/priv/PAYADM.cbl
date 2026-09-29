@@ -1,0 +1,6 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PAYADM.
+      * Issues the system commands CMDSEC governs.
+       PROCEDURE DIVISION.
+           EXEC CICS SET TERMINAL('T001') OUTSERVICE END-EXEC
+           EXEC CICS RETURN END-EXEC.

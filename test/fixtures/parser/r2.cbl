@@ -1,0 +1,11 @@
+       REPLACE ==FSIZE== BY ==80== ==BIG== BY ==7==.
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. R2.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 A PIC X(FSIZE).
+       01 B PIC X(BIG).
+       01 C PIC 9(BIG) COMP-3.
+       01 D PIC X(12).
+       PROCEDURE DIVISION.
+           GOBACK.

@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. HEX.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       78 C-HEX VALUE X"DA".
+       78 C-TXT VALUE "+-".
+       SCREEN SECTION.
+       01 SC.
+          05 LINE 1 COL 1 VALUE C-HEX.
+          05 LINE 1 COL 2 VALUE C-TXT.
+          05 LINE 1 COL 5 VALUE X"C4C5".
+       PROCEDURE DIVISION.
+           DISPLAY SC.
+           GOBACK.

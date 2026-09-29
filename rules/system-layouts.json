@@ -1,0 +1,28 @@
+{
+ "_comment": "The byte layout of system copybooks a repository copy can shadow, as elementary fields [name, offset, size, occurs]. A repository copy whose elementary fields match is the system's own layout; one that differs compiles its programs against something else. Offsets follow from the documented order and lengths, and each total matches the length the documentation states. Group names are not compared: IBM's own copies group SQLWARN8-A under SQLEXT, which vendored copies often fold into SQLWARN.",
+ "SQLCA": {
+  "source": { "title": "Db2 13 for z/OS, Description of SQLCA fields", "url": "https://www.ibm.com/docs/en/db2-for-zos/13?topic=sqlca-description-fields", "retrieved": "2026-09-27" },
+  "length": 136,
+  "fields": [
+   ["SQLCAID", 0, 8, 1],
+   ["SQLCABC", 8, 4, 1],
+   ["SQLCODE", 12, 4, 1],
+   ["SQLERRML", 16, 2, 1],
+   ["SQLERRMC", 18, 70, 1],
+   ["SQLERRP", 88, 8, 1],
+   ["SQLERRD", 96, 4, 6],
+   ["SQLWARN0", 120, 1, 1],
+   ["SQLWARN1", 121, 1, 1],
+   ["SQLWARN2", 122, 1, 1],
+   ["SQLWARN3", 123, 1, 1],
+   ["SQLWARN4", 124, 1, 1],
+   ["SQLWARN5", 125, 1, 1],
+   ["SQLWARN6", 126, 1, 1],
+   ["SQLWARN7", 127, 1, 1],
+   ["SQLWARN8", 128, 1, 1],
+   ["SQLWARN9", 129, 1, 1],
+   ["SQLWARNA", 130, 1, 1],
+   ["SQLSTATE", 131, 5, 1]
+  ]
+ }
+}

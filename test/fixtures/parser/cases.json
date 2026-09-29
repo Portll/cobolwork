@@ -1,0 +1,158 @@
+[
+  {
+    "file": "p-basic.cbl",
+    "note": "sizes, a section and paragraphs, a system routine call"
+  },
+  {
+    "file": "u-basic.cbl",
+    "note": "usages, sign separate, edited pictures, 88 and REDEFINES"
+  },
+  {
+    "file": "p.cbl",
+    "note": "pointer and index tables report whole-table sizes"
+  },
+  {
+    "file": "c.cbl",
+    "include": [
+      "cp"
+    ],
+    "note": "COPY REPLACING, qualified references"
+  },
+  {
+    "file": "f.cbl",
+    "note": "files, qualification, dynamic and literal calls, two programs"
+  },
+  {
+    "file": "u.cbl",
+    "note": "one occurrence versus whole table by usage"
+  },
+  {
+    "file": "o.cbl",
+    "note": "OCCURS with a constant bound, constant pictures, larger REDEFINES"
+  },
+  {
+    "file": "h.cbl",
+    "note": "hexadecimal and Z literal byte lengths, screen VALUE constants"
+  },
+  {
+    "file": "r1.cbl",
+    "note": "directives after a sequence area, DEFINE OVERRIDE, evaluated IF/ELIF"
+  },
+  {
+    "file": "r2.cbl",
+    "note": "REPLACE substituting inside picture strings"
+  },
+  {
+    "file": "r3a.cbl",
+    "std": "mf",
+    "note": "a REDEFINES larger than what it redefines"
+  },
+  {
+    "file": "r3b.cbl",
+    "note": "RENAMES spans, including qualified and group operands"
+  },
+  {
+    "file": "r4.cbl",
+    "note": "screen entries sized from USING and FROM items"
+  },
+  {
+    "file": "r5-unix.cbl",
+    "note": "a copybook DEFINE deciding an IF branch in the copying file"
+  },
+  {
+    "file": "c78.cbl",
+    "note": "a CALL naming a level-78 constant, a space-padded literal program name, and a genuinely dynamic CALL"
+  },
+  {
+    "file": "cpyext.cbl",
+    "note": "COPY naming a copybook with its file extension — the period before .cpy is not the statement terminator"
+  },
+  {
+    "file": "sqlinc.cbl",
+    "witness": "precompiled",
+    "note": "EXEC SQL INCLUDE brings in a copybook whole, its first entry included, in the data and the procedure division"
+  },
+  {
+    "file": "cpydot.cbl",
+    "note": "COPY DOTWS.WS. names the member DOTWS.WS, and a COPY ended by a period does not swallow the paragraph header on the next line"
+  },
+  {
+    "file": "gnuwords.cbl",
+    "note": "GnuCOBOL's MODULE-* and CONCAT functions under FUNCTION ALL INTRINSIC, NUMBER-OF-CALL-PARAMETERS and ACCEPT FROM MICROSECOND-TIME resolve without a declaration"
+  },
+  {
+    "file": "idcomm.cbl",
+    "note": "comment-entries after AUTHOR, DATE-WRITTEN and SECURITY run on through every line with Area A blank, a COPY and an apostrophe in them included"
+  },
+  {
+    "file": "cpytag.cbl",
+    "note": "a tag written against other text, 'X'-CLE and FS-(), is replaced where it stands, and the text around it joins the replacement into one word"
+  },
+  {
+    "file": "sync.cbl",
+    "note": "SYNCHRONIZED aligns binary, float, pointer and index items to their length, counted from the record's start, with the slack inside the group that holds them; a table entry is rounded up to its widest alignment"
+  },
+  {
+    "file": "fdnosec.cbl",
+    "note": "an FD needs no FILE SECTION header before it, whether it opens a copybook or follows one"
+  },
+  {
+    "file": "rw.cbl",
+    "note": "report groups are laid out by column, a report file is as wide as its widest report, and the listing prints the last report's groups only"
+  },
+  {
+    "file": "tdtype.cbl",
+    "note": "TYPE and TYPE TO give an item the size and subordinate items of its TYPEDEF, which qualification reaches and the listing does not print"
+  },
+  {
+    "file": "dbgitem.cbl",
+    "note": "WITH DEBUGGING MODE declares DEBUG-ITEM and its subordinate items, which a program uses without declaring"
+  },
+  {
+    "file": "noident.cbl",
+    "note": "a program that opens at SPECIAL-NAMES, with no identification division, is one program named for its file"
+  },
+  {
+    "file": "hdrnop.cbl",
+    "format": "variable",
+    "std": "ibm",
+    "note": "a paragraph or section header in Area A ends the sentence before it without a period, and an Area B word before a period stays an operand"
+  },
+  {
+    "file": "mfstar.cbl",
+    "format": "free",
+    "std": "mf",
+    "note": "in Micro Focus free form a * or / in column 1 makes the line a comment, and an indented * multiplies"
+  },
+  {
+    "file": "corrqual.cbl",
+    "note": "MOVE CORRESPONDING writes each receiving item it pairs, skipping OCCURS, REDEFINES and FILLER, and a condition-name's qualifier is not a reference to it"
+  },
+  {
+    "file": "gnuwords2.cbl",
+    "note": "SUBSTITUTE, SUBSTITUTE-CASE and the MODULE-* functions, B-SHIFT-L and B-SHIFT-R, COB-CRT-STATUS, UPON STDOUT and STDERR, and RETURNING NOTHING need no declaration"
+  },
+  {
+    "file": "lexis.cbl",
+    "include": [
+      "."
+    ],
+    "note": "floating-point, NC and H literals, a quote doubled across a continuation, INCLUDE as COPY, and $SET CONSTANT with $IF, $ELSE and $END"
+  },
+  {
+    "file": "fillpar.cbl",
+    "note": "a group reference reaches the items under it, but not through an unnamed FILLER group, a FILLER REDEFINES among them; a reference below one still reaches the group above"
+  },
+  {
+    "file": "nestrepl.cbl",
+    "note": "a COPY REPLACING reaches the copybooks nested in it, except the words their own REPLACING produced"
+  },
+  {
+    "file": "qualuniq.cbl",
+    "note": "a qualifier is a reference only where the name it qualifies is declared more than once, for a data name and a condition-name alike"
+  },
+  {
+    "file": "cpyqual.cbl",
+    "note": "a COPY REPLACING operand may be a qualified or subscripted identifier"
+  }
+]

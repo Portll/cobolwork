@@ -1,0 +1,11 @@
+{
+ "id": "092-an-sql-error-sent-to-the-web-client",
+ "title": "A web service puts the SQLCODE of a failed lookup into the reply it sends its caller",
+ "cwe": "CWE-209",
+ "expect": [
+  {
+   "rule": "system-response-to-web-response",
+   "file": "ACCTAPI.cbl"
+  }
+ ]
+}

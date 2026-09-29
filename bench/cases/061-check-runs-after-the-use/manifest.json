@@ -1,0 +1,8 @@
+{
+ "id": "061-check-runs-after-the-use",
+ "title": "The input is checked in a paragraph performed after the one that runs it as a command",
+ "cwe": "CWE-78",
+ "expect": [
+  { "rule": "argv-or-env-to-os-command", "file": "LATE.cbl" }
+ ]
+}

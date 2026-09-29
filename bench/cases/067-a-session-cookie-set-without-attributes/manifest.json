@@ -1,0 +1,9 @@
+{
+ "id": "067-a-session-cookie-set-without-attributes",
+ "title": "A session cookie is set without Secure, HttpOnly or SameSite, and the HTML it accompanies says nothing about who may frame it",
+ "cwe": "CWE-1004",
+ "expect": [
+  { "rule": "web-cookie-without-secure-attributes", "file": "WEBCOOKIE.cbl" },
+  { "rule": "web-response-without-protective-headers", "file": "WEBCOOKIE.cbl" }
+ ]
+}

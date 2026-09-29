@@ -1,0 +1,11 @@
+{
+ "id": "029-instream-deletes-a-catalogued-dataset",
+ "title": "In-stream job data deletes a catalogued dataset",
+ "cwe": "CWE-284",
+ "expect": [
+  {
+   "rule": "jcl-instream-destructive",
+   "file": "CLEANUP.jcl"
+  }
+ ]
+}

@@ -1,0 +1,124 @@
+{
+ "schemaVersion": 1,
+ "name": "broadcom",
+ "vendor": "Broadcom",
+ "product": "CA ACF2 and CA Top Secret",
+ "validation": {
+  "corpus": {
+   "date": "2026-09-21",
+   "repositories": 127,
+   "repositoriesWithJcl": 45,
+   "filesScanned": 558281,
+   "firedOn": 0,
+   "perRule": {},
+   "rulesThatFired": 0,
+   "rulesTotal": 8,
+   "note": "Measured 2026-09-21 over 127 public GitHub COBOL repositories, 558,281 files, with diag/measure-rules.mjs --packs. Read the denominator before the number: every rule in this pack is JCL-scoped, and only 45 of the 127 repositories contain any JCL at all. WHAT THIS DOES AND DOES NOT SHOW. It shows these rules are not broadly noisy - they do not fire on ordinary COBOL and JCL. It does not show they are quiet where they would actually run, because a public corpus of teaching material, vendor demos and tooling contains essentially no estate running this product. A rule that cannot fire for want of the product is not the same as a rule that sees the product and stays quiet, and this measurement cannot tell those apart. The practitioner review is still the half that would."
+  },
+  "practitioner": null,
+  "_note": "Two different questions. A corpus measurement over public COBOL repositories tells you how often these rules fire, which is their noise. It cannot tell you whether the risk statements are true: if the claim about GSO records is wrong, a thousand repositories will report it quietly and wrongly. Fill corpus with {repositories, firedOn, perRule} from diag/measure-rules.mjs; fill practitioner with {by, date, note} when someone who has administered the product has read it."
+ },
+ "retrieved": "2026-09-20",
+ "source": "CA ACF2 and CA Top Secret command references. Some are behind a Broadcom support login; a customer who runs the product can supply theirs.",
+ "coverage": "Logonid and ACID administration, resource rule maintenance, and global option changes. Not covered: reporting utilities, database maintenance, or anything whose risk depends on the installation's own rule set.",
+ "rules": [
+  {
+   "id": "acf2-logonid-insert",
+   "verb": "INSERT",
+   "pattern": "^\\s*INSERT\\s+[A-Z0-9$#@]{1,8}\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "creates a logonid",
+   "rationale": "An INSERT while the session is in logonid maintenance mode creates a logonid. The mode matters: without it this matches SQL INSERT INTO, which a corpus measurement over 125 repositories found 322 times. A logonid created from a job in a repository is a credential whose existence is decided by whoever can commit.",
+   "requiresContext": "acf2-lid-mode"
+  },
+  {
+   "id": "acf2-logonid-change",
+   "verb": "CHANGE",
+   "pattern": "^\\s*CHANGE\\s+[A-Z0-9$#@]{1,8}\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "alters a logonid, including its privileges",
+   "rationale": "CHANGE against a logonid alters its attributes. The privileged attributes here are the ones that matter, and the same statement carries both ordinary and privileged changes.",
+   "requiresContext": "acf2-lid-mode"
+  },
+  {
+   "id": "acf2-rule-maintenance",
+   "verb": "ACFNRULE",
+   "pattern": "\\bACFNRULE\\b|^\\s*SET\\s+RESOURCE\\b|^\\s*RECKEY\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "changes an access rule set",
+   "rationale": "Access rule maintenance decides who may reach which dataset or resource. Changing it from a job means the access model is edited by whoever can edit the repository.",
+   "setsContext": "acf2-lid-mode",
+   "setsContextPattern": "^\\s*SET\\s+(?:LID|RULE|PROFILE|RESOURCE)\\b"
+  },
+  {
+   "id": "acf2-global-options",
+   "verb": "SET CONTROL",
+   "pattern": "^\\s*SET\\s+CONTROL\\s*\\(?\\s*GSO",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "crit",
+   "risk": "changes a global system option",
+   "rationale": "GSO records are installation-wide security options. A change here affects every user and every resource at once, which makes it the highest-value single statement in the product."
+  },
+  {
+   "id": "topsecret-acid-create",
+   "verb": "TSS CREATE",
+   "pattern": "^\\s*TSS\\s+CREATE\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "creates an ACID",
+   "rationale": "TSS CREATE defines a new accessor identity. As with an ACF2 logonid, an identity created from a committed job is decided by whoever can commit."
+  },
+  {
+   "id": "topsecret-permit",
+   "verb": "TSS PERMIT",
+   "pattern": "^\\s*TSS\\s+PERMIT\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "grants access to a resource",
+   "rationale": "TSS PERMIT grants an ACID access to a resource. It is the statement that turns an identity into an authorisation, and it is the one an attacker most wants to be able to issue."
+  },
+  {
+   "id": "topsecret-addto-privilege",
+   "verb": "TSS ADDTO",
+   "pattern": "^\\s*TSS\\s+ADD(?:TO)?\\b[\\s\\S]{0,120}\\b(MASTFAC|NOSUSPEND|BYPASS|ACID\\s*\\(\\s*MASTER)",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "crit",
+   "risk": "grants a bypassing or master-level attribute",
+   "rationale": "The attributes matched here remove or bypass normal validation. An ACID carrying one of them is outside the controls every other identity is subject to, which is a different class of finding from an ordinary grant."
+  },
+  {
+   "id": "topsecret-revoke",
+   "verb": "TSS REVOKE",
+   "pattern": "^\\s*TSS\\s+(?:REVOKE|REMOVE|DELETE)\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "med",
+   "risk": "removes an identity or an authorisation",
+   "rationale": "Removing access from a job is less immediately dangerous than granting it, and it is still the security model being edited from a repository. It is listed so the route is visible, at a severity that says which way round it is."
+  }
+ ],
+ "programs": [
+  "ACFBATCH",
+  "ACFRPTXR",
+  "TSSUTIL",
+  "TSSCFILE"
+ ]
+}

@@ -1,0 +1,12 @@
+{
+ "id": "052-terminal-input-written-to-a-log-queue",
+ "title": "The same request written to a queue the CSD sends to an audit log, which is not the internal reader",
+ "cwe": "CWE-77",
+ "expect": [],
+ "negativeFor": [
+  "cics-terminal-to-internal-reader"
+ ],
+ "alsoExpected": [
+  "cics-terminal-to-log"
+ ]
+}

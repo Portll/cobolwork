@@ -1,0 +1,13 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. RUNCMD.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-CMD            PIC X(100).
+       LINKAGE SECTION.
+       01  LK-PARM.
+           05  LK-LEN        PIC S9(4) COMP.
+           05  LK-TEXT       PIC X(98).
+       PROCEDURE DIVISION USING LK-PARM.
+           MOVE 'LISTCAT' TO WS-CMD
+           CALL 'SYSTEM' USING WS-CMD
+           GOBACK.

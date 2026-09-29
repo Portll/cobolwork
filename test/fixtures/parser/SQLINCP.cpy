@@ -1,0 +1,2 @@
+       SHARED-ERROR.
+           DISPLAY CA-REQUEST-ID.

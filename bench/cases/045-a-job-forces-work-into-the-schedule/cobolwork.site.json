@@ -1,0 +1,9 @@
+{
+ "vendorPacks": [
+  "controlm"
+ ],
+ "allowUnvalidatedPacks": true,
+ "productionQualifiers": [
+  "PROD"
+ ]
+}

@@ -1,0 +1,225 @@
+{
+ "case": {
+  "file": "tdtype.cbl",
+  "note": "TYPE and TYPE TO give an item the size and subordinate items of its TYPEDEF, which qualification reaches and the listing does not print"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "COMPLEX-T",
+    "size": 16,
+    "type": "T GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "RE",
+    "size": 8,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "IM",
+    "size": 8,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "MONEY-T",
+    "size": 5,
+    "type": "T NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "NAME-T",
+    "size": 20,
+    "type": "T ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-Z",
+    "size": 16,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-PAIR",
+    "size": 56,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FIRST-Z",
+    "size": 16,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "PRICE",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "LABEL-TXT",
+    "size": 20,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "PRICES",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "77",
+    "name": "TOTAL",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "LK-Z",
+    "size": 16,
+    "type": "GROUP"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "COMPLEX-T",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MONEY-T",
+    "line": 8,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "NAME-T",
+    "line": 9,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-Z",
+    "line": 10,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "RE",
+    "line": 11,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "IM",
+    "line": 11,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-PAIR",
+    "line": 11,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FIRST-Z",
+    "line": 12,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "RE",
+    "line": 13,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "IM",
+    "line": 13,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "PRICE",
+    "line": 13,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "LABEL-TXT",
+    "line": 14,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "PRICES",
+    "line": 15,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TOTAL",
+    "line": 16,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "LK-Z",
+    "line": 18,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "RE",
+    "line": 19,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "IM",
+    "line": 19,
+    "state": "parent",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

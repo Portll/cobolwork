@@ -1,0 +1,54 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork.policy.schema.json",
+ "title": "cobolwork build policy",
+ "description": "Which findings stop a build, which run-time checks the compiler must generate, and what an incomplete scan means. docs/spec/build-gate.md section 4. lib/policy.mjs validates the same shape and also refuses a rule id cobolwork does not declare.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["policyVersion"],
+ "properties": {
+  "_comment": { "type": "string" },
+  "policyVersion": { "const": 1 },
+  "block": { "$ref": "#/$defs/tier", "description": "A finding at or above this tier blocks. Default high." },
+  "always": { "$ref": "#/$defs/tier", "description": "In ratchet mode, a finding at or above this tier blocks whether or not the change introduced it. Default crit." },
+  "classes": {
+   "type": "array",
+   "items": { "enum": ["privilege-escalation", "data-mutation"] },
+   "uniqueItems": true,
+   "description": "A finding in one of these consequence classes blocks at any tier. Default both."
+  },
+  "rules": {
+   "type": "object",
+   "additionalProperties": { "enum": ["block", "warn"] },
+   "description": "Per rule id: block whatever its tier, or warn whatever its tier or class."
+  },
+  "coverage": { "enum": ["block", "warn"], "description": "Incomplete coverage makes the build undecided (block) or is reported (warn). Default block." },
+  "options": { "enum": ["block", "warn"], "description": "A build without a required run-time check fails, and options nothing declares make it undecided (block); or both are reported and the build passes relaxed (warn). An option forbid names, and a check the change removes, fail either way. Default warn." },
+  "waivers": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["maxDays"],
+   "properties": { "maxDays": { "type": "integer", "minimum": 1 } },
+   "description": "A waiver written with an expiry further off than maxDays covers nothing. Default 180."
+  },
+  "checks": {
+   "type": "array",
+   "items": { "enum": ["subscript", "reference-modification", "numeric-data", "argument-length"] },
+   "uniqueItems": true,
+   "description": "The run-time checks every program must be compiled with. Default subscript and reference-modification."
+  },
+  "forbid": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "enterprise": { "$ref": "#/$defs/options" },
+    "gnucobol": { "$ref": "#/$defs/options" }
+   },
+   "description": "Options a build must not pass, beyond those that turn a required check off."
+  }
+ },
+ "$defs": {
+  "tier": { "enum": ["info", "low", "med", "high", "crit", "known-exploitable"] },
+  "options": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+ }
+}

@@ -1,0 +1,139 @@
+{
+ "case": {
+  "file": "fdnosec.cbl",
+  "note": "an FD needs no FILE SECTION header before it, whether it opens a copybook or follows one"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "MASTER-FILE",
+    "size": 24
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "MASTER-REC",
+    "size": 24,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "MASTER-KEY",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "MASTER-NAME",
+    "size": 20,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "MASTER-FLAG",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "88",
+    "name": "MASTER-ACTIVE",
+    "size": null,
+    "type": "CONDITIONAL"
+   },
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "LOG-FILE",
+    "size": 60
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "LOG-REC",
+    "size": 60,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-COUNT",
+    "size": 4,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "MASTER-FILE",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MASTER-REC",
+    "line": 3,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MASTER-KEY",
+    "line": 4,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MASTER-NAME",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MASTER-FLAG",
+    "line": 6,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MASTER-ACTIVE",
+    "line": 7,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "LOG-FILE",
+    "line": 7,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "LOG-REC",
+    "line": 11,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-COUNT",
+    "line": 13,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

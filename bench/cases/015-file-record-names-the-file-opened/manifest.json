@@ -1,0 +1,12 @@
+{
+ "id": "015-file-record-names-the-file-opened",
+ "title": "A record read from one file decides which file is opened next",
+ "cwe": "CWE-73",
+ "expect": [
+  {
+   "rule": "file-record-to-dynamic-file-path",
+   "file": "FREAD.cbl"
+  }
+ ],
+ "precompile": false
+}

@@ -1,0 +1,4 @@
+           05 AA-ONE PIC X.
+           COPY NESTLF1.
+           COPY NESTLF2 REPLACING LEADING ==PFX== BY ==AA-TWO==.
+           COPY NESTLF3 REPLACING ==ZZZ== BY ==YYY==.

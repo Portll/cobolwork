@@ -1,0 +1,12 @@
+{
+ "id": "084-the-key-is-typed-not-kept",
+ "title": "The same screens with the account number typed into an input field, which is how a lookup works",
+ "cwe": "CWE-639",
+ "expect": [],
+ "negativeFor": [
+  "cics-protected-field-to-record-key"
+ ],
+ "alsoExpected": [
+  "cics-transfer-to-variable-program"
+ ]
+}

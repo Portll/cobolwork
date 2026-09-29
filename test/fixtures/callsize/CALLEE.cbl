@@ -1,0 +1,9 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CALLEE.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-DATE             PIC X(10).
+       01 LK-AREA             PIC X(20).
+       PROCEDURE DIVISION USING LK-DATE LK-AREA.
+           MOVE SPACES TO LK-AREA
+           GOBACK.

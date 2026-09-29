@@ -1,0 +1,745 @@
+{
+ "about": "Every document the project cites beyond the vendor manuals in words.json, and, per publisher, the terms that govern keeping and republishing what it publishes, quoted from the terms pages as fetched. diag/sync-sources.mjs keeps a copy of a document only where its publisher's terms allow a private copy (\"cache\": true), in feed/sources, which is never committed. Terms pages themselves are kept for every publisher, as the record of what applied.",
+ "sync": "node diag/sync-sources.mjs [--dest feed/sources] [--mirror <backup dir>] [--check]. Files are stored under their SHA-256; a fetch that differs from the recorded hash is kept beside it and the Wayback Machine copy from the retrieval date is tried for the recorded one. A document whose publisher is not listed here, or is listed with \"cache\": false, is not fetched, and any copy held is removed from the store and every mirror. A Wayback Machine capture is judged by its original publisher's terms. A terms entry marked \"keep\": false is itself a restricted document, such as a manual whose notice is the only statement of its terms: its URL and hash are recorded and no copy is kept.",
+ "reviewed": "2026-09-27. Each publisher's terms were fetched that day; quotes are verbatim from the copy fetched. Where a live page refused automated access, the terms were read from a Wayback Machine capture, which is named. This is a reading of published terms, not legal advice.",
+ "documents": [
+  {
+   "id": "cics-ts-5.3-application-programming-reference",
+   "title": "CICS Transaction Server for z/OS Version 5 Release 3, Application Programming Reference (SC34-7402-00)",
+   "publisher": "ibm",
+   "url": "https://publibfp.dhe.ibm.com/epubs/pdf/dfhp4h00.pdf",
+   "retrieved": "2026-09-27",
+   "sha256": "cad6c1b825ba6999b015f5914eb006a837158309887647fcc538d667ae3bc2b9",
+   "bytes": 5268109,
+   "usedFor": "Appendix H, BMS-related constants: the names of the DFHAID attention identifiers and the DFHBMSCA attribute constants, for the witness's stand-in copybooks. Every CICS command's options, argument types and descriptions, and the EIBRESP numbers, for provenance/precompile.json.",
+   "method": "curl. www.ibm.com/docs refused automated requests on 2026-09-27 with its bot notice; publibfp.dhe.ibm.com serves the PDF."
+  },
+  {
+   "id": "cics-ts-5.3-system-programming-reference",
+   "title": "CICS Transaction Server for z/OS Version 5 Release 3, System Programming Reference (SC34-7429-00)",
+   "publisher": "ibm",
+   "url": "https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf",
+   "retrieved": "2026-09-27",
+   "sha256": "3decb1fe07f1146d6a3978fb0ac32d4a3b36b6c08e9bb2ed96e22f91d0d41bfa",
+   "bytes": 4639731,
+   "usedFor": "The CVDA numbers DFHVALUE stands for, from its alphabetic and numeric tables, for provenance/precompile.json.",
+   "method": "curl from publibfp.dhe.ibm.com, rendered to text with macOS PDFKit."
+  },
+  {
+   "id": "cics-ts-5.3-application-programming-guide",
+   "title": "CICS Transaction Server for z/OS Version 5 Release 3, Application Programming Guide (SC34-7401-00)",
+   "publisher": "ibm",
+   "url": "https://publibfp.dhe.ibm.com/epubs/pdf/dfhp3h00.pdf",
+   "retrieved": "2026-09-27",
+   "sha256": "2c95561c7d1541faa72e2c767815f01831606938e3e9628127b9870347bf606d",
+   "bytes": 5870381,
+   "usedFor": "What the CICS translator adds to the LINKAGE SECTION, the COMMAREA a LINK passes both ways, and how HANDLE CONDITION applies, for provenance/precompile.json.",
+   "method": "curl from publibfp.dhe.ibm.com, rendered to text with macOS PDFKit."
+  },
+  {
+   "id": "dora",
+   "title": "Regulation (EU) 2022/2554 of the European Parliament and of the Council of 14 December 2022 on digital operational resilience for the financial sector (DORA)",
+   "publisher": "eur-lex",
+   "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2554",
+   "retrieved": "2026-09-27",
+   "sha256": "ba9ef21a51a5b65017a1a5feb7e26d4fe259249fb73b2f134f49d08576f9daf9",
+   "bytes": 748479,
+   "alias": "dora.txt",
+   "usedFor": "The clauses rules/compliance-dora.json quotes, which diag/map-compliance.mjs checks against feed/sources/dora.txt.",
+   "method": "curl. EUR-Lex sometimes answers with an AWS WAF challenge instead; the Official Journal text is the authentic one."
+  },
+  {
+   "id": "nist-sp-800-53r5-oscal",
+   "title": "NIST SP 800-53 Rev. 5 control catalog, OSCAL JSON (usnistgov/oscal-content)",
+   "publisher": "nist",
+   "url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+   "retrieved": "2026-09-27",
+   "sha256": "01f37cf90ea99d92242c936cbfbdebcc338eef1f71454e2acac36cc56e9bc062",
+   "bytes": 10442037,
+   "usedFor": "The control statements rules/compliance-nist80053.json quotes. feed/sources/nist80053.txt was made from this catalogue by a step the repository does not record."
+  },
+  {
+   "id": "nist-sp-800-53r5-pdf",
+   "title": "NIST SP 800-53 Rev. 5, Security and Privacy Controls for Information Systems and Organizations",
+   "publisher": "nist",
+   "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf",
+   "retrieved": "2026-09-27",
+   "sha256": "fc63bcd61715d0181dd8e85998b1e6201ae3515fc6626102101cab1841e11ec6",
+   "bytes": 6073678,
+   "usedFor": "The publication the OSCAL catalogue encodes, kept beside it."
+  },
+  {
+   "id": "ffiec-development-acquisition-maintenance",
+   "title": "FFIEC IT Examination Handbook, Development, Acquisition, and Maintenance (August 2024)",
+   "publisher": "ffiec",
+   "url": "https://ithandbook.ffiec.gov/it-booklets/development-acquisition-and-maintenance/",
+   "method": "manual",
+   "usedFor": "Clauses rules/compliance-ffiec.json quotes. The live site answers scripted requests with a CAPTCHA, so the booklets are downloaded by hand into feed/sources, and feed/sources/ffiec.txt is made from them."
+  },
+  {
+   "id": "ffiec-information-security",
+   "title": "FFIEC IT Examination Handbook, Information Security (September 2016)",
+   "publisher": "ffiec",
+   "url": "https://ithandbook.ffiec.gov/it-booklets/information-security/",
+   "method": "manual",
+   "usedFor": "As above."
+  },
+  {
+   "id": "ffiec-architecture-infrastructure-operations",
+   "title": "FFIEC IT Examination Handbook, Architecture, Infrastructure, and Operations (June 2021)",
+   "publisher": "ffiec",
+   "url": "https://ithandbook.ffiec.gov/it-booklets/architecture-infrastructure-and-operations/",
+   "method": "manual",
+   "usedFor": "As above."
+  }
+ ],
+ "publishers": {
+  "ibm": {
+   "name": "IBM",
+   "hosts": [
+    "www.ibm.com/docs",
+    "public.dhe.ibm.com",
+    "publibfp.dhe.ibm.com",
+    "publibfp.boulder.ibm.com"
+   ],
+   "cache": true,
+   "terms": [
+    {
+     "title": "Terms and conditions for product documentation",
+     "url": "https://www.ibm.com/docs/en/t-tt-and-t?topic=notices-terms-conditions-product-documentation",
+     "retrieved": "2026-09-27",
+     "sha256": "37b0a4736654922e1ee44935bd06d6932f58521bf70aa2d5bc9a4fcf8a9ceaf4"
+    },
+    {
+     "title": "Terms of use (November 20, 2020)",
+     "url": "https://www.ibm.com/legal/terms",
+     "retrieved": "2026-09-27",
+     "sha256": "7e80b3cfeb381d5f184a21ff04a0b567b780d1c205de9d921249cc9012ba7c67"
+    },
+    {
+     "title": "www.ibm.com robots.txt",
+     "url": "https://www.ibm.com/robots.txt",
+     "retrieved": "2026-09-27",
+     "sha256": "8e29d2cf6f21b8d8eb24567c36e257fe1823582a6a9f3b2130410d8cc67f0f70"
+    }
+   ],
+   "quotes": {
+    "privateCopy": "Commercial use: You can reproduce, distribute, and display these publications solely within your enterprise provided that all proprietary notices are preserved.",
+    "restrictions": "You cannot make derivative works of these publications, or reproduce, distribute, or display these publications or any portion thereof outside your enterprise, without the express consent of IBM.",
+    "site": "You may not mirror any of the content from this site on another Web site or in any other media.",
+    "automated": "You may only use a crawler to crawl this Web site as permitted by this Web site’s robots.txt protocol, and IBM may block any crawlers in its sole discretion."
+   },
+   "privateCopy": {
+    "verdict": "allowed-with-conditions",
+    "basis": "The documentation terms allow reproduction solely within the enterprise with proprietary notices preserved; the store keeps whole files, notices included, and never leaves it."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "No reproduction or display outside the enterprise without IBM's express consent, and no mirroring on another site."
+   },
+   "notes": "robots.txt disallows /docs/api for all agents; the manuals are fetched from publibfp, which has none. IBM reserves the right to withdraw the documentation permissions."
+  },
+  "opentext": {
+   "name": "OpenText (Micro Focus documentation)",
+   "hosts": [
+    "supportline.microfocus.com",
+    "www.microfocus.com"
+   ],
+   "cache": true,
+   "terms": [
+    {
+     "title": "Website Terms of Use",
+     "url": "https://www.opentext.com/about/legal/website-terms-of-use",
+     "retrieved": "2026-09-27",
+     "sha256": "29400da8ae9fefc5b801cd7e91b8a7a0a9e72d6fe8f47a527dcd4fa9cf9309c0"
+    },
+    {
+     "title": "Copyright, Trademark and Liability Information",
+     "url": "https://www.opentext.com/about/copyright-information",
+     "retrieved": "2026-09-27",
+     "sha256": "1ec13736c571c3ec3a1ec46de343d2edec34e36357e13e01151f7d35ceccb057"
+    }
+   ],
+   "quotes": {
+    "privateCopy": "We invite you to visit frequently to browse through our pages and download and copy materials for your personal use, subject to the restrictions outlined in these copyright pages.",
+    "use": "We grant You a limited, personal, revocable, non-sublicensable, non-exclusive and non-transferable license to use and to display the Materials solely (i) in connection with Your use of Our Website for Your personal and internal business purposes as a customer or potential customer of OpenText (\"Permitted Uses\") and (ii) conditioned on Your compliance with these Website Terms of Use.",
+    "restrictions": "Except as otherwise required or limited by applicable law, any reproduction, distribution, modification, retransmission, or publication of any Material is strictly prohibited without Our express written consent or that of the copyright owner.",
+    "automated": "You may only use a crawler to crawl Our Website as permitted by Our Website's robots.txt protocol. We may block any crawlers at Our sole discretion."
+   },
+   "privateCopy": {
+    "verdict": "allowed-with-conditions",
+    "basis": "Download and copy for personal and internal business use, unmodified, with notices kept."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "Reproduction, distribution or publication is prohibited without written consent."
+   },
+   "notes": "www.microfocus.com/about/legal redirects to these terms. Rocket Software bought the Micro Focus COBOL business in 2024, so copyright in the ACUCOBOL-GT and Visual COBOL manuals may now be Rocket's, whose terms are stricter (see rocket). This is to be settled before relying on the OpenText grant for those manuals."
+  },
+  "rocket": {
+   "name": "Rocket Software",
+   "hosts": [
+    "docs-be.rocketsoftware.com",
+    "docs.rocketsoftware.com"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Product and Website Terms of Use (last updated June 26, 2026), Wayback Machine capture of 2026-07-10; the live page answers with a Cloudflare challenge",
+     "url": "https://web.archive.org/web/20260710013557id_/https://www.rocketsoftware.com/en-us/legal/terms-of-use",
+     "retrieved": "2026-09-27"
+    },
+    {
+     "title": "docs-be.rocketsoftware.com robots.txt",
+     "url": "https://docs-be.rocketsoftware.com/robots.txt",
+     "retrieved": "2026-09-27",
+     "sha256": "a13d3c046239916e8a256ee65bed0da256be37592f29a2c6f2328e2559f44d1f"
+    }
+   ],
+   "quotes": {
+    "privateCopy": "If Documentation is made available to you on our Sites, then you may annotate, translate, and make a reasonable number of copies of the Documentation for your internal use only. You may not publish any such annotations or translations.",
+    "automated": "You may not copy, translate, adapt, convert, replicate, reproduce, or otherwise duplicate any Materials, in whole or in part, for use by or input into any artificial intelligence system, machine-learning model, large language model, automated tool, or similar technology - including for purposes of training, fine-tuning, inference, data extraction, automation, computation, analysis, or redistribution - unless expressly authorized in the applicable EULA or by Rocket in writing in advance."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "Copies for internal use are allowed, but not as input to an automated tool for data extraction or analysis, which is what this store and its text extraction are."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "Internal use only; publishing is excluded."
+   },
+   "notes": "No word rests on Rocket's site. The RM/COBOL v12.20 manual from docs-be.rocketsoftware.com, read on 2026-09-24 before these terms were read, was replaced on 2026-09-27 in the five word sources that cited it by Liant's second edition of the same manual as served by supportline.microfocus.com; each source's replacedDocuments records what was checked. Rocket's own copy is no longer fetched."
+  },
+  "broadcom": {
+   "name": "Broadcom (TechDocs)",
+   "hosts": [
+    "techdocs.broadcom.com"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Documentation Legal Notice (TechDocs)",
+     "url": "https://techdocs.broadcom.com/us/en/ca-mainframe-software/mainframe-essentials/software-toolkit/1-2/documentation-legal-notice-english-public.html",
+     "retrieved": "2026-09-27",
+     "sha256": "594a0dca23c88845fa0eb32cb2e9896a5f5367282594976b6f21aeff045a64c8"
+    },
+    {
+     "title": "Terms of Use (Revised August 2024), from the page's own JSON endpoint",
+     "url": "https://www.broadcom.com/api/getjson?url=company/legal/terms-of-use&locale=en-us",
+     "retrieved": "2026-09-27",
+     "sha256": "5d4f3a3817e78ee4d6336a5faa0a2b8fd26f951ad43750ccfd65a0665eb099da"
+    }
+   ],
+   "quotes": {
+    "restrictions": "This Documentation is proprietary information of Broadcom and may not be copied, transferred, reproduced, disclosed, modified or duplicated, in whole or in part, without the prior written consent of Broadcom.",
+    "site": "For purposes of these Terms, any use of these materials on any other Web site, mobile application, or networked computer environment for any purpose is prohibited."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "Copies are permitted only to licensed users of the product the documentation covers."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "No copying or reproduction without written consent."
+   }
+  },
+  "fujitsu": {
+   "name": "Fujitsu",
+   "hosts": [
+    "bs2manuals.ts.fujitsu.com",
+    "resources.global.fujitsu",
+    "software.fujitsu.com",
+    "www.fujitsu.com"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Terms of Use (last modified June 2022), Wayback Machine capture of 2026-08-31; the live page answers with a Vercel checkpoint",
+     "url": "https://web.archive.org/web/20260831063055/https://global.fujitsu/en-global/terms",
+     "retrieved": "2026-09-27",
+     "sha256": "cb1e34a80a718e7e96df0ad63b5c56db21120dbcb615ea92ff346811a7be0841"
+    }
+   ],
+   "quotes": {
+    "restrictions": "Except to the extent expressly permitted by applicable law, no contents on this Website or the Subsites may be used, copied, modified, translated, distributed or otherwise utilized without the prior permission of Fujitsu Group or the owner of the contents.",
+    "docLicence": "No part of this document may be reproduced or transmitted in any form or by any means, electronic or mechanical, for any purpose, without the express written permission of Fujitsu Limited."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "No copying without prior permission, except as applicable law expressly permits."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "No distribution without prior permission."
+   }
+  },
+  "bull": {
+   "name": "Bull (Atos / Eviden)",
+   "hosts": [
+    "support.bull.com"
+   ],
+   "cache": false,
+   "terms": [],
+   "privateCopy": {
+    "verdict": "unclear",
+    "basis": "Terms not read; not kept until they are."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "Nothing grants it."
+   }
+  },
+  "veryant": {
+   "name": "Veryant",
+   "hosts": [
+    "support.veryant.com",
+    "www.veryant.com"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Legal",
+     "url": "https://www.veryant.com/legal.html",
+     "retrieved": "2026-09-27",
+     "sha256": "e89a0480f28d5512e37cf2d9ef4cb660de523f9f58dc08f8c6b6eb8aa146715c"
+    },
+    {
+     "title": "isCOBOL Evolve 2025 R1 Language Reference, Copyrights",
+     "url": "https://support.veryant.com/documentation/2025_R1/documentation/Language%20Reference/Copyright.html",
+     "retrieved": "2026-09-27",
+     "sha256": "2e0e1ff367e889671ee818b27ae844c9b1be3d8f2a7a035dc13ca7a20b182d18",
+     "keep": false
+    }
+   ],
+   "quotes": {
+    "restrictions": "Except as specifically permitted herein, no portion of the information on this Web site may be reproduced in any form or by any means without prior written permission from Veryant."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "No reproduction without written permission, and nothing is permitted herein."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "As above."
+   }
+  },
+  "heirloom": {
+   "name": "Heirloom Computing",
+   "hosts": [
+    "support.heirloom.cc"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Elastic COBOL Language Reference Manual, title-page notice",
+     "url": "https://support.heirloom.cc/hc/en-us/article_attachments/207171986",
+     "retrieved": "2026-09-27",
+     "sha256": "7455cad085ab760477453df0e2d785ab14b713b7dc4f211d2bdf3aa7703bd7a9",
+     "keep": false
+    }
+   ],
+   "quotes": {
+    "restrictions": "No part of this document may be reproduced or transmitted in any form or by any means, electronic or mechanical, for any purpose, without the expressed written permission of Heirloom Computing Inc."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "The manuals bar reproduction for any purpose without written permission."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "As above."
+   }
+  },
+  "stratus": {
+   "name": "Stratus Technologies (Penguin Solutions)",
+   "hosts": [
+    "stratadoc.stratus.com"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Website Terms of Use",
+     "url": "https://www.stratus.com/about/company-information/legal/",
+     "retrieved": "2026-09-27",
+     "sha256": "23029a7ffd79807f7b40cbc6e6a2f6fbe9ebf011f8b4088626553d9b3835c122"
+    }
+   ],
+   "quotes": {
+    "privateCopy": "Permission is granted to display, copy, distribute and download the materials on the Stratus Website for personal, non-commercial use only, provided you do not modify the materials and that you retain all copyright and other proprietary notices contained in the materials.",
+    "restrictions": "Use of the Stratus Website for any public or commercial purpose is strictly prohibited."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "Copies are for personal, non-commercial use only, and a project offering commercial licences cannot count on that."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "Public or commercial use is prohibited."
+   }
+  },
+  "vsi": {
+   "name": "VMS Software, Inc.",
+   "hosts": [
+    "docs.vmssoftware.com"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Terms of Use (in the Privacy Policy page, effective August 22, 2025)",
+     "url": "https://vmssoftware.com/about/privacy-policy/",
+     "retrieved": "2026-09-27",
+     "sha256": "7652f16db21f58c1bc26d616fd1af4903c654661ed51b56eb6649e4b6c420737"
+    }
+   ],
+   "quotes": {
+    "restrictions": "Except as expressly permitted, you will not copy, reproduce, modify, create derivative works, distribute, sell, or exploit any part of the Site; reverse engineer or decompile any software; or remove proprietary notices.",
+    "docLicence": "Confidential computer software. Valid license from VSI required for possession, use or copying."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "The terms grant access, not copying, and the manual requires a VSI licence to copy it."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "As above."
+   }
+  },
+  "hp-mirrors": {
+   "name": "HP manuals on private mirror sites (nonstoptools.com, 3kranger.com)",
+   "hosts": [
+    "www.nonstoptools.com",
+    "www.3kranger.com"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "HP COBOL II/XL Reference Manual, copyright notice, as served by 3kRanger",
+     "url": "http://www.3kranger.com/HP3000/mpeix/doc3k/B3150090013.11820/2.htm",
+     "retrieved": "2026-09-27",
+     "sha256": "bbb1e667a171b94b7109a5f5659916d2aef2be748e574de873221f242b272709",
+     "keep": false
+    }
+   ],
+   "quotes": {
+    "restrictions": "This document contains proprietary information which is protected by copyright. All rights are reserved. No part of this document may be photocopied, reproduced or translated to another language without the prior written consent of Hewlett-Packard Company"
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "HP reserves all rights, and neither mirror claims a licence to pass on; nonstoptools.com publishes no terms at all."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "As above."
+   }
+  },
+  "iso": {
+   "name": "ISO / IEC JTC1 SC22 WG4, and the J4 drafts",
+   "hosts": [
+    "www.open-std.org",
+    "www.iso.org",
+    "www.cobolstandard.info"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "ISO/IEC FCD 1989:2001 (SC22 N3204), permission and copyright notices",
+     "url": "https://www.open-std.org/jtc1/sc22/open/n3204.pdf",
+     "retrieved": "2026-09-27",
+     "sha256": "aebe84e92cf3dde9df48e9e4b83c5f7c829b248b761e77f3896c25246a6484f9",
+     "keep": false
+    },
+    {
+     "title": "ISO copyright page, Wayback Machine capture of 2026-08-21; the live page answers 403",
+     "url": "https://web.archive.org/web/20260821174616id_/https://www.iso.org/copyright.html",
+     "retrieved": "2026-09-27"
+    }
+   ],
+   "quotes": {
+    "restrictions": "All other rights are reserved. Any commercial or for-profit duplication is strictly prohibited.",
+    "automated": "With the exception of the content available through the ISO Open data page and subject to the terms contained therein, no ISO content may be used for any machine learning and/or artificial intelligence and/or similar technologies, including but not limited to accessing or using it to (i) train data for large language or similar models, or (ii) prompt or otherwise enable artificial intelligence or similar tools to generate responses."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "The drafts license reproduction only to ISO, IEC, JTC1 and NCITS participants for standardization work; ISO bars its content from AI tools."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "Commercial or for-profit duplication is prohibited, and ISO prohibits copying and distribution."
+   },
+   "notes": "The words read from the drafts are facts about the language, and provenance/README.md sets out why recording them is not a licensing problem. Keeping copies of the drafts is a different act."
+  },
+  "iteh": {
+   "name": "iTeh Standards previews of ISO/IEC standards",
+   "hosts": [
+    "cdn.standards.iteh.ai",
+    "standards.iteh.ai"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "ISO/IEC 1989:2023 preview (carries ISO's notice)",
+     "url": "https://cdn.standards.iteh.ai/samples/74527/8c3bd1fa28cd4ba8b3786298facf714a/ISO-IEC-1989-2023.pdf",
+     "retrieved": "2026-09-27",
+     "sha256": "ef4f5410394b73fd3ea8932fc11551cf75877e2212477f6a2e1f0ed6362e6f61",
+     "keep": false
+    }
+   ],
+   "quotes": {
+    "restrictions": "All rights reserved. Unless otherwise specified, or required in the context of its implementation, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "The preview carries ISO's notice barring reproduction without written permission."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "As above."
+   }
+  },
+  "incits": {
+   "name": "INCITS (ITI)",
+   "hosts": [
+    "www.incits.org"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "INCITS Organization, Policies and Procedures, section 4.12.1 Copyright Policy",
+     "url": "https://www.incits.org/dotAsset/732f9f1c-f305-4198-b893-95d7d8bbb23e.pdf",
+     "retrieved": "2026-09-27",
+     "sha256": "8e90772e5baa07a2b2d0c91625991511efc36762a8ba22a710da70f351794fcc"
+    },
+    {
+     "title": "www.incits.org robots.txt",
+     "url": "https://www.incits.org/robots.txt",
+     "retrieved": "2026-09-27",
+     "sha256": "5efd2e542f3d0ea218cd9a826cbc04120efeec71bb2c61de6bfac529a12f3fed"
+    }
+   ],
+   "quotes": {
+    "privateCopy": "Unless specifically restricted, INCITS documents or parts thereof on this Web site may be reproduced, translated, distributed, and made available electronically on condition that this is not done for profit, that no changes are made to the documents, and that ITI's rights in the documents are acknowledged."
+   },
+   "privateCopy": {
+    "verdict": "not-allowed",
+    "basis": "Reproduction is allowed only not for profit, and robots.txt turns away automated agents including ClaudeBot and GPTBot."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "Not for profit only; standards and drafts are further restricted."
+   }
+  },
+  "cobol-consortium-japan": {
+   "name": "COBOL Consortium, Japan",
+   "hosts": [
+    "www.cobol.gr.jp"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Home page (copyright line; no terms of use published)",
+     "url": "https://www.cobol.gr.jp/",
+     "retrieved": "2026-09-27",
+     "sha256": "179116e54dd823caffe2c2888cf90ba5336386afcfa0a2dfb3579c252ec5018b"
+    }
+   ],
+   "quotes": {
+    "restrictions": "All Rights Reserved, Copyright © 2025 COBOL Consortium."
+   },
+   "privateCopy": {
+    "verdict": "unclear",
+    "basis": "All rights reserved and no terms; not kept."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "Nothing grants it."
+   }
+  },
+  "bitsavers": {
+   "name": "bitsavers.org (scans of manufacturers' manuals)",
+   "hosts": [
+    "bitsavers.org",
+    "www.bitsavers.org",
+    "bitsavers.informatik.uni-stuttgart.de"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "bitsavers.org main page",
+     "url": "https://bitsavers.org/",
+     "retrieved": "2026-09-27",
+     "sha256": "1e835b43245db47ea03639a896f656409f1d82c87720677b11ef9ea795174099"
+    }
+   ],
+   "quotes": {
+    "use": "It was designed to be cloned as-is to be an exact copy of bitsavers.org",
+    "automated": "As of April, 2026 due to the level of web traffic, Wget is no longer permitted here."
+   },
+   "privateCopy": {
+    "verdict": "unclear",
+    "basis": "The operator invites clones by rsync, but copyright in each scanned manual stays with its manufacturer, which the site does not address."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "bitsavers grants nothing, and the manufacturers' notices govern."
+   },
+   "notes": "The scans survive in bitsavers' own mirrors, which is the preservation route that respects the manufacturers' rights."
+  },
+  "gnucobol": {
+   "name": "GnuCOBOL Programmer's Guide (Gary L. Cutler, Vincent B. Coen, FSF), under the GNU FDL 1.3",
+   "hosts": [
+    "ia800601.us.archive.org/35/items/gnu-cobol-3-2-guide",
+    "gnucobol.sourceforge.io",
+    "www.gnu.org/licenses"
+   ],
+   "cache": true,
+   "terms": [
+    {
+     "title": "GNU Free Documentation License 1.3",
+     "url": "https://www.gnu.org/licenses/fdl-1.3.txt",
+     "retrieved": "2026-09-27",
+     "sha256": "110535522396708cea37c72a802c5e7e81391139f5f7985631c93ef242b206a4"
+    },
+    {
+     "title": "Slashdot Media Terms of Use (SourceForge), deferring project content to its own licence",
+     "url": "https://slashdotmedia.com/terms-of-use/",
+     "retrieved": "2026-09-27",
+     "sha256": "27108f3dc7429e786ed9774668ef5fc62f14fc4062093618c046fe823917430d"
+    }
+   ],
+   "quotes": {
+    "docLicence": "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License [FDL], Version 1.3 or any later version published by the Free Software Foundation; with Invariant Section “Introduction”, no Front-Cover Texts, and no Back-Cover Texts.",
+    "rehost": "You may copy and distribute the Document in any medium, either commercially or noncommercially, provided that this License, the copyright notices, and the license notice saying this License applies to the Document are reproduced in all copies, and that you add no other conditions whatsoever to those of this License."
+   },
+   "privateCopy": {
+    "verdict": "allowed",
+    "basis": "The GFDL is a world-wide, royalty-free licence to use the work."
+   },
+   "rehost": {
+    "verdict": "allowed-with-conditions",
+    "basis": "Verbatim copies of the whole file, with the licence, the copyright notices and the licence notice, and no added conditions or technical measures (GFDL section 2)."
+   },
+   "notes": "The Internet Archive item is tagged public domain by its uploader, which the guide's own GFDL notice contradicts; the GFDL is what to rely on."
+  },
+  "internet-archive": {
+   "name": "Internet Archive (for its own terms; a capture's content is judged by its original publisher)",
+   "hosts": [
+    "archive.org"
+   ],
+   "cache": false,
+   "terms": [
+    {
+     "title": "Terms of Use (31 December 2014), Wayback Machine capture of 2024-01-01; the live page is script-rendered",
+     "url": "https://web.archive.org/web/20240101002842id_/https://archive.org/about/terms.php",
+     "retrieved": "2026-09-27",
+     "sha256": "57132579f07598621a28f7662fbf44cdbd3079aa8349ca388f272c6007c02575"
+    }
+   ],
+   "quotes": {
+    "use": "Access to the Archive’s Collections is provided at no cost to you and is granted for scholarship and research purposes only.",
+    "restrictions": "In particular, you certify that your use of any part of the Archive's Collections will be limited to noninfringing or fair use under copyright law."
+   },
+   "privateCopy": {
+    "verdict": "allowed-with-conditions",
+    "basis": "For scholarship and research, and only as far as the original owner's rights allow."
+   },
+   "rehost": {
+    "verdict": "not-allowed",
+    "basis": "The Archive grants no redistribution; rights stay with the original owners."
+   }
+  },
+  "nist": {
+   "name": "NIST",
+   "hosts": [
+    "nvlpubs.nist.gov",
+    "raw.githubusercontent.com/usnistgov",
+    "github.com/usnistgov"
+   ],
+   "cache": true,
+   "terms": [
+    {
+     "title": "Copyright, Fair Use, and Licensing Statements for SRD, Data, Software, and Technical Series Publications",
+     "url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+     "retrieved": "2026-09-27",
+     "sha256": "b6e59f805c39b4f6ac4f6f25c7d15574c0c7c1712673c13646ab9a7e5b1adfc2"
+    },
+    {
+     "title": "usnistgov/oscal-content LICENSE.md",
+     "url": "https://raw.githubusercontent.com/usnistgov/oscal-content/main/LICENSE.md",
+     "retrieved": "2026-09-27",
+     "sha256": "9f0ddd1ed71f691bb483965a7c46e1315ab6cc28dac0426d4c3d27108aafde13"
+    }
+   ],
+   "quotes": {
+    "rehost": "To the extent NIST may assert rights outside of the United States, the public is granted the non-exclusive, perpetual, paid-up, royalty-free, worldwide right to reprint works in all formats including print, electronically, and online, and in all subsequent editions, and derivative works.",
+    "docLicence": "As a work of the United States government, this project is in the public domain within the United States. Additionally, we waive copyright and related rights in the work worldwide through the CC0 1.0 Universal public domain dedication."
+   },
+   "privateCopy": {
+    "verdict": "allowed",
+    "basis": "Not subject to copyright in the United States; the OSCAL catalogue is CC0."
+   },
+   "rehost": {
+    "verdict": "allowed",
+    "basis": "A worldwide right to reprint in all formats; NIST asks for the citation and 'Republished courtesy of the National Institute of Standards and Technology.'"
+   }
+  },
+  "eur-lex": {
+   "name": "EUR-Lex (Publications Office of the European Union)",
+   "hosts": [
+    "eur-lex.europa.eu"
+   ],
+   "cache": true,
+   "terms": [
+    {
+     "title": "EUR-Lex legal notice",
+     "url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+     "retrieved": "2026-09-27",
+     "sha256": "bec14120d9ec5b921c973824e546fed9c338c295af14614b738b8fd1bba136b3"
+    },
+    {
+     "title": "Commission Decision 2011/833/EU on the reuse of Commission documents",
+     "url": "https://eur-lex.europa.eu/eli/dec/2011/833/oj/eng",
+     "retrieved": "2026-09-27",
+     "sha256": "412d113179c403a34a63734d576d6086395cea4485fa490cba10d826d7b1587f"
+    }
+   ],
+   "quotes": {
+    "use": "The Commission’s document reuse policy is based on Decision 2011/833/EU. Unless otherwise specified, you can re-use the legal documents published in EUR-Lex for commercial or non-commercial purposes."
+   },
+   "privateCopy": {
+    "verdict": "allowed",
+    "basis": "Legal documents on EUR-Lex may be reused for commercial or non-commercial purposes."
+   },
+   "rehost": {
+    "verdict": "allowed-with-conditions",
+    "basis": "Acknowledge the source and do not distort the meaning (Decision 2011/833/EU article 6(2)); only the Official Journal text is authentic."
+   }
+  },
+  "ffiec": {
+   "name": "FFIEC",
+   "hosts": [
+    "ithandbook.ffiec.gov",
+    "www.ffiec.gov"
+   ],
+   "cache": true,
+   "terms": [
+    {
+     "title": "FFIEC Disclaimer (last modified 04/15/2020), Wayback Machine capture of 2025-03-30; the live site answers scripted requests with a CAPTCHA",
+     "url": "https://web.archive.org/web/20250330185025id_/https://www.ffiec.gov/disclaimer.htm",
+     "retrieved": "2026-09-27",
+     "sha256": "b024a23bec3f1bb13ce1747e4d7fe442a0997f1c64e31aec2b84e86cdc769b2e"
+    }
+   ],
+   "quotes": {
+    "restrictions": "For convenience and informational purposes only, the FFIEC server provides links to non-government web sites. These sites may contain information that is copyrighted with restrictions on reuse. Permission to use copyrighted materials must be obtained from the original source and cannot be obtained from the FFIEC."
+   },
+   "privateCopy": {
+    "verdict": "allowed-with-conditions",
+    "basis": "Nothing restricts copying FFIEC's own material; the booklets are downloaded by hand, since the site CAPTCHA-blocks scripts."
+   },
+   "rehost": {
+    "verdict": "unclear",
+    "basis": "No page states a licence or public-domain position for the handbook."
+   }
+  }
+ }
+}

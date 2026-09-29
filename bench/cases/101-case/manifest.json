@@ -1,0 +1,7 @@
+{
+ "id": "101-case",
+ "title": "The same state change guarded by a token the program issued and compared",
+ "cwe": "CWE-352",
+ "expect": [],
+ "negativeFor": ["web-request-changes-state-without-a-token"]
+}

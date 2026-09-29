@@ -1,0 +1,8 @@
+{
+ "id": "051-terminal-input-written-into-a-submitted-job",
+ "title": "Terminal input built into a job card and written to a queue the CSD sends to the region's internal reader DD",
+ "cwe": "CWE-77",
+ "expect": [
+  { "rule": "cics-terminal-to-internal-reader", "file": "RPTSUB.cbl" }
+ ]
+}

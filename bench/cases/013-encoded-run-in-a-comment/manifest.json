@@ -1,0 +1,11 @@
+{
+ "id": "013-encoded-run-in-a-comment",
+ "title": "A long encoded run hidden in a comment",
+ "cwe": "CWE-506",
+ "expect": [
+  {
+   "rule": "encoded-blob",
+   "file": "HBLOB.cbl"
+  }
+ ]
+}

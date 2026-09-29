@@ -1,0 +1,59 @@
+{
+ "schema": "hand-overloop/v1",
+ "pass": 2,
+ "of": 2,
+ "date": "2026-09-24",
+ "target": "docs/spec/remediation-gate.md with overloop pass 1 applied",
+ "sourceEval": "evaluations/2026-09-24-remediation-gate.overloop.r1.json, re-read against the revised spec and the engine",
+ "phase1_feedbackHarvest": {
+  "improvementSurface": [
+   "R1 the listing outcomes need the target's source and sink kinds, and a finding does not carry them",
+   "R2 pass 1's statement-removed says 'no sink of the target's kind in its program': a program with two such sinks, one fixed, reads gone-unexplained - G2.7 contradicts it",
+   "R3 pipeline step 9 resweeps a later revision; unrelated commits between fix and resweep would fail the verify on the added check",
+   "R4 'changed line' is used for both a deleted base line and an inserted head line without saying which each outcome means",
+   "R5 target.program is repository-chosen text and is not in repositoryText",
+   "R6 the gate needs the materialised trees after diff has compared them, and diffRefs removes them"
+  ],
+  "measured": {
+   "kindsResolve": "97 of 97 path rules in lib/sets/flow.mjs equal exactly one source-kind-to-sink-kind pair over the engine's 9 source and 22 sink kinds; no rule is ambiguous. The 3 other flow rules are construct (2) and context (1)"
+  },
+  "lowestDims": { "Robustness": "still bounded by F1 until the listing outcomes are exact", "Completeness": "verify semantics" },
+  "blockers": []
+ },
+ "improvements": [
+  { "id": "J1", "fixes": "R1", "tag": "[COMPLETING | SAFE | PHI-HIGH | ISOLATED]", "change": "a path rule's source and sink kinds are the one pair of the engine's kind tables its id spells; a test holds every path rule to exactly one pair, and a rule with none leaves the listing outcomes out, so it can only be gone-unexplained", "files": ["lib/gate.mjs", "test/gate.test.mjs", "spec §5a"], "linesEst": 12, "cluster": "C Pattern" },
+  { "id": "J2", "fixes": "R2", "tag": "[BEHAVIORAL | CRITICAL | PHI-HIGH | LOAD-BEARING]", "change": "statement-removed: the target's line is a deleted line and no sink of its kind in its program stands at an inserted line. source-removed: the same, for the source. The question is whether the patch wrote the statement back, not whether the program has another", "files": ["spec §5", "lib/gate.mjs"], "linesEst": 10, "cluster": "D Risk", "blastRadius": "decides pass for two of the three passing outcomes; G1.3, G1.5 and G2.7 exercise it" },
+  { "id": "J3", "fixes": "R3", "tag": "[STRUCTURAL | SAFE | PHI-MEDIUM | ISOLATED]", "change": "--target-only: only the target and coverage checks decide, for the resweep of a revision that holds other people's changes; the gate's own run keeps all seven", "files": ["spec §3, §4", "lib/gate.mjs", "bin/cobolwork.mjs"], "linesEst": 12, "cluster": "A Intent" },
+  { "id": "J4", "fixes": "R4, R5", "tag": "[OBSERVABILITY | SAFE | PHI-MEDIUM | ISOLATED]", "change": "the spec says which side each outcome reads: a guard at an inserted head line; a statement or source at a deleted base line. repositoryText adds target.program", "files": ["spec §2, §5, §7"], "linesEst": 4, "cluster": "B Observation" },
+  { "id": "J5", "fixes": "R6", "tag": "[STRUCTURAL | RISK-BEARING | PHI-MEDIUM | LOAD-BEARING]", "change": "diffRefs is split into withRefs(repo, base, head, opts, fn), which materialises, calls fn with both roots, and removes them; diffRefs is withRefs with diffTrees, and diffTrees returns its two scans when asked", "files": ["lib/diff.mjs"], "linesEst": 15, "cluster": "C Pattern", "blastRadius": "the hardened revision reader; test/diff-safety.test.mjs and test/review.test.mjs hold it, and diff's document must stay byte-identical" }
+ ],
+ "phase2_5_avoidanceAudit": {
+  "byType": { "STRUCTURAL": 2, "BEHAVIORAL": 1, "OBSERVABILITY": 1, "COMPLETING": 1 },
+  "avoidanceFlag": false,
+  "painIndex": [ { "id": "J5", "effort": 2, "impact": 3, "disruption": 2, "pain": 12 }, { "id": "J2", "effort": 2, "impact": 3, "disruption": 1, "pain": 6 }, { "id": "J3", "effort": 1, "impact": 2, "disruption": 1, "pain": 2 } ],
+  "note": "the pass-1 fix I1 overcorrected; J2 is its correction, found by the pass-1 spec's own scenario G2.7"
+ },
+ "phase4_critique": [
+  { "id": "J1", "survives": true, "why": "without it the listing outcomes have no key" },
+  { "id": "J2", "survives": true, "why": "the pass-1 wording fails a scenario the same pass added" },
+  { "id": "J3", "survives": true, "why": "step 9 is half of what the command is for; without it every verify on a busy branch fails", "simpler": "none: gating the fix commit against its parent covers only the merge, not a later resweep" },
+  { "id": "J4", "survives": true, "why": "wording" },
+  { "id": "J5", "survives": true, "why": "the gate cannot compute changed lines or compile without the trees", "migration": "diffRefs keeps its signature and output" }
+ ],
+ "phase5_regressionsSet": {
+  "togetherRisk": "J5 changes the code path the diff-safety tests guard, and J2 decides passes; both carry tests that fail on the regression they could introduce",
+  "riskBearingLoadBearing": ["J5"],
+  "ordering": "J5 first (the gate needs the trees), then J1 and J2 (outcomes), then J3 (a mode over the checks)",
+  "resourceConflicts": "lib/diff.mjs: J5 only; lib/gate.mjs: J1, J2, J3",
+  "testGapsCreated": ["diff's document is unchanged after the split", "every path rule resolves to one kind pair", "--target-only ignores an added finding and still fails a still-reported target"],
+  "netDelta": "about +50 lines of code; spec gains --target-only and a sharper §5"
+ },
+ "rankedOrder": ["J5", "J1", "J2", "J4", "J3"],
+ "rescoreAfterBothPasses": {
+  "note": "the spec as it stands after both passes, before any code: dimensions that rest on implementation (Efficiency, Testability) move only when the tests exist",
+  "dimensions": { "Clarity": 7.0, "Completeness": 7.0, "Robustness": 6.5, "Security": 6.5, "Compliance": 6.0, "DataIntegrity": 7.0, "Testability": 7.0, "Observability": 7.0, "Migration": 7.0, "Coherence": 7.0, "Efficiency": 6.0, "EvaluationDepth": 6.5 },
+  "total": 80.5,
+  "max": 120,
+  "was": 72.5
+ }
+}

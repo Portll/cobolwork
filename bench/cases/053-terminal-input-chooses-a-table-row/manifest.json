@@ -1,0 +1,8 @@
+{
+ "id": "053-terminal-input-chooses-a-table-row",
+ "title": "A row number typed at the terminal subscripts a ten-entry table unchecked",
+ "cwe": "CWE-129",
+ "expect": [
+  { "rule": "cics-terminal-to-subscript", "file": "SELROW.cbl" }
+ ]
+}

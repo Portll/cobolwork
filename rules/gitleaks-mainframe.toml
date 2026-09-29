@@ -1,0 +1,57 @@
+title = "commitwork mainframe credential rules"
+
+# DELIBERATELY NOT extending gitleaks' default rules. This config is the mainframe shapes gitleaks
+# has none of; the default pack is the business of whichever lane runs it, and loading both here
+# counted every generic key twice under two lanes that are each additive.
+[extend]
+useDefault = false
+
+[[rules]]
+id = "jcl-racf-password"
+description = "RACF password in a JCL statement (JOB card, EXEC PARM or DD)"
+regex = '''(?im)^//[^*\n][^\n]*?\bPASSWORD=\(?([A-Z0-9@#$]{1,8})(?:[,)\s]|$)'''
+secretGroup = 1
+keywords = ["password="]
+[rules.allowlist]
+regexTarget = "secret"
+regexes = ['''(?i)^(x+|\*+|y+|n+|pass|passw(or)?d?|secret|dummy|changeme|password)$''']
+
+[[rules]]
+id = "tso-logon-password"
+description = "TSO LOGON with an inline password"
+regex = '''(?im)^\s*(?://\*\s*)?LOGON\s+[A-Z@#$][A-Z0-9@#$]{0,7}/([A-Z0-9@#$]{1,8})\b'''
+secretGroup = 1
+keywords = ["logon"]
+
+[[rules]]
+id = "racf-command-password"
+description = "RACF ADDUSER or ALTUSER with an inline PASSWORD(...)"
+regex = '''(?i)\b(?:ALTUSER|ALU|ADDUSER|AU)\s+\(?[A-Z0-9@#$]{1,8}\)?[^\n]*?\bPASSWORD\(\s*([A-Z0-9@#$]{1,8})\s*\)'''
+secretGroup = 1
+keywords = ["password("]
+
+[[rules]]
+id = "cobol-value-credential"
+description = "COBOL data item named for a credential with a literal VALUE"
+regex = '''(?im)^[^*\n]{0,7}\s*\d{1,2}\s+[A-Z0-9-]*(?:PASSWORD|PASSWD|PASSWRD|PSWD|PWD|SECRET|APIKEY|API-KEY|ACCESS-KEY|TOKEN)[A-Z0-9-]*\b[^\n.]*?\bVALUES?\s+(?:IS\s+|ARE\s+)?(?:'([^'\n]{1,})'|"([^"\n]{1,})")'''
+keywords = ["password", "passwd", "passwrd", "pswd", "pwd", "secret", "apikey", "api-key", "access-key", "token"]
+path = '''(?i)\.(cbl|cob|cobol|cpy|copy|sqb|pco|ccp)$'''
+[rules.allowlist]
+regexTarget = "match"
+regexes = ['''(?i)VALUE\s+(?:IS\s+)?['"](x+|\*+|\s+|pass(word)?|secret|dummy|changeme|password:?|enter[^'"]*|invalid[^'"]*|wrong[^'"]*)['"]''']
+
+[[rules]]
+id = "embedded-sql-connect-password"
+description = "EXEC SQL CONNECT with a literal password"
+regex = '''(?is)\bCONNECT\s+(?:TO\s+\S+\s+)?(?:USER\s+(?:'[^']*'|"[^"]*"|:?[A-Z0-9-]+)\s+USING|IDENTIFIED\s+BY)\s+(?:'([^'\n]{3,})'|"([^"\n]{3,})")'''
+keywords = ["connect"]
+[rules.allowlist]
+regexTarget = "match"
+regexes = ['''(?i)USING\s+['"](x+|\*+|pass(word)?|pwd|secret|dummy|changeme|your[-_ ]?password|<[^>]*>)['"]|IDENTIFIED\s+BY\s+['"](x+|\*+|pass(word)?|pwd|secret|dummy|changeme|your[-_ ]?password|<[^>]*>)['"]''']
+
+[[rules]]
+id = "cics-signon-password"
+description = "EXEC CICS SIGNON, VERIFY PASSWORD or CHANGE PASSWORD with a literal password"
+regex = '''(?is)EXEC\s+CICS\s+(?:SIGNON|VERIFY|CHANGE\s+PASSWORD)\b.{0,300}?\bPASSWORD\(\s*'([^'\n]{1,8})'\s*\)'''
+secretGroup = 1
+keywords = ["password("]

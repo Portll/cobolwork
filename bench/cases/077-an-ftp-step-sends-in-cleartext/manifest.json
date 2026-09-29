@@ -1,0 +1,14 @@
+{
+ "id": "077-an-ftp-step-sends-in-cleartext",
+ "title": "An FTP step logs on and sends a dataset with no TLS option anywhere in the job",
+ "cwe": "CWE-319",
+ "expect": [
+  {
+   "rule": "jcl-ftp-cleartext",
+   "file": "FTPSEND.jcl"
+  }
+ ],
+ "alsoExpected": [
+  "jcl-instream-credential"
+ ]
+}

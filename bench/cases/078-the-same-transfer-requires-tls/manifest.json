@@ -1,0 +1,13 @@
+{
+ "id": "078-the-same-transfer-requires-tls",
+ "title": "The same transfer with an in-stream FTP.DATA that requires TLS",
+ "cwe": "CWE-319",
+ "expect": [],
+ "negativeFor": [
+  "jcl-ftp-cleartext",
+  "jcl-ftp-sends-production-dataset"
+ ],
+ "alsoExpected": [
+  "jcl-instream-credential"
+ ]
+}

@@ -1,0 +1,59 @@
+{
+ "case": {
+  "file": "cpydot.cbl",
+  "note": "COPY DOTWS.WS. names the member DOTWS.WS, and a COPY ended by a period does not swallow the paragraph header on the next line"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-FILE-STATUS",
+    "size": 2,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "WS-STATUS",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-FILE-STATUS",
+    "line": 1,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-STATUS",
+    "line": 2,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "MAIN-PARA"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "SHOW-STATUS"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "NEXT-PARA"
+   }
+  ],
+  "calls": []
+ }
+}

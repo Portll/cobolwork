@@ -1,0 +1,10 @@
+{
+ "id": "080-the-same-step-fetches-into-production",
+ "title": "The same step bringing a file into a production dataset rather than sending one out",
+ "cwe": "CWE-201",
+ "expect": [],
+ "negativeFor": [
+  "jcl-ftp-sends-production-dataset",
+  "jcl-ftp-cleartext"
+ ]
+}

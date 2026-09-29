@@ -1,0 +1,201 @@
+{
+ "schema": "bifocal-plan/v1",
+ "target": "docs/spec/remediation-gate.md as first drafted (2026-09-24): cobolwork gate, the deterministic check for pipeline steps 5 (gate) and 9 (verify) of the Now and Next remediation design",
+ "date": "2026-09-24",
+ "repo": "cobolwork",
+ "treeState": {
+  "head": "23f3b2d",
+  "workingTree": "the spec is the only change of this evaluation's; the shared tree held no other modified tracked file when it began",
+  "method": "every engine claim below was measured on 2026-09-24 by scanning a one-program tree per variant with scanAll (flow set, free memory pinned at 4096 MB as test/pin-machine.mjs pins it); scripts not kept, results quoted here. No corpus run: the gate's population is one patch at a time"
+ },
+ "targetItems": [
+  { "id": "S3", "what": "the command, its exit codes, and --head defaulting to the working tree" },
+  { "id": "S4", "what": "seven checks and the verdict rule" },
+  { "id": "S5", "what": "eight outcomes for the target, tried in order" },
+  { "id": "S6", "what": "three levels of pairing" },
+  { "id": "S7", "what": "the output document and its reasons" },
+  { "id": "S8", "what": "the in-process line diff" },
+  { "id": "S9", "what": "the optional compiler" },
+  { "id": "S11", "what": "twenty BDD scenarios" }
+ ],
+ "phase0_riskTriage": [
+  { "component": "S5 outcomes", "tier": 1, "why": "the pass/undecided line is the whole safety claim of the pipeline: a wrong pass lodges a patch that hides a flaw under a verdict that says it is fixed" },
+  { "component": "S7 reasons", "tier": 1, "why": "handed verbatim to a model as its next instruction: an injection boundary" },
+  { "component": "S9 compiler", "tier": 1, "why": "spawns a process on attacker-controlled source" },
+  { "component": "S6 pairing", "tier": 2, "why": "decides fail wording and the added check; errors mostly fail safe, except for collisions" },
+  { "component": "S8 line diff", "tier": 2, "why": "bounds memory on hostile input; decides changed lines, on which three outcomes rest" },
+  { "component": "S3, S4", "tier": 3, "why": "follow diff's conventions, which are tested" }
+ ],
+ "phase1_edgeWalk": {
+  "boundaries": [
+   {
+    "name": "base findings -> head findings (lib/diff.mjs:162 findingKey, lib/kernel/identity.mjs stampFingerprints)",
+    "type": "identity", "tier": 1,
+    "edge": {
+     "dataCrossing": "fingerprints: sha256(version, rule, repo, scope, subject, codeText(line))",
+     "contract": "a line edit changes the fingerprint; code moving above it does not",
+     "failureModes": "measured: rewording the sink (CALL \"SYSTEM\" for CALL 'SYSTEM') changes f325f4f3 to aefb6038 with the route intact; moving the sink into a PERFORMed paragraph changes it to d6cfbacb, because the scope changes. Level 2 pairing (text removed) catches the first and not the second; level 3 (rule, program, source statement) catches both",
+     "attackSurface": "a patch that makes the target look resolved by editing its line"
+    },
+    "fractal": {
+     "siblingConsistency": "HOLDS - baseline matching keys on fingerprint and rule (diff.mjs baselineChange), the same identity",
+     "scaleUp": "BREAKS - two findings of one rule in one paragraph with one subject share a level 2 key; pairing them against a single remaining head finding reads a fixed target as still reported",
+     "scaleDown": "HOLDS - checked routes are stamped by the same function (scan.mjs:152); an allow-list the patch adds leaves the route in checked under the base fingerprint f325f4f3, so cleared-by-check is an exact match",
+     "mirrorTest": "HOLDS - both trees are stamped by one implementation"
+    }
+   },
+   {
+    "name": "target gone -> outcome (spec S5)",
+    "type": "decision", "tier": 1,
+    "edge": {
+     "dataCrossing": "the base finding, the head's findings and checked list, the changed lines",
+     "contract": "pass only on a disappearance the gate can explain",
+     "failureModes": "statement-removed as drafted accepts a line 'reworded and no longer flagged'. A reword the engine stops recognising as a sink reads as a fix. Measured: OS_COMMAND_ROUTINE is case-insensitive (dataflow.mjs:17) and double quotes stay flagged, so the obvious rewords of CALL 'SYSTEM' do not escape - but the outcome rests on every sink recogniser having no such gap, which nothing checks. The flow engine can list every sink it knows, reached or not (dataflow.mjs:1353, opts.listSinks), which turns the outcome into a count: the sinks of the target's kind in its program went down",
+     "attackSurface": "a drafter, or a hostile patch, that rewrites the sink statement into a form no recogniser holds"
+    },
+    "fractal": {
+     "siblingConsistency": "BREAKS - cleared-by-check rests on an engine fact (checked); statement-removed as drafted rests on a text fact (a changed line). The two should rest on the same kind of evidence",
+     "scaleUp": "HOLDS - one target per run",
+     "scaleDown": "BREAKS - trace hops carry program, item, file and via, but no line (flow.mjs trace construction); a route cut in the middle - the MOVE between source and sink deleted - cannot be attributed to a changed line, and lands in gone-unexplained. The spec does not say so",
+     "mirrorTest": "HOLDS - source-removed is the mirror of statement-removed, and needs the same count (no source listing exists yet; listSinks has no sources twin)"
+    }
+   },
+   {
+    "name": "gate reasons -> drafter prompt (spec S7)",
+    "type": "rpc", "tier": 1,
+    "edge": {
+     "dataCrossing": "sentences built from rule ids, rule text, paths, lines, severities, counts",
+     "contract": "no finding detail, no source text",
+     "failureModes": "a path is text the repository chose: a file named for an instruction reaches the model through the reasons. printable() removes control and bidirectional characters, not words",
+     "attackSurface": "prompt injection into the drafter through file names"
+    },
+    "fractal": {
+     "siblingConsistency": "HOLDS - explain's packet already goes through commitwork's untrusted-text envelope; the reasons must be named as the same kind of text",
+     "scaleUp": "HOLDS", "scaleDown": "HOLDS", "mirrorTest": "HOLDS"
+    }
+   },
+   {
+    "name": "gate -> cobc (spec S9)",
+    "type": "process", "tier": 1,
+    "edge": {
+     "dataCrossing": "program files the patch changed, copybook directories",
+     "contract": "compiler from outside the tree; working directory outside the repository; regression only",
+     "failureModes": "a copybook edit changes no program file, so 'each program file the patch changed' compiles nothing for the change most likely to break a compile. Measured elsewhere: diff exists because a one-line copybook edit rewrites every program that COPYs it (diff.mjs:18-22)",
+     "attackSurface": "cwd-first executable search on Windows for a bare name; the spec resolves to an absolute path, which closes it"
+    },
+    "fractal": {
+     "siblingConsistency": "HOLDS - mirrors diff's git hardening (diff.mjs:34-36)",
+     "scaleUp": "BREAKS - see failureModes: copybook-driven programs are not in the compile set",
+     "scaleDown": "HOLDS", "mirrorTest": "HOLDS - base and head compiled alike"
+    }
+   },
+   {
+    "name": "scans under the memory guard -> verdict (spec S4 coverage, G-I6)",
+    "type": "resource", "tier": 2,
+    "edge": {
+     "dataCrossing": "summary.coverageIncomplete, setsIncomplete",
+     "contract": "never pass on incomplete coverage",
+     "failureModes": "the guard reads whole-machine free memory, so the same inputs can give undecided on one run and pass on the next; G-I6 as written claims identical documents unconditionally. Measured: removing a copybook the program copies sets coverageIncomplete and a compile-set coverage entry, which is a buildable witness for G2.6; the memory reserve is not, since the reader is process-global (lib/kernel/memory.mjs setMemoryReaders)",
+     "attackSurface": "none new"
+    },
+    "fractal": { "siblingConsistency": "HOLDS - diff ORs both sides' coverage (diff.mjs summary)", "scaleUp": "HOLDS", "scaleDown": "HOLDS", "mirrorTest": "HOLDS" }
+   },
+   {
+    "name": "two trees -> changed lines (spec S8)",
+    "type": "compute", "tier": 2,
+    "edge": {
+     "dataCrossing": "file text of base and head",
+     "contract": "in process; lines compared as the fingerprint compares them",
+     "failureModes": "an edit-distance cap is stated (5,000) without the memory it implies; Myers' trace is quadratic in D. A renumbered sequence area would mark every line changed if lines were compared raw, which is why the codeText comparison matters",
+     "attackSurface": "a patch built to exhaust memory in the diff"
+    },
+    "fractal": { "siblingConsistency": "HOLDS - codeText is identity.mjs's", "scaleUp": "BREAKS at D - see failureModes", "scaleDown": "HOLDS", "mirrorTest": "HOLDS" }
+   }
+  ],
+  "hazop": [
+   { "boundary": "target gone -> outcome", "guideWord": "OTHER THAN", "deviation": "the sink statement is still a sink, in a form no recogniser holds", "consequence": "pass on a laundered route", "safeguard": "count sinks of the target's kind in its program before and after (listSinks)" },
+   { "boundary": "target gone -> outcome", "guideWord": "PART OF", "deviation": "the route is cut between source and sink", "consequence": "undecided, correctly, but unexplained to the drafter", "safeguard": "a reason that says the gate cannot attribute a cut route; fix recipes that prefer checks" },
+   { "boundary": "base findings -> head findings", "guideWord": "MORE", "deviation": "two base findings share a level 2 key", "consequence": "a fixed target reads as still reported", "safeguard": "exact matches first across all findings, looser levels only on what remains" },
+   { "boundary": "reasons -> drafter", "guideWord": "OTHER THAN", "deviation": "a path carries words meant for the model", "consequence": "the drafter follows the repository's instruction", "safeguard": "name reasons untrusted in the spec; commitwork wraps them in the envelope; cap path length" },
+   { "boundary": "gate -> cobc", "guideWord": "LESS", "deviation": "a copybook edit compiles nothing", "consequence": "a compile regression passes", "safeguard": "compile programs whose resolved COPYs include a changed file" },
+   { "boundary": "scans -> verdict", "guideWord": "EARLY", "deviation": "the head scan stops at the memory reserve", "consequence": "the target reads as resolved", "safeguard": "coverage check is null, verdict undecided (as drafted)" }
+  ],
+  "fmeaRpn": [
+   { "id": "F1", "title": "statement-removed passes a reworded sink the engine stops recognising", "severity": 8, "probability": 4, "detectability": 6, "rpn": 192 },
+   { "id": "F2", "title": "repository-chosen paths reach the drafter through reasons", "severity": 7, "probability": 3, "detectability": 7, "rpn": 147 },
+   { "id": "F3", "title": "compile set misses programs a copybook edit reaches", "severity": 5, "probability": 4, "detectability": 6, "rpn": 120 },
+   { "id": "F4", "title": "G-I6 claims identical documents while the memory guard is machine-dependent", "severity": 5, "probability": 6, "detectability": 3, "rpn": 90 },
+   { "id": "F5", "title": "exit 0 on a fail verdict; a caller reading $? alone passes everything", "severity": 6, "probability": 3, "detectability": 5, "rpn": 90 },
+   { "id": "F6", "title": "level 2 key collision reads a fixed target as still reported", "severity": 4, "probability": 5, "detectability": 4, "rpn": 80 },
+   { "id": "F7", "title": "four flow analyses per gate: two scans, plus two sink listings", "severity": 3, "probability": 7, "detectability": 2, "rpn": 42 },
+   { "id": "F8", "title": "a route cut mid-trace is unattributable (hops have no line) and the spec does not say so", "severity": 3, "probability": 6, "detectability": 2, "rpn": 36 },
+   { "id": "F9", "title": "G1.8 and G2.6 have no buildable witness as written", "severity": 3, "probability": 9, "detectability": 1, "rpn": 27 }
+  ]
+ },
+ "phase2_fractalAtam": {
+  "corePattern": "the model proposes and a deterministic gate disposes; what the tool cannot establish is reported as undecided, never as clean",
+  "macro": "CONSISTENT - the gate is diff plus a verdict, as explain is a report plus source; one more command over the same two-tree machinery",
+  "meso": "BROKEN at S5 - outcomes rest on two kinds of evidence (engine facts for cleared-by-check, text facts for statement-removed and source-removed). Making all three rest on the engine is the fix and costs one symmetric sources listing",
+  "micro": "CONSISTENT - reasons, exit codes and the untrusted envelope follow explain and diff",
+  "tradeoffs": [
+   { "decision": "exit 0 whatever the verdict", "gain": "a crash is never read as a fail, and the CLI keeps one exit-code rule", "cost": "a caller reading exit codes alone passes everything (F5)", "resolution": "keep, and add --exit-code, which exits 1 on fail and 3 on undecided" },
+   { "decision": "undecided for a cut route", "gain": "no laundering through an unattributable change", "cost": "a real fix (the MOVE removed) goes to a person", "resolution": "keep; say why in the reason, and prefer checks in fix recipes" },
+   { "decision": "regression-only compile", "gain": "a missing copy library cannot fail a good patch", "cost": "a program that never compiled is never checked", "resolution": "keep; compiled says which" }
+  ]
+ },
+ "dualAgentDivergence": [
+  { "item": "statement-removed", "edge": "the text fact is enough: every obvious reword was measured and stays flagged", "fractal": "it breaks sibling consistency with cleared-by-check and rests on a property of every recogniser nothing tests", "resolution": "fractal wins; a count from listSinks is cheap and makes the outcome an engine fact" },
+  { "item": "compile", "edge": "a regression-only compile of changed files is safe and simple", "fractal": "diff exists because edits reach programs through copybooks; the compile set must follow the same reach", "resolution": "fractal wins" }
+ ],
+ "phase2_5_adversarialChallenge": [
+  { "dim": "Clarity", "proposed": 7.0, "counter": "'reworded and no longer flagged' does not say flagged by what, and 'the source statement the route starts at' does not say which source when a sink has several (flow.mjs keeps the fewest-hop source and counts the rest)", "grounded": true, "result": "reduced:0.5", "final": 6.5 },
+  { "dim": "Migration", "proposed": 7.0, "counter": "the gate needs diffRefs split so it can read the materialised trees before they are removed, which touches the hardened code path", "grounded": true, "result": "held: test/diff-safety.test.mjs holds the three hardening properties and would fail on a regression", "final": 7.0 },
+  { "dim": "Coherence", "proposed": 7.0, "counter": "a gate that exits 0 on fail is unlike every CI gate a reader knows", "grounded": true, "result": "held: the CLI's help states 0 = ran, 2 = could not; the spec keeps one rule and F5 adds an opt-in", "final": 7.0 }
+ ],
+ "phase3_scores": {
+  "rule": "dual-evidence-rule applied; >6.0 requires code-grounded AND structural evidence from different abstraction levels; single evidence caps at 6.0",
+  "dimensions": [
+   { "id": "D1", "name": "Clarity", "score": 6.5, "code": "each outcome and check is a table row with its condition", "structural": "the same spec shape as tui.md, with a conformance test", "capped": false, "challengeApplied": "reduced:0.5" },
+   { "id": "D2", "name": "Completeness", "score": 5.5, "code": "missing: multiset pairing order (F6), copybook reach for compile (F3), cut routes (F8), path text in reasons (F2)", "structural": "covers both pipeline steps it is for", "capped": false },
+   { "id": "D3", "name": "Robustness", "score": 5.0, "code": "statement-removed rests on text (F1); determinism claim unconditioned (F4)", "structural": "never-pass-on-incomplete-coverage is stated and testable", "capped": false },
+   { "id": "D4", "name": "Security", "score": 5.5, "code": "compiler path resolution and in-process diff close the two command-execution routes; reasons remain an injection route (F2)", "structural": "inherits diff's hardening by reuse rather than reimplementation", "capped": false },
+   { "id": "D5", "name": "Compliance", "score": 6.0, "code": "not compiled is never read as compiles; a baseline or site edit never passes", "structural": "single evidence: no audit-trail requirement beyond the pipeline's commit body", "capped": true },
+   { "id": "D6", "name": "DataIntegrity", "score": 5.5, "code": "collision false fail (F6); cleared-by-check exact by fingerprint (measured f325f4f3 in checked)", "structural": "one identity implementation for both trees", "capped": false },
+   { "id": "D7", "name": "Testability", "score": 6.5, "code": "every scenario is a test by id; the engine behaviours are measured", "structural": "two witnesses unbuildable as written (F9)", "capped": false },
+   { "id": "D8", "name": "Observability", "score": 6.5, "code": "outcome, per-check booleans, reasons, changedFiles", "structural": "no record of which pairing level matched", "capped": false },
+   { "id": "D9", "name": "Migration", "score": 7.0, "code": "additive command; report schemas unchanged", "structural": "diffRefs split is guarded by test/diff-safety.test.mjs", "capped": false, "challengeApplied": "held" },
+   { "id": "D10", "name": "Coherence", "score": 7.0, "code": "exit-code rule and --head default are diff's", "structural": "reasons follow explain's untrusted-text line", "capped": false, "challengeApplied": "held" },
+   { "id": "D11", "name": "Efficiency", "score": 5.5, "code": "four flow analyses per run (F7)", "structural": "carrying sink and source lists through the scan would make it two", "capped": false },
+   { "id": "D12", "name": "EvaluationDepth", "score": 6.0, "code": "fourteen patch variants and four coverage variants measured against the engine", "structural": "no real drafted patch exists yet to gate", "capped": true }
+  ],
+  "total": 72.5,
+  "max": 120,
+  "criticalDims": { "Robustness": 5.0, "Security": 5.5, "Compliance": 6.0, "DataIntegrity": 5.5 },
+  "blockers": []
+ },
+ "phase3_evaluationMatrix9": { "quality": 6.5, "completeness": 5.5, "performance": 5.5, "utility": 8.0, "coherence": 7.0, "cohesiveness": 7.0, "elasticity": 6.0, "function": 6.0, "easeOfUse": 6.5 },
+ "measurements": {
+  "patchVariants": [
+   { "variant": "base: ACCEPT -> MOVE -> CALL 'SYSTEM'", "findings": "argv-or-env-to-os-command crit, fingerprint f325f4f3", "checked": 0 },
+   { "variant": "EVALUATE allow-list, WHEN OTHER GOBACK", "findings": "none", "checked": "f325f4f3, guard at the EVALUATE, stops" },
+   { "variant": "numeric test setting a flag", "findings": "f325f4f3 at high, guard at the IF", "checked": 0 },
+   { "variant": "CALL deleted", "findings": "none", "checked": 0 },
+   { "variant": "CALL \"SYSTEM\" (reworded)", "findings": "crit, fingerprint aefb6038", "checked": 0 },
+   { "variant": "ACCEPT replaced by MOVE literal", "findings": "none", "checked": 0 },
+   { "variant": "STRING, UNSTRING, FUNCTION TRIM, FUNCTION REVERSE, reference modification, CBL_TOUPPER between source and sink", "findings": "crit, f325f4f3 each: all followed", "checked": 0 },
+   { "variant": "CALL moved into a PERFORMed paragraph", "findings": "crit, fingerprint d6cfbacb (scope changed)", "checked": 0 },
+   { "variant": "value written to a file and read back", "findings": "file-record-to-os-command high: the target is replaced by a different rule, which the added check catches", "checked": 0 },
+   { "variant": "byte-by-byte PERFORM VARYING copy", "findings": "crit, followed", "checked": 0 }
+  ],
+  "coverageVariants": [
+   { "variant": "program with its copybook", "coverageIncomplete": false },
+   { "variant": "copybook removed", "coverageIncomplete": true, "setsIncomplete": "compile, kind coverage: a copybook it includes is not in the tree" }
+  ]
+ },
+ "appliedFunctions": ["hazop-guide", "fmea-rpn", "dual-evidence-rule"],
+ "notes": [
+  "The method's helper definitions are not part of this repository; they were applied in the form the 2026-09-20 and 2026-09-21 evaluations used.",
+  "The evaluation was performed by hand.",
+  "No laundering construct was found among the ten tried: every route between ACCEPT and CALL 'SYSTEM' that was tried was either followed or became a different finding. F1 stands on the absence of a check, not on a found escape."
+ ]
+}

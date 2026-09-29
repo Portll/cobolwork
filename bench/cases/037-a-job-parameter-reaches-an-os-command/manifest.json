@@ -1,0 +1,15 @@
+{
+ "id": "037-a-job-parameter-reaches-an-os-command",
+ "title": "A JCL step hands a program a PARM that reaches CALL SYSTEM",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "jcl-parm-to-os-command",
+   "file": "RUNCMD.cbl"
+  },
+  {
+   "rule": "jcl-parm-is-an-entry-point",
+   "file": "RUN.jcl"
+  }
+ ]
+}

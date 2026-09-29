@@ -1,0 +1,11 @@
+{
+ "id": "073-a-test-job-deletes-a-production-dataset",
+ "title": "A test job's clear-down step deletes a production dataset along with its own",
+ "cwe": "CWE-653",
+ "expect": [
+  {
+   "rule": "recon-nonproduction-job-writes-production-dataset",
+   "file": "TPAYCLN.jcl"
+  }
+ ]
+}

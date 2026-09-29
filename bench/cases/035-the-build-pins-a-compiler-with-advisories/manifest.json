@@ -1,0 +1,11 @@
+{
+ "id": "035-the-build-pins-a-compiler-with-advisories",
+ "title": "CI compiles every pull request with a compiler version six advisories name",
+ "cwe": "CWE-1395",
+ "expect": [
+  {
+   "rule": "build-pins-vulnerable-compiler",
+   "file": "Dockerfile"
+  }
+ ]
+}

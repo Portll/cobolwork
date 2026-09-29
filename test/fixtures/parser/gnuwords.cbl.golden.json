@@ -1,0 +1,64 @@
+{
+ "case": {
+  "file": "gnuwords.cbl",
+  "note": "GnuCOBOL's MODULE-* and CONCAT functions under FUNCTION ALL INTRINSIC, NUMBER-OF-CALL-PARAMETERS and ACCEPT FROM MICROSECOND-TIME resolve without a declaration"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-TEXT",
+    "size": 64,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-COUNT",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-TIME",
+    "size": 12,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "NUMBER-OF-CALL-PARAMETERS",
+    "line": 0,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-TEXT",
+    "line": 9,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-COUNT",
+    "line": 10,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-TIME",
+    "line": 11,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

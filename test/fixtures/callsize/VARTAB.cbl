@@ -1,0 +1,9 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. VARTAB.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-N                PIC 9(4) COMP.
+       01 LK-T.
+          05 LK-E             PIC X(4) OCCURS 1 TO 100 DEPENDING ON LK-N.
+       PROCEDURE DIVISION USING LK-N LK-T.
+           GOBACK.

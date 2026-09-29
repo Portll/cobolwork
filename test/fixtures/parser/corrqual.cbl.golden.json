@@ -1,0 +1,295 @@
+{
+ "case": {
+  "file": "corrqual.cbl",
+  "note": "MOVE CORRESPONDING writes each receiving item it pairs, skipping OCCURS, REDEFINES and FILLER, and a condition-name's qualifier is not a reference to it"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-FLAGS",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "WS-MODE",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "88",
+    "name": "MODE-ON",
+    "size": null,
+    "type": "CONDITIONAL"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "SRC-REC",
+    "size": 7,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F1",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F2",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G1",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "F3",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F4",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F5",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F6",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "DST-REC",
+    "size": 8,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F1",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F2",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "G1",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "F3",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F4",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F6",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "F7",
+    "size": 1,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-FLAGS",
+    "line": 5,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-MODE",
+    "line": 6,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MODE-ON",
+    "line": 7,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SRC-REC",
+    "line": 8,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F1",
+    "line": 9,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F2",
+    "line": 10,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "G1",
+    "line": 11,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F3",
+    "line": 12,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F4",
+    "line": 13,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F5",
+    "line": 15,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F6",
+    "line": 16,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DST-REC",
+    "line": 17,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "F1",
+    "line": 18,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "F2",
+    "line": 19,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "G1",
+    "line": 20,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F3",
+    "line": 21,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "F4",
+    "line": 22,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F6",
+    "line": 24,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "F7",
+    "line": 25,
+    "state": "parent",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

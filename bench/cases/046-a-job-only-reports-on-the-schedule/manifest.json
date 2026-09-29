@@ -1,0 +1,11 @@
+{
+ "id": "046-a-job-only-reports-on-the-schedule",
+ "title": "The same utility running a report, changing nothing",
+ "cwe": "CWE-284",
+ "expect": [
+  {
+   "rule": "vendor-privileged-command",
+   "file": "SCHED.jcl"
+  }
+ ]
+}

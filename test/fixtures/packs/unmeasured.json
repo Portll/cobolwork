@@ -1,0 +1,24 @@
+{
+ "name": "unmeasured",
+ "vendor": "Example",
+ "product": "Example Scheduler",
+ "version": "1",
+ "validation": {
+  "corpus": null,
+  "practitioner": null,
+  "_note": "Deliberately unvalidated, and it must stay that way. This is the fixture the validation-gate tests use. They used to point at a shipped pack, which meant that measuring a real pack over a corpus - the exact thing the gate exists to encourage - broke three tests of the gate itself. A fixture cannot be allowed to graduate."
+ },
+ "rules": [
+  {
+   "id": "ex-privileged-insert",
+   "verb": "INSERT",
+   "pattern": "^\\s*INSERT\\s+EXAMPLE\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "creates an account in the example product",
+   "rationale": "A fixture. The risk statement is not a claim about any real product, and this pack is not shipped."
+  }
+ ]
+}

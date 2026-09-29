@@ -1,0 +1,20 @@
+{
+ "id": "003-terminal-input-chooses-program",
+ "title": "Terminal input arrives through the communication area and names the next program",
+ "cwe": "CWE-470",
+ "expect": [
+  {
+   "rule": "cics-terminal-to-cics-dynamic-transfer",
+   "file": "C2.cbl"
+  },
+  {
+   "rule": "cics-transfer-to-variable-program",
+   "file": "C2.cbl"
+  },
+  {
+   "rule": "cics-commarea-without-length-check",
+   "file": "C2.cbl"
+  }
+ ],
+ "note": "C2 reads DFHCOMMAREA without checking EIBCALEN, which is a true finding of its own: declared here so the case states everything the scanner reports."
+}

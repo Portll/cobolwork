@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOGIN.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-DB-PASSWORD      PIC X(16) VALUE SPACES.
+       01 WS-PASSWORD-PROMPT  PIC X(20) VALUE 'Enter password:'.
+       01 WS-PASSWORD-MASK    PIC X(8)  VALUE '********'.
+      *01 WS-OLD-PASSWORD     PIC X(16) VALUE 'Tr0ub4dor3xQz9'.
+       PROCEDURE DIVISION.
+           EXEC SQL CONNECT TO SAMPLE USER :WS-USER USING :WS-DB-PASSWORD END-EXEC.
+           EXEC CICS SIGNON USERID(WS-USER) PASSWORD(WS-DB-PASSWORD) END-EXEC.
+           STOP RUN.
+      * Example from documentation, not a real credential:
+           EXEC SQL CONNECT TO 'database' USER 'user' USING 'password' END-EXEC.

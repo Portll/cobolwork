@@ -1,0 +1,19 @@
+{
+ "id": "043-a-transfer-runs-a-program-on-the-partner-node",
+ "title": "A Connect:Direct process signs on with a password and executes code on the remote node",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "vendor-privileged-command",
+   "file": "XFER.jcl"
+  },
+  {
+   "rule": "vendor-privileged-command",
+   "file": "XFER.jcl"
+  },
+  {
+   "rule": "vendor-privileged-command",
+   "file": "XFER.jcl"
+  }
+ ]
+}

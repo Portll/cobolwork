@@ -1,0 +1,27 @@
+{
+ "id": "041-a-job-creates-a-logonid-with-a-vendor-command",
+ "title": "A job issues ACF2 and Top Secret administration commands the estate loaded the pack for",
+ "cwe": "CWE-284",
+ "expect": [
+  {
+   "rule": "jcl-instream-security-command",
+   "file": "SECADM.jcl"
+  },
+  {
+   "rule": "jcl-instream-security-command",
+   "file": "SECADM.jcl"
+  },
+  {
+   "rule": "jcl-instream-security-command",
+   "file": "SECADM.jcl"
+  },
+  {
+   "rule": "vendor-privileged-command",
+   "file": "SECADM.jcl"
+  },
+  {
+   "rule": "vendor-privileged-command",
+   "file": "SECADM.jcl"
+  }
+ ]
+}

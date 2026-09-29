@@ -1,0 +1,80 @@
+{
+ "case": {
+  "file": "c.cbl",
+  "include": [
+   "cp"
+  ],
+  "note": "COPY REPLACING, qualified references"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-R",
+    "size": 13,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "XX-A",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "CP-B",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-Z",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-R",
+    "line": 5,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "XX-A",
+    "line": 1,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "CP-B",
+    "line": 2,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-Z",
+    "line": 7,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "P1"
+   }
+  ],
+  "calls": []
+ }
+}

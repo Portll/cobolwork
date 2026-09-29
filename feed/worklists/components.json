@@ -1,0 +1,43 @@
+{
+ "schemaVersion": 1,
+ "note": "The parts of a mainframe estate that are not on the mainframe, and so are pinned to a version in a build file this tool reads. What runs on the mainframe has its own public record and its own worklist in z-attack-classes.json, swept by diag/sweep-z.mjs; nothing pins a z/OS version in a repository, so those advisories drive rule design rather than version arithmetic. No general-purpose scanner looks for these components in a COBOL repository. Counts are repositories of the 125-repository public corpus that name the component at all.",
+ "components": [
+  {
+   "product": "cics-transaction-gateway",
+   "nvdCpe": "cpe:2.3:a:ibm:cics_transaction_gateway",
+   "pinnedAs": "ctgclient.jar or com.ibm.ctg coordinates in a build file, or a CTG image tag",
+   "corpusRepos": 1
+  },
+  {
+   "product": "db2-connect",
+   "nvdCpe": "cpe:2.3:a:ibm:db2_connect",
+   "pinnedAs": "db2jcc or com.ibm.db2.jcc coordinates, or a Db2 Connect image tag",
+   "corpusRepos": 28
+  },
+  {
+   "product": "ibm-mq",
+   "nvdCpe": "cpe:2.3:a:ibm:mq",
+   "pinnedAs": "com.ibm.mq.allclient coordinates or an MQ image tag. The client ships the queue manager's version, so an advisory against the server names the client this matches",
+   "corpusRepos": 6
+  },
+  {
+   "product": "zowe",
+   "nvdKeyword": "Zowe",
+   "osv": [
+    { "ecosystem": "npm", "name": "@zowe/cli" },
+    { "ecosystem": "npm", "name": "@zowe/imperative" },
+    { "ecosystem": "npm", "name": "@zowe/zos-files-for-zowe-sdk" }
+   ],
+   "pinnedAs": "@zowe/* in package.json, or a zowe CLI version in a pipeline",
+   "corpusRepos": 14
+  },
+  {
+   "product": "che4z",
+   "osv": [
+    { "ecosystem": "npm", "name": "@broadcom/cobol-language-support" }
+   ],
+   "pinnedAs": "the COBOL language support extension in a devcontainer or extensions list",
+   "corpusRepos": 6
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "038-a-job-parameter-is-not-the-command-run",
+ "title": "The same step and program, with the command built from a literal instead",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "jcl-parm-is-an-entry-point",
+   "file": "RUN.jcl"
+  }
+ ],
+ "negativeFor": [
+  "jcl-parm-to-os-command"
+ ]
+}

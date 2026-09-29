@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (node ${{ matrix.node }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # 18 is the floor the package declares, 24 is current. Windows is not incidental: paths in
+        # a report are POSIX-shaped on every platform, the diff command has to defeat the
+        # line-ending conversion git does there by default, and the one CI failure this project
+        # has had was a glob that only Windows left unexpanded. Every platform-specific bug so far
+        # has been a Windows one.
+        #
+        # Three jobs, not a twelve-job grid: macOS was green in every run and no code here behaves
+        # differently on it.
+        include:
+          - { os: ubuntu-latest, node: '18' }
+          - { os: ubuntu-latest, node: '24' }
+          - { os: windows-latest, node: '18' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # There is nothing to install. No runtime or development dependencies, so no lockfile and no
+      # npm ci step; a CI run that needed one would mean a dependency had appeared.
+      - name: Refuse any dependency
+        shell: bash
+        run: |
+          node -e '
+            const p = require("./package.json");
+            const d = Object.keys({ ...p.dependencies, ...p.devDependencies, ...p.peerDependencies, ...p.optionalDependencies });
+            for (const k of ["bundleDependencies", "bundledDependencies"]) d.push(...(p[k] === true ? [k] : p[k] || []));
+            const n = d.length;
+            if (n) { console.error(`cobolwork declares ${n} dependencies: ${d.join(", ")}`); process.exit(1); }
+            console.log("no dependencies declared");
+          '
+      # No shell is named: the script is bare `node --test` and node does its own discovery. It
+      # used to pass a glob, which npm hands to cmd on Windows, where nothing expands it and only
+      # node 21 and later would have. Naming bash here would not have helped — npm runs the script
+      # through its own shell, not this one.
+      - name: Test
+        run: npm test
+
+  scan-self:
+    name: scan its own benchmark
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # The benchmark cases are deliberately flawed COBOL. A run that reported them clean, or that
+      # reported incomplete coverage over them, would mean the tool had stopped reading.
+      - name: Scan
+        shell: bash
+        run: |
+          node bin/cobolwork.mjs scan bench/cases --quiet --out scan.json
+          node -e '
+            const s = require("./scan.json").summary;
+            if (s.coverageIncomplete) { console.error("coverage incomplete over the benchmark"); process.exit(1); }
+            if (!s.findings) { console.error("the benchmark reported clean"); process.exit(1); }
+            console.log(`${s.findings} findings over ${s.filesScanned} files`);
+          '

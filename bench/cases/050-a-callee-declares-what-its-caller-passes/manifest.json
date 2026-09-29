@@ -1,0 +1,10 @@
+{
+ "id": "050-a-callee-declares-what-its-caller-passes",
+ "title": "The same calls passing what each callee declares, and a variable table sized by a count",
+ "cwe": "CWE-805",
+ "expect": [],
+ "negativeFor": [
+  "call-parameter-exceeds-caller-record",
+  "call-parameter-exceeds-argument"
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "id": "016-database-value-run-as-a-command",
+ "title": "A value fetched from the database is built into a command and run",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "database-to-os-command",
+   "file": "DBCMD.cbl"
+  }
+ ]
+}

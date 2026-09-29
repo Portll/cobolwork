@@ -1,0 +1,281 @@
+{
+ "case": {
+  "file": "qualuniq.cbl",
+  "note": "a qualifier is a reference only where the name it qualifies is declared more than once, for a data name and a condition-name alike"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "REC-A",
+    "size": 2,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "KEY-ID",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "A-REST",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "REC-B",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "KEY-ID",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "MAP-IN",
+    "size": 2,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FIELD-I",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "OTHER-I",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "FLAGS-1",
+    "size": 2,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "MODE-1",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "88",
+    "name": "IS-ON",
+    "size": null,
+    "type": "CONDITIONAL"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "MODE-X",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "FLAGS-2",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "MODE-2",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "88",
+    "name": "IS-ON",
+    "size": null,
+    "type": "CONDITIONAL"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "FLAGS-3",
+    "size": 1,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "MODE-3",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "88",
+    "name": "IS-UP",
+    "size": null,
+    "type": "CONDITIONAL"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "OUT-X",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "REC-A",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "KEY-ID",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "A-REST",
+    "line": 7,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "REC-B",
+    "line": 8,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "KEY-ID",
+    "line": 9,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MAP-IN",
+    "line": 10,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FIELD-I",
+    "line": 11,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "OTHER-I",
+    "line": 12,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FLAGS-1",
+    "line": 13,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MODE-1",
+    "line": 14,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "IS-ON",
+    "line": 15,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MODE-X",
+    "line": 16,
+    "state": "parent",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FLAGS-2",
+    "line": 17,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MODE-2",
+    "line": 18,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "IS-ON",
+    "line": 19,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FLAGS-3",
+    "line": 20,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "MODE-3",
+    "line": 21,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "IS-UP",
+    "line": 22,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "OUT-X",
+    "line": 23,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

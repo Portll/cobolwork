@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CONSOLE.
+      * The only sink here is the operator console.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-DB-PASSWORD      PIC X(16).
+       PROCEDURE DIVISION.
+           EXEC CICS WRITE OPERATOR TEXT(WS-DB-PASSWORD)
+                TEXTLENGTH(16) END-EXEC
+           EXEC CICS RETURN END-EXEC.

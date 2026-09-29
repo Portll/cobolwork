@@ -1,0 +1,9 @@
+{
+ "id": "087-a-credential-written-to-a-log",
+ "title": "A database password and an employee's social security number are written to SYSOUT and a transient-data queue, beside a ledger account number and a masked card number that are not findings",
+ "cwe": "CWE-532",
+ "expect": [
+  { "rule": "log-writes-a-credential", "file": "PAYLOG.cbl" },
+  { "rule": "log-writes-personal-data", "file": "PAYLOG.cbl" }
+ ]
+}

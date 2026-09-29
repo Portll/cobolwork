@@ -1,0 +1,8 @@
+{
+ "id": "071-a-program-uses-a-field-nothing-declares",
+ "title": "A program adds into a total that neither it nor the copybook it reads declares, so it cannot compile",
+ "cwe": "CWE-1127",
+ "expect": [
+  { "rule": "compile-undefined-name", "file": "CUSTTOT.cbl" }
+ ]
+}

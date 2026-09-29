@@ -1,0 +1,11 @@
+{
+ "id": "009-payload-in-ignored-columns",
+ "title": "Columns the compiler ignores carry a payload rather than a change tag",
+ "cwe": "CWE-1427",
+ "expect": [
+  {
+   "rule": "hidden-payload-in-identification-area",
+   "file": "HIDENT.cbl"
+  }
+ ]
+}

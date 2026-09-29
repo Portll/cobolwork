@@ -1,0 +1,7 @@
+{
+ "id": "097-a-sign-on-that-answers-both-the-same",
+ "title": "The same sign-on answering both failures with one message, which is the fix and appears in the corpus beside the defect",
+ "cwe": "CWE-204",
+ "expect": [],
+ "negativeFor": ["cics-signon-says-which-half-failed"]
+}

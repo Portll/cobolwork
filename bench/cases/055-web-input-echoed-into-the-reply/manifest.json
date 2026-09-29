@@ -1,0 +1,26 @@
+{
+ "id": "055-web-input-echoed-into-the-reply",
+ "title": "A web request's own text is echoed into the reply, a header, the host of an outbound call and a queue name",
+ "cwe": "CWE-79",
+ "expect": [
+  {
+   "rule": "cics-web-to-web-response",
+   "file": "WEBECHO.cbl"
+  },
+  {
+   "rule": "cics-web-to-http-header",
+   "file": "WEBECHO.cbl"
+  },
+  {
+   "rule": "cics-web-to-outbound-host",
+   "file": "WEBECHO.cbl"
+  },
+  {
+   "rule": "cics-web-to-queue-name",
+   "file": "WEBECHO.cbl"
+  }
+ ],
+ "alsoExpected": [
+  "web-response-without-protective-headers"
+ ]
+}

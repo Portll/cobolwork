@@ -1,0 +1,8 @@
+{
+ "id": "094-a-credential-on-the-operator-console",
+ "title": "A database password is written to the operator console, in a program that contains no DISPLAY at all",
+ "cwe": "CWE-532",
+ "expect": [
+  { "rule": "log-writes-a-credential", "file": "CONSOLEONLY.cbl" }
+ ]
+}

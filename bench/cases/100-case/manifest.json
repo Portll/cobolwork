@@ -1,0 +1,9 @@
+{
+ "id": "100-case",
+ "title": "A state change on a request received from the web, with no token the browser could not forge",
+ "cwe": "CWE-200",
+ "expect": [
+  { "rule": "web-request-changes-state-without-a-token", "file": "NOTOKEN.cbl" }
+ ],
+ "alsoExpected": ["web-response-without-protective-headers"]
+}

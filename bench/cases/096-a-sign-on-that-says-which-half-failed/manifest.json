@@ -1,0 +1,8 @@
+{
+ "id": "096-a-sign-on-that-says-which-half-failed",
+ "title": "A sign-on answers a user that does not exist with one message and a password that is wrong with another, so the reply enumerates accounts",
+ "cwe": "CWE-204",
+ "expect": [
+  { "rule": "cics-signon-says-which-half-failed", "file": "SIGNTELL.cbl" }
+ ]
+}

@@ -1,0 +1,6 @@
+{
+ "id": "025-group-moved-after-field-tainted",
+ "title": "Input lands in the first field of a group, the group is moved whole, and the first field of the copy is run as a command",
+ "cwe": "CWE-78",
+ "expect": [ { "rule": "argv-or-env-to-os-command", "file": "GMV.cbl" } ]
+}

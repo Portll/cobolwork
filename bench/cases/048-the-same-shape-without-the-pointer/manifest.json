@@ -1,0 +1,12 @@
+{
+ "id": "048-the-same-shape-without-the-pointer",
+ "title": "The same program moving data by name, which the engine follows completely",
+ "cwe": "CWE-119",
+ "expect": [],
+ "negativeFor": [
+  "opaque-pointer-addressing",
+  "opaque-altered-control-flow",
+  "opaque-procedure-pointer",
+  "opaque-alternate-entry"
+ ]
+}

@@ -1,0 +1,7 @@
+{
+ "id": "058-quantity-converted-before-arithmetic",
+ "title": "The typed quantity goes through NUMVAL, so what the arithmetic reads is a number the program computed",
+ "cwe": "CWE-1287",
+ "expect": [],
+ "negativeFor": ["cics-terminal-to-arithmetic"]
+}

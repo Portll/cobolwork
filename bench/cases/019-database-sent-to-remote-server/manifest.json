@@ -1,0 +1,8 @@
+{
+ "id": "019-database-sent-to-remote-server",
+ "title": "A value read from the database is posted to a remote server the program opened a session to",
+ "cwe": "CWE-201",
+ "expect": [
+  { "rule": "database-to-outbound-http", "file": "X1.cbl" }
+ ]
+}

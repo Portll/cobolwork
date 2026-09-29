@@ -1,0 +1,12 @@
+{
+ "id": "028-instream-carries-ordinary-control-cards",
+ "title": "The same shape with control cards that grant nothing and carry no credential",
+ "cwe": "CWE-798",
+ "expect": [],
+ "negativeFor": [
+  "jcl-instream-credential",
+  "jcl-instream-security-command",
+  "jcl-instream-destructive",
+  "jcl-dlm-hides-instream"
+ ]
+}

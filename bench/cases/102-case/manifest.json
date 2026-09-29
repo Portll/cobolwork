@@ -1,0 +1,10 @@
+{
+ "id": "102-case",
+ "title": "A job writes an unload and an audit dataset, and runs a shell through UNIX System Services, with no estate facts to judge either against",
+ "cwe": "CWE-532",
+ "expect": [
+  { "rule": "job-writes-diagnostic-output-unrestricted", "file": "DIAG.jcl" },
+  { "rule": "job-reaches-unix-system-services", "file": "DIAG.jcl" }
+ ],
+ "alsoExpected": ["job-writes-diagnostic-output-unrestricted"]
+}

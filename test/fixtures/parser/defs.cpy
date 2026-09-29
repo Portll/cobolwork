@@ -1,0 +1,1 @@
+       >>DEFINE CONSTANT OS AS 'UNIX'

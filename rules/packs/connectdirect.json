@@ -1,0 +1,116 @@
+{
+ "schemaVersion": 1,
+ "name": "connectdirect",
+ "vendor": "IBM",
+ "product": "Connect:Direct for z/OS",
+ "validation": {
+  "corpus": {
+   "date": "2026-09-21",
+   "repositories": 127,
+   "repositoriesWithJcl": 45,
+   "filesScanned": 558281,
+   "firedOn": 1,
+   "perRule": {
+    "cd-batch-interface": {
+     "findings": 2,
+     "repositories": 1
+    }
+   },
+   "rulesThatFired": 1,
+   "rulesTotal": 7,
+   "note": "Measured 2026-09-21 over 127 public GitHub COBOL repositories, 558,281 files, with diag/measure-rules.mjs --packs. Read the denominator before the number: every rule in this pack is JCL-scoped, and only 45 of the 127 repositories contain any JCL at all. WHAT THIS DOES AND DOES NOT SHOW. It shows these rules are not broadly noisy - they do not fire on ordinary COBOL and JCL. It does not show they are quiet where they would actually run, because a public corpus of teaching material, vendor demos and tooling contains essentially no estate running this product. A rule that cannot fire for want of the product is not the same as a rule that sees the product and stays quiet, and this measurement cannot tell those apart. The practitioner review is still the half that would."
+  },
+  "practitioner": null,
+  "_note": "Two different questions. A corpus measurement over public COBOL repositories tells you how often these rules fire, which is their noise. It cannot tell you whether the risk statements are true. Fill corpus with {repositories, firedOn, perRule} from diag/measure-rules.mjs --packs connectdirect; fill practitioner with {by, date, note} when someone who has run Connect:Direct has read it."
+ },
+ "retrieved": "2026-09-20",
+ "source": "IBM Connect:Direct for z/OS User Guide and Process Language Reference. Process statements are submitted through DMBATCH, so they appear in JCL in-stream data rather than in any COBOL source.",
+ "coverage": "Process language statements submitted through the batch interface: SIGNON, RUN TASK, RUN JOB, SUBMIT and COPY. Not covered: the Secure+ configuration, the network map, initialisation parameters, or anything whose risk depends on the node's own authorisation settings. Those live outside the repository.",
+ "why": "Connect:Direct exists to move data off the platform, which makes every one of its processes an egress path by design. Two of its statements do more than move data: RUN TASK and RUN JOB execute code on the partner node. A repository that carries them carries remote execution.",
+ "rules": [
+  {
+   "id": "cd-run-task",
+   "verb": "RUN TASK",
+   "pattern": "^\\s*(?:[A-Z0-9$#@]+\\s+)?RUN\\s+TASK\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "crit",
+   "risk": "executes a program on the partner node",
+   "rationale": "RUN TASK runs a program on the node at the other end of the transfer. It is remote execution written into a repository, and the machine it runs on is by definition one this repository does not control."
+  },
+  {
+   "id": "cd-run-job",
+   "verb": "RUN JOB",
+   "pattern": "^\\s*(?:[A-Z0-9$#@]+\\s+)?RUN\\s+JOB\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "crit",
+   "risk": "submits a job on the partner node",
+   "rationale": "RUN JOB submits JCL for execution on the partner node. Everything true of RUN TASK is true here, with the submitted job's own authority added to it."
+  },
+  {
+   "id": "cd-signon-password",
+   "verb": "SIGNON",
+   "pattern": "^\\s*(?:[A-Z0-9$#@]+\\s+)?SIGNON\\b[\\s\\S]{0,200}?\\bUSERID\\s*=\\s*\\([^,)]{0,256},[^)]{1,256}\\)",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "crit",
+   "risk": "carries a userid and password in the process",
+   "rationale": "A SIGNON whose USERID operand carries a second positional value is supplying a password in the process text. The credential is then in the repository, readable by everyone who can read it."
+  },
+  {
+   "id": "cd-snode-credentials",
+   "verb": "SNODEID",
+   "pattern": "\\bSNODEID\\s*=\\s*\\([^,)]{0,256},[^)]{1,256}\\)",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "crit",
+   "risk": "carries the partner node's credentials",
+   "rationale": "SNODEID supplies the security credentials used on the partner node. Like SIGNON with a password, a second positional value is a secret, and it is a secret for a system this repository does not own."
+  },
+  {
+   "id": "cd-copy-outbound",
+   "verb": "COPY",
+   "pattern": "^\\s*(?:[A-Z0-9$#@]+\\s+)?COPY\\b[\\s\\S]{0,300}?\\bSNODE\\b",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "med",
+   "risk": "transfers a dataset to another node",
+   "rationale": "A COPY naming a secondary node moves data off this system. It is the ordinary purpose of the product rather than a defect, and it is listed at a severity that says so, because an egress path is worth seeing even when it is intended."
+  },
+  {
+   "id": "cd-submit",
+   "verb": "SUBMIT",
+   "pattern": "^\\s*(?:[A-Z0-9$#@]+\\s+)?SUBMIT\\b[\\s\\S]{0,200}?\\b(PROC|DSN)\\s*=",
+   "appliesTo": [
+    "jcl-instream"
+   ],
+   "severity": "high",
+   "risk": "submits a further process from a dataset",
+   "rationale": "SUBMIT runs another Connect:Direct process named by a dataset. What that process does is decided elsewhere, so the reachable behaviour of this job is not visible in this job."
+  },
+  {
+   "id": "cd-batch-interface",
+   "verb": "DMBATCH",
+   "pattern": "^DMBATCH$",
+   "appliesTo": [
+    "jcl-step"
+   ],
+   "severity": "info",
+   "risk": "invokes the batch interface",
+   "rationale": "DMBATCH is how a job talks to Connect:Direct at all, and it is named on the EXEC statement rather than in the process text below it. It is not itself a finding; it is listed so a reader can see which jobs reach the product, which is the inventory question that precedes every other rule in this pack."
+  }
+ ],
+ "programs": [
+  "DMBATCH",
+  "DMCHLAPI",
+  "DMNOTFY",
+  "DMRTSUB",
+  "NDMCMD"
+ ]
+}

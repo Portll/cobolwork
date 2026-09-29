@@ -1,0 +1,74 @@
+{
+ "schema": "fang-breakers/v1",
+ "round": 1,
+ "date": "2026-09-24",
+ "target": "cobolwork gate as first implemented: lib/gate.mjs, the gate command in bin/cobolwork.mjs, and what it needed from lib/diff.mjs (withRefs, keepScans, copied), lib/kernel/identity.mjs (pairingKeys, codeLines), lib/dataflow.mjs (listSources, exported kind tables), lib/sets/flow.mjs and lib/scan.mjs (listings carried, not printed)",
+ "context": "Adversarial pass after bifocal and two overloop passes on docs/spec/remediation-gate.md. 27 tests in test/gate.test.mjs passed on first run; each fixed finding below has a test or a spec line. The reviewed repository, its file names, its patch and its PATH-adjacent files are assumed hostile; the operator who runs the gate is not.",
+ "dimensions": {
+  "1_network_security": [
+   { "severity": "MEDIUM", "location": "lib/gate.mjs findCobc", "finding": "A bare 'cobc' is looked for in the working directory first on Windows", "detail": "Closed as designed: PATH is walked by hand, relative and in-tree entries are skipped, and the compiler is spawned by absolute path with cwd set to the temp directory. G3.2 holds it. No change." },
+   { "severity": "LOW", "location": "lib/gate.mjs cobcCompiler", "finding": "cobc reads whatever absolute path a COPY names", "detail": "-fsyntax-only writes nothing and the gate keeps only the exit status, so a COPY '/etc/passwd' discloses nothing. No change." },
+   { "severity": "MEDIUM", "location": "lib/gate.mjs reasons, target.path", "finding": "File names are repository-chosen text on the way to a model", "detail": "Capped at 120 characters and passed through printable, which strips control and bidirectional characters but not words. repositoryText names the fields; the envelope is commitwork's to apply. Held as designed (bifocal F2)." }
+  ],
+  "2_performance": [
+   { "severity": "HIGH", "location": "lib/gate.mjs compileCheck", "finding": "Up to 50 programs x 2 sides x a 60 s timeout is 100 minutes", "detail": "A copybook that 50 programs copy, and a source crafted to hang cobc, holds the gate for well over an hour; the API design queues heavy jobs one at a time, so it holds every other one too. FIX: one budget for the whole compile check (10 minutes); past it, compile is null and says why." },
+   { "severity": "MEDIUM", "location": "lib/gate.mjs changedFiles", "finding": "Every changed program and copybook is line-diffed only to decide that it changed", "detail": "Whether a file changed is a byte comparison; the line diff is needed only for the target's own files and the files of listed sinks and sources. FIX: changedFiles compares bytes." },
+   { "severity": "LOW-MEDIUM", "location": "lib/gate.mjs lineDiff", "finding": "Time is (n+m) x D; a 200,000-line pair at D = 2,000 is 400 million comparisons", "detail": "Memory is bounded by the D cap; time is not bounded by line count. FIX: a pair past 200,000 lines is too large to attribute, like one past 2,000 edits." },
+   { "severity": "LOW", "location": "lib/kernel/identity.mjs pairingKeys", "finding": "Scopes are tokenised a second time for files that hold findings", "detail": "stampFingerprints computed the same parts moments earlier. Accepted: bounded by files with findings, and caching across calls would make identity stateful." }
+  ],
+  "3_race_conditions": [
+   { "severity": "MEDIUM", "location": "lib/gate.mjs gateTrees, working-tree head", "finding": "The working tree is read by the scan, again by the line diff, and again by the compiler", "detail": "Several sessions write this project's working tree. A file that changes between the scan and the line diff makes the verdict describe a state that never existed as a whole. The worst outcome traced is a wrong reason rather than a wrong pass, since a pass needs the scan and the diff to agree, but the document still claims a snapshot it did not take. FIX: the spec tells the pipeline to commit the draft in its scratch worktree and gate --head <sha>; the working tree stays supported for a person at a terminal." }
+  ],
+  "4_defects": [
+   { "severity": "LOW", "location": "lib/gate.mjs gateTrees EGATETARGET", "finding": "An incomplete base scan reads as a wrong fingerprint", "detail": "If the memory guard stopped the base scan before it reached the target, the error says the base does not hold the fingerprint. FIX: the message says the base scan was incomplete when it was." },
+   { "severity": "LOW", "location": "lib/gate.mjs targetReason via ruleText", "finding": "A diff rule's reason printed its id", "detail": "diff's rules are not in the scan's catalogue. Fixed before this pass: ruleText reads DIFF_RULES too." }
+  ],
+  "5_coherence": [
+   { "severity": "LOW", "location": "bin/cobolwork.mjs gate", "finding": "--baseline and --no-baseline are accepted and do nothing", "detail": "The gate never applies a baseline, by design (a suppression is not a fix). FIX: refused, as --only and --repos are." },
+   { "severity": "LOW", "location": "docs/spec/remediation-gate.md §7", "finding": "The example document lacks summary.mode and summary.coverageIncomplete", "detail": "FIX: the example shows them." }
+  ],
+  "6_data_integrity": [
+   { "severity": "MEDIUM", "location": "lib/gate.mjs targetOutcome no-longer-fires", "finding": "For evidence other than path, 'the patch changed the target's file' is a text fact", "detail": "A construct rule's absence is the engine's own statement that the construct is gone, so the text fact only guards against a finding that left for no reason. A construct rule that reads another file (the callee's declared length) can stop firing through that file while the patch touches the target's file trivially. Accepted: a changed callee declaration is how that construct is fixed. Recorded, not changed." },
+   { "severity": "LOW", "location": "lib/gate.mjs lineDiff", "finding": "Correct on the cases tested; the backtrack reads a window of each step's diagonals", "detail": "Held by a unit test (a reworded line is deleted and inserted; a pair past the bound is null) and by every G scenario that reads changed lines." }
+  ]
+ },
+ "rings": {
+  "ring1_apiContract": { "severity": "LOW", "note": "gateTrees and gateRefs mirror diffTrees and diffRefs; the compiler is a port, injected in tests. The document is additive and schemaVersion 3." },
+  "ring1_5_errorMessages": { "severity": "LOW", "note": "Exit 2 messages go through printable in the CLI's catch. The EGATETARGET message is improved above." },
+  "ring1_6_backwardsCompat": { "severity": "NONE", "note": "HAZOP on the surfaces this touched: MORE (diff gains keepScans, scanAll gains listSinks/listSources): opt-in, non-enumerable, a test holds scanAll's JSON byte-identical. OTHER THAN (fingerprint refactor): partsOf computes the same inputs, identity.test.mjs and every baseline test hold the values. NO: nothing removed. SOURCE_KINDS and SINK_KINDS newly exported." },
+  "ring1_7_semantic": { "severity": "NONE", "note": "diff's document and exit codes unchanged; withRefs is diffRefs' old body." },
+  "ring2_outerBoundary": { "severity": "MEDIUM", "note": "git absent: withRefs throws EDIFFREF, exit 2. cobc absent: not compiled. cobc slow: the per-run timeout, and now a total budget. Memory reserve reached: coverage null, undecided. Killed mid-run: materialised copies of the source stay in the temp directory until the OS clears it, as they do for diff." }
+ },
+ "blindSpots": {
+  "observability": "[CHECKED] outcome, pairedBy, per-check values, changedFiles, mode and coverageIncomplete are in the document; no timing is recorded, deliberately, so the document stays deterministic",
+  "idempotency": "[CHECKED] read-only; temp directories removed in finally",
+  "testability": "[CHECKED] the compiler and PATH are injected; git is real, as diff's tests use it",
+  "configurationRigidity": "[CHECKED] MAX_EDIT 2,000, MAX_COMPILES 50, MAX_REASONS 20, the 60 s per-compile timeout and the new 10-minute budget are constants the spec names",
+  "gracefulDegradation": "[CHECKED] every missing dependency degrades to null or not compiled, never to pass",
+  "stateLifecycle": "[NO FINDINGS] nothing persists between runs",
+  "errorCatchingCompleteness": "[CHECKED] file reads in codeLines, changes, compileCheck and findCobc are caught; spawnSync does not throw; the only throw is EGATETARGET, which the CLI turns into exit 2"
+ },
+ "compoundSeverity": [
+  { "tag": "COMPOUND-HIGH", "composedOf": ["2_performance compile budget", "API design: heavy jobs one at a time", "pipeline: each rejection is retried"], "path": "a hostile copybook copied by many programs makes each gate take over an hour, the drafter retries, and the queue that serialises heavy jobs holds every other cobolwork job behind it", "fix": "the total compile budget; the pipeline caps retries (commitwork's)" },
+  { "tag": "COMPOUND-MEDIUM", "composedOf": ["1_network_security repository text in reasons", "spec: reasons are the drafter's next instruction", "engine limits: a construct it does not follow"], "path": "a file name steers the drafter toward a patch that sends the value through something the engine does not follow; the gate cannot see what the engine cannot", "fix": "the envelope (commitwork), the cross-review step, and gone-unexplained being undecided rather than pass; no gate change can close an engine blind spot" }
+ ],
+ "prioritySummary": {
+  "fixImmediately": ["COMPOUND-HIGH: total compile budget", "changedFiles by byte comparison"],
+  "fixSoon": ["gate a revision, not a shared working tree, in the pipeline (spec)", "lineDiff line-count bound", "EGATETARGET says when the base scan was incomplete", "refuse --baseline and --no-baseline"],
+  "fixLater": ["spec example fields", "pairingKeys re-tokenising (accepted)"]
+ },
+ "applied": [
+  { "finding": "total compile budget", "where": "lib/gate.mjs COMPILE_BUDGET_MS, spec §9", "test": "G3.7" },
+  { "finding": "changedFiles by byte comparison", "where": "lib/gate.mjs gateTrees, spec §8", "test": "G3.3 (the compile set still finds the changed program)" },
+  { "finding": "lineDiff line-count bound", "where": "lib/gate.mjs MAX_LINES, spec §8", "test": "the line diff unit test" },
+  { "finding": "EGATETARGET names an incomplete base scan", "where": "lib/gate.mjs gateTrees", "test": "G1.9 (the message path; the incomplete case is not constructed)" },
+  { "finding": "--baseline and --no-baseline refused", "where": "bin/cobolwork.mjs gate, spec §3", "test": "G3.8" },
+  { "finding": "gate a revision, not a shared working tree", "where": "spec §3", "test": "none: it is an instruction to the pipeline" },
+  { "finding": "spec example fields", "where": "spec §7", "test": "none" }
+ ],
+ "notApplied": [
+  { "finding": "no-longer-fires rests on a changed file for non-path evidence", "why": "a construct rule's silence is the engine's statement; accepted and recorded" },
+  { "finding": "pairingKeys re-tokenises", "why": "bounded, and caching across calls would make identity stateful" },
+  { "finding": "COMPOUND-MEDIUM: file names steering the drafter", "why": "commitwork's envelope and cross-review; the gate cannot see what the engine cannot" }
+ ]
+}

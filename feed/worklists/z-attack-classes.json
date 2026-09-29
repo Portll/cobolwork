@@ -1,0 +1,1880 @@
+{
+ "schemaVersion": 1,
+ "retrieved": "2026-09-24",
+ "note": "Every publicly named z vulnerability this project could find, and what a rule over a repository could see of each. The advisories were swept from NVD by diag/sweep-z.mjs; the techniques are from published mainframe security research that never became a CVE. A row is classified by what a customer artefact would show, not by what a patch would fix: covered means a rule in this tool already reports the sibling, new names the rule that would, none means the defect leaves nothing in a repository to see. Each proposed rule carries builtAs, the rule ids that shipped for it. A row carries reportedBy, the rule ids that report a sibling of that row - which is not the same thing, because a design can ship a rule that reaches some of its rows and not others. A row a new rule would report but none does carries whyNotReported: extension where an existing rule reaches it with a known change, estate-fact where only the estate can supply what decides it, and no-sibling where the measurement found no customer artefact at all - which means the original verdict of new was optimistic for that row. diag/check-worklist.mjs counts reportedBy, and test/z-worklist.test.mjs checks every id in both against the engine so neither link can rot.",
+ "sources": {
+  "nvd": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+  "cpe": [
+   "cpe:2.3:o:ibm:z\\/os",
+   "cpe:2.3:a:ibm:cics_transaction_server",
+   "cpe:2.3:a:ibm:ims",
+   "cpe:2.3:a:ibm:tivoli_netview",
+   "cpe:2.3:a:ibm:rational_developer_for_system_z"
+  ],
+  "keyword": [
+   "CICS",
+   "RACF",
+   "JES2",
+   "IMS Transaction Manager",
+   "z/OS",
+   "ACF2",
+   "TN3270",
+   "COBOL"
+  ]
+ },
+ "proposedRules": {
+  "N-BMS": {
+   "what": "A BMS map marks a field protected, dark or numeric, and the program trusts the value that comes back",
+   "builtAs": [
+    "cics-protected-field-to-record-key",
+    "cics-protected-field-to-record-update"
+   ]
+  },
+  "N-PRIV": {
+   "what": "A transaction, job or library runs at a privilege nothing in the repository says it needs",
+   "builtAs": [
+    "csd-defines-diagnostic-transaction",
+    "csd-transaction-without-command-security",
+    "job-runs-under-another-user",
+    "job-unloads-the-security-database",
+    "job-loads-from-an-authorised-library",
+    "job-writes-diagnostic-output-unrestricted",
+    "job-reaches-unix-system-services"
+   ]
+  },
+  "N-IDENTITY": {
+   "what": "A program takes the identity it authorises against from the request rather than from the system",
+   "builtAs": [
+    "cics-signon-bypassed"
+   ]
+  },
+  "N-LOG": {
+   "what": "A field the credential pack recognises, or unescaped input, reaches a log, trace or error response",
+   "builtAs": [
+    "log-writes-a-credential",
+    "log-writes-personal-data",
+    "cics-terminal-to-log",
+    "cics-web-to-log",
+    "system-response-to-web-response",
+    "system-response-to-http-header",
+    "job-writes-diagnostic-output-unrestricted"
+   ]
+  },
+  "N-RECVLIMIT": {
+   "what": "Input is received or storage acquired with no length the program chose",
+   "builtAs": []
+  },
+  "N-CRYPTO": {
+   "what": "A connection or a cipher is requested at a strength the estate would not accept if asked",
+   "builtAs": [
+    "cics-listener-accepts-cleartext"
+   ]
+  },
+  "N-XXE": {
+   "what": "A document from outside is parsed as XML with entity and expansion handling left to the default",
+   "builtAs": []
+  },
+  "N-COOKIE": {
+   "what": "A cookie or a URI carries a credential without the attributes that keep it off the wire",
+   "builtAs": [
+    "web-cookie-without-secure-attributes",
+    "web-uri-carries-a-credential"
+   ]
+  },
+  "N-CSRF": {
+   "what": "A request from the web changes state without the program comparing anything the browser could not forge",
+   "builtAs": [
+    "web-request-changes-state-without-a-token"
+   ]
+  },
+  "N-HEADERS": {
+   "what": "An HTML response goes out without the headers that decide who may frame, script or link to it",
+   "builtAs": [
+    "web-response-without-protective-headers",
+    "web-link-opens-without-noopener",
+    "web-response-tells-the-caller-what-it-runs"
+   ]
+  },
+  "N-ORACLE": {
+   "what": "Two failure paths answer differently, so the answer tells the caller which one it took",
+   "builtAs": [
+    "cics-signon-says-which-half-failed"
+   ]
+  },
+  "N-CONNSTR": {
+   "what": "A connection string or URL is built from a field that came from outside",
+   "builtAs": []
+  }
+ },
+ "advisories": [
+  {
+   "id": "CVE-2001-0552",
+   "published": "2001-09-20",
+   "cwe": null,
+   "cvss": 10,
+   "verdict": "covered",
+   "rule": "*-to-os-command"
+  },
+  {
+   "id": "CVE-2005-3760",
+   "published": "2005-11-22",
+   "cwe": "CWE-119",
+   "cvss": 7.8,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2005-4511",
+   "published": "2005-12-23",
+   "cwe": null,
+   "cvss": 4.6,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2006-2201",
+   "published": "2006-05-04",
+   "cwe": null,
+   "cvss": 4.3,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2006-7198",
+   "published": "2007-04-30",
+   "cwe": null,
+   "cvss": 10,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2007-2063",
+   "published": "2007-04-18",
+   "cwe": "CWE-264",
+   "cvss": 4.4,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "a file permission on the product install or its pid file, which no artefact the estate writes controls"
+   }
+  },
+  {
+   "id": "CVE-2007-6525",
+   "published": "2007-12-27",
+   "cwe": null,
+   "cvss": 10,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2008-3539",
+   "published": "2008-09-11",
+   "cwe": "CWE-200",
+   "cvss": 2.1,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2008-5161",
+   "published": "2008-11-19",
+   "cwe": "CWE-200",
+   "cvss": 3.7,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2009-0391",
+   "published": "2009-02-02",
+   "cwe": "CWE-200",
+   "cvss": 7.8,
+   "verdict": "covered",
+   "rule": "*-to-dynamic-file-path"
+  },
+  {
+   "id": "CVE-2009-0505",
+   "published": "2009-02-25",
+   "cwe": null,
+   "cvss": 9,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2009-0506",
+   "published": "2009-02-25",
+   "cwe": null,
+   "cvss": 6.2,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "CSIv2 identity assertion between two WebSphere instances; nothing a COBOL program states"
+   }
+  },
+  {
+   "id": "CVE-2009-0855",
+   "published": "2009-03-09",
+   "cwe": "CWE-79",
+   "cvss": 4.3,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2009-0856",
+   "published": "2009-03-09",
+   "cwe": "CWE-79",
+   "cvss": 4.3,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2009-1899",
+   "published": "2009-06-03",
+   "cwe": null,
+   "cvss": 10,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2009-2091",
+   "published": "2009-08-13",
+   "cwe": "CWE-264",
+   "cvss": 5,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "a file permission on the product install or its pid file, which no artefact the estate writes controls"
+   }
+  },
+  {
+   "id": "CVE-2010-1041",
+   "published": "2010-03-23",
+   "cwe": null,
+   "cvss": 10,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2010-1182",
+   "published": "2010-03-29",
+   "cwe": null,
+   "cvss": 7.5,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2010-1651",
+   "published": "2010-05-03",
+   "cwe": "CWE-310",
+   "cvss": 1.9,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "reportedBy": [
+    "log-writes-a-credential",
+    "log-writes-personal-data"
+   ]
+  },
+  {
+   "id": "CVE-2010-2323",
+   "published": "2010-06-18",
+   "cwe": "CWE-200",
+   "cvss": 5,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "reportedBy": [
+    "job-writes-diagnostic-output-unrestricted"
+   ]
+  },
+  {
+   "id": "CVE-2010-2324",
+   "published": "2010-06-18",
+   "cwe": null,
+   "cvss": 7.5,
+   "verdict": "covered",
+   "rule": "*-to-http-header"
+  },
+  {
+   "id": "CVE-2010-2325",
+   "published": "2010-06-18",
+   "cwe": "CWE-79",
+   "cvss": 4.3,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2010-2327",
+   "published": "2010-06-18",
+   "cwe": "CWE-20",
+   "cvss": 4.3,
+   "verdict": "covered",
+   "rule": "the taint family"
+  },
+  {
+   "id": "CVE-2011-1321",
+   "published": "2011-03-08",
+   "cwe": "CWE-264",
+   "cvss": 6.5,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2011-1683",
+   "published": "2011-04-13",
+   "cwe": "CWE-264",
+   "cvss": 6.8,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2011-4435",
+   "published": "2011-11-11",
+   "cwe": "CWE-264",
+   "cvss": 5,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2012-3311",
+   "published": "2012-09-25",
+   "cwe": "CWE-264",
+   "cvss": 3.3,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2012-4862",
+   "published": "2012-12-05",
+   "cwe": "CWE-255",
+   "cvss": 2.1,
+   "verdict": "covered",
+   "rule": "credential pack"
+  },
+  {
+   "id": "CVE-2012-5951",
+   "published": "2012-12-26",
+   "cwe": "CWE-264",
+   "cvss": 7.2,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "job-reaches-unix-system-services"
+   ]
+  },
+  {
+   "id": "CVE-2012-5955",
+   "published": "2012-12-20",
+   "cwe": null,
+   "cvss": 10,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2013-0490",
+   "published": "2013-02-27",
+   "cwe": null,
+   "cvss": 7.2,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2013-0571",
+   "published": "2013-04-27",
+   "cwe": "CWE-79",
+   "cvss": 2.9,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2013-0572",
+   "published": "2013-04-27",
+   "cwe": "CWE-79",
+   "cvss": 2.3,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2013-5385",
+   "published": "2014-01-02",
+   "cwe": "CWE-20",
+   "cvss": 8.5,
+   "verdict": "covered",
+   "rule": "the taint family"
+  },
+  {
+   "id": "CVE-2014-3042",
+   "published": "2014-06-10",
+   "cwe": "CWE-119",
+   "cvss": 4,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "csd-defines-diagnostic-transaction"
+   ]
+  },
+  {
+   "id": "CVE-2014-6195",
+   "published": "2015-02-14",
+   "cwe": "CWE-284",
+   "cvss": 1.9,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "access control in a Java and web GUI shipped with the product"
+   }
+  },
+  {
+   "id": "CVE-2016-6500",
+   "published": "2017-02-03",
+   "cwe": "CWE-20",
+   "cvss": 8.1,
+   "verdict": "covered",
+   "rule": "*-to-dynamic-program-load"
+  },
+  {
+   "id": "CVE-2018-1000608",
+   "published": "2018-06-26",
+   "cwe": "CWE-522",
+   "cvss": 7.2,
+   "verdict": "covered",
+   "rule": "credential pack"
+  },
+  {
+   "id": "CVE-2018-12414",
+   "published": "2018-11-06",
+   "cwe": "CWE-352",
+   "cvss": 7.5,
+   "verdict": "new",
+   "rule": "N-CSRF",
+   "reportedBy": [
+    "web-request-changes-state-without-a-token"
+   ]
+  },
+  {
+   "id": "CVE-2019-14678",
+   "published": "2019-11-14",
+   "cwe": "CWE-611",
+   "cvss": 10,
+   "verdict": "new",
+   "rule": "N-XXE",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: nothing in 124 repositories parses XML; the one XML PARSE is a language server’s own fixtures"
+   }
+  },
+  {
+   "id": "CVE-2020-4365",
+   "published": "2020-05-14",
+   "cwe": "CWE-918",
+   "cvss": 4.3,
+   "verdict": "covered",
+   "rule": "*-to-outbound-host"
+  },
+  {
+   "id": "CVE-2020-4578",
+   "published": "2020-09-10",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2020-4629",
+   "published": "2020-09-30",
+   "cwe": "CWE-209",
+   "cvss": 3.3,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "reportedBy": [
+    "system-response-to-web-response",
+    "system-response-to-http-header"
+   ]
+  },
+  {
+   "id": "CVE-2020-4821",
+   "published": "2021-07-16",
+   "cwe": "CWE-287",
+   "cvss": 9.8,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "reportedBy": [
+    "cics-signon-bypassed"
+   ]
+  },
+  {
+   "id": "CVE-2020-4949",
+   "published": "2021-01-26",
+   "cwe": "CWE-611",
+   "cvss": 8.2,
+   "verdict": "new",
+   "rule": "N-XXE",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: nothing in 124 repositories parses XML; the one XML PARSE is a language server’s own fixtures"
+   }
+  },
+  {
+   "id": "CVE-2021-20354",
+   "published": "2021-02-18",
+   "cwe": "CWE-22",
+   "cvss": 7.5,
+   "verdict": "covered",
+   "rule": "*-to-dynamic-file-path"
+  },
+  {
+   "id": "CVE-2021-20480",
+   "published": "2021-04-08",
+   "cwe": "CWE-918",
+   "cvss": 6.5,
+   "verdict": "covered",
+   "rule": "*-to-outbound-host"
+  },
+  {
+   "id": "CVE-2021-29736",
+   "published": "2021-07-30",
+   "cwe": null,
+   "cvss": 8.8,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2021-29754",
+   "published": "2021-06-11",
+   "cwe": null,
+   "cvss": 8.8,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "a SAML trust association interceptor, which is WebSphere configuration"
+   }
+  },
+  {
+   "id": "CVE-2021-29841",
+   "published": "2021-09-14",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2021-38951",
+   "published": "2021-12-09",
+   "cwe": null,
+   "cvss": 7.5,
+   "verdict": "new",
+   "rule": "N-RECVLIMIT",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: unbounded receives are 0 in 124 repositories, because LENGTH is the bound in the spelling COBOL used before MAXLENGTH"
+   }
+  },
+  {
+   "id": "CVE-2022-22310",
+   "published": "2022-01-19",
+   "cwe": null,
+   "cvss": 6.5,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2022-22317",
+   "published": "2022-06-20",
+   "cwe": "CWE-613",
+   "cvss": 9.8,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "session invalidation in a Java product; a COBOL pseudo-conversation has no session object to invalidate"
+   }
+  },
+  {
+   "id": "CVE-2022-22318",
+   "published": "2022-06-20",
+   "cwe": "CWE-613",
+   "cvss": 9.8,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "session invalidation in a Java product; a COBOL pseudo-conversation has no session object to invalidate"
+   }
+  },
+  {
+   "id": "CVE-2022-22473",
+   "published": "2022-07-14",
+   "cwe": null,
+   "cvss": 5.3,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2022-22477",
+   "published": "2022-07-14",
+   "cwe": "CWE-79",
+   "cvss": 6.1,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-31767",
+   "published": "2022-06-24",
+   "cwe": "CWE-78",
+   "cvss": 9.8,
+   "verdict": "covered",
+   "rule": "*-to-os-command"
+  },
+  {
+   "id": "CVE-2022-33955",
+   "published": "2022-08-01",
+   "cwe": "CWE-78",
+   "cvss": 6.8,
+   "verdict": "new",
+   "rule": "N-HEADERS",
+   "reportedBy": [
+    "web-response-without-protective-headers"
+   ]
+  },
+  {
+   "id": "CVE-2022-34160",
+   "published": "2022-07-08",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-34161",
+   "published": "2022-08-01",
+   "cwe": "CWE-352",
+   "cvss": 8.8,
+   "verdict": "new",
+   "rule": "N-CSRF",
+   "reportedBy": [
+    "web-request-changes-state-without-a-token"
+   ]
+  },
+  {
+   "id": "CVE-2022-34162",
+   "published": "2022-08-01",
+   "cwe": "CWE-1021",
+   "cvss": 6.1,
+   "verdict": "new",
+   "rule": "N-HEADERS",
+   "reportedBy": [
+    "web-response-without-protective-headers"
+   ]
+  },
+  {
+   "id": "CVE-2022-34163",
+   "published": "2022-08-01",
+   "cwe": "CWE-79",
+   "cvss": 6.1,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-34164",
+   "published": "2022-08-01",
+   "cwe": "CWE-20",
+   "cvss": 5.5,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "impersonation through the product input validation, not through anything the estate writes"
+   }
+  },
+  {
+   "id": "CVE-2022-34165",
+   "published": "2022-09-09",
+   "cwe": "CWE-74",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-http-header"
+  },
+  {
+   "id": "CVE-2022-34166",
+   "published": "2022-07-08",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-34167",
+   "published": "2022-07-08",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-34306",
+   "published": "2022-07-08",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-34307",
+   "published": "2022-08-01",
+   "cwe": "CWE-311",
+   "cvss": 4.3,
+   "verdict": "new",
+   "rule": "N-COOKIE",
+   "reportedBy": [
+    "web-cookie-without-secure-attributes"
+   ]
+  },
+  {
+   "id": "CVE-2022-34308",
+   "published": "2022-10-07",
+   "cwe": "CWE-770",
+   "cvss": 5.5,
+   "verdict": "new",
+   "rule": "N-RECVLIMIT",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: unbounded receives are 0 in 124 repositories, because LENGTH is the bound in the spelling COBOL used before MAXLENGTH"
+   }
+  },
+  {
+   "id": "CVE-2022-34309",
+   "published": "2024-02-12",
+   "cwe": "CWE-327",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "cipher strength inside the product; ICSF appears in 0 of 124 repositories, so no COBOL here chooses an algorithm"
+   }
+  },
+  {
+   "id": "CVE-2022-34310",
+   "published": "2024-02-12",
+   "cwe": "CWE-327",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "cipher strength inside CICS TX; ICSF appears in 0 of 124 repositories, so no COBOL here chooses an algorithm"
+   }
+  },
+  {
+   "id": "CVE-2022-34311",
+   "published": "2024-02-12",
+   "cwe": "CWE-522",
+   "cvss": 4.3,
+   "verdict": "new",
+   "rule": "N-COOKIE",
+   "reportedBy": [
+    "web-cookie-without-secure-attributes"
+   ]
+  },
+  {
+   "id": "CVE-2022-34312",
+   "published": "2022-11-14",
+   "cwe": "CWE-200",
+   "cvss": 4,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "job-writes-diagnostic-output-unrestricted"
+   ]
+  },
+  {
+   "id": "CVE-2022-34313",
+   "published": "2022-11-14",
+   "cwe": "CWE-200",
+   "cvss": 4.3,
+   "verdict": "new",
+   "rule": "N-COOKIE",
+   "reportedBy": [
+    "web-cookie-without-secure-attributes"
+   ]
+  },
+  {
+   "id": "CVE-2022-34314",
+   "published": "2022-11-14",
+   "cwe": "CWE-200",
+   "cvss": 4,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "a file permission on the product install or its pid file, which no artefact the estate writes controls"
+   }
+  },
+  {
+   "id": "CVE-2022-34315",
+   "published": "2022-11-14",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-34316",
+   "published": "2022-11-14",
+   "cwe": "CWE-644",
+   "cvss": 3.7,
+   "verdict": "covered",
+   "rule": "*-to-http-header"
+  },
+  {
+   "id": "CVE-2022-34317",
+   "published": "2022-11-14",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-34318",
+   "published": "2022-12-12",
+   "cwe": "CWE-1021",
+   "cvss": 5.4,
+   "verdict": "new",
+   "rule": "N-HEADERS",
+   "reportedBy": [
+    "web-response-without-protective-headers"
+   ]
+  },
+  {
+   "id": "CVE-2022-34319",
+   "published": "2022-11-14",
+   "cwe": "CWE-327",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "cipher strength inside CICS TX; no COBOL in the corpus calls an encryption service at all"
+   }
+  },
+  {
+   "id": "CVE-2022-34320",
+   "published": "2022-11-14",
+   "cwe": "CWE-327",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "cipher strength inside CICS TX; the estate does not choose the algorithm in any artefact this reads"
+   }
+  },
+  {
+   "id": "CVE-2022-34329",
+   "published": "2022-11-14",
+   "cwe": "CWE-200",
+   "cvss": 5.3,
+   "verdict": "new",
+   "rule": "N-HEADERS",
+   "reportedBy": [
+    "web-response-tells-the-caller-what-it-runs"
+   ]
+  },
+  {
+   "id": "CVE-2022-34336",
+   "published": "2022-09-13",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-38705",
+   "published": "2022-11-14",
+   "cwe": null,
+   "cvss": 5.3,
+   "verdict": "new",
+   "rule": "N-HEADERS",
+   "reportedBy": [
+    "web-link-opens-without-noopener"
+   ]
+  },
+  {
+   "id": "CVE-2022-38712",
+   "published": "2022-11-03",
+   "cwe": "CWE-290",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "SOAPAction spoofing in the product web services stack"
+   }
+  },
+  {
+   "id": "CVE-2022-40750",
+   "published": "2022-11-11",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2022-43917",
+   "published": "2023-01-26",
+   "cwe": "CWE-327",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "weak keys in a WebSphere container image, which no COBOL artefact reaches"
+   }
+  },
+  {
+   "id": "CVE-2023-23477",
+   "published": "2023-02-03",
+   "cwe": "CWE-94",
+   "cvss": 8.1,
+   "verdict": "covered",
+   "rule": "*-to-dynamic-program-load"
+  },
+  {
+   "id": "CVE-2023-26281",
+   "published": "2023-03-01",
+   "cwe": "CWE-20",
+   "cvss": 5.9,
+   "verdict": "covered",
+   "rule": "the taint family"
+  },
+  {
+   "id": "CVE-2023-26283",
+   "published": "2023-04-02",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2023-33846",
+   "published": "2023-06-08",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2023-33847",
+   "published": "2023-06-08",
+   "cwe": null,
+   "cvss": 3.7,
+   "verdict": "new",
+   "rule": "N-COOKIE",
+   "reportedBy": [
+    "web-cookie-without-secure-attributes"
+   ]
+  },
+  {
+   "id": "CVE-2023-33848",
+   "published": "2023-06-07",
+   "cwe": "CWE-200",
+   "cvss": 4.9,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "a debug switch in the running product; a PARM leaving TEST or DEBUG on appears in 0 of 124 repositories"
+   }
+  },
+  {
+   "id": "CVE-2023-33849",
+   "published": "2023-06-07",
+   "cwe": "CWE-311",
+   "cvss": 3.7,
+   "verdict": "new",
+   "rule": "N-COOKIE",
+   "reportedBy": [
+    "web-uri-carries-a-credential"
+   ]
+  },
+  {
+   "id": "CVE-2023-38360",
+   "published": "2024-03-04",
+   "cwe": "CWE-79",
+   "cvss": 6.1,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2023-38361",
+   "published": "2023-11-18",
+   "cwe": "CWE-327",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "cipher strength inside CICS TX Advanced; nothing in a repository names the cipher"
+   }
+  },
+  {
+   "id": "CVE-2023-38362",
+   "published": "2024-03-04",
+   "cwe": "CWE-204",
+   "cvss": 5.3,
+   "verdict": "new",
+   "rule": "N-ORACLE",
+   "reportedBy": [
+    "cics-signon-says-which-half-failed"
+   ]
+  },
+  {
+   "id": "CVE-2023-38363",
+   "published": "2023-11-13",
+   "cwe": null,
+   "cvss": 4.3,
+   "verdict": "new",
+   "rule": "N-COOKIE",
+   "reportedBy": [
+    "web-cookie-without-secure-attributes"
+   ]
+  },
+  {
+   "id": "CVE-2023-38364",
+   "published": "2023-11-13",
+   "cwe": "CWE-79",
+   "cvss": 6.1,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2023-42027",
+   "published": "2023-11-03",
+   "cwe": "CWE-352",
+   "cvss": 4.3,
+   "verdict": "new",
+   "rule": "N-CSRF",
+   "reportedBy": [
+    "web-request-changes-state-without-a-token"
+   ]
+  },
+  {
+   "id": "CVE-2023-42029",
+   "published": "2023-11-03",
+   "cwe": "CWE-79",
+   "cvss": 4.8,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2023-42031",
+   "published": "2023-10-25",
+   "cwe": "CWE-400",
+   "cvss": 4.9,
+   "verdict": "new",
+   "rule": "N-RECVLIMIT",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: unbounded receives are 0 in 124 repositories, because LENGTH is the bound in the spelling COBOL used before MAXLENGTH"
+   }
+  },
+  {
+   "id": "CVE-2023-43018",
+   "published": "2023-11-03",
+   "cwe": "CWE-250",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "csd-transaction-without-command-security"
+   ]
+  },
+  {
+   "id": "CVE-2023-47140",
+   "published": "2024-01-08",
+   "cwe": "CWE-266",
+   "cvss": 4,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "file transfer access control inside the CICS Transaction Gateway"
+   }
+  },
+  {
+   "id": "CVE-2023-50310",
+   "published": "2024-10-23",
+   "cwe": "CWE-522",
+   "cvss": 4.9,
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "reportedBy": [
+    "cics-listener-accepts-cleartext"
+   ]
+  },
+  {
+   "id": "CVE-2023-50311",
+   "published": "2024-03-31",
+   "cwe": "CWE-522",
+   "cvss": 3.1,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "reportedBy": [
+    "system-response-to-web-response",
+    "system-response-to-http-header"
+   ]
+  },
+  {
+   "id": "CVE-2024-22332",
+   "published": "2024-02-09",
+   "cwe": "CWE-400",
+   "cvss": 6.5,
+   "verdict": "new",
+   "rule": "N-RECVLIMIT",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: unbounded receives are 0 in 124 repositories, because LENGTH is the bound in the spelling COBOL used before MAXLENGTH"
+   }
+  },
+  {
+   "id": "CVE-2024-22356",
+   "published": "2024-03-26",
+   "cwe": "CWE-117",
+   "cvss": 4.9,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "reportedBy": [
+    "cics-terminal-to-log",
+    "cics-web-to-log"
+   ]
+  },
+  {
+   "id": "CVE-2024-27265",
+   "published": "2024-03-14",
+   "cwe": "CWE-352",
+   "cvss": 4.5,
+   "verdict": "new",
+   "rule": "N-CSRF",
+   "reportedBy": [
+    "web-request-changes-state-without-a-token"
+   ]
+  },
+  {
+   "id": "CVE-2024-41744",
+   "published": "2024-11-01",
+   "cwe": "CWE-352",
+   "cvss": 6.5,
+   "verdict": "new",
+   "rule": "N-CSRF",
+   "reportedBy": [
+    "web-request-changes-state-without-a-token"
+   ]
+  },
+  {
+   "id": "CVE-2024-41745",
+   "published": "2024-11-01",
+   "cwe": "CWE-79",
+   "cvss": 6.1,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2024-41746",
+   "published": "2025-01-16",
+   "cwe": "CWE-79",
+   "cvss": 7.2,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2024-45071",
+   "published": "2024-10-16",
+   "cwe": "CWE-79",
+   "cvss": 5.5,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2024-45072",
+   "published": "2024-10-16",
+   "cwe": "CWE-611",
+   "cvss": 5.5,
+   "verdict": "new",
+   "rule": "N-XXE",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: nothing in 124 repositories parses XML; the one XML PARSE is a language server’s own fixtures"
+   }
+  },
+  {
+   "id": "CVE-2024-45073",
+   "published": "2024-09-30",
+   "cwe": "CWE-79",
+   "cvss": 4.8,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2024-52899",
+   "published": "2024-11-26",
+   "cwe": "CWE-94",
+   "cvss": 8.5,
+   "verdict": "new",
+   "rule": "N-CONNSTR",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: a JDBC-shaped literal appears in 0 repositories; EXEC SQL CONNECT names a host variable rather than building a URL"
+   }
+  },
+  {
+   "id": "CVE-2024-56468",
+   "published": "2025-07-08",
+   "cwe": "CWE-121",
+   "cvss": 7.5,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2025-1000",
+   "published": "2025-05-05",
+   "cwe": "CWE-770",
+   "cvss": 5.3,
+   "verdict": "new",
+   "rule": "N-RECVLIMIT",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: unbounded receives are 0 in 124 repositories, because LENGTH is the bound in the spelling COBOL used before MAXLENGTH"
+   }
+  },
+  {
+   "id": "CVE-2025-1329",
+   "published": "2025-05-08",
+   "cwe": "CWE-787",
+   "cvss": 7.8,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2025-1330",
+   "published": "2025-05-08",
+   "cwe": "CWE-787",
+   "cvss": 7.8,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2025-1331",
+   "published": "2025-05-08",
+   "cwe": "CWE-242",
+   "cvss": 7.8,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2025-1470",
+   "published": "2025-02-21",
+   "cwe": "CWE-476",
+   "cvss": 5.5,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2025-1471",
+   "published": "2025-02-21",
+   "cwe": "CWE-787",
+   "cvss": 7.8,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2025-14915",
+   "published": "2026-03-25",
+   "cwe": "CWE-200",
+   "cvss": 6.5,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2025-14917",
+   "published": "2026-03-25",
+   "cwe": "CWE-1393",
+   "cvss": 6.7,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2025-27907",
+   "published": "2025-04-22",
+   "cwe": "CWE-918",
+   "cvss": 4.1,
+   "verdict": "covered",
+   "rule": "*-to-outbound-host"
+  },
+  {
+   "id": "CVE-2025-33104",
+   "published": "2025-05-14",
+   "cwe": "CWE-79",
+   "cvss": 4.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2025-33142",
+   "published": "2025-08-14",
+   "cwe": "CWE-295",
+   "cvss": 5.3,
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "the quality of a TLS negotiation inside the product; the listener rule reports TLS absent, not TLS weak"
+   }
+  },
+  {
+   "id": "CVE-2025-36014",
+   "published": "2025-07-07",
+   "cwe": "CWE-94",
+   "cvss": 8.2,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "code injection by someone who already has the product install directory"
+   }
+  },
+  {
+   "id": "CVE-2025-36038",
+   "published": "2025-06-25",
+   "cwe": "CWE-502",
+   "cvss": 9,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2025-36047",
+   "published": "2025-08-14",
+   "cwe": "CWE-770",
+   "cvss": 5.3,
+   "verdict": "new",
+   "rule": "N-RECVLIMIT",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: unbounded receives are 0 in 124 repositories, because LENGTH is the bound in the spelling COBOL used before MAXLENGTH"
+   }
+  },
+  {
+   "id": "CVE-2025-36156",
+   "published": "2025-10-07",
+   "cwe": "CWE-119",
+   "cvss": 7.4,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2026-0977",
+   "published": "2026-03-16",
+   "cwe": "CWE-284",
+   "cvss": 5.1,
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "file transfer access control inside the CICS Transaction Gateway, which no COBOL artefact configures"
+   }
+  },
+  {
+   "id": "CVE-2026-10571",
+   "published": "2026-08-13",
+   "cwe": "CWE-502",
+   "cvss": 5.7,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2026-10845",
+   "published": "2026-06-22",
+   "cwe": "CWE-287",
+   "cvss": 7.3,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "reportedBy": [
+    "cics-signon-bypassed"
+   ]
+  },
+  {
+   "id": "CVE-2026-11383",
+   "published": "2026-07-30",
+   "cwe": "CWE-79",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2026-11541",
+   "published": "2026-06-30",
+   "cwe": "CWE-444",
+   "cvss": 7.4,
+   "verdict": "covered",
+   "rule": "*-to-http-header"
+  },
+  {
+   "id": "CVE-2026-11707",
+   "published": "2026-07-30",
+   "cwe": "CWE-79",
+   "cvss": 9.3,
+   "verdict": "covered",
+   "rule": "*-to-web-response"
+  },
+  {
+   "id": "CVE-2026-14525",
+   "published": "2026-08-13",
+   "cwe": "CWE-306",
+   "cvss": 9.4,
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "reportedBy": [
+    "cics-signon-bypassed"
+   ]
+  },
+  {
+   "id": "CVE-2026-1561",
+   "published": "2026-03-25",
+   "cwe": "CWE-918",
+   "cvss": 5.4,
+   "verdict": "covered",
+   "rule": "*-to-outbound-host"
+  },
+  {
+   "id": "CVE-2026-16180",
+   "published": "2026-09-04",
+   "cwe": "CWE-776",
+   "cvss": 5.7,
+   "verdict": "new",
+   "rule": "N-XXE",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: nothing in 124 repositories parses XML; the one XML PARSE is a language server’s own fixtures"
+   }
+  },
+  {
+   "id": "CVE-2026-16689",
+   "published": "2026-09-04",
+   "cwe": "CWE-532",
+   "cvss": 6.2,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "reportedBy": [
+    "log-writes-a-credential",
+    "log-writes-personal-data"
+   ]
+  },
+  {
+   "id": "CVE-2026-17440",
+   "published": "2026-09-04",
+   "cwe": "CWE-674",
+   "cvss": 5.5,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2026-17442",
+   "published": "2026-09-04",
+   "cwe": "CWE-532",
+   "cvss": 5.1,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "reportedBy": [
+    "log-writes-a-credential",
+    "log-writes-personal-data"
+   ]
+  },
+  {
+   "id": "CVE-2026-17443",
+   "published": "2026-09-04",
+   "cwe": "CWE-611",
+   "cvss": 5.3,
+   "verdict": "new",
+   "rule": "N-XXE",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: nothing in 124 repositories parses XML; the one XML PARSE is a language server’s own fixtures"
+   }
+  },
+  {
+   "id": "CVE-2026-17444",
+   "published": "2026-09-04",
+   "cwe": "CWE-611",
+   "cvss": 5.3,
+   "verdict": "new",
+   "rule": "N-XXE",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: nothing in 124 repositories parses XML; the one XML PARSE is a language server’s own fixtures"
+   }
+  },
+  {
+   "id": "CVE-2026-19649",
+   "published": "2026-09-04",
+   "cwe": "CWE-532",
+   "cvss": 6.2,
+   "verdict": "new",
+   "rule": "N-LOG",
+   "reportedBy": [
+    "log-writes-a-credential",
+    "log-writes-personal-data"
+   ]
+  },
+  {
+   "id": "CVE-2026-3602",
+   "published": "2026-06-30",
+   "cwe": "CWE-73",
+   "cvss": 4.7,
+   "verdict": "covered",
+   "rule": "*-to-dynamic-file-path"
+  },
+  {
+   "id": "CVE-2026-78543",
+   "published": "2026-09-04",
+   "cwe": "CWE-835",
+   "cvss": 5.3,
+   "verdict": "covered",
+   "rule": "*-to-loop-bound"
+  },
+  {
+   "id": "CVE-2026-81832",
+   "published": "2026-09-04",
+   "cwe": "CWE-611",
+   "cvss": 7.7,
+   "verdict": "new",
+   "rule": "N-XXE",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: nothing in 124 repositories parses XML; the one XML PARSE is a language server’s own fixtures"
+   }
+  },
+  {
+   "id": "CVE-2026-8646",
+   "published": "2026-06-22",
+   "cwe": "CWE-444",
+   "cvss": 7.4,
+   "verdict": "covered",
+   "rule": "*-to-http-header"
+  },
+  {
+   "id": "CVE-2026-8834",
+   "published": "2026-05-26",
+   "cwe": "CWE-122",
+   "cvss": 8,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2026-8835",
+   "published": "2026-05-26",
+   "cwe": "CWE-822",
+   "cvss": 7.3,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2026-8850",
+   "published": "2026-05-26",
+   "cwe": "CWE-476",
+   "cvss": 7.5,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2026-8852",
+   "published": "2026-05-26",
+   "cwe": "CWE-617",
+   "cvss": 6.2,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2026-8854",
+   "published": "2026-05-26",
+   "cwe": "CWE-825",
+   "cvss": 7.5,
+   "verdict": "covered",
+   "rule": "bounds family"
+  },
+  {
+   "id": "CVE-2026-8855",
+   "published": "2026-05-26",
+   "cwe": "CWE-94",
+   "cvss": 8.1,
+   "verdict": "covered",
+   "rule": "*-to-dynamic-program-load"
+  },
+  {
+   "id": "CVE-2026-8856",
+   "published": "2026-05-26",
+   "cwe": "CWE-400",
+   "cvss": 7.7,
+   "verdict": "patch",
+   "rule": ""
+  },
+  {
+   "id": "CVE-2026-9006",
+   "published": "2026-06-22",
+   "cwe": "CWE-918",
+   "cvss": 7.4,
+   "verdict": "covered",
+   "rule": "*-to-outbound-host"
+  },
+  {
+   "id": "CVE-2026-9071",
+   "published": "2026-06-22",
+   "cwe": "CWE-400",
+   "cvss": 7.5,
+   "verdict": "new",
+   "rule": "N-RECVLIMIT",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: unbounded receives are 0 in 124 repositories, because LENGTH is the bound in the spelling COBOL used before MAXLENGTH"
+   }
+  },
+  {
+   "id": "CVE-2026-9320",
+   "published": "2026-06-22",
+   "cwe": "CWE-400",
+   "cvss": 5.9,
+   "verdict": "new",
+   "rule": "N-RECVLIMIT",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: unbounded receives are 0 in 124 repositories, because LENGTH is the bound in the spelling COBOL used before MAXLENGTH"
+   }
+  }
+ ],
+ "techniques": [
+  {
+   "name": "Hidden and protected 3270 field tampering",
+   "source": "hack3270 (Glessner, Young); wc3270_hacked (Elaassal); NetSPI ways 3 and 4",
+   "target": "tn3270",
+   "verdict": "new",
+   "rule": "N-BMS",
+   "reportedBy": [
+    "cics-protected-field-to-record-key",
+    "cics-protected-field-to-record-update"
+   ]
+  },
+  {
+   "name": "CICS transaction enumeration",
+   "source": "cics-enum.nse; NetSPI way 5",
+   "target": "cics",
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "estate-fact",
+    "why": "the CSD names every transaction and never says which a stranger can reach; without that the only available test is RESSEC(NO), which is the CICS default and would report all 1,330 definitions in the corpus"
+   }
+  },
+  {
+   "name": "Default transaction access (CECI, CEMT, CEDA)",
+   "source": "CICSPwn (Elaassal); NetSPI way 5",
+   "target": "cics",
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "csd-defines-diagnostic-transaction"
+   ]
+  },
+  {
+   "name": "Application breakout to privileged CICS commands",
+   "source": "CICSPwn (Elaassal); BIRP (Sensepost)",
+   "target": "cics",
+   "verdict": "covered",
+   "rule": "cics-transfer-to-variable-program"
+  },
+  {
+   "name": "Job submission from CECI via SPOOLOPEN",
+   "source": "NetSPI way 7; CICSPwn",
+   "target": "cics",
+   "verdict": "covered",
+   "rule": "*-to-internal-reader"
+  },
+  {
+   "name": "Unauthenticated access to transactions by leaving logon early",
+   "source": "NetSPI way 6",
+   "target": "cics",
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "reportedBy": [
+    "cics-signon-bypassed"
+   ]
+  },
+  {
+   "name": "Unencrypted terminal and file transfer",
+   "source": "NetSPI way 1",
+   "target": "tn3270",
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "reportedBy": [
+    "cics-listener-accepts-cleartext"
+   ]
+  },
+  {
+   "name": "Sign-on brute force against a custom logon screen",
+   "source": "TSO-Brute, TPX-Brute, cics-user-brute.nse; NetSPI way 2",
+   "target": "cics",
+   "verdict": "new",
+   "rule": "N-IDENTITY",
+   "whyNotReported": {
+    "kind": "no-sibling",
+    "why": "measured: all 71 CICS programs with a password field name no attempt counter, because counting attempts is the region and RACF, not the program"
+   }
+  },
+  {
+   "name": "User enumeration from differing logon failure messages",
+   "source": "tso-enum.nse (Young)",
+   "target": "zos",
+   "verdict": "new",
+   "rule": "N-ORACLE",
+   "reportedBy": [
+    "cics-signon-says-which-half-failed"
+   ]
+  },
+  {
+   "name": "APF-authorised library loaded from a library a job can write",
+   "source": "zOS privilege escalation scripts (Elaassal); TESTAUTH (zBit31)",
+   "target": "zos",
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "job-loads-from-an-authorised-library"
+   ]
+  },
+  {
+   "name": "RACF database unloaded to a dataset others can read",
+   "source": "RACF Database Parser (bigendiansmalls)",
+   "target": "racf",
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "job-unloads-the-security-database"
+   ]
+  },
+  {
+   "name": "Dataset profile left at a permissive UACC",
+   "source": "Vanguard guidelines (Hillman)",
+   "target": "racf",
+   "verdict": "covered",
+   "rule": "jcl-instream-security-command"
+  },
+  {
+   "name": "Started task or batch job holding more access than its steps use",
+   "source": "Vanguard guidelines (Hillman)",
+   "target": "racf",
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "whyNotReported": {
+    "kind": "estate-fact",
+    "why": "what access a started task holds is RACF; the repository shows only what its steps do, and nothing here reads a started-task table"
+   }
+  },
+  {
+   "name": "USS privilege escalation to UID 0 or BPX.SUPERUSER",
+   "source": "USS exploit guide (bigendiansmalls); OMVSenum.sh (Young)",
+   "target": "uss",
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "job-reaches-unix-system-services"
+   ]
+  },
+  {
+   "name": "Shell from a program through OMVS or netcat",
+   "source": "NC110-OMVS, TShOcker (Young)",
+   "target": "uss",
+   "verdict": "covered",
+   "rule": "*-to-os-command"
+  },
+  {
+   "name": "Job run under another user through surrogate authority",
+   "source": "NJElib (zedsec390)",
+   "target": "jes",
+   "verdict": "new",
+   "rule": "N-PRIV",
+   "reportedBy": [
+    "job-runs-under-another-user"
+   ]
+  },
+  {
+   "name": "JCL submitted through the FTP JES interface",
+   "source": "FTP-JCL Metasploit modules (bigendiansmalls)",
+   "target": "jes",
+   "verdict": "covered",
+   "rule": "*-to-internal-reader"
+  },
+  {
+   "name": "NJE job submission and node spoofing",
+   "source": "iNJEctor.py (zedsec390); nje-node-brute.nse",
+   "target": "jes",
+   "verdict": "none",
+   "rule": ""
+  },
+  {
+   "name": "VTAM APPLID enumeration",
+   "source": "vtam-enum.nse (Young)",
+   "target": "tn3270",
+   "verdict": "none",
+   "rule": ""
+  },
+  {
+   "name": "LU enumeration",
+   "source": "lu-enum.nse (Young)",
+   "target": "tn3270",
+   "verdict": "none",
+   "rule": ""
+  },
+  {
+   "name": "FTP credential brute force",
+   "source": "Metasploit mainframe modules (bigendiansmalls)",
+   "target": "ftp",
+   "verdict": "none",
+   "rule": ""
+  },
+  {
+   "name": "Wildcard dataset enumeration over FTP",
+   "source": "zOSFTPlib",
+   "target": "ftp",
+   "verdict": "none",
+   "rule": ""
+  },
+  {
+   "name": "Weak password policy in the security manager",
+   "source": "NetSPI way 2",
+   "target": "racf",
+   "verdict": "none",
+   "rule": ""
+  },
+  {
+   "name": "TSO and TPX credential brute force",
+   "source": "TSO-Brute, TPX-Brute (Young)",
+   "target": "zos",
+   "verdict": "none",
+   "rule": ""
+  },
+  {
+   "name": "Screen capture of another user session",
+   "source": "CICSshot (Elaassal)",
+   "target": "cics",
+   "verdict": "none",
+   "rule": ""
+  },
+  {
+   "name": "Reading the 3270 data stream off the wire",
+   "source": "tn3270-screen.nse (Young)",
+   "target": "tn3270",
+   "verdict": "new",
+   "rule": "N-CRYPTO",
+   "reportedBy": [
+    "cics-listener-accepts-cleartext"
+   ]
+  }
+ ]
+}

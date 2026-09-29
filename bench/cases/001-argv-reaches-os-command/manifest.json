@@ -1,0 +1,11 @@
+{
+ "id": "001-argv-reaches-os-command",
+ "title": "Command-line input passed to a second program and run as a command",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "argv-or-env-to-os-command",
+   "file": "P2.cbl"
+  }
+ ]
+}

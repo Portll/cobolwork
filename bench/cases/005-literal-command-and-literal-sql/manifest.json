@@ -1,0 +1,11 @@
+{
+ "id": "005-literal-command-and-literal-sql",
+ "title": "A command and a statement built only from literals",
+ "cwe": "CWE-89",
+ "expect": [],
+ "negativeFor": [
+  "argv-or-env-to-os-command",
+  "cics-web-to-dynamic-sql",
+  "argv-or-env-to-dynamic-sql"
+ ]
+}

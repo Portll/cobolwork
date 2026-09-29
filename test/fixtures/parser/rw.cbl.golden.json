@@ -1,0 +1,133 @@
+{
+ "case": {
+  "file": "rw.cbl",
+  "note": "report groups are laid out by column, a report file is as wide as its widest report, and the listing prints the last report's groups only"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "PRINT-FILE",
+    "size": 93
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-NAME",
+    "size": 20,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-AMOUNT",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-KIND",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "SHORT-DETAIL",
+    "size": 24,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 24,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "FILLER",
+    "size": 10,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "FILLER",
+    "size": 6,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "FILLER",
+    "size": 8,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "FILLER",
+    "size": 24,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 7,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "FILLER",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "PRINT-FILE",
+    "line": 6,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-NAME",
+    "line": 12,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-AMOUNT",
+    "line": 13,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-KIND",
+    "line": 14,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SHORT-DETAIL",
+    "line": 30,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

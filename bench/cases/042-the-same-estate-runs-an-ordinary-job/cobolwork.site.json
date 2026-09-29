@@ -1,0 +1,12 @@
+{
+ "vendorPacks": [
+  "broadcom"
+ ],
+ "allowUnvalidatedPacks": true,
+ "productionQualifiers": [
+  "PROD"
+ ],
+ "nonProductionJobPaths": [
+  "nowhere"
+ ]
+}

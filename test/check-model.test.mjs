@@ -185,3 +185,19 @@ test('an error flag set on zero and on a high value bounds the index where it is
   assert.deepEqual(found('ZEROFLAG.cbl'), []);
   assert.equal(stopped('ZEROFLAG.cbl').length, 1);
 });
+
+// A counter that starts at a constant and steps up is at least that constant in the loop body,
+// unless the body writes it or the start is below 1 or the step does not rise.
+test('a counter varied from 1 by 1 is bounded at both ends inside its loop', () => {
+  assert.deepEqual(found('LOOPFROM.cbl'), []);
+  assert.equal(stopped('LOOPFROM.cbl').length, 1);
+});
+
+test('a counter the loop body also fills from input is not bounded below', () => {
+  assert.equal(found('LOOPMOVE.cbl').length, 1);
+});
+
+test('a counter varied from 0, or downwards, is not bounded below', () => {
+  assert.equal(found('LOOPZERO.cbl').length, 1);
+  assert.equal(found('LOOPBYNEG.cbl').length, 1);
+});

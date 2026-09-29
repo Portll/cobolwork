@@ -563,6 +563,11 @@ length of 0 is a zero-length move that can overrun. A set of literal values boun
 every value is 1 or more. An `OCCURS DEPENDING ON` count and a loop bound accept 0, and an upper
 bound alone bounds them.
 
+A counter of `PERFORM VARYING c FROM k BY s UNTIL ...` is at least `k` inside the loop when `k` is a
+number or a constant the model resolves, `s` is positive or absent, and the field is numeric with room
+for the UNTIL bound. That lower bound joins the upper bound the UNTIL gives. Any statement in the body
+that writes the counter, and any inner `VARYING` or `AFTER` over it, takes the bound away.
+
 A check that ran on every route and did not bound the index lowers an index finding (a rule ending
 `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or `-to-loop-bound`) one
 step only where one of its outcomes holds on every route to the use. Where both outcomes reach the

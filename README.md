@@ -135,6 +135,7 @@ Every `path` finding carries a verdict, the facts it rests on, and the one fact 
 
 | `exploitability` | What it means | What to do |
 |---|---|---|
+| `confirmed` | the estate's own test reproduced it, and brought the result as a witness feed | patch now |
 | `exploitable` | input an attacker supplies reaches the operation with no check on every route, and the estate declares a transaction or job that carries it open to any user | patch first |
 | `attacker-driven` | the same route, but nobody has declared who may start its entries | patch, or declare the entries |
 | `restricted` | the same route, behind a control the estate named on every entry | patch; the control is not a check |
@@ -172,8 +173,13 @@ Who may start a transaction lives in RACF, not in a repository, so without it th
 bring a reduced RACF unload as `COBOLWORK_REACH`, which is refused from inside the scanned tree.
 `node diag/propose-site.mjs <path>` lists the transactions and jobs to ask about, most findings
 first, with the program each runs and any listener or URI map that puts it on the network; it
-proposes none of them as open or restricted. The
-tool never calls a finding confirmed: that needs a test on the running system.
+proposes none of them as open or restricted.
+
+The tool never confirms a finding from reading: that needs a test on the running system. The estate
+brings its own results as `COBOLWORK_WITNESS`, keyed by fingerprint with the outcome, who ran the
+test, when and on which system, and refused from inside the tree like `COBOLWORK_REACH`. A reproduced
+finding becomes `confirmed`; one the estate's test did not reproduce keeps its verdict and says so,
+since a test that missed the route does not show it safe.
 `summary.byExploitability` counts the verdicts, and a report holding an `exploitable` finding carries
 `summary.handling`, because it is then a list of what to attack first. Upload it only where the RACF
 facts behind it may go. [docs/spec/reach.md](docs/spec/reach.md) §9 is the full specification.

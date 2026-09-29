@@ -58,17 +58,15 @@ test the check model credits placed before the operation. It names the value at 
 the input before it was folded into a statement, so for a built SQL or command string the test it
 names is on the whole string; naming the input field instead is open. `diag/propose-site.mjs` lists
 the transactions and jobs to classify, with any listener or URI map in front of each; a program a
-server `URIMAP` serves is started by its alias transaction. What is left, in order:
+server `URIMAP` serves is started by its alias transaction. The estate's own test results, brought
+as `COBOLWORK_WITNESS`, make a verdict `confirmed`. What is left, in order:
 
 1. **A verification plan per finding, in `explain`.** The transaction, the map and field, a harmless
    value that shows the defect (a letter in a numeric field; a key belonging to another record), and
    what to watch for (an S0C7 abend; the other record displayed). For command, SQL and job sinks it
    shows only a marker value arriving at the statement under CEDF or a debugger, never a payload that
    runs, and never in the default report.
-2. **A witness feed.** The estate's reproduction results, brought like `COBOLWORK_REACH` and refused
-   from inside the tree, keyed by fingerprint, dated and signed off by who ran them: the only thing
-   that can make a verdict `confirmed`, or `not-reproduced`.
-3. **A measured rate per verdict**, from the hand-labelled corpus below: until then a verdict is a
+2. **A measured rate per verdict**, from the hand-labelled corpus below: until then a verdict is a
    claim over reading and records with no independent precision.
 
 ## Vulnerability classes, in the order they can be measured

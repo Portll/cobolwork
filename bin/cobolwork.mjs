@@ -15,6 +15,7 @@ import { build, buildSarif, buildSummaryLine } from '../lib/build.mjs';
 import { capabilities } from '../lib/capabilities.mjs';
 import { commitAt, revisionOf, toolRevision } from '../lib/revision.mjs';
 import { stampFingerprints } from '../lib/kernel/identity.mjs';
+import { tally } from '../lib/kernel/findings.mjs';
 import { loadBaseline, applyBaseline, baselineEntries, BASELINE_FILE, SUPPRESSING } from '../lib/baseline.mjs';
 import { readReport } from '../lib/tui/model.mjs';
 import { nodeTerminal } from '../lib/tui/terminal.mjs';
@@ -259,7 +260,10 @@ try {
     const report = command === 'flow' ? scanFlow(root, flowOpts) : scanAll(root, { ...flowOpts, only: opts.only, advisoryFeeds: opts.advisoryFeeds });
     if (command === 'flow') {
       report.summary.identity = stampFingerprints(report.findings, { root });
+      stampFingerprints(report.checked, { root });
       Object.assign(report.summary, applyEstateFacts(report.findings, report.checked, root));
+      // A route the estate reproduced moves from checked back to findings.
+      Object.assign(report.summary, { findings: report.findings.length, byRule: tally(report.findings), checked: report.checked.length });
     }
     applyBaseline(report, loadBaseline(root, { explicit: opts.baseline ? resolve(opts.baseline) : null, use: !opts.noBaseline }));
     stampRevisions(report.summary);

@@ -126,7 +126,7 @@ once the estate names the authorised libraries".
    joins them into one verdict per path finding (§9). The word is allowed where the records support
    it and never beyond: `exploitable` needs an estate fact that an entry is open, and each verdict
    lists the facts behind it and names the one it lacks. A `confirmed` verdict needs a witness on
-   the running system, which the tool never produces itself; it waits on the witness feed (§9.4).
+   the running system, which the tool never produces itself; the estate brings it (§9.5).
    `evidence` is unchanged, and the kernel still refuses an `exploitable` evidence kind: evidence is
    what reading established, the verdict is a projection over reading and records.
 
@@ -192,6 +192,7 @@ is null and `why` points to the rule's remedy. A refuted route carries no `fixAt
 
 | `verdict` | Route | Source | Entries |
 |---|---|---|---|
+| `confirmed` | any: the estate's own test reproduced it (§9.5) | any | any |
 | `exploitable` | no check on every route | input the entry's user supplies | at least one declared open (and, for a rule that acts with its own user's authority, declared privileged) |
 | `attacker-driven` | no check on every route | input the entry's user supplies | not declared, or nothing in the tree starts the program |
 | `restricted` | no check on every route | input the entry's user supplies | every one declared restricted, none unlisted |
@@ -208,23 +209,48 @@ the eight `startedBy` lists, may be open, so it leaves the finding `attacker-dri
 
 - **No re-ranking.** Severity, tier and what a build blocks are unchanged. The build carries the
   verdict on each finding.
-- **No confirmation.** Nothing the tool reads makes a verdict `confirmed`.
+- **No confirmation of its own.** Nothing the tool reads from the source or the access records makes
+  a verdict `confirmed`; only the estate's witness feed does (§9.5).
 - **No payloads.** The verdict names the entry, the field and the missing check - what a defender
   needs to patch and a tester needs to reproduce - and nothing that would run.
 
 ### 9.3 Handling
 
-A report with an `exploitable` finding joins the estate's access records to routes an attacker can
-drive, so `summary.handling` asks that it be kept where those records may go. A SARIF upload to code
+A report with an `exploitable` or `confirmed` finding joins the estate's access records or test
+results to routes an attacker can drive, so `summary.handling` asks that it be kept where those
+records may go. A SARIF upload to code
 scanning shows it to everyone who can read the repository.
 
-### 9.4 What comes next
+### 9.4 The draft
 
-`fixAt` is built, and so is the draft: `diag/propose-site.mjs` lists every transaction and job that
-starts a finding an attacker drives under `_toClassify.openOrRestrictedTransactions` and
-`openOrRestrictedJobs`, most findings first, with the program it runs and any `TCPIPSERVICE` or
-`URIMAP` that puts it on the network, and leaves the four reach arrays empty - the same treatment
-the privilege facts get, because who may start an entry is a RACF fact. In order: a verification plan per finding in `explain` - a harmless test value and what to
-watch for, never a payload; a witness feed, brought and refused from inside the tree like the reach
-feed, that makes a verdict `confirmed` or `not-reproduced`; and the labelled corpus of §7.3, which
-turns each verdict into a measured rate.
+`diag/propose-site.mjs` lists every transaction and job that starts a finding an attacker drives
+under `_toClassify.openOrRestrictedTransactions` and `openOrRestrictedJobs`, most findings first,
+with the program it runs and any `TCPIPSERVICE` or `URIMAP` that puts it on the network, and leaves
+the four reach arrays empty - the same treatment the privilege facts get, because who may start an
+entry is a RACF fact.
+
+### 9.5 The witness feed
+
+The estate's own test results, brought as `COBOLWORK_WITNESS` (a path list, as `COBOLWORK_REACH`)
+and refused from inside the scanned tree, because a list of what was reproduced is a list of what to
+attack:
+
+```json
+{ "witness": "UAT regression, release 26.4", "recorded": "2026-09-29",
+  "results": { "<fingerprint>": { "outcome": "reproduced", "by": "jsmith", "on": "2026-09-28", "system": "CICSUAT1", "reference": "CHG12345" } } }
+```
+
+Those fields are all that is read; what was sent to the system is not recorded here. A result
+lacking an outcome, who, when or where is refused and named under `summary.witnessFeedProblems`.
+
+- `reproduced` makes the verdict `confirmed`, whatever the reading said, and cites the result in
+  `because`. The finding takes back the severity a check or the reading took off it, since the test
+  shows neither held; a route the check model cleared leaves `checked`, is reported as a finding
+  again, and is listed under `summary.witnessOverruled` - the check model was wrong about it.
+- `not-reproduced` is stated in `because` and leaves the verdict alone: a test that missed a route
+  does not show the route safe.
+- The newest result per fingerprint wins; on the same day a reproduction does. A result no path
+  finding carries - the code changed since the test, or the route is gone - is listed under
+  `summary.witnessUnmatched`.
+
+`summary.byWitness` counts the two outcomes. Nothing in it changes what a build blocks.

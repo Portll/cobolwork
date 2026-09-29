@@ -20,7 +20,10 @@
 // running system's PROGxx member, and which datasets are restricted and which users a job may run
 // as live in RACF; no repository holds any of the three. They are printed as candidates with where
 // each was seen, and written to _toClassify with the arrays left empty, because a guess there turns
-// three checks from silent into wrong.
+// three checks from silent into wrong. Who may start each transaction and job is the same kind of
+// fact, and is handled the same way: the entries that start a finding an attacker drives are listed,
+// most findings first, with what the CSD says of each - the program, a listener or URI map that puts
+// it on the network - so the exploitability verdict can be decided a transaction at a time.
 import { writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildFileIndex } from '../lib/parser.mjs';
@@ -28,6 +31,7 @@ import { isJcl, readSource, relPath } from '../lib/sources.mjs';
 import { parseJcl } from '../lib/jcl.mjs';
 import { parseCsd, ddOfQueue } from '../lib/csd.mjs';
 import { SITE_FILE } from '../lib/site.mjs';
+import { scanAll } from '../lib/scan.mjs';
 
 const root = process.argv[2];
 const write = process.argv.includes('--write');
@@ -159,13 +163,57 @@ for (const f of files.filter((p) => /\.csd$/i.test(p))) {
 }
 const csd = { tdqueues: new Map(), transactions: new Map() };
 const definedAt = new Map();
+// What the network reaches: a transaction a listener or a URI map names, and a program a URI map serves.
+const listened = new Map();       // transaction -> [why]
+const served = new Map();         // program -> [why]
+const listeners = new Map();
+const uriMaps = [];
 for (const src of [...csdFiles, ...csdJobInput]) {
-  for (const [q, def] of parseCsd(src.text).tdqueues) {
+  const parsed = parseCsd(src.text);
+  for (const [q, def] of parsed.tdqueues) {
     if (csd.tdqueues.has(q)) continue;
     csd.tdqueues.set(q, def);
     definedAt.set(q, src.at(def.line));
   }
+  for (const [name, t] of parsed.transactions) if (!csd.transactions.has(name)) csd.transactions.set(name, { ...t, at: src.at(t.line) });
+  for (const [name, s] of parsed.tcpipservices) if (!listeners.has(name)) listeners.set(name, { ...s, at: src.at(s.line) });
+  for (const [name, u] of parsed.urimaps) if (!u.usage || u.usage === 'SERVER') uriMaps.push({ ...u, name, at: src.at(u.line) });
 }
+// A listener with AUTHENTICATE absent or NO asks no one who they are.
+const anonymous = (s) => (s && (!s.authenticate || s.authenticate === 'NO') ? ", AUTHENTICATE(NO): the caller is not asked who they are, and runs as the region's default user" : '');
+for (const [name, s] of listeners) if (s.transaction) note(listened, s.transaction, `TCPIPSERVICE ${name} at ${s.at}, port ${s.port || '?'}${anonymous(s)}`);
+for (const u of uriMaps) {
+  const where = `URIMAP ${u.name} at ${u.at}${u.path ? `, path ${u.path}` : ''}${u.tcpipservice ? `, through TCPIPSERVICE ${u.tcpipservice}${anonymous(listeners.get(u.tcpipservice))}` : ''}`;
+  if (u.transaction) note(listened, u.transaction, where);
+  if (u.program) note(served, u.program, where);
+}
+
+// The entries that start a finding an attacker drives, and what the CSD says of each. Who may start
+// them is a RACF fact, so they are candidates for openTransactions or restrictedTransactions (and
+// the job keys), ordered by how much they reach, and no entry is proposed as either.
+const driven = scanAll(root, { only: ['flow'] }).findings.filter((f) => f.exploitability?.verdict === 'attacker-driven');
+const reachCandidates = { transaction: new Map(), job: new Map() };
+const unstartedDriven = new Map();
+for (const f of driven) {
+  const at = `${f.rule} at ${f.path}:${f.line}`;
+  if (!(f.startedBy || []).length) { note(unstartedDriven, f.program || '?', at); continue; }
+  for (const e of f.startedBy) {
+    const kind = e.transaction ? 'transaction' : 'job';
+    const name = e.transaction || e.job || '?';
+    if (!reachCandidates[kind].has(name)) reachCandidates[kind].set(name, { findings: [], entry: e });
+    const c = reachCandidates[kind].get(name);
+    if (!c.findings.includes(at)) c.findings.push(at);
+  }
+}
+const candidateWhy = (kind, name, c) => {
+  const def = kind === 'transaction' ? csd.transactions.get(name) : null;
+  const facts = [`starts ${c.findings.length} finding(s) an attacker drives, first ${c.findings[0]}`];
+  if (def) facts.push(`runs ${def.program || '(no program)'}, defined at ${def.at}`);
+  if (kind === 'job') facts.push(`step ${c.entry.step || '(unnamed)'} at ${c.entry.file}:${c.entry.line}`);
+  for (const why of listened.get(name) || []) facts.push(`the network reaches it: ${why}`);
+  return facts.join('; ');
+};
+const ranked = (kind) => [...reachCandidates[kind]].sort((a, b) => b[1].findings.length - a[1].findings.length || (a[0] < b[0] ? -1 : 1));
 
 // Only a region's DD is a declaration the rules need: a batch job's is read from the job itself.
 for (const d of readerDds) {
@@ -306,6 +354,18 @@ console.log('database and its unload, so the prefix each sits under almost certa
 for (const [dsn, at] of topN(securityOutputs, 12)) console.log(`  ${dsn.padEnd(44)} ${at[0]}`);
 if (!securityOutputs.size) console.log('  (none: no job here runs one)');
 
+const txCandidates = ranked('transaction');
+const jobCandidates = ranked('job');
+console.log(`\nentries that start a finding an attacker drives: ${txCandidates.length} transaction(s), ${jobCandidates.length} job(s).`);
+console.log('Who may start each is a RACF fact, so none is proposed. Put each in openTransactions or');
+console.log('restrictedTransactions (openJobs or restrictedJobs), and the findings it starts say exploitable or restricted:');
+for (const [name, c] of txCandidates.slice(0, 20)) console.log(`  transaction ${name.padEnd(8)} ${candidateWhy('transaction', name, c)}`);
+for (const [name, c] of jobCandidates.slice(0, 20)) console.log(`  job ${name.padEnd(16)} ${candidateWhy('job', name, c)}`);
+if (unstartedDriven.size) {
+  console.log('programs with a finding an attacker drives that no transaction or job here starts:');
+  for (const [pgm, at] of unstartedDriven) console.log(`  ${pgm.padEnd(8)} ${at.length} finding(s), first ${at[0]}${served.has(pgm) ? `; served by ${served.get(pgm).join('; ')}` : ''}`);
+}
+
 const draft = {
   _comment: 'PROPOSED, NOT CONFIRMED. Generated by diag/propose-site.mjs from this tree\'s own JCL and CSD. The production qualifiers are guesses from a naming convention. The internal-reader DDs and queues and the compiler options were read from the jobs and definitions listed under _from, which need not be the ones production runs. Correct it before relying on any finding it enables: an entry listed here wrongly makes the rules noisy, and one omitted makes them silent.',
   _generated: new Date().toISOString().slice(0, 10),
@@ -321,11 +381,18 @@ const draft = {
   apfLibraries: [],
   restrictedDatasets: [],
   surrogateUsers: [],
+  // Left empty for the same reason: who may start an entry lives in RACF. See _toClassify.
+  openTransactions: [],
+  restrictedTransactions: [],
+  openJobs: [],
+  restrictedJobs: [],
   _undecidedPaths: undecided,
   _toClassify: {
     apfLibraries: Object.fromEntries(topN(libraries, 40).map(([dsn, at]) => [dsn, `loaded by ${at.length} step(s), first ${at[0]}`])),
     surrogateUsers: Object.fromEntries([...jobUsers].map(([u, at]) => [u, `named by ${at.length} job(s), first ${at[0]}`])),
     restrictedDatasets: Object.fromEntries([...securityOutputs].map(([dsn, at]) => [dsn, at[0]])),
+    openOrRestrictedTransactions: Object.fromEntries(txCandidates.map(([name, c]) => [name, candidateWhy('transaction', name, c)])),
+    openOrRestrictedJobs: Object.fromEntries(jobCandidates.map(([name, c]) => [name, candidateWhy('job', name, c)])),
   },
   _from: {
     internalReaderDds: Object.fromEntries(proposedDds.map((dd) => [dd, readerDds.filter((d) => d.region && d.dd === dd).map((d) => `${d.at}, which ${d.how}`)])),

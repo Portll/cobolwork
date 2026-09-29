@@ -169,7 +169,10 @@ the rule's remedy is the fix.
 Who may start a transaction lives in RACF, not in a repository, so without it the strongest verdict is
 `attacker-driven`, and `summary.reachNote` says how many that is. Name the entries in
 `cobolwork.site.json` (`openTransactions`, `restrictedTransactions`, `openJobs`, `restrictedJobs`), or
-bring a reduced RACF unload as `COBOLWORK_REACH`, which is refused from inside the scanned tree. The
+bring a reduced RACF unload as `COBOLWORK_REACH`, which is refused from inside the scanned tree.
+`node diag/propose-site.mjs <path>` lists the transactions and jobs to ask about, most findings
+first, with the program each runs and any listener or URI map that puts it on the network; it
+proposes none of them as open or restricted. The
 tool never calls a finding confirmed: that needs a test on the running system.
 `summary.byExploitability` counts the verdicts, and a report holding an `exploitable` finding carries
 `summary.handling`, because it is then a list of what to attack first. Upload it only where the RACF

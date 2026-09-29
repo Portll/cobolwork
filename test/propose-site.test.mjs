@@ -3,12 +3,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadSite, SITE_FILE } from '../lib/site.mjs';
 import { scan } from '../lib/sets/flow.mjs';
+import { scanAll } from '../lib/scan.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -169,6 +170,47 @@ test('the privilege facts are handed over as candidates and proposed as nothing'
   // The database a utility reads is as restricted as the unload it writes, so both are candidates.
   assert.match(draft._toClassify.restrictedDatasets['SYS1.RACFDS'], /IRRDBU00/);
   assert.deepEqual(loadSite(dir).problems.filter((x) => /apf|restricted|surrogate/i.test(x)), []);
+}));
+
+const ENTRY = join(HERE, 'fixtures', 'entry');
+const entryTree = (extraCsd = []) => Object.fromEntries(readdirSync(ENTRY).map((f) => {
+  const lines = readFileSync(join(ENTRY, f), 'utf8').replace(/\n$/, '').split('\n');
+  return [f, f === 'REGION.csd' ? [...lines, ...extraCsd] : lines];
+}));
+const LISTENER = [
+  ' DEFINE TCPIPSERVICE(HTTPIN) GROUP(ENTRY) PORTNUMBER(8080)',
+  '        PROTOCOL(HTTP) TRANSACTION(INQ1)',
+  ' DEFINE URIMAP(ORPHURI) GROUP(ENTRY) USAGE(SERVER)',
+  '        PATH(/api/orphan/*) PROGRAM(ORPHAN) TCPIPSERVICE(HTTPIN)',
+];
+
+test('who may start an entry is handed over as candidates, most findings first, and proposed as nothing', () => inTree(entryTree(LISTENER), (dir) => {
+  const r = propose(dir, '--write');
+  assert.equal(r.status, 0, r.stderr);
+  const draft = JSON.parse(readFileSync(join(dir, SITE_FILE), 'utf8'));
+  for (const k of ['openTransactions', 'restrictedTransactions', 'openJobs', 'restrictedJobs']) assert.deepEqual(draft[k], [], k);
+  const tx = draft._toClassify.openOrRestrictedTransactions;
+  assert.deepEqual(Object.keys(tx).sort(), ['INQ1', 'MNU1']);
+  assert.match(tx.INQ1, /starts 1 finding\(s\) an attacker drives, first cics-terminal-to-dynamic-sql at INQUIRY\.cbl:13; runs INQUIRY/);
+  assert.match(tx.INQ1, /the network reaches it: TCPIPSERVICE HTTPIN .*port 8080, AUTHENTICATE\(NO\)/);
+  assert.doesNotMatch(tx.MNU1, /network/);
+  assert.match(draft._toClassify.openOrRestrictedJobs.NIGHTJOB, /jcl-parm-to-os-command/);
+  assert.match(r.stdout, /ORPHAN .*served by URIMAP ORPHURI .*path \/api\/orphan\/\*/, 'a program only a URI map serves is named');
+  assert.equal(loadSite(dir).openTransactions.length, 0);
+}));
+
+test('a candidate a person moves into openTransactions makes the findings it starts exploitable', () => inTree(entryTree(), (dir) => {
+  assert.equal(propose(dir, '--write').status, 0);
+  const file = join(dir, SITE_FILE);
+  const draft = JSON.parse(readFileSync(file, 'utf8'));
+  draft.openTransactions = ['INQ1'];
+  draft.restrictedTransactions = ['MNU1'];
+  writeFileSync(file, JSON.stringify(draft));
+  const r = scanAll(dir, { only: ['flow'] });
+  const verdict = (rule) => r.findings.find((f) => f.rule === rule).exploitability.verdict;
+  assert.equal(verdict('cics-terminal-to-dynamic-sql'), 'exploitable');
+  assert.equal(verdict('cics-terminal-to-os-command'), 'restricted');
+  assert.equal(verdict('jcl-parm-to-os-command'), 'attacker-driven', 'a job nobody classified is still undeclared');
 }));
 
 test('the draft refuses to overwrite a site file someone may have corrected', () => inTree(ESTATE, (dir) => {

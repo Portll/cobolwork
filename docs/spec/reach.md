@@ -219,7 +219,11 @@ scanning shows it to everyone who can read the repository.
 
 ### 9.4 What comes next
 
-`fixAt` is built. In order: reach facts drafted from the CSD for a person to confirm; a verification plan per finding in `explain` - a harmless test value and what to
+`fixAt` is built, and so is the draft: `diag/propose-site.mjs` lists every transaction and job that
+starts a finding an attacker drives under `_toClassify.openOrRestrictedTransactions` and
+`openOrRestrictedJobs`, most findings first, with the program it runs and any `TCPIPSERVICE` or
+`URIMAP` that puts it on the network, and leaves the four reach arrays empty - the same treatment
+the privilege facts get, because who may start an entry is a RACF fact. In order: a verification plan per finding in `explain` - a harmless test value and what to
 watch for, never a payload; a witness feed, brought and refused from inside the tree like the reach
 feed, that makes a verdict `confirmed` or `not-reproduced`; and the labelled corpus of §7.3, which
 turns each verdict into a measured rate.

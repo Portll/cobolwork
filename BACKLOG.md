@@ -56,20 +56,20 @@ every path finding now carries an `exploitability` verdict ([`docs/spec/reach.md
 none `exploitable`, because no repository says who may start a transaction. Each carries `fixAt`, a
 test the check model credits placed before the operation. It names the value at the operation, not
 the input before it was folded into a statement, so for a built SQL or command string the test it
-names is on the whole string; naming the input field instead is open. What is left, in order:
+names is on the whole string; naming the input field instead is open. `diag/propose-site.mjs` lists
+the transactions and jobs to classify, with any listener or URI map in front of each. A program a
+`URIMAP` serves is named there but is not yet an entry the flow graph starts from, so its findings
+carry no `startedBy` and stay `attacker-driven` whatever is declared. What is left, in order:
 
-1. **Reach drafted from the CSD.** `diag/propose-site.mjs` drafts production qualifiers from JCL;
-   the same for `openTransactions` - a transaction with `RESSEC(NO)`, or one a `URIMAP` or
-   `TCPIPSERVICE` fronts - would let a first scan say `exploitable` once a person confirms the draft.
-2. **A verification plan per finding, in `explain`.** The transaction, the map and field, a harmless
+1. **A verification plan per finding, in `explain`.** The transaction, the map and field, a harmless
    value that shows the defect (a letter in a numeric field; a key belonging to another record), and
    what to watch for (an S0C7 abend; the other record displayed). For command, SQL and job sinks it
    shows only a marker value arriving at the statement under CEDF or a debugger, never a payload that
    runs, and never in the default report.
-3. **A witness feed.** The estate's reproduction results, brought like `COBOLWORK_REACH` and refused
+2. **A witness feed.** The estate's reproduction results, brought like `COBOLWORK_REACH` and refused
    from inside the tree, keyed by fingerprint, dated and signed off by who ran them: the only thing
    that can make a verdict `confirmed`, or `not-reproduced`.
-4. **A measured rate per verdict**, from the hand-labelled corpus below: until then a verdict is a
+3. **A measured rate per verdict**, from the hand-labelled corpus below: until then a verdict is a
    claim over reading and records with no independent precision.
 
 ## Vulnerability classes, in the order they can be measured

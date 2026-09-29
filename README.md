@@ -261,7 +261,7 @@ statement grammar, a weaker witness, and says so.
 
 A scan stops before it exhausts memory, reports how much of the tree it read, and sets
 `coverageIncomplete`. **Read that before the finding count.** On one 4,086-file repository a starved
-run reported 26 findings and a clean one 2,890; both are honest, and only one is a result.
+run reported 26 findings and a clean one 2,890.
 
 The number it watches is the lesser of the heap's headroom and the machine's free memory, and the
 second is the whole machine. On a build agent running other jobs, or in a container whose limit is
@@ -273,12 +273,11 @@ COBOLWORK_FREE_MEMORY_MB=4096 cobolwork .
 ```
 
 It is a statement, not a limit: the heap is still watched, so an over-generous number does not turn
-the guard off, it just stops the host's load from deciding. A spawned scan inherits it.
+the guard off, it just stops the host's load from deciding. A spawned scan inherits this property.
 
 ## Compliance
 
-Every rule is mapped to the clause of each framework that makes it an obligation, quoted verbatim
-from the instrument:
+Every rule is mapped to the clause of each framework that makes it an obligation, quoted verbatim:
 
 | File | Instrument | Rules mapped |
 |---|---|---|
@@ -298,7 +297,7 @@ nearest control that reads plausibly. What else the mapping does not claim is in
     npm test
 
 Tests that need a tool which is absent record a skip naming it. A skipped check is not a passing one.
-Open work, with what each item was measured against, is in [BACKLOG.md](BACKLOG.md).
+Open work is in [BACKLOG.md](BACKLOG.md).
 
 ## Security
 

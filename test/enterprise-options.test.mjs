@@ -21,8 +21,9 @@ test('lib/enterprise-options.mjs and provenance/enterprise-options.tsv are what 
     const [mjs, tsv] = [join(dir, 'o.mjs'), join(dir, 'o.tsv')];
     const gen = spawnSync(process.execPath, [join(root, 'diag', 'generate-options.mjs'), join(root, 'provenance', 'enterprise-options.json'), mjs, tsv], { encoding: 'utf8' });
     assert.equal(gen.status, 0, gen.stderr);
-    assert.equal(readFileSync(join(root, 'lib', 'enterprise-options.mjs'), 'utf8'), readFileSync(mjs, 'utf8'));
-    assert.equal(readFileSync(join(root, 'provenance', 'enterprise-options.tsv'), 'utf8'), readFileSync(tsv, 'utf8'));
+    const lf = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
+    assert.equal(lf(join(root, 'lib', 'enterprise-options.mjs')), lf(mjs), 'regenerate lib/enterprise-options.mjs');
+    assert.equal(lf(join(root, 'provenance', 'enterprise-options.tsv')), lf(tsv), 'regenerate provenance/enterprise-options.tsv');
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

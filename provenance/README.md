@@ -15,6 +15,14 @@ numbers DFHRESP and DFHVALUE stand for. [`../lib/cics-commands.mjs`](../lib/cics
 generated from it and `words.json` by [`../diag/generate-precompile.mjs`](../diag/generate-precompile.mjs),
 and `test/precompile.test.mjs` holds the two equal.
 
+[`enterprise-options.json`](enterprise-options.json) is Enterprise COBOL 6.4's compiler-option table:
+the 85 options in Table 45 of IBM's Programming Guide, each with its NO form, every abbreviation IBM
+documents, and the rules on where it may be given, quoted with the page. [`../lib/enterprise-options.mjs`](../lib/enterprise-options.mjs)
+and [`enterprise-options.tsv`](enterprise-options.tsv) are generated from it by
+[`../diag/generate-options.mjs`](../diag/generate-options.mjs), and `test/enterprise-options.test.mjs`
+holds them equal. The gate reads SSRANGE, NUMCHECK and PARMCHECK through it. ironwork vendors the TSV
+and tests its own option parsing against it, which is the sharing both READMEs promise.
+
 ## Why it is done this way
 
 The words are derived from online sources - the standards and each vendor's reference for its own

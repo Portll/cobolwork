@@ -1,0 +1,1343 @@
+{
+ "retrieved": "2026-09-30",
+ "source": {
+  "title": "Enterprise COBOL for z/OS 6.4 Programming Guide",
+  "number": "SC27-8714-03",
+  "url": "https://publibfp.dhe.ibm.com/epubs/pdf/igy6pg40.pdf",
+  "table": "Table 45. Compiler options, pages 339-342"
+ },
+ "method": "Each row is Table 45 as printed: the option, its default and its abbreviations, with the page of the option's own section. The negative form and the rules on where an option may be given come from that section, quoted. spellings lists every name the option answers to: its name, its NO form, and each abbreviation the table or the section documents, in that order; a spelling beginning NO that is not the option's own name turns the option off. process is false where the section forbids the option in a CBL or PROCESS statement; firstProgramOnly is true where a CBL or PROCESS statement may give it only before the first program of a batch compilation; installationDefault is false where it cannot be an installation default. lib/enterprise-options.mjs and enterprise-options.tsv are generated from this file and from nothing else.",
+ "options": [
+  {
+   "name": "APOST/QUOTE",
+   "aspect": "Source language",
+   "page": 347,
+   "default": "QUOTE",
+   "abbreviations": "APOST | Q",
+   "spellings": [
+    "APOST",
+    "QUOTE",
+    "Q"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "ARITH",
+   "aspect": "Source language",
+   "page": 349,
+   "default": "ARITH(COMPAT)",
+   "abbreviations": "AR(C | E)",
+   "spellings": [
+    "ARITH",
+    "AR"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "CICS",
+   "aspect": "Source language",
+   "page": 352,
+   "default": "NOCICS",
+   "abbreviations": "None",
+   "negative": "NOCICS",
+   "spellings": [
+    "CICS",
+    "NOCICS"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "The CICS compiler option can only be specified for the first program in a sequence of programs (batch compilation)."
+  },
+  {
+   "name": "CODEPAGE",
+   "aspect": "Source language",
+   "page": 353,
+   "default": "CODEPAGE(1140)",
+   "abbreviations": "CP(ccsid)",
+   "spellings": [
+    "CODEPAGE",
+    "CP"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "CURRENCY",
+   "aspect": "Source language",
+   "page": 358,
+   "default": "NOCURRENCY",
+   "abbreviations": "CURR | NOCURR",
+   "negative": "NOCURRENCY",
+   "spellings": [
+    "CURRENCY",
+    "NOCURRENCY",
+    "CURR",
+    "NOCURR"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "DBCS",
+   "aspect": "Source language",
+   "page": 360,
+   "default": "DBCS",
+   "abbreviations": "None",
+   "negative": "NODBCS",
+   "spellings": [
+    "DBCS",
+    "NODBCS"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "NSYMBOL",
+   "aspect": "Source language",
+   "page": 387,
+   "default": "NSYMBOL(NATIONAL)",
+   "abbreviations": "NS(DBCS | NAT)",
+   "spellings": [
+    "NSYMBOL",
+    "NS"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "NUMBER",
+   "aspect": "Source language",
+   "page": 388,
+   "default": "NONUMBER",
+   "abbreviations": "NUM | NONUM",
+   "negative": "NONUMBER",
+   "spellings": [
+    "NUMBER",
+    "NONUMBER",
+    "NUM",
+    "NONUM"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "QUALIFY",
+   "aspect": "Source language",
+   "page": 400,
+   "default": "QUALIFY(COMPAT)",
+   "abbreviations": "QUA(C | E)",
+   "spellings": [
+    "QUALIFY",
+    "QUA"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "SEQUENCE",
+   "aspect": "Source language",
+   "page": 405,
+   "default": "SEQUENCE",
+   "abbreviations": "SEQ | NOSEQ",
+   "negative": "NOSEQUENCE",
+   "spellings": [
+    "SEQUENCE",
+    "NOSEQUENCE",
+    "SEQ",
+    "NOSEQ"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "SQL",
+   "aspect": "Source language",
+   "page": 408,
+   "default": "NOSQL",
+   "abbreviations": "None",
+   "negative": "NOSQL",
+   "spellings": [
+    "SQL",
+    "NOSQL"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "The SQL compiler option can only be specified for the first program in a sequence of programs (batch compilation)."
+  },
+  {
+   "name": "SQLCCSID",
+   "aspect": "Source language",
+   "page": 409,
+   "default": "SQLCCSID",
+   "abbreviations": "SQLC | NOSQLC",
+   "negative": "NOSQLCCSID",
+   "spellings": [
+    "SQLCCSID",
+    "NOSQLCCSID",
+    "SQLC",
+    "NOSQLC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "SQLIMS",
+   "aspect": "Source language",
+   "page": 410,
+   "default": "NOSQLIMS",
+   "abbreviations": "None",
+   "negative": "NOSQLIMS",
+   "spellings": [
+    "SQLIMS",
+    "NOSQLIMS"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "The SQLIMS compiler option can only be specified for the first program in a sequence of programs (batch compilation)."
+  },
+  {
+   "name": "SUPPRESS",
+   "aspect": "Source language",
+   "page": 413,
+   "default": "SUPPRESS",
+   "abbreviations": "SUPP",
+   "negative": "NOSUPPRESS",
+   "spellings": [
+    "SUPPRESS",
+    "NOSUPPRESS",
+    "SUPP",
+    "NOSUPP"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true,
+   "notes": [
+    "Abbreviations are: SUPP | NOSUPP"
+   ]
+  },
+  {
+   "name": "WORD",
+   "aspect": "Source language",
+   "page": 425,
+   "default": "NOWORD",
+   "abbreviations": "WD | NOWD",
+   "negative": "NOWORD",
+   "spellings": [
+    "WORD",
+    "NOWORD",
+    "WD",
+    "NOWD"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "XMLPARSE",
+   "aspect": "Source language",
+   "page": 425,
+   "default": "XMLPARSE(XMLSS)",
+   "abbreviations": "XP(X) | XP(C)",
+   "spellings": [
+    "XMLPARSE",
+    "XP"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "INTDATE",
+   "aspect": "Date processing",
+   "page": 375,
+   "default": "INTDATE(ANSI)",
+   "abbreviations": "None",
+   "spellings": [
+    "INTDATE"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "CONDCOMP",
+   "aspect": "Maps and listings",
+   "page": 356,
+   "default": "CONDCOMP(NOSKIPSRC)",
+   "abbreviations": "CC(SKIPS | NOSKIPS)",
+   "spellings": [
+    "CONDCOMP",
+    "CC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "LANGUAGE",
+   "aspect": "Maps and listings",
+   "page": 381,
+   "default": "LANGUAGE(ENGLISH)",
+   "abbreviations": "LANG(EN | UE | JA | JP)",
+   "spellings": [
+    "LANGUAGE",
+    "LANG"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "LINECOUNT",
+   "aspect": "Maps and listings",
+   "page": 381,
+   "default": "LINECOUNT(60)",
+   "abbreviations": "LC",
+   "spellings": [
+    "LINECOUNT",
+    "LC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "LIST",
+   "aspect": "Maps and listings",
+   "page": 382,
+   "default": "NOLIST",
+   "abbreviations": "None",
+   "negative": "NOLIST",
+   "spellings": [
+    "LIST",
+    "NOLIST"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "MAP",
+   "aspect": "Maps and listings",
+   "page": 384,
+   "default": "NOMAP",
+   "abbreviations": "None",
+   "negative": "NOMAP",
+   "spellings": [
+    "MAP",
+    "NOMAP"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "OFFSET",
+   "aspect": "Maps and listings",
+   "page": 393,
+   "default": "NOOFFSET",
+   "abbreviations": "OFF | NOOFF",
+   "negative": "NOOFFSET",
+   "spellings": [
+    "OFFSET",
+    "NOOFFSET",
+    "OFF",
+    "NOOFF"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "SOURCE",
+   "aspect": "Maps and listings",
+   "page": 407,
+   "default": "SOURCE",
+   "abbreviations": "S | NOS",
+   "negative": "NOSOURCE",
+   "spellings": [
+    "SOURCE",
+    "NOSOURCE",
+    "S",
+    "NOS"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true,
+   "notes": [
+    "SOURCE(HEX) cannot be specified as an installation default (page 407)."
+   ]
+  },
+  {
+   "name": "SPACE",
+   "aspect": "Maps and listings",
+   "page": 408,
+   "default": "SPACE(1)",
+   "abbreviations": "None",
+   "spellings": [
+    "SPACE"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "TERMINAL",
+   "aspect": "Maps and listings",
+   "page": 413,
+   "default": "NOTERMINAL",
+   "abbreviations": "TERM | NOTERM",
+   "negative": "NOTERMINAL",
+   "spellings": [
+    "TERMINAL",
+    "NOTERMINAL",
+    "TERM",
+    "NOTERM"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "VBREF",
+   "aspect": "Maps and listings",
+   "page": 422,
+   "default": "NOVBREF",
+   "abbreviations": "None",
+   "negative": "NOVBREF",
+   "spellings": [
+    "VBREF",
+    "NOVBREF"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "XREF",
+   "aspect": "Maps and listings",
+   "page": 426,
+   "default": "XREF(FULL)",
+   "abbreviations": "X | NOX",
+   "negative": "NOXREF",
+   "spellings": [
+    "XREF",
+    "NOXREF",
+    "X",
+    "NOX"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "COMPILE",
+   "aspect": "Object deck generation",
+   "page": 355,
+   "default": "NOCOMPILE(S)",
+   "abbreviations": "C | NOC",
+   "negative": "NOCOMPILE",
+   "spellings": [
+    "COMPILE",
+    "NOCOMPILE",
+    "C",
+    "NOC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "COPYRIGHT",
+   "aspect": "Object deck generation",
+   "page": 357,
+   "default": "NOCOPYRIGHT",
+   "abbreviations": "CPYR | NOCPYR",
+   "negative": "NOCOPYRIGHT",
+   "spellings": [
+    "COPYRIGHT",
+    "NOCOPYRIGHT",
+    "CPYR",
+    "NOCPYR"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "DECK",
+   "aspect": "Object deck generation",
+   "page": 360,
+   "default": "NODECK",
+   "abbreviations": "D | NOD",
+   "negative": "NODECK",
+   "spellings": [
+    "DECK",
+    "NODECK",
+    "D",
+    "NOD"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "NAME",
+   "aspect": "Object deck generation",
+   "page": 387,
+   "default": "NONAME, or NAME(NOALIAS) if only NAME is specified",
+   "abbreviations": "None",
+   "negative": "NONAME",
+   "spellings": [
+    "NAME",
+    "NONAME"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "OBJECT",
+   "aspect": "Object deck generation",
+   "page": 393,
+   "default": "OBJECT",
+   "abbreviations": "OBJ | NOOBJ",
+   "negative": "NOOBJECT",
+   "spellings": [
+    "OBJECT",
+    "NOOBJECT",
+    "OBJ",
+    "NOOBJ"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "PGMNAME",
+   "aspect": "Object deck generation",
+   "page": 398,
+   "default": "PGMNAME(COMPAT)",
+   "abbreviations": "PGMN(CO | LU | LM)",
+   "spellings": [
+    "PGMNAME",
+    "PGMN"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "SERVICE",
+   "aspect": "Object deck generation",
+   "page": 405,
+   "default": "NOSERVICE",
+   "abbreviations": "SERV | NOSERV",
+   "negative": "NOSERVICE",
+   "spellings": [
+    "SERVICE",
+    "NOSERVICE",
+    "SERV",
+    "NOSERV"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "ADV",
+   "aspect": "Object code control",
+   "page": 346,
+   "default": "ADV",
+   "abbreviations": "None",
+   "negative": "NOADV",
+   "spellings": [
+    "ADV",
+    "NOADV"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "AFP",
+   "aspect": "Object code control",
+   "page": 346,
+   "default": "AFP(NOVOLATILE)",
+   "abbreviations": "None",
+   "spellings": [
+    "AFP"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "ARCH",
+   "aspect": "Object code control",
+   "page": 347,
+   "default": "ARCH(10)",
+   "abbreviations": "None",
+   "spellings": [
+    "ARCH"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "AWO",
+   "aspect": "Object code control",
+   "page": 350,
+   "default": "NOAWO",
+   "abbreviations": "None",
+   "negative": "NOAWO",
+   "spellings": [
+    "AWO",
+    "NOAWO"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "BLOCK0",
+   "aspect": "Object code control",
+   "page": 350,
+   "default": "NOBLOCK0",
+   "abbreviations": "None",
+   "negative": "NOBLOCK0",
+   "spellings": [
+    "BLOCK0",
+    "NOBLOCK0"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "DEFINE",
+   "aspect": "Object code control",
+   "page": 360,
+   "default": "NODEFINE",
+   "abbreviations": "DEF | NODEF",
+   "negative": "NODEFINE",
+   "spellings": [
+    "DEFINE",
+    "NODEFINE",
+    "DEF",
+    "NODEF"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "When DEFINE options are specified in CBL statements, they can be used only on the first program of a batch program."
+  },
+  {
+   "name": "DISPSIGN",
+   "aspect": "Object code control",
+   "page": 362,
+   "default": "DISPSIGN(COMPAT)",
+   "abbreviations": "DS(S | C)",
+   "spellings": [
+    "DISPSIGN",
+    "DS"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "DLL",
+   "aspect": "Object code control",
+   "page": 363,
+   "default": "NODLL",
+   "abbreviations": "None",
+   "negative": "NODLL",
+   "spellings": [
+    "DLL",
+    "NODLL"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "EXPORTALL",
+   "aspect": "Object code control",
+   "page": 369,
+   "default": "NOEXPORTALL",
+   "abbreviations": "EXP | NOEXP",
+   "negative": "NOEXPORTALL",
+   "spellings": [
+    "EXPORTALL",
+    "NOEXPORTALL",
+    "EXP",
+    "NOEXP"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "FASTSRT",
+   "aspect": "Object code control",
+   "page": 369,
+   "default": "NOFASTSRT",
+   "abbreviations": "FSRT | NOFSRT",
+   "negative": "NOFASTSRT",
+   "spellings": [
+    "FASTSRT",
+    "NOFASTSRT",
+    "FSRT",
+    "NOFSRT"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "HGPR",
+   "aspect": "Object code control",
+   "page": 372,
+   "default": "HGPR(PRESERVE)",
+   "abbreviations": "None",
+   "spellings": [
+    "HGPR"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "INITIAL",
+   "aspect": "Object code control",
+   "page": 374,
+   "default": "NOINITIAL",
+   "abbreviations": "None",
+   "negative": "NOINITIAL",
+   "spellings": [
+    "INITIAL",
+    "NOINITIAL"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "INLINE",
+   "aspect": "Object code control",
+   "page": 375,
+   "default": "INLINE",
+   "abbreviations": "INL | NOINL",
+   "negative": "NOINLINE",
+   "spellings": [
+    "INLINE",
+    "NOINLINE",
+    "INL",
+    "NOINL"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "INVDATA",
+   "aspect": "Object code control",
+   "page": 376,
+   "default": "NOINVDATA",
+   "abbreviations": "NOINV | INVD(FNC | NOFNC,CS | NOCS)",
+   "negative": "NOINVDATA",
+   "spellings": [
+    "INVDATA",
+    "NOINVDATA",
+    "NOINV",
+    "INVD",
+    "NOINVD"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true,
+   "notes": [
+    "Abbreviations are: INVD | NOINVD (Table 45 gives NOINV instead; both are kept)"
+   ]
+  },
+  {
+   "name": "JAVAIOP",
+   "aspect": "Object code control",
+   "page": 379,
+   "default": "NOJAVAIOP",
+   "abbreviations": "JIOP | NOJIOP",
+   "negative": "NOJAVAIOP",
+   "spellings": [
+    "JAVAIOP",
+    "NOJAVAIOP",
+    "JIOP",
+    "NOJIOP"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "The JAVAIOP compiler option can only be specified for the first program in a sequence of programs (batch compilation)."
+  },
+  {
+   "name": "LP",
+   "aspect": "Object code control",
+   "page": 383,
+   "default": "LP(32)",
+   "abbreviations": "None",
+   "spellings": [
+    "LP"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "if you specify the option in a CBL or PROCESS statement, you can only specify the LP option for the first program in a sequence of programs (batch compilation)."
+  },
+  {
+   "name": "MAXPCF",
+   "aspect": "Object code control",
+   "page": 385,
+   "default": "MAXPCF(100000)",
+   "abbreviations": "None",
+   "spellings": [
+    "MAXPCF"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "NUMCHECK",
+   "aspect": "Object code control",
+   "page": 388,
+   "default": "NONUMCHECK",
+   "abbreviations": "NC | NONC",
+   "negative": "NONUMCHECK",
+   "spellings": [
+    "NUMCHECK",
+    "NONUMCHECK",
+    "NC",
+    "NONC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "NUMPROC",
+   "aspect": "Object code control",
+   "page": 392,
+   "default": "NUMPROC(NOPFD)",
+   "abbreviations": "None",
+   "spellings": [
+    "NUMPROC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "OPTIMIZE",
+   "aspect": "Object code control",
+   "page": 395,
+   "default": "OPTIMIZE(0)",
+   "abbreviations": "OPT(n)",
+   "negative": "NOOPTIMIZE",
+   "spellings": [
+    "OPTIMIZE",
+    "NOOPTIMIZE",
+    "OPT"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true,
+   "notes": [
+    "NOOPTIMIZE is still accepted, as OPTIMIZE(0): \"Since Enterprise COBOL 5, the NOOPTIMIZE, OPTIMIZE, OPTIMIZE(STD), and OPTIMIZE(FULL) ... \" (page 395)."
+   ]
+  },
+  {
+   "name": "OUTDD",
+   "aspect": "Object code control",
+   "page": 396,
+   "default": "OUTDD(SYSOUT)",
+   "abbreviations": "OUT",
+   "spellings": [
+    "OUTDD",
+    "OUT"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "The OUTDD compiler option can only be specified for the first program in a sequence of programs (batch compilation)."
+  },
+  {
+   "name": "PARMCHECK",
+   "aspect": "Object code control",
+   "page": 397,
+   "default": "NOPARMCHECK",
+   "abbreviations": "PC | NOPC",
+   "negative": "NOPARMCHECK",
+   "spellings": [
+    "PARMCHECK",
+    "NOPARMCHECK",
+    "PC",
+    "NOPC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "TRUNC",
+   "aspect": "Object code control",
+   "page": 419,
+   "default": "TRUNC(STD)",
+   "abbreviations": "None",
+   "spellings": [
+    "TRUNC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "TUNE",
+   "aspect": "Object code control",
+   "page": 421,
+   "default": "TUNE(10) if ARCH is not specified. The default TUNE level must match the ARCH level if ARCH is specified.",
+   "abbreviations": "None",
+   "spellings": [
+    "TUNE"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "VLR",
+   "aspect": "Object code control",
+   "page": 422,
+   "default": "VLR(STD)",
+   "abbreviations": "VLR(C | S)",
+   "spellings": [
+    "VLR"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "ZONECHECK",
+   "aspect": "Object code control",
+   "page": 427,
+   "default": "NOZONECHECK",
+   "abbreviations": "NOZC | ZC(MSG) | ZC(ABD)",
+   "negative": "NOZONECHECK",
+   "spellings": [
+    "ZONECHECK",
+    "NOZONECHECK",
+    "NOZC",
+    "ZC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "ZONEDATA",
+   "aspect": "Object code control",
+   "page": 428,
+   "default": "ZONEDATA(PFD)",
+   "abbreviations": "ZD(PFD) | ZD(MIG) | ZD(NOPFD)",
+   "spellings": [
+    "ZONEDATA",
+    "ZD"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "ZWB",
+   "aspect": "Object code control",
+   "page": 431,
+   "default": "ZWB",
+   "abbreviations": "None",
+   "negative": "NOZWB",
+   "spellings": [
+    "ZWB",
+    "NOZWB"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "BUFSIZE",
+   "aspect": "Virtual storage usage",
+   "page": 351,
+   "default": "4096",
+   "abbreviations": "BUF",
+   "spellings": [
+    "BUFSIZE",
+    "BUF"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "The BUFSIZE compiler option can only be specified for the first program in a sequence of programs (batch compilation)."
+  },
+  {
+   "name": "DATA",
+   "aspect": "Virtual storage usage",
+   "page": 359,
+   "default": "DATA(31)",
+   "abbreviations": "None",
+   "spellings": [
+    "DATA"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "DYNAM",
+   "aspect": "Virtual storage usage",
+   "page": 366,
+   "default": "NODYNAM",
+   "abbreviations": "DYN | NODYN",
+   "negative": "NODYNAM",
+   "spellings": [
+    "DYNAM",
+    "NODYNAM",
+    "DYN",
+    "NODYN"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "RENT",
+   "aspect": "Virtual storage usage",
+   "page": 401,
+   "default": "RENT",
+   "abbreviations": "None",
+   "negative": "NORENT",
+   "spellings": [
+    "RENT",
+    "NORENT"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "RMODE",
+   "aspect": "Virtual storage usage",
+   "page": 402,
+   "default": "AUTO",
+   "abbreviations": "None",
+   "spellings": [
+    "RMODE"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "STGOPT",
+   "aspect": "Virtual storage usage",
+   "page": 412,
+   "default": "NOSTGOPT",
+   "abbreviations": "SO | NOSO",
+   "negative": "NOSTGOPT",
+   "spellings": [
+    "STGOPT",
+    "NOSTGOPT",
+    "SO",
+    "NOSO"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "DIAGTRUNC",
+   "aspect": "Debugging and diagnostics",
+   "page": 362,
+   "default": "NODIAGTRUNC",
+   "abbreviations": "DTR | NODTR",
+   "negative": "NODIAGTRUNC",
+   "spellings": [
+    "DIAGTRUNC",
+    "NODIAGTRUNC",
+    "DTR",
+    "NODTR"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "DUMP",
+   "aspect": "Debugging and diagnostics",
+   "page": 365,
+   "default": "NODUMP",
+   "abbreviations": "DU | NODU",
+   "negative": "NODUMP",
+   "spellings": [
+    "DUMP",
+    "NODUMP",
+    "DU",
+    "NODU"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "FLAG",
+   "aspect": "Debugging and diagnostics",
+   "page": 369,
+   "default": "FLAG(I,I)",
+   "abbreviations": "F | NOF",
+   "negative": "NOFLAG",
+   "spellings": [
+    "FLAG",
+    "NOFLAG",
+    "F",
+    "NOF"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "FLAGSTD",
+   "aspect": "Debugging and diagnostics",
+   "page": 370,
+   "default": "NOFLAGSTD",
+   "abbreviations": "None",
+   "negative": "NOFLAGSTD",
+   "spellings": [
+    "FLAGSTD",
+    "NOFLAGSTD"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "INITCHECK",
+   "aspect": "Debugging and diagnostics",
+   "page": 373,
+   "default": "NOINITCHECK",
+   "abbreviations": "IC | NOIC",
+   "negative": "NOINITCHECK",
+   "spellings": [
+    "INITCHECK",
+    "NOINITCHECK",
+    "IC",
+    "NOIC"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "RULES",
+   "aspect": "Debugging and diagnostics",
+   "page": 403,
+   "default": "NORULES",
+   "abbreviations": "RULES(ENDP,EVENP,LXPRF,SLCKB,OOM) | RULES(NOENDP,NOEVENP,NOLXPRF,NOSLCKB,NOOOM,NOUNRA | NOUNRS)",
+   "negative": "NORULES",
+   "spellings": [
+    "RULES",
+    "NORULES"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "SSRANGE",
+   "aspect": "Debugging and diagnostics",
+   "page": 411,
+   "default": "NOSSRANGE",
+   "abbreviations": "SSR(ZLEN | NOZLEN,MSG | ABD) | NOSSR",
+   "negative": "NOSSRANGE",
+   "spellings": [
+    "SSRANGE",
+    "NOSSRANGE",
+    "SSR",
+    "NOSSR"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "TEST",
+   "aspect": "Debugging and diagnostics",
+   "page": 414,
+   "default": "NOTEST",
+   "abbreviations": "None",
+   "negative": "NOTEST",
+   "spellings": [
+    "TEST",
+    "NOTEST"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "ADATA",
+   "aspect": "Other",
+   "page": 345,
+   "default": "NOADATA",
+   "abbreviations": "None",
+   "negative": "NOADATA",
+   "spellings": [
+    "ADATA",
+    "NOADATA"
+   ],
+   "process": false,
+   "firstProgramOnly": false,
+   "installationDefault": true,
+   "placement": "You cannot specify the ADATA option in a PROCESS (or CBL) statement."
+  },
+  {
+   "name": "COPYLOC",
+   "aspect": "Other",
+   "page": 356,
+   "default": "NOCOPYLOC",
+   "abbreviations": "CPLC",
+   "negative": "NOCOPYLOC",
+   "spellings": [
+    "COPYLOC",
+    "NOCOPYLOC",
+    "CPLC",
+    "NOCPLC"
+   ],
+   "process": true,
+   "firstProgramOnly": true,
+   "installationDefault": true,
+   "placement": "When COPYLOC options are specified in CBL statements, they can be used only on the first program of a batch program.",
+   "notes": [
+    "Abbreviations are: CPLC | NOCPLC"
+   ]
+  },
+  {
+   "name": "EXIT",
+   "aspect": "Other",
+   "page": 367,
+   "default": "NOEXIT",
+   "abbreviations": "NOEX | EX(INX | NOINX, LIBX | NOLIBX, PRTX | NOPRTX, ADX | NOADX, MSGX | NOMSGX)",
+   "negative": "NOEXIT",
+   "spellings": [
+    "EXIT",
+    "NOEXIT",
+    "NOEX",
+    "EX"
+   ],
+   "process": false,
+   "firstProgramOnly": false,
+   "installationDefault": true,
+   "placement": "You can specify the EXIT option only at invocation in the JCL PARM field (under TSO/E, in a command argument) or at installation time. Do not specify the EXIT option in a PROCESS (CBL) statement."
+  },
+  {
+   "name": "MDECK",
+   "aspect": "Other",
+   "page": 386,
+   "default": "NOMDECK",
+   "abbreviations": "NOMD | MD | MD(C | NOC)",
+   "negative": "NOMDECK",
+   "spellings": [
+    "MDECK",
+    "NOMDECK",
+    "NOMD",
+    "MD"
+   ],
+   "process": false,
+   "firstProgramOnly": false,
+   "installationDefault": true,
+   "placement": "You cannot specify the MDECK option in a PROCESS (or CBL) statement."
+  },
+  {
+   "name": "OPTFILE",
+   "aspect": "Other",
+   "page": 394,
+   "default": "None",
+   "abbreviations": "None",
+   "spellings": [
+    "OPTFILE"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": false,
+   "placement": "OPTFILE cannot be specified as an installation default."
+  },
+  {
+   "name": "SMARTBIN",
+   "aspect": "Other",
+   "page": 406,
+   "default": "SMARTBIN when LP(32) is in effect. SMARTBIN is not supported when LP(64) is in effect.",
+   "abbreviations": "None",
+   "negative": "NOSMARTBIN",
+   "spellings": [
+    "SMARTBIN",
+    "NOSMARTBIN"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "THREAD",
+   "aspect": "Other",
+   "page": 418,
+   "default": "NOTHREAD",
+   "abbreviations": "None",
+   "negative": "NOTHREAD",
+   "spellings": [
+    "THREAD",
+    "NOTHREAD"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  },
+  {
+   "name": "VSAMOPENFS",
+   "aspect": "Other",
+   "page": 424,
+   "default": "VSAMOPENFS(COMPAT)",
+   "abbreviations": "VS(C | S)",
+   "spellings": [
+    "VSAMOPENFS",
+    "VS"
+   ],
+   "process": true,
+   "firstProgramOnly": false,
+   "installationDefault": true
+  }
+ ]
+}

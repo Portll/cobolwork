@@ -154,9 +154,17 @@ declares its transaction open:
     "no check is shown to run on every route before the operation at INQUIRY.cbl:13",
     "started by transaction INQ1: open to any user, per cobolwork.site.json"
   ],
-  "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation"
+  "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation",
+  "fixAt": {
+    "program": "INQUIRY", "path": "INQUIRY.cbl", "line": 13, "item": "WS-STMT",
+    "test": "before the operation at INQUIRY.cbl:13, on every route to it, test WS-STMT against a list of the values allowed (...), and let only a value that passes reach it; a static statement with host variables needs no test"
+  }
 }
 ```
+
+`fixAt` is where one patch covers every route, with a test the analysis credits: patch it there, scan
+again, and the finding moves to `refuted`. Where no test makes the operation safe, `why` says so and
+the rule's remedy is the fix.
 
 Who may start a transaction lives in RACF, not in a repository, so without it the strongest verdict is
 `attacker-driven`, and `summary.reachNote` says how many that is. Name the entries in

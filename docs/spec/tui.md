@@ -230,8 +230,8 @@ from is shown with its selection, and F3 from there goes to Home, not back into 
 #### T1.17 A path finding says whether an attacker can use it
 
 Given a report whose path findings carry an exploitability verdict (`reach.md` §9), then Home counts
-them by verdict; when a finding is opened, the panel shows its verdict, the facts it rests on and the
-fact that would change it; `SORT EXPLOIT` puts the most urgent verdict first, and `FILTER exploitable`
+them by verdict; when a finding is opened, the panel shows its verdict beside who acts, and below the
+identity the facts it rests on, the fact that would change it and where to patch it; `SORT EXPLOIT` puts the most urgent verdict first, and `FILTER exploitable`
 keeps only those. FILTER takes evidence kinds and verdicts together.
 
 ### X1 — The fix packet

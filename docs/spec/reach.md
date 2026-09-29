@@ -167,13 +167,25 @@ Every `path` finding, and every route under `checked`, carries `exploitability`:
     "no check is shown to run on every route before the operation at INQUIRY.cbl:13",
     "started by transaction INQ1: open to any user, per reach.json (IRRDBU00 unload, retrieved 2026-09-20)"
   ],
-  "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation"
+  "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation",
+  "fixAt": {
+    "program": "INQUIRY", "path": "INQUIRY.cbl", "line": 13, "item": "WS-STMT",
+    "test": "before the operation at INQUIRY.cbl:13, on every route to it, test WS-STMT against a list of the values allowed (...), and let only a value that passes reach it; a static statement with host variables needs no test"
+  }
 }
 ```
 
 `because` is the facts, each citing where it came from; `unknown` is the one fact that would move the
 verdict. `summary.byExploitability` counts findings by verdict, and the report carries the meaning of
 each as `exploitabilityVerdicts`.
+
+`fixAt` is where one patch covers every route: immediately before the operation, on the value it
+uses. Its `test` is written from what the check model credits as clearing that kind of sink
+(`stops()` in `lib/control.mjs`) - `IS NUMERIC` for arithmetic, a bound for an index, an allow-list
+for a name - so a patch written to it moves the finding to `refuted` on the next scan, which
+`test/exploitability.test.mjs` shows on three benchmark cases. Where no test on the value makes the
+operation safe - a key a protected field carries, data leaving the region, a response code - `test`
+is null and `why` points to the rule's remedy. A refuted route carries no `fixAt`.
 
 ### 9.1 The verdicts, most urgent first
 
@@ -207,8 +219,7 @@ scanning shows it to everyone who can read the repository.
 
 ### 9.4 What comes next
 
-In order: where one check would cover every route (`fixAt`); reach facts drafted from the CSD for a
-person to confirm; a verification plan per finding in `explain` - a harmless test value and what to
+`fixAt` is built. In order: reach facts drafted from the CSD for a person to confirm; a verification plan per finding in `explain` - a harmless test value and what to
 watch for, never a payload; a witness feed, brought and refused from inside the tree like the reach
 feed, that makes a verdict `confirmed` or `not-reproduced`; and the labelled corpus of §7.3, which
 turns each verdict into a measured rate.

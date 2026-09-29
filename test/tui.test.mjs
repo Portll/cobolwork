@@ -378,12 +378,14 @@ test('T1.17 A path finding says whether an attacker can use it', () => {
   assert.match(text(filtered), /exploit exploitable/);
   assert.match(text(filtered), /Row 1 of 1/);
   const opened = press(filtered, 'Enter').state;
-  assert.match(text(opened), /Exploit\s+exploitable:/);
-  assert.match(text(opened), /Because\s+- A terminal user supplies it/);
-  assert.match(text(opened), /Unknown\s+whether it reproduces/);
+  assert.match(text(opened), /Exploit\s+exploitable, driven by a terminal user/);
+  const whole = `${text(opened)}\n${text(press(opened, 'F8').state)}`;
+  assert.match(whole, /Because\s+- A terminal user supplies it/);
+  assert.match(whole, /Unknown\s+whether it reproduces/);
+  assert.match(whole, /Fix at\s+before the operation at INQUIRY\.cbl:13/);
 
   const sorted = type(findings, 'SORT EXPLOIT').state;
-  assert.match(text(press(sorted, 'Enter').state), /Exploit\s+exploitable:/, 'the exploitable finding sorts first');
+  assert.match(text(press(sorted, 'Enter').state), /Exploit\s+exploitable,/, 'the exploitable finding sorts first');
   const both = type(findings, 'FILTER path attacker-driven').state;
   assert.ok(rows(report, both.view).every((r) => r.f.evidence === 'path' && r.f.exploitability.verdict === 'attacker-driven'));
   assert.match(type(findings, 'FILTER nonsense').state.message, /FILTER takes an evidence kind or an exploitability verdict/);

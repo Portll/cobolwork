@@ -32,12 +32,13 @@ test('a quote is compared with whitespace collapsed and punctuation folded', () 
 });
 
 test('the catalogue holds every rule the engine can report', () => {
-  assert.equal(CATALOGUE.size, 163);
+  assert.equal(CATALOGUE.size, 164);
   assert.ok(CATALOGUE.has('cics-commarea-without-length-check'));
   assert.equal(CATALOGUE.get('call-parameter-exceeds-caller-record').set, 'flow');
   assert.ok(CATALOGUE.has('jcl-racf-password'), 'the credential pack counts');
   assert.equal(CATALOGUE.get('jcl-instream-credential').set, 'jcl');
   assert.equal(CATALOGUE.get('database-to-message-queue').set, 'flow');
+  assert.equal(CATALOGUE.get('display-echoes-a-credential').set, 'log');
 });
 
 test('a model may not author ground truth, structurally rather than by convention', () => {

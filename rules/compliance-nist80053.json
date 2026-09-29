@@ -1144,6 +1144,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "display-echoes-a-credential",
+   "framework": "nist-800-53r5",
+   "clause": "SI-11",
+   "title": "Error Handling",
+   "rationale": "The rule reports: A program displays a credential back to the terminal or HTTP request that supplied it. That is the system emitting information that could be exploited, to a destination read by people the record was never for, which this control requires it not do.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Generate error messages that provide information necessary for corrective actions without revealing information that could be exploited"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "embedded-sql-connect-password",
    "framework": "nist-800-53r5",
    "clause": "IA-5",

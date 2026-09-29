@@ -145,10 +145,18 @@ numeric holds a number unless it is a `PIN` of four digits or more. `TOKEN` is a
 often as a credential, so it counts only beside a word such as `AUTH`, `ACCESS`, `BEARER`, `API` or
 `SESSION`, or where the value came from something that only yields credentials: an environment
 variable, a masked or credential-prompted terminal entry, a CICS `VERIFY` or `SIGNON`, or a file
-named for secrets. Two writes are not to a log: a plain `DISPLAY` of what the person at the terminal
-typed at a prompt in the same program, and a plain `DISPLAY` in a CGI program, which writes a
-`Content-Type` header and so answers the request. A password read from a file and displayed is
-still reported, prompt or no prompt, and so is anything sent `UPON CONSOLE` or `UPON SYSERR`.
+named for secrets.
+
+Two plain `DISPLAY`s of a credential are not log writes, and are reported low as
+`display-echoes-a-credential` (CWE-200), in no class a build refuses. One shows the person at the
+terminal what they typed at a prompt, in a program no job in the repository runs or compiles; if a
+job does, or one runs a program nothing names, its `ACCEPT` reads `SYSIN`, its `DISPLAY` goes to
+`SYSOUT`, and the write stays high. The other is a CGI program, one that writes a `Content-Type`
+header, putting what the request posted into its response, traced back through the moves that fill
+it to standard input, a request variable, or a routine the program names the request to. A session
+token issued in a `Set-Cookie` header is not reported. A password read from a file and displayed
+stays high, prompt or no prompt, in a CGI response or not, and so does anything sent `UPON CONSOLE`
+or `UPON SYSERR`.
 
 ## JCL and the estate
 

@@ -3,10 +3,13 @@
 // corpus measurement caught before the rule was written.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scanLog, LOG_RULES, classify } from '../lib/sets/log.mjs';
 import { ALL_RULES, RULE_SETS } from '../lib/scan.mjs';
+import { classesOf } from '../lib/consequence.mjs';
 import './pin-machine.mjs';
 
 const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'log');
@@ -66,8 +69,49 @@ test('a numeric field is a number, and only a PIN of four digits or more is a nu
   assert.deepEqual(of('NUMBERS.cbl'), [['log-writes-a-credential', 20, 'high']]);
 });
 
-test('a password shown back to the person who typed it is not written to a log', () => {
-  assert.deepEqual(of('ECHO.cbl'), []);
+test('a password shown back to the person who typed it is low, and says it went to their terminal', () => {
+  assert.deepEqual(of('ECHO.cbl'), [
+    ['display-echoes-a-credential', 12, 'low'],
+    ['display-echoes-a-credential', 15, 'low'],
+  ]);
+  for (const f of report.findings.filter((x) => x.path === 'ECHO.cbl')) assert.match(f.detail, /on the terminal to the person who typed it/);
+});
+
+test('an echo in a program a job runs goes to SYSOUT, and stays high', () => {
+  // BATCH.jcl runs BATCHPW by PGM=, PROCPW through a procedure, PWMEMBER by its member name, and
+  // compiles COMPPW with IBM's procedure.
+  for (const file of ['BATCHPW.cbl', 'PROCPW.cbl', 'MEMBERPW.cbl', 'COMPPW.cbl']) {
+    assert.deepEqual(of(file), [['log-writes-a-credential', 12, 'high']], file);
+  }
+});
+
+test('a job whose program nobody names leaves every echo in the repository high', () => {
+  const root = mkdtempSync(join(tmpdir(), 'cw-log-'));
+  writeFileSync(join(root, 'ECHO.cbl'), readFileSync(join(FIXTURES, 'ECHO.cbl')));
+  writeFileSync(join(root, 'RUN.jcl'), '//RUNJOB   JOB (ACCT),CLASS=A\n//RUN      EXEC PGM=&PROG\n');
+  const r = scanLog(root);
+  assert.deepEqual(r.findings.map((f) => [f.rule, f.line, f.sev]).sort(), [
+    ['log-writes-a-credential', 12, 'high'],
+    ['log-writes-a-credential', 15, 'high'],
+  ]);
+});
+
+test('a CGI response that echoes a posted password is low; one on file, or that may be, is high', () => {
+  assert.deepEqual(of('CGIECHO.cbl'), [
+    ['display-echoes-a-credential', 35, 'low'],
+    ['log-writes-a-credential', 36, 'high'],
+    ['log-writes-a-credential', 37, 'high'],
+  ]);
+  assert.deepEqual(of('CGIPOST.cbl'), [['display-echoes-a-credential', 19, 'low']]);
+  for (const f of report.findings.filter((x) => x.rule === 'display-echoes-a-credential' && /^CGI/.test(x.path))) {
+    assert.match(f.detail, /which the request posted, into its HTTP response/);
+  }
+});
+
+test('the low echo is outside every class a build refuses', () => {
+  assert.equal(LOG_RULES['display-echoes-a-credential'].sev, 'low');
+  assert.deepEqual(classesOf({ rule: 'display-echoes-a-credential', sev: 'low' }), []);
+  assert.deepEqual(classesOf({ rule: 'log-writes-a-credential', sev: 'high' }), ['privilege-escalation']);
 });
 
 test('a typed password is still logged when it goes to the console, or when something else can fill its bytes', () => {
@@ -82,8 +126,9 @@ test('a password on file is reported where it is displayed, though the same fiel
   assert.deepEqual(of('STORED.cbl'), [['log-writes-a-credential', 29, 'high']]);
 });
 
-test('a CGI program displays its HTTP response, and its DISPLAY UPON SYSERR goes to the server log', () => {
+test('a session cookie issued in a CGI response is silent, and DISPLAY UPON SYSERR goes to the server log', () => {
   assert.deepEqual(of('CGISID.cbl'), [['log-writes-a-credential', 14, 'high']]);
+  assert.equal(report.findings.some((f) => /WS-SESSION-TOKEN/.test(f.detail)), false);
 });
 
 test('a program that logs only what it made safe is reported as nothing', () => {
@@ -114,7 +159,7 @@ test('what follows UPON is where the value went, not a value', () => {
   // destination was being judged as though it were a field. Nothing in the lists collides with
   // CONSOLE or SYSOUT today, which is exactly why this would have rotted quietly.
   const r = scanLog(FIXTURES);
-  const written = r.findings.map((f) => / writes (\S+) with /.exec(f.detail)?.[1]);
+  const written = r.findings.map((f) => / (?:writes|shows|puts) ([A-Z0-9-]+)/.exec(f.detail)?.[1]);
   assert.ok(written.length && written.every(Boolean), 'every finding names the value it writes');
   assert.deepEqual(written.filter((w) => ['CONSOLE', 'SYSOUT', 'UPON'].includes(w)), []);
 });
@@ -134,6 +179,7 @@ test('a field is reported once per program however many ways it is written', () 
 test('every rule carries the CWE its class is known by', () => {
   assert.equal(LOG_RULES['log-writes-a-credential'].cwe, 'CWE-532');
   assert.equal(LOG_RULES['log-writes-personal-data'].cwe, 'CWE-532');
+  assert.equal(LOG_RULES['display-echoes-a-credential'].cwe, 'CWE-200');
   for (const r of Object.values(LOG_RULES)) assert.equal(r.evidence, 'construct');
 });
 

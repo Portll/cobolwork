@@ -1135,6 +1135,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "display-echoes-a-credential",
+   "framework": "dora",
+   "clause": "Article 9(3)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program displays a credential back to the terminal or HTTP request that supplied it. That risks the loss of data and the impairment of its integrity, which this clause requires be prevented.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "prevent the lack of availability, the impairment of the authenticity and integrity, the breaches of confidentiality and the loss of data"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "embedded-sql-connect-password",
    "framework": "dora",
    "clause": "Article 9(4)(d)",

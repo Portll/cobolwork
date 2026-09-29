@@ -201,3 +201,17 @@ test('a counter varied from 0, or downwards, is not bounded below', () => {
   assert.equal(found('LOOPZERO.cbl').length, 1);
   assert.equal(found('LOOPBYNEG.cbl').length, 1);
 });
+
+test('a bound against a level-78 constant or a VALUE nothing writes is credited', () => {
+  for (const file of ['CONST78.cbl', 'VALFIXED.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+});
+
+test('a bound against a VALUE item the program writes, alone or through its group, is not credited', () => {
+  for (const file of ['VALMOVED.cbl', 'VALGROUP.cbl']) {
+    assert.equal(found(file).length, 1, file);
+    assert.deepEqual(stopped(file), [], file);
+  }
+});

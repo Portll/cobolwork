@@ -48,7 +48,7 @@ const USAGE = `cobolwork ${VERSION} — COBOL, JCL and CICS security analysis, n
                                what this cobolwork can do: commands and options, the version of every
                                document it writes, its fingerprint version, the file kinds it reads, and
                                the commit it runs from
-  cobolwork build <repo> [--base <ref>] [--policy <file>] [--provenance <file>] [-- <compiler> <arg>...]
+  cobolwork build <repo> [--base <ref>] [--policy <file>] [--provenance <file>] [--ironwork <path> | -- <compiler> <arg>...]
                                the build gate: every finding ranked LOW to KNOWN-EXPLOITABLE, the
                                policy's blocking findings and compiler options checked, and the
                                compiler run only on a pass. Exits 0 pass, 1 fail, 3 undecided, 4 the
@@ -82,6 +82,9 @@ Options
   --policy <file>       build: an organisation's floor policy, from outside the repository; the
                         repository's cobolwork.policy.json can tighten it and never loosen it
   --provenance <file>   build: write what was scanned, under which policy, and what was compiled
+  --ironwork <path>     build: after a pass, run ironwork check on every program, for an estate that
+                        compiles with IBM Enterprise COBOL; a program ironwork rejects exits 4, one it
+                        does not model yet leaves the build undecided
 
 Exit codes: 0 the command ran, 2 it could not run. A run that examined nothing says so in
 summary.filesScanned and summary.nosrc rather than reporting a clean zero.
@@ -128,6 +131,7 @@ function parseArgs(argv) {
     else if (a === '--json') opts.json = true;
     else if (a === '--policy') opts.policy = value();
     else if (a === '--provenance') opts.provenance = value();
+    else if (a === '--ironwork') opts.ironwork = value();
     else if (a === '--help' || a === '-h') opts.help = true;
     else if (a === '--version' || a === '-v') opts.version = true;
     else if (a.startsWith('-')) { opts.unknown = a; }
@@ -216,7 +220,7 @@ if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
   process.stderr.write(`cobolwork: --json is for capabilities; every other command writes JSON unless --format says otherwise\n`);
   process.exit(2);
 }
-const buildFlag = ['policy', 'provenance'].find((k) => opts[k] !== undefined) || (compilerArgv ? '' : null);
+const buildFlag = ['policy', 'provenance', 'ironwork'].find((k) => opts[k] !== undefined) || (compilerArgv ? '' : null);
 if (buildFlag !== null && opts._.length && opts._[0] !== 'build') {
   process.stderr.write(`cobolwork: ${buildFlag ? `--${buildFlag}` : '--'} is for build only\n`);
   process.exit(2);
@@ -293,7 +297,7 @@ try {
     if (opts.only || opts.repos) { process.stderr.write('cobolwork: build judges one repository with every rule set; --only and --repos do not apply\n'); process.exit(2); }
     if (opts.baseline) { process.stderr.write('cobolwork: build reads the baseline the change was written against; --baseline does not apply, --no-baseline does\n'); process.exit(2); }
     if (opts.head && !opts.base) { process.stderr.write('cobolwork: build --head needs --base\n'); process.exit(2); }
-    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs });
+    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs });
     stampRevisions(result.doc.summary, opts.head || null);
     Object.assign(result.report.summary, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });
     Object.assign(result.provenance, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });

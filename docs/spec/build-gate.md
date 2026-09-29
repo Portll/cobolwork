@@ -60,7 +60,7 @@ The terms of [`ruleset-contract.md`](ruleset-contract.md) §2 and
 ## 3. The command
 
 ```
-cobolwork build <repo> [--base <ref> [--head <ref>]] [--policy <file>] [--provenance <file>] [--advisories <file>[,<file>]] [--format json|sarif] [--out <file>] [-- <compiler> <arg>…]
+cobolwork build <repo> [--base <ref> [--head <ref>]] [--policy <file>] [--provenance <file>] [--advisories <file>[,<file>]] [--format json|sarif] [--out <file>] [--ironwork <path> | -- <compiler> <arg>…]
 ```
 
 `--advisories` loads an estate's own advisory extract, as `scan` does; a feed inside the tree is
@@ -73,6 +73,8 @@ knows about IBM Z only to its customers.
 - Everything after `--` is the compiler command, as an argument vector: no shell reads it. It runs
   only on a pass (§8). Without `--` the gate lints and checks options and compiles nothing, for a
   pipeline whose compile step is elsewhere, which includes every z/OS build.
+- `--ironwork <path>` gives that pipeline a compile check before the mainframe: ironwork's `check`
+  runs on every program on a pass (§8a). It and `--` are one or the other.
 - The exit status is the verdict, because stopping the build is the command's purpose:
 
   | Exit | Meaning |
@@ -377,6 +379,33 @@ defaults, and the check reads both.
   limit: a build's length is the pipeline's to bound. The document records the resolved path, the
   argument vector as run and the exit status.
 
+## 8a. Checking with ironwork
+
+ironwork compiles COBOL as IBM Enterprise COBOL does, and `ironwork check <program> -I <dir>…`
+stops after the front end: exit 0 when the program compiles, 12 when it does not, with
+`file:line:col: message` on standard error. cobolwork runs it as a separate program, as it runs
+`cobc`, and links nothing of it.
+
+- It runs only on a pass, once per program in the tree, with the tree's copy directories and every
+  `--copylib` as `-I`, and ironwork applies each program's own `CBL` and `PROCESS` cards. The options
+  check reads the tree as it does with no compiler (§7).
+- The path is resolved as the compiler's is, and one inside the repository is refused with exit 2.
+- Each program lands in one of four lists in `compiled`: `failed`, a program ironwork rejects;
+  `notModelled`, one it refuses by name for a construct it does not model yet, or whose only errors
+  are a COBOL statement verb its parser stopped at (`a statement, found ENTRY`) or a field the CICS,
+  DL/I or SQL translator declares (`DIBSTAT is not defined`); `unresolved`, one
+  that copies a member no copy library holds; `unrun`, one whose check ended some other way or took
+  more than 60 seconds.
+- `compile` is `false` with any program in `failed`, and the gate exits 4 as for a compiler. It is
+  `null` where every other program is one ironwork could not decide: the gate exits 3, or, where the
+  policy says `warn` for coverage, passes with `compile` in `relaxed`. What ironwork has not modelled
+  is not a program that compiles, as a copybook the tree lacks is not a clean read.
+- A message is passed through `printable`, with every quoted literal replaced by `'…'`, since a
+  diagnostic may quote the program and no output of the gate carries source text (B7.1). The
+  document records the ironwork version, the argument vector with `<program>` for the program and
+  copy directories relative to the tree, and the counts; the provenance record carries the same with
+  the binary's SHA-256.
+
 ## 9. Provenance
 
 `--provenance <file>` writes a JSON record of:
@@ -431,11 +460,12 @@ Four checks, each `true`, `false` or `null`:
 | `findings` | nothing blocks | something does; each is listed | - |
 | `coverage` | the scans are complete, or the policy says `warn` | - | a scan is incomplete and the policy says `block` |
 | `options` | every program's effective options generate the required checks, or the policy says `warn` | an option `forbid` names is set, a check the change removed, or under `block` a missing check | under `block`, a program's options cannot be worked out |
-| `compile` | the compiler exited 0 | it exited non-zero | no compiler was given, or the verdict stopped it |
+| `compile` | the compiler exited 0, or ironwork accepted every program | it exited non-zero, or ironwork rejected a program | no compiler was given, the verdict stopped it, or ironwork could not decide a program (§8a) |
 
 The verdict is `fail` if any of the first three is `false`, otherwise `undecided` if any of them is
-`null`, otherwise `pass`. `compile` decides exit 4, not the verdict. `relaxed` lists the checks that
-passed only because the policy says `warn` for them - `coverage`, `options` - so a pass that the
+`null`, otherwise `pass`. `compile` decides exit 4, and with ironwork exit 3, not the verdict.
+`relaxed` lists the checks that passed only because the policy says `warn` for them - `coverage`,
+`options`, and `compile` for programs ironwork could not decide - so a pass that the
 strict policy would not give is marked in the document, the provenance record, the SARIF run and the
 summary line.
 
@@ -879,6 +909,32 @@ are about what the default, `warn`, does with them.
 #### B6.4 No shell reads the arguments
     When  an argument is the text ; touch marker
     Then  no file named marker exists afterwards
+
+#### B6.5 ironwork checks every program after a pass, with the tree's copy directories
+    Given two programs and a copybook directory, and an ironwork that accepts both
+    Then  the gate exits 0, compile is true, and each run named the copybook directory with -I
+
+#### B6.6 A program ironwork rejects exits 4, and its message quotes no literal
+    Given a program ironwork rejects with a message quoting a literal
+    Then  the gate exits 4, compile is false, and failed names the program, line and message with the literal replaced
+
+#### B6.7 A construct ironwork does not model yet leaves the build undecided
+    Given a program ironwork refuses as not supported yet
+    Then  the gate exits 3 and compile is null
+    And   under coverage warn the gate exits 0 with compile in relaxed
+    And   a statement verb ironwork stops at, or a field a translator declares, is not modelled either
+
+#### B6.8 A fail runs no ironwork
+    Given a finding that blocks
+    Then  ironwork did not run and compiled is null
+
+#### B6.9 An ironwork inside the repository is refused, and so is naming a compiler too
+    Given an ironwork inside the repository, or --ironwork with --
+    Then  the gate exits 2
+
+#### B6.10 A copybook no library holds leaves the program unresolved, not failed
+    Given a program ironwork reports copying a member the copy libraries do not hold
+    Then  compile is null and unresolved names the program
 
 ### B7 - What the gate emits
 

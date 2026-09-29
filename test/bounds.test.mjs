@@ -62,8 +62,8 @@ test('input reaching a table through its INDEXED BY name is followed, and a boun
   const f = at('INDEXNAME.cbl');
   assert.deepEqual(f.map(x => [x.rule, x.line, x.sev]), [['argv-or-env-to-subscript', 12, 'high']]);
   assert.match(f[0].detail, /TX subscripts WS-ENTRY/);
-  // TX > 10 is ruled out and TX = 0 is not: the check is named, and the finding keeps its tier.
-  assert.deepEqual(at('INDEXCHECKED.cbl').map(x => [x.rule, x.line, x.sev, x.guard.item]), [['argv-or-env-to-subscript', 15, 'high', 'TX']]);
+  // TX > 10 is ruled out and TX = 0 is not: the check is named and lowers the finding, which stays.
+  assert.deepEqual(at('INDEXCHECKED.cbl').map(x => [x.rule, x.line, x.sev, x.guard.item, x.guardedFrom]), [['argv-or-env-to-subscript', 15, 'med', 'TX', 'high']]);
   assert.deepEqual(report.checked.filter(x => x.path === 'INDEXCHECKED.cbl'), []);
 });
 

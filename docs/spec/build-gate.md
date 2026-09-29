@@ -563,11 +563,12 @@ length of 0 is a zero-length move that can overrun. A set of literal values boun
 every value is 1 or more. An `OCCURS DEPENDING ON` count and a loop bound accept 0, and an upper
 bound alone bounds them.
 
-A check that ran on every route and did not bound the index does not lower an index finding (a rule
-ending `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or
-`-to-loop-bound`), because the index can still be out of range on the route where the check failed.
-The finding keeps its tier, `guard` names the check, and `guardedFrom` is not set. For every other
-sink kind a check that ran lowers the finding one step and sets `guardedFrom` to the tier it left.
+A check that ran on every route and did not bound the index lowers an index finding (a rule ending
+`-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or `-to-loop-bound`) one
+step only where one of its outcomes holds on every route to the use. Where both outcomes reach the
+use, the program carried on past a failed check, the index can be out of range there, and the
+finding keeps its tier. For every other sink kind a check that ran lowers the finding one step. In
+both, `guard` names the check and `guardedFrom` the tier it left.
 
 The routes to `subscript` and `reference-modification` are data-mutation (§5a), so a false one fails a
 build. The check model (`lib/control.mjs`) credits a check only where it has run on every route to

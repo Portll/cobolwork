@@ -25,8 +25,9 @@ control-flow graph - `IF`, `EVALUATE`, `SEARCH`, `PERFORM` of a paragraph or a `
 field was last written, and before the value is used. A check that restricts a field - a class test
 such as `IS NOT NUMERIC`, a bound, a condition-name - and has run first lowers the finding one step
 and names itself; on a subscript, reference modification, `OCCURS DEPENDING ON` count or loop bound
-it names itself and the finding keeps its tier, since the index can still be out of range on the
-route where the check failed. Where what the check leaves is safe for the sink, the route is not a finding at
+it lowers only where one outcome of the check holds on every route to the use, since a route on which
+the check failed and the program carried on reaches the index out of range. Where what the check
+leaves is safe for the sink, the route is not a finding at
 all: a value that can only be one of a list of literals, digits where a command, a statement or a
 job is built, a bound at both ends where a subscript or reference modification indexes a table
 (at least 1 and at most the table's size). Such routes are listed under `checked`, with the
@@ -36,7 +37,7 @@ performed after the use, keeps its full severity and says where the check it did
 `EVALUATE` whose `WHEN OTHER` ends the run or leaves; `IF X = SPACES` before a use, and an
 `EVALUATE` that only chooses what else to do, check nothing. A check that only sets a flag has run,
 but the flag's later test is not read as stopping the value, so it lowers and does not clear (on an
-index sink it is named and does not lower). A sink
+index sink, only where the flag decides the route to the use). A sink
 that another route reaches without the check keeps its full severity.
 
 **What starts each program.** A finding carries `startedBy`: the CICS transactions the CSD defines
@@ -60,8 +61,8 @@ modification, or the count an `OCCURS DEPENDING ON` table is sized by, taken fro
 a terminal, the web or a job. Without `SSRANGE`, which is not the Enterprise COBOL default, an index
 out of range reads or writes the storage beside the table; with it, set on a `CBL` or `PROCESS`
 card, the program abends, and the finding says so and is one step lower. A test of the index that
-leaves some value out of range (`IF WS-IDX > 10` leaves 0) is named and does not lower it; a bound
-at both ends stops the route. An index counts from 1: entry 0 is the storage before the table, and a
+leaves some value out of range (`IF WS-IDX > 10` leaves 0) lowers it where the program acts on the
+test, and not where it carries on past a failed one; a bound at both ends stops the route. An index counts from 1: entry 0 is the storage before the table, and a
 reference-modification length of 0 is a zero-length move that can overrun. File records and database values are not followed into
 these: in batch COBOL nearly every subscript descends from one.
 

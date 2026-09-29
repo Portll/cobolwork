@@ -48,11 +48,11 @@ test('a bound an OR can skip has not run, and one whose outcome passes the table
   assert.equal(past.guard, undefined);
 });
 
-// The bound ran before both readings; only the first is bounded by it, and the second keeps its tier.
+// I <= 10 AND T(I) = 'A' OR 'B' groups as (I <= 10 AND T(I) = 'A') OR T(I) = 'B': the second reading runs
+// whenever the group is false, I > 10 included, and the bound gives it nothing.
 test('an abbreviated relation reads its subject again, and that reading is not bounded', () => {
   const [f] = found('ABBREV.cbl');
   assert.equal(f.sev, 'high');
-  assert.ok(f.guard, 'the check that ran is named');
   assert.equal(f.guardedFrom, undefined);
   assert.deepEqual(stopped('ABBREV.cbl'), []);
 });

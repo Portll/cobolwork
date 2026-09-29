@@ -173,3 +173,15 @@ test('a flag is no bound where its value is written another way or compares othe
     assert.equal(stopped(file).length, 0, `${file}: ${why}`);
   }
 });
+
+test('rejecting zero by equality is a lower bound only for an unsigned integer', () => {
+  assert.deepEqual(found('ZEROUNS.cbl'), []);
+  assert.equal(stopped('ZEROUNS.cbl').length, 1);
+  assert.equal(found('ZEROSIGN.cbl').length, 1, 'a signed field may be negative');
+  assert.equal(found('ZEROALPHA.cbl').length, 1, "PIC X holds text, and '0' is not a number");
+});
+
+test('an error flag set on zero and on a high value bounds the index where it is off', () => {
+  assert.deepEqual(found('ZEROFLAG.cbl'), []);
+  assert.equal(stopped('ZEROFLAG.cbl').length, 1);
+});

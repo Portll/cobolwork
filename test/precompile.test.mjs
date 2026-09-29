@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { precompile } from '../lib/precompile.mjs';
 import { parseSource } from '../lib/parser.mjs';
@@ -342,7 +343,7 @@ test('cobc accepts a translated CICS program', { skip: !hasCobc && 'cobc is not 
 
 test('lib/cics-commands.mjs is what provenance/precompile.json generates, and every command cites IBM', () => {
   const dir = mkdtempSync(join(tmpdir(), 'cw-cics-commands-'));
-  const root = new URL('..', import.meta.url).pathname;
+  const root = fileURLToPath(new URL('..', import.meta.url));
   const out = join(dir, 'cics-commands.mjs');
   const gen = spawnSync(process.execPath, [join(root, 'diag', 'generate-precompile.mjs'), join(root, 'provenance', 'precompile.json'), join(root, 'provenance', 'words.json'), out], { encoding: 'utf8' });
   assert.equal(gen.status, 0, gen.stderr);

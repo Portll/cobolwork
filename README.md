@@ -22,11 +22,13 @@ COBOL, exits zero and reports a clean result.
 
 ## Install
 
-    npm install -g https://github.com/Portll/cobolwork/releases/latest/download/cobolwork.tgz
+    npm install -g @portll/cobolwork
 
-That installs the latest [release](https://github.com/Portll/cobolwork/releases). Each release
-carries the package twice: as `cobolwork.tgz`, which the command above follows, and as
-`cobolwork-<version>.tgz`, which is the one to pin. To run from a checkout instead:
+The command it installs is `cobolwork`. The same package is attached to each
+[release](https://github.com/Portll/cobolwork/releases) as `cobolwork-<version>.tgz`, which is the
+one to pin, and as `cobolwork.tgz`, which
+`npm install -g https://github.com/Portll/cobolwork/releases/latest/download/cobolwork.tgz`
+follows. To run from a checkout instead:
 
     git clone https://github.com/Portll/cobolwork && cd cobolwork && npm link
 

@@ -82,8 +82,9 @@ test('a field refilled with a literal before the use holds the literal, whatever
   assert.equal(c.guard.line, 13, 'the MOVE of the literal is what stops it');
 });
 
-test('a length clamped to the field it measures is bounded on every route', () => {
-  assert.deepEqual(found('CLAMP.cbl'), []);
-  const [c] = stopped('CLAMP.cbl');
-  assert.equal(c.rule, 'argv-or-env-to-reference-modification');
+test('a length clamped to the field it measures but not kept above 0 is not bounded', () => {
+  const [f] = found('CLAMP.cbl');
+  assert.equal(f.rule, 'argv-or-env-to-reference-modification');
+  assert.equal(f.sev, 'high', 'a length of 0 is out of range, so the tier stands');
+  assert.deepEqual(stopped('CLAMP.cbl'), []);
 });

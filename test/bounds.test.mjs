@@ -62,9 +62,9 @@ test('input reaching a table through its INDEXED BY name is followed, and a boun
   const f = at('INDEXNAME.cbl');
   assert.deepEqual(f.map(x => [x.rule, x.line, x.sev]), [['argv-or-env-to-subscript', 12, 'high']]);
   assert.match(f[0].detail, /TX subscripts WS-ENTRY/);
-  assert.deepEqual(at('INDEXCHECKED.cbl'), []);
-  const g = report.checked.filter(x => x.path === 'INDEXCHECKED.cbl');
-  assert.deepEqual(g.map(x => [x.rule, x.guard.item]), [['argv-or-env-to-subscript', 'TX']]);
+  // TX > 10 is ruled out and TX = 0 is not: the check is named, and the finding keeps its tier.
+  assert.deepEqual(at('INDEXCHECKED.cbl').map(x => [x.rule, x.line, x.sev, x.guard.item]), [['argv-or-env-to-subscript', 15, 'high', 'TX']]);
+  assert.deepEqual(report.checked.filter(x => x.path === 'INDEXCHECKED.cbl'), []);
 });
 
 test('a program compiled with SSRANGE abends on a bad index, so the finding says so and is lowered', () => {

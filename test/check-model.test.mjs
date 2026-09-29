@@ -34,6 +34,11 @@ test('a subscript read before its bound in the same condition is not credited', 
   assert.equal(f.guard, undefined);
 });
 
+test('an index checked at both ends is bounded, and one checked only above is not', () => {
+  assert.deepEqual(found('BOTHENDS.cbl'), []);
+  assert.equal(stopped('BOTHENDS.cbl')[0].guard.line, 10);
+});
+
 test('a bound an OR can skip has not run, and one whose outcome passes the table bounds nothing', () => {
   const [skipped] = found('CPAREN.cbl');
   assert.equal(skipped.sev, 'high');
@@ -43,17 +48,18 @@ test('a bound an OR can skip has not run, and one whose outcome passes the table
   assert.equal(past.guard, undefined);
 });
 
-// The bound ran before both readings, so each is lowered a step; only the first is bounded by it.
+// The bound ran before both readings; only the first is bounded by it, and the second keeps its tier.
 test('an abbreviated relation reads its subject again, and that reading is not bounded', () => {
   const [f] = found('ABBREV.cbl');
-  assert.equal(f.sev, 'med');
-  assert.equal(f.guardedFrom, 'high');
+  assert.equal(f.sev, 'high');
+  assert.ok(f.guard, 'the check that ran is named');
+  assert.equal(f.guardedFrom, undefined);
   assert.deepEqual(stopped('ABBREV.cbl'), []);
 });
 
 test('a guarded use in a condition does not hide a later use that is not', () => {
   const f = found('LATERUSE.cbl');
-  assert.deepEqual(f.map((x) => [x.line, x.sev, x.guardedFrom]), [[15, 'med', 'high']]);
+  assert.deepEqual(f.map((x) => [x.line, x.sev, x.guardedFrom]), [[15, 'high', undefined]]);
   assert.deepEqual(stopped('LATERUSE.cbl'), []);
 });
 

@@ -255,6 +255,12 @@ lacking an outcome, who, when or where is refused and named under `summary.witne
 
 `summary.byWitness` counts the two outcomes. Nothing in it changes what a build blocks.
 
+Over `--repos`, each repository is judged with its own `cobolwork.site.json`. The summary adds the
+reach, effect, verdict and witness counts up, gives each repository's verdicts under `perRepo`, and
+names in `reachNote` and `effectNote` the repositories that declare nothing. A feed is refused
+anywhere inside the scanned root, not only inside the repository being read, and a witness result is
+unmatched only where no repository's finding carries it.
+
 ### 9.6 Measuring it
 
 The sealed answer key `diag/label-sheet.mjs` writes records each site's verdict, and

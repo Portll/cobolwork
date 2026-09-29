@@ -564,9 +564,20 @@ every value is 1 or more. An `OCCURS DEPENDING ON` count and a loop bound accept
 bound alone bounds them.
 
 A counter of `PERFORM VARYING c FROM k BY s UNTIL ...` is at least `k` inside the loop when `k` is a
-number or a constant the model resolves, `s` is positive or absent, and the field is numeric with room
-for the UNTIL bound. That lower bound joins the upper bound the UNTIL gives. Any statement in the body
-that writes the counter, and any inner `VARYING` or `AFTER` over it, takes the bound away.
+number or a constant the model resolves, or a field that is at least `k` where the loop starts, `s` is
+not negative or is absent, and the field is a whole number. That lower bound joins the upper bound the
+UNTIL gives. Any statement in the body that writes the counter other than by a rise, and any inner
+`VARYING` or `AFTER` over it, takes the bound away.
+
+A lower bound of 1 or more survives an increment. A field set by `MOVE` to a whole constant that fits it,
+or varied from one, stays at that bound through `ADD n TO`, `SET UP BY n`, `COMPUTE x = x + n` and the
+`VARYING` step, where `n` is a literal or constant that is not negative or an unsigned number; the upper
+bound is lost. Any other write takes the bound: `MOVE`, `SUBTRACT`, `SET DOWN BY`, `ACCEPT`, a `CALL`
+by reference, `INITIALIZE`, `READ INTO`, and a write through a group or a `REDEFINES`. A sum past the
+field's digits truncates, possibly to 0, so the bound survives an increment only where an upper bound
+that leaves room for the most `n` can add holds before it, or `ON SIZE ERROR` leaves the field as it
+was. An `n` that is a field counts as its largest value, and a bound the model cannot show leaves no
+room. A performed paragraph's summary assumes no such room.
 
 A check that ran on every route and did not bound the index lowers an index finding (a rule ending
 `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or `-to-loop-bound`) one

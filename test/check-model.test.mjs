@@ -230,3 +230,26 @@ test('a constant past the field, or a route that moves none, leaves the index un
     assert.equal(f.guard, undefined, file);
   }
 });
+
+// A lower bound survives an increment that cannot wrap and dies with any other write.
+test('a counter set to 1 and only added to stays at 1 or more where its loop tests it above', () => {
+  assert.deepEqual(found('MONOADD.cbl'), []);
+  assert.equal(stopped('MONOADD.cbl').length, 1);
+});
+
+test('a counter that is subtracted from is not bounded below', () => {
+  assert.equal(found('MONOSUB.cbl').length, 1);
+});
+
+test('a counter moved from input inside the loop is not bounded below after the move', () => {
+  assert.equal(found('MONOINPUT.cbl').length, 1);
+});
+
+test('an unsigned counter added to with no upper bound on the way can wrap to 0', () => {
+  assert.equal(found('MONOWRAP.cbl').length, 1);
+});
+
+test('a counter varied from a field that was set to 1 is bounded below in its loop', () => {
+  assert.deepEqual(found('MONOFROM.cbl'), []);
+  assert.equal(stopped('MONOFROM.cbl').length, 1);
+});

@@ -48,6 +48,30 @@ came from, and what finishing it would show. Items leave this file when they lan
    into `NAMEA`; a key used in an SQL `WHERE` rather than as `RIDFLD`; and the corpus beyond
    CardDemo, because corpus runs stopped at the memory reserve on the machine it was measured on.
 
+## Exploitability: from verdict to witness
+
+A prospective client could not tell from a report which programs an attacker could actually use, so
+every path finding now carries an `exploitability` verdict ([`docs/spec/reach.md`](docs/spec/reach.md)
+§9). On `bench/cases` with no site file it labels 23 findings `attacker-driven` and 8 `upstream`, and
+none `exploitable`, because no repository says who may start a transaction. What is left, in order:
+
+1. **Where one check would cover every route (`fixAt`).** The check model in `lib/control.mjs` already
+   knows which statements run on every route to the sink; naming the earliest one after the source
+   tells the owner where the patch goes, and the rerun that moves the finding to `refuted` proves it.
+2. **Reach drafted from the CSD.** `diag/propose-site.mjs` drafts production qualifiers from JCL;
+   the same for `openTransactions` - a transaction with `RESSEC(NO)`, or one a `URIMAP` or
+   `TCPIPSERVICE` fronts - would let a first scan say `exploitable` once a person confirms the draft.
+3. **A verification plan per finding, in `explain`.** The transaction, the map and field, a harmless
+   value that shows the defect (a letter in a numeric field; a key belonging to another record), and
+   what to watch for (an S0C7 abend; the other record displayed). For command, SQL and job sinks it
+   shows only a marker value arriving at the statement under CEDF or a debugger, never a payload that
+   runs, and never in the default report.
+4. **A witness feed.** The estate's reproduction results, brought like `COBOLWORK_REACH` and refused
+   from inside the tree, keyed by fingerprint, dated and signed off by who ran them: the only thing
+   that can make a verdict `confirmed`, or `not-reproduced`.
+5. **A measured rate per verdict**, from the hand-labelled corpus below: until then a verdict is a
+   claim over reading and records with no independent precision.
+
 ## Vulnerability classes, in the order they can be measured
 
 Planned 2026-09-21 and evaluated in

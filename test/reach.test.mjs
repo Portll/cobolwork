@@ -74,6 +74,24 @@ test('stampReach: open if any entry is open, restricted if all resolved are rest
   assert.deepEqual(by, { open: 1, restricted: 1, undeclared: 1 });
 });
 
+test('stampReach: restricted needs every entry restricted, since an undeclared or unlisted one may be open', () => {
+  const r = reachResolver({ site: { restrictedTransactions: ['CADM'] } });
+  const findings = [
+    { rule: 'a', startedBy: [{ transaction: 'CADM' }, { transaction: 'UNKN' }] },
+    { rule: 'b', startedBy: [{ transaction: 'CADM' }], startedByMore: 2 },
+  ];
+  assert.deepEqual(stampReach(findings, r), { open: 0, restricted: 0, undeclared: 2 });
+});
+
+test('the resolver says which record declared an entry', () => {
+  const feed = loadReachFeed(feedFile({ extract: 'RACF unload estate A', retrieved: '2026-09-01', transactions: { CR00: 'open' }, privileged: { jobs: ['RUNJOB'] } }));
+  const r = reachResolver({ feeds: [feed], site: { path: '/estate/cobolwork.site.json', restrictedTransactions: ['CADM'] } });
+  assert.equal(r.accessFrom('transaction', 'CR00'), 'reach.json (RACF unload estate A, retrieved 2026-09-01)');
+  assert.equal(r.accessFrom('transaction', 'CADM'), 'cobolwork.site.json');
+  assert.equal(r.accessFrom('transaction', 'UNKN'), null);
+  assert.equal(r.privilegedFrom('job', 'RUNJOB'), 'reach.json (RACF unload estate A, retrieved 2026-09-01)');
+});
+
 test('stampEffect: an elevated entry makes a finding privileged, and only the positive is claimed', () => {
   const r = reachResolver({ site: { privilegedJobs: ['RUNJOB'], openTransactions: ['CR00'] } });
   assert.equal(r.effectDeclared, true);

@@ -4,7 +4,7 @@ import { writeFileSync, readFileSync, lstatSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { scanAll, RULE_SETS } from '../lib/scan.mjs';
+import { scanAll, applyEstateFacts, RULE_SETS } from '../lib/scan.mjs';
 import { scan as scanFlow } from '../lib/sets/flow.mjs';
 import { inventory } from '../lib/inventory.mjs';
 import { parseFile } from '../lib/parser.mjs';
@@ -257,7 +257,10 @@ try {
   } else if (command === 'scan' || command === 'flow') {
     const flowOpts = { repos, fullTrace: opts.fullTrace === true, systemDirs };
     const report = command === 'flow' ? scanFlow(root, flowOpts) : scanAll(root, { ...flowOpts, only: opts.only, advisoryFeeds: opts.advisoryFeeds });
-    if (command === 'flow') report.summary.identity = stampFingerprints(report.findings, { root });
+    if (command === 'flow') {
+      report.summary.identity = stampFingerprints(report.findings, { root });
+      Object.assign(report.summary, applyEstateFacts(report.findings, report.checked, root));
+    }
     applyBaseline(report, loadBaseline(root, { explicit: opts.baseline ? resolve(opts.baseline) : null, use: !opts.noBaseline }));
     stampRevisions(report.summary);
     if (command === 'flow') emit(report, opts);

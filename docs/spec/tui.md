@@ -227,6 +227,13 @@ key moves the selection; KEYS ISPF switches back, and KEYS with anything else sa
 Given a finding or its help open over the list, when 1 or FINDINGS is entered, then the list it came
 from is shown with its selection, and F3 from there goes to Home, not back into the finding.
 
+#### T1.17 A path finding says whether an attacker can use it
+
+Given a report whose path findings carry an exploitability verdict (`reach.md` §9), then Home counts
+them by verdict; when a finding is opened, the panel shows its verdict, the facts it rests on and the
+fact that would change it; `SORT EXPLOIT` puts the most urgent verdict first, and `FILTER exploitable`
+keeps only those. FILTER takes evidence kinds and verdicts together.
+
 ### X1 — The fix packet
 
 #### X1.1 A packet carries the trace with its source lines

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { PassThrough } from 'node:stream';
 import { spawnSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { scanAll } from '../lib/scan.mjs';
@@ -360,4 +360,31 @@ test('T1.16 FINDINGS returns to the list rather than stacking another', () => {
     }
   }
   assert.deepEqual(type(initialState({ report: bench }), '1').state.stack.map((t) => t.panel), ['home', 'findings']);
+});
+
+test('T1.17 A path finding says whether an attacker can use it', () => {
+  const site = join(mkdtempSync(join(tmpdir(), 'cw-tui-site-')), 'cobolwork.site.json');
+  writeFileSync(site, JSON.stringify({ openTransactions: ['INQ1'] }));
+  setMemoryReaders({ heap: () => ({ used_heap_size: 64 * MB, heap_size_limit: 4096 * MB }), free: () => 4096 * MB });
+  let report;
+  try { report = readReport(scanAll(join(FIXTURES, 'entry'), { only: ['flow'], site })); } finally { setMemoryReaders(); }
+  const text = (state) => lines(state).join('\n');
+
+  const home = initialState({ report });
+  assert.match(text(home), /Exploit\s+exploitable 1/);
+
+  const findings = onFindings(report);
+  const filtered = type(findings, 'FILTER exploitable').state;
+  assert.match(text(filtered), /exploit exploitable/);
+  assert.match(text(filtered), /Row 1 of 1/);
+  const opened = press(filtered, 'Enter').state;
+  assert.match(text(opened), /Exploit\s+exploitable:/);
+  assert.match(text(opened), /Because\s+- A terminal user supplies it/);
+  assert.match(text(opened), /Unknown\s+whether it reproduces/);
+
+  const sorted = type(findings, 'SORT EXPLOIT').state;
+  assert.match(text(press(sorted, 'Enter').state), /Exploit\s+exploitable:/, 'the exploitable finding sorts first');
+  const both = type(findings, 'FILTER path attacker-driven').state;
+  assert.ok(rows(report, both.view).every((r) => r.f.evidence === 'path' && r.f.exploitability.verdict === 'attacker-driven'));
+  assert.match(type(findings, 'FILTER nonsense').state.message, /FILTER takes an evidence kind or an exploitability verdict/);
 });

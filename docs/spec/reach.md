@@ -4,7 +4,8 @@ A design for turning a `path` finding from "a route exists" into "a route someon
 what reaching it gives them" - without ever claiming more than the estate's own records support.
 Status: the fact layer, the reach annotation and a first effect slice landed 2026-09-25
 (`lib/reach.mjs`, wired in `lib/scan.mjs`); decisions 1, 2 and the effect shape (4) are made and
-built, 3 - the measurement gate - is open.
+built, 3 - the measurement gate - is open. Decision 5, a verdict per path finding that uses the word
+exploitable, was made 2026-09-30 and its first slice is built (`lib/exploitability.mjs`, §9).
 
 ## 1. The gap
 
@@ -80,7 +81,7 @@ tool can make from reading alone plus one declared fact - and it still is not a 
 - **No new `evidence` kind.** `evidence` is what the tool established by *reading*; reach always
   rests on a fact the estate supplied, so it rides as its own field, the way severity and evidence
   are already separate. The kernel's refusal of an `exploitable` evidence kind
-  (`test/findings.test.mjs`) stands.
+  (`test/findings.test.mjs`) stands; the verdict of §9 is a field of its own for the same reason.
 
 ## 6. The first slice, and what needs no decision
 
@@ -113,14 +114,20 @@ once the estate names the authorised libraries".
    reach *precision number* waits on a labelled corpus that has the facts, which only a practitioner
    estate holds. See `BACKLOG.md`.
 4. **Effect — decided: a separate field, first slice built.** `effect` is its own axis, not nested
-   under `reach` - reach is who can drive it, effect is what driving it runs as, and a consumer
-   combines the three. Its first slice reuses the reach machinery: an entry the estate names
-   privileged (`privilegedTransactions`/`privilegedJobs`, or the feed's `privileged`) makes a
-   finding it reaches `effect: "privileged"`, and only the positive is claimed - an entry no
-   privileged list names is unknown, never called safe. `summary.byEffect` counts it. Fuller effect
-   - the region user's full RACF authority, and the target's own protection - is a later increment.
-   Effect, like reach, stays a statement per the records, never "exploitable": that word needs a
-   witness on the running system (§8).
+   under `reach` - reach is who can drive it, effect is what driving it runs as. Its first slice
+   reuses the reach machinery: an entry the estate names privileged
+   (`privilegedTransactions`/`privilegedJobs`, or the feed's `privileged`) makes a finding it
+   reaches `effect: "privileged"`, and only the positive is claimed - an entry no privileged list
+   names is unknown, never called safe. `summary.byEffect` counts it. Fuller effect - the region
+   user's full RACF authority, and the target's own protection - is a later increment.
+5. **The verdict — decided 2026-09-30: say exploitable, with the facts it rests on.** A client could
+   not tell from route, reach and effect kept apart which programs to patch first, so the tool now
+   joins them into one verdict per path finding (§9). The word is allowed where the records support
+   it and never beyond: `exploitable` needs an estate fact that an entry is open, and each verdict
+   lists the facts behind it and names the one it lacks. A `confirmed` verdict needs a witness on
+   the running system, which the tool never produces itself; it waits on the witness feed (§9.4).
+   `evidence` is unchanged, and the kernel still refuses an `exploitable` evidence kind: evidence is
+   what reading established, the verdict is a projection over reading and records.
 
 ## 8. Theoretical, and actual
 
@@ -145,5 +152,63 @@ that gap, in the tool's proper lane:
 
 And the aggregate answer: the hand-labelled corpus (§7.3) measures how often a theoretical claim is
 real per rule, so a single unverified finding can carry a *measured* confidence even before anyone
-reproduces it. None of this makes the tool say "exploitable" - it moves a claim as far as records
-and refutation allow, then hands off a witness plan.
+reproduces it. §9 is how the tool states the theoretical claim; `confirmed` is kept for the witness.
+
+## 9. The verdict
+
+Every `path` finding, and every route under `checked`, carries `exploitability`:
+
+```json
+"exploitability": {
+  "verdict": "exploitable",
+  "drivenBy": "A terminal user",
+  "because": [
+    "A terminal user supplies it: EXEC CICS RECEIVE at INQUIRY.cbl:10",
+    "no check is shown to run on every route before the operation at INQUIRY.cbl:13",
+    "started by transaction INQ1: open to any user, per reach.json (IRRDBU00 unload, retrieved 2026-09-20)"
+  ],
+  "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation"
+}
+```
+
+`because` is the facts, each citing where it came from; `unknown` is the one fact that would move the
+verdict. `summary.byExploitability` counts findings by verdict, and the report carries the meaning of
+each as `exploitabilityVerdicts`.
+
+### 9.1 The verdicts, most urgent first
+
+| `verdict` | Route | Source | Entries |
+|---|---|---|---|
+| `exploitable` | no check on every route | input the entry's user supplies | at least one declared open (and, for a rule that acts with its own user's authority, declared privileged) |
+| `attacker-driven` | no check on every route | input the entry's user supplies | not declared, or nothing in the tree starts the program |
+| `restricted` | no check on every route | input the entry's user supplies | every one declared restricted, none unlisted |
+| `mitigated` | a check runs first on every route but is not shown to stop the value, or SSRANGE bounds the index | input the entry's user supplies | any |
+| `upstream` | any but refuted | a file record or a database row | any: whoever writes the data drives it |
+| `refuted` | a check leaves only values the sink can take, or no route reaches the sink | any | any |
+
+Input the entry's user supplies is the command line, a job's `PARM` or in-stream data, a terminal, a
+web request, a protected screen field, and a system response the caller provokes and reads back.
+`restricted` counts every entry, not every entry that resolved: an entry nobody declared, or one past
+the eight `startedBy` lists, may be open, so it leaves the finding `attacker-driven`.
+
+### 9.2 What it does not do
+
+- **No re-ranking.** Severity, tier and what a build blocks are unchanged. The build carries the
+  verdict on each finding.
+- **No confirmation.** Nothing the tool reads makes a verdict `confirmed`.
+- **No payloads.** The verdict names the entry, the field and the missing check - what a defender
+  needs to patch and a tester needs to reproduce - and nothing that would run.
+
+### 9.3 Handling
+
+A report with an `exploitable` finding joins the estate's access records to routes an attacker can
+drive, so `summary.handling` asks that it be kept where those records may go. A SARIF upload to code
+scanning shows it to everyone who can read the repository.
+
+### 9.4 What comes next
+
+In order: where one check would cover every route (`fixAt`); reach facts drafted from the CSD for a
+person to confirm; a verification plan per finding in `explain` - a harmless test value and what to
+watch for, never a payload; a witness feed, brought and refused from inside the tree like the reach
+feed, that makes a verdict `confirmed` or `not-reproduced`; and the labelled corpus of §7.3, which
+turns each verdict into a measured rate.

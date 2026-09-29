@@ -42,7 +42,7 @@ benchmark cases.
 |---|---|
 | `cobolwork scan <path>` | every rule set below, as JSON or SARIF |
 | `cobolwork inventory <path>` | inventory (and what couldn't be read) |
-| `cobolwork flow <path>` | where untrusted data reaches a sensitive operation, with the path it took |
+| `cobolwork flow <path>` | where untrusted data reaches a sensitive operation, with the path it took and whether an attacker can use it |
 | `cobolwork diff <repo> --base <ref>` | what a change reaches: layouts it moves in programs nobody edited, new call targets, findings it adds or removes |
 | `cobolwork build <repo> [--base <ref>] [-- <compiler> …]` | the build gate: every finding ranked LOW to KNOWN-EXPLOITABLE, the build stopped on the ones the policy blocks and on compiler options that let a bad index corrupt storage, and the compiler run only on a pass |
 | `cobolwork parse <file>` | one file's structure, for debugging |
@@ -126,12 +126,46 @@ decides who acts on it. Every rule declares one of eight finding types:
 `coverage` and `context` are exactly the `info` rules (not defects). A consumer that counts these
 findings should leave them out of its counts.
 
-None of the kinds says *exploitable*, on purpose. Whether a route can be used also depends on who may
-start the transaction or job that reaches it, and on what the running system enforces, and no
-repository holds those facts. A finding names the entry points that reach it (`startedBy`). `path`
-is the strongest claim the tool makes: a route found by reading the code, not by running it. Its
-precision has been measured on benchmark cases this project wrote, not yet on an independently
-labelled corpus.
+`path` is a route found by reading the code, not by running it. Its precision has been measured on
+benchmark cases this project wrote, not yet on an independently labelled corpus.
+
+### Can an attacker use it?
+
+Every `path` finding carries a verdict, the facts it rests on, and the one fact that would change it:
+
+| `exploitability` | What it means | What to do |
+|---|---|---|
+| `exploitable` | input an attacker supplies reaches the operation with no check on every route, and the estate declares a transaction or job that carries it open to any user | patch first |
+| `attacker-driven` | the same route, but nobody has declared who may start its entries | patch, or declare the entries |
+| `restricted` | the same route, behind a control the estate named on every entry | patch; the control is not a check |
+| `mitigated` | a check runs first but is not shown to stop the value, or SSRANGE turns an overrun into an abend | confirm the check |
+| `upstream` | the value is a file record or database row, so whoever can write it drives it | review who writes the data |
+| `refuted` | a check leaves only safe values, or no route reaches the operation | nothing |
+
+For the terminal route to dynamic SQL in `test/fixtures/entry`, scanned with a site file that
+declares its transaction open:
+
+```json
+"exploitability": {
+  "verdict": "exploitable",
+  "drivenBy": "A terminal user",
+  "because": [
+    "A terminal user supplies it: EXEC CICS RECEIVE at INQUIRY.cbl:10",
+    "no check is shown to run on every route before the operation at INQUIRY.cbl:13",
+    "started by transaction INQ1: open to any user, per cobolwork.site.json"
+  ],
+  "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation"
+}
+```
+
+Who may start a transaction lives in RACF, not in a repository, so without it the strongest verdict is
+`attacker-driven`, and `summary.reachNote` says how many that is. Name the entries in
+`cobolwork.site.json` (`openTransactions`, `restrictedTransactions`, `openJobs`, `restrictedJobs`), or
+bring a reduced RACF unload as `COBOLWORK_REACH`, which is refused from inside the scanned tree. The
+tool never calls a finding confirmed: that needs a test on the running system.
+`summary.byExploitability` counts the verdicts, and a report holding an `exploitable` finding carries
+`summary.handling`, because it is then a list of what to attack first. Upload it only where the RACF
+facts behind it may go. [docs/spec/reach.md](docs/spec/reach.md) §9 is the full specification.
 
 ### What each finding lets someone do, and the fix
 

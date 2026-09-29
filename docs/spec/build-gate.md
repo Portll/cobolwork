@@ -168,8 +168,9 @@ report ranks the whole estate and says why each blocking finding blocked.
 CISA's Known Exploited Vulnerabilities catalogue lists, when it is KNOWN-EXPLOITABLE, above CRIT. The
 build set marks those findings with `knownExploited`, the CVE ids that put them there: a pinned
 compiler or component, or a runtime version the estate declares. The tier rests on a published
-fact about a published vulnerability; it is never a claim that a route in the estate's own code is
-exploitable, which `reach.md` §8 keeps for a witness on the running system.
+fact about a published vulnerability. Whether a route in the estate's own code is exploitable is a
+separate field, `exploitability`, which each build finding carries as its verdict (`reach.md` §9);
+it does not change the tier or what blocks.
 
 **Consequence classes.** Two, decided per rule by `lib/consequence.mjs` and never by a finding's
 detail:

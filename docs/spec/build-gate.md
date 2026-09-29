@@ -634,6 +634,11 @@ called unreached.
   branch's own statements, so a flag set in a paragraph it performs is not followed; that limits what
   is credited, not whether it is true. The bound is destroyed by every write that destroys its
   premise, and the test that yields it writes nothing, so a performed paragraph's summary stays sound.
+  A flag moved from a constant item, a level-78 name or a `VALUE` item no statement writes that fills
+  the flag exactly, holds that item's value as a literal does. The check and the flag may sit in a
+  performed paragraph or section: the fact crosses the `PERFORM` in the summary, and a `GOBACK` or
+  `STOP RUN` on the failing branch leaves the run for every caller. A `GOBACK` in a nested program
+  returns to its caller, which keeps its use.
 - **An `INSPECT … TALLYING` count.** A count holding a constant *n* before `INSPECT F TALLYING count`
   holds between *n* and *n* plus the length of F after it. Each comparison cycle adds at most one to a
   count and moves past at least one character position of F (Language Reference 6.4, `INSPECT`,

@@ -317,3 +317,40 @@ test('a line stays checked beside a use left out that is checked as far', () => 
   assert.deepEqual(found('ALSOLINEOK.cbl'), []);
   assert.equal(stopped('ALSOLINEOK.cbl').length, 2);
 });
+
+// A check in a performed paragraph or section protects the use after the PERFORM returns.
+test('a performed paragraph that leaves the run on a bad index bounds the use after it', () => {
+  assert.deepEqual(found('PERFGOBK.cbl'), []);
+  assert.equal(stopped('PERFGOBK.cbl').length, 1);
+});
+
+test('a performed section whose paragraphs each flag one bad case bounds the index where the flag is clear', () => {
+  assert.deepEqual(found('PERFFLAG.cbl'), []);
+  assert.equal(stopped('PERFFLAG.cbl').length, 1);
+});
+
+test('a performed paragraph that flags only one of two bad cases leaves the index unbounded', () => {
+  assert.equal(found('PERFONE.cbl').length, 1);
+  assert.deepEqual(stopped('PERFONE.cbl'), []);
+});
+
+test('a flag another performed paragraph clears after the check says nothing about the index', () => {
+  assert.equal(found('PERFRESET.cbl').length, 1);
+  assert.deepEqual(stopped('PERFRESET.cbl'), []);
+});
+
+test('a GOBACK in a nested program returns to the caller, whose use is still reported', () => {
+  assert.equal(found('NESTGOBK.cbl').length, 1);
+  assert.deepEqual(stopped('NESTGOBK.cbl'), []);
+});
+
+test('a flag moved from a constant item is the value of that item', () => {
+  assert.deepEqual(found('FLAGCONST.cbl'), []);
+  assert.equal(stopped('FLAGCONST.cbl').length, 1);
+});
+
+test('a flag moved from an item the program writes is no constant', () => {
+  assert.equal(found('FLAGCMOVED.cbl').length, 1);
+  assert.deepEqual(stopped('FLAGCMOVED.cbl'), []);
+});
+

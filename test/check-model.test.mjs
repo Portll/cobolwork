@@ -496,3 +496,31 @@ test('an OCCURS DEPENDING ON count is stopped by a check against the table maxim
   assert.equal(odo('ODOUNCHECKED.cbl').length, 1);
   assert.equal(odo('ODOOVER.cbl').length, 1);
 });
+
+
+// A sink that adds or takes a constant, T(I + 1) or X(I - 1 : 1), is judged on the index's interval
+// moved by that constant: the low end must still be 1 or more, and the top must still fit the table.
+test('an index moved by a constant is credited when the moved interval is in range', () => {
+  for (const file of ['OFFPLUSOK.cbl', 'OFFMINUSOK.cbl', 'OFFREFPLUSOK.cbl', 'OFFSUMOK.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+});
+
+test('an index moved out of range by a constant is reported though the bare index is bounded', () => {
+  for (const file of ['OFFMINUS.cbl', 'OFFPLUS.cbl', 'OFFREFMINUS.cbl']) {
+    assert.equal(found(file).length, 1, file);
+    assert.deepEqual(stopped(file), [], file);
+  }
+  assert.deepEqual(found('OFFPLUSBARE.cbl'), []);
+});
+
+test('a start moved up by a constant needs the operands that bound it: unsigned, and the other addend not zero', () => {
+  assert.equal(found('OFFREFPLUSOPEN.cbl').length, 1);
+  assert.equal(found('OFFSUMNOZ.cbl').length, 1);
+  assert.equal(found('OFFSUMSIGNED.cbl').length, 1);
+});
+
+test('a loop exit that keeps the counter in range bounds nothing where the subscript moves it out', () => {
+  assert.equal(exitBound('LOOPEXITOFF.cbl').length, 1, 'WS-I - 1 is 0 on the first pass');
+});

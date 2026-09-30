@@ -563,6 +563,11 @@ length of 0 is a zero-length move that can overrun. A set of literal values boun
 every value is 1 or more. An `OCCURS DEPENDING ON` count and a loop bound accept 0, and an upper
 bound alone bounds them.
 
+An index written as a name plus or minus a whole constant, `T(I + 1)` or `X(I - 1 : 1)`, is judged on
+the interval of `I` moved by that constant: the moved low end must be 1 or more and the moved top
+must not pass the table or field. An unsigned whole-number `I` moved up starts at the constant even
+where no check gave it a low end. Any other expression is judged as the bare name.
+
 A counter of `PERFORM VARYING c FROM k BY s UNTIL ...` is at least `k` inside the loop when `k` is a
 number or a constant the model resolves, or a field that is at least `k` where the loop starts, `s` is
 not negative or is absent, and the field is a whole number. That lower bound joins the upper bound the

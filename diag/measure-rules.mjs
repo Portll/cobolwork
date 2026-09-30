@@ -10,11 +10,11 @@
 // a large share of repositories is over-broad, whatever its rationale says.
 //
 // --only runs the named rule sets and no others, so one set can be measured without paying for
-// the rest. --out records, beside the counts, whether each set read each repository completely
-// and every finding by its fingerprint. --baseline compares this run with an earlier --out file,
-// rule by rule, over the repositories both runs read completely. --list prints every finding of
-// one rule with its trace, once per file content.
-import { readdirSync, readFileSync, existsSync, openSync, readSync, writeSync, closeSync, renameSync, mkdtempSync, rmSync } from 'node:fs';
+// the rest. --out records, beside the counts, whether each set read each repository completely,
+// what the walk listed in each, and every finding by its fingerprint. --baseline compares this run
+// with an earlier --out file, rule by rule, over the repositories both runs read completely and
+// listed alike. --list prints every finding of one rule with its trace, once per file content.
+import { readdirSync, readFileSync, existsSync, openSync, readSync, writeSync, closeSync, renameSync, mkdtempSync, rmSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
@@ -149,6 +149,10 @@ if (OUT && !existsSync(dirname(resolve(OUT)))) fail(`--out: ${dirname(resolve(OU
 const earlier = BASELINE ? readHeader(BASELINE) : null;
 
 const flowOpts = { maxSourceBytes: MAX_SRC };
+// The corpus root's device, read before and after the run. A drive that drops and comes back is
+// mounted again under another, and every repository read across that moment is suspect.
+const deviceOf = () => { try { return String(statSync(ROOT).dev); } catch (e) { return `unreadable (${e.code})`; } };
+const deviceAtStart = deviceOf();
 const repos = readdirSync(ROOT, { withFileTypes: true }).filter(d => d.isDirectory() && !d.name.startsWith('.')).map(d => d.name).sort();
 
 const strata = {};
@@ -257,6 +261,11 @@ for (const repo of toScan) {
   // One tree per repository rather than one per set: the sets all read the same directory, and
   // walking it nine times was nine resolutions of every symlink in it.
   const tree = directoryTree(root);
+  // What the walk found, so two runs can tell a changed repository, or a drive that answered one
+  // of them with less, from a changed engine.
+  const listed = tree.list();
+  const listing = { files: listed.length, sha1: createHash('sha1').update(listed.map((p) => tree.rel(p)).join('\n')).digest('hex').slice(0, 16) };
+  const unlisted = tree.index.unreadableDirs;
   const parts = {};
   const short = {};
   for (const set of SETS) {
@@ -278,8 +287,13 @@ for (const repo of toScan) {
     const why = shortfall(r.summary);
     if (why) short[name] = why;
   }
+  // The sets read what the walk listed, so a directory it could not list is missing from all of them.
+  if (unlisted.length) {
+    const why = `${unlisted.length} director${unlisted.length === 1 ? 'y' : 'ies'} could not be listed, the first ${tree.rel(unlisted[0]) || '.'}`;
+    for (const set of SETS) short[set.name] = { ...short[set.name], dirsUnlisted: unlisted.length, why: short[set.name] ? `${short[set.name].why}; ${why}` : why };
+  }
   const complete = !Object.keys(short).length;
-  readRepos[repo] = { stratum: stratumOf(repo), complete, ...(complete ? {} : { short }) };
+  readRepos[repo] = { stratum: stratumOf(repo), complete, listing, ...(complete ? {} : { short }) };
   if (complete) s.reposComplete++;
   const { cics, flow, jcl } = parts;
   s.secs += (Date.now() - t0) / 1000;
@@ -319,8 +333,12 @@ for (const repo of toScan) {
   if (flow) s.filesOverBudget += flow.summary.filesOverBudget || 0;
 }
 if (found) found.close();
+const deviceAtEnd = deviceOf();
+const device = deviceAtStart === deviceAtEnd ? { device: deviceAtStart } : { device: deviceAtEnd, changed: { start: deviceAtStart, end: deviceAtEnd } };
+if (device.changed) process.stderr.write(`measure-rules: the corpus root was on device ${deviceAtStart} when the run began and on ${deviceAtEnd} when it ended; the drive went away during the run, and what it read then is not to be trusted
+`);
 
-const settings = { ruleSets: SETS.map(set => set.name), packs: PACKS, maxSourceBytes: MAX_SRC, excludedPaths: EXCLUDE_PATHS };
+const settings ={ ruleSets: SETS.map(set => set.name), packs: PACKS, maxSourceBytes: MAX_SRC, excludedPaths: EXCLUDE_PATHS };
 
 // Rule by rule, the findings one run has and the other does not, counted only in repositories both
 // runs read completely with the set that reports the rule. A finding is known by its repository and
@@ -351,6 +369,9 @@ function compare(head, path) {
         !b && 'not in this run',
         a?.short?.[set] && `earlier run: ${a.short[set].why}`,
         b?.short?.[set] && `this run: ${b.short[set].why}`,
+        // The same repository listed differently: it changed, or a drive answered one run with less.
+        a?.listing && b?.listing && (a.listing.files !== b.listing.files || a.listing.sha1 !== b.listing.sha1)
+          && `listed differently: ${a.listing.files} file(s) then, ${b.listing.files} now`,
       ].filter(Boolean);
       if (why.length) excluded[repo] = why.join('; ');
       else { compared++; inScope.add(`${set}\u0000${repo}`); }
@@ -387,10 +408,19 @@ function compare(head, path) {
   };
   eachRecorded(path, collect('removed'));
   eachFound(collect('added'));
+  // Files listed across the repositories both runs saw: a total that differs is the first sign that
+  // one run's drive answered with less, before any finding is read.
+  const both = names.filter((r) => head.repos[r]?.listing && readRepos[r]?.listing);
+  const listed = Object.values(head.repos).some((r) => r.listing)
+    ? { then: both.reduce((n, r) => n + head.repos[r].listing.files, 0), now: both.reduce((n, r) => n + readRepos[r].listing.files, 0) }
+    : null;
+  const drives = [head.device?.changed && 'the earlier run', device.changed && 'this run'].filter(Boolean);
   return {
     file: path, engine: head.engine,
     ...(Object.keys(settingsDiffer).length ? { settingsDiffer } : {}),
     ...(notCompared.length ? { notCompared } : {}),
+    ...(listed ? { listed } : { listed: 'the earlier run records no listings, so they were not compared' }),
+    ...(drives.length ? { driveChanged: drives } : {}),
     sets, byRule,
   };
 }
@@ -401,6 +431,7 @@ const out = {
   // Two runs can be compared only if they know a finding by the same identity.
   engine: { toolVersion: TOOL_VERSION, flowModel: FLOW_MODEL, fingerprint: FINGERPRINT_VERSION },
   repos: readRepos,
+  device,
   ...(comparison ? { baseline: comparison } : {}),
   strata: {},
 };
@@ -452,6 +483,9 @@ const SHOWN = 25;
 if (comparison) {
   const c = comparison;
   console.log(`\ncompared with ${c.file}, counting only repositories both runs read completely:`);
+  if (typeof c.listed === 'string') console.log(`  ${c.listed}`);
+  else console.log(`  files listed: ${c.listed.then} then, ${c.listed.now} now${c.listed.then === c.listed.now ? '' : ' - the runs did not see the same corpus'}`);
+  for (const run of c.driveChanged || []) console.log(`  the corpus drive went away during ${run}`);
   for (const [k, v] of Object.entries(c.settingsDiffer || {})) console.log(`  ${k} differs: ${JSON.stringify(v.earlier)} then, ${JSON.stringify(v.now)} now`);
   for (const n of c.notCompared || []) console.log(`  not compared, ${n}`);
   for (const [set, s] of Object.entries(c.sets)) {

@@ -410,12 +410,12 @@ only one of the five that does.
   `SETCACHE` and `IEFBR14/DISP` create, delete or describe; `SORT/INCLUDE`, `OMIT`, `INREC` and
   `OUTREC` and `IEBGENER/SYSIN` choose or reshape records between the DDs the copy already names;
   `IKJEFT01/ADDUSER`, `ALTUSER`, `PERMIT`, `SETROPTS` and `RDEFINE` are RACF commands that
-  `jcl-instream-security-command` reports; `FTP/PUT` is read by the FTP rules in `lib/sets/jcl.mjs`.
-  `IKJEFT01/ALLOC` and `CALL` are read by `tsoCommands`: an ALLOCATE is a DD of the step, and a
-  program TSO CALL or DSN RUN starts gets the step's DDs and its parameter string as PARM. Open:
-  `IKJEFT01/EXEC`, whose CLIST or REXX is in a library the job does not hold; `FTP/GET`, which
-  writes a local data set from outside and needs the FTP session reader moved out of the rules into
-  `lib/` before the dataset flow can see it; and `FTP/SITE`.
+  `jcl-instream-security-command` reports. `IKJEFT01/ALLOC` and `CALL` are read by `tsoCommands`:
+  an ALLOCATE is a DD of the step, and a program TSO CALL or DSN RUN starts gets the step's DDs and
+  its parameter string as PARM. `FTP/PUT`, `GET` and `SITE` are read by `lib/ftp.mjs`: each transfer is
+  a copy to or from a remote end naming the host and file, and a FILETYPE=JES or SQL from a SIte
+  marks the transfers after it. Open: `IKJEFT01/EXEC`, whose CLIST or REXX is in a library the job
+  does not hold.
 
 ## Build and release
 

@@ -476,3 +476,24 @@ test('a keyword may stand apart from its parenthesis, and sequence numbers past 
   assert.deepEqual(r.steps[0].dds.filter((d) => d.allocated).map((d) => [d.name, d.dsn]), [['IN', 'PAY.IN']]);
   assert.deepEqual(tsoCommands(r.steps[0]).runs.map((x) => x.program), ['GETTAB']);
 });
+
+test('FTP sends to and fetches from a remote end, and SITE FILETYPE=JES marks the transfers after it', () => {
+  const r = parse([
+    '//J JOB (X)', '//S1 EXEC PGM=PAYGEN', '//OUT DD DSN=PAY.EXTRACT,DISP=(NEW,CATLG)',
+    "//S2 EXEC PGM=FTP,PARM='partner.example.com (EXIT'", '//OUTDD DD DSN=PAY.EXTRACT,DISP=SHR', '//INPUT DD *', 'USER01 &PW',
+    'PUT //DD:OUTDD /in/extract.dat', "LCD 'PAY'", 'GET /out/rates.dat RATES (REPLACE', 'MGET a.txt b*.txt',
+    'SITE FILETYPE=JES', "PUT 'PAY.JCL(SUBMIT)'", "GET JOB01234 'PAY.JOBOUT'", 'QUIT', '/*',
+    '//S3 EXEC PGM=RATEUSE', '//IN DD DSN=PAY.RATES,DISP=SHR',
+  ]);
+  const end = (e) => (e.remote ? `${e.remote.host}:${e.remote.name}${e.remote.filetype ? `[${e.remote.filetype}]` : ''}` : `${e.dd || '-'}=${e.dsn}`);
+  assert.deepEqual(r.copies.map((c) => `${c.line}: ${end(c.from)} > ${end(c.to)}`), [
+    '8: OUTDD=PAY.EXTRACT > partner.example.com:/in/extract.dat',
+    '10: partner.example.com:/out/rates.dat > -=PAY.RATES',
+    '11: partner.example.com:a.txt > -=PAY.A.TXT',
+    "13: -=PAY.JCL(SUBMIT) > partner.example.com:'PAY.JCL(SUBMIT)'[JES]",
+    '14: partner.example.com:JOB01234[JES] > -=PAY.JOBOUT',
+  ]);
+  const rates = r.datasetFlow.find((d) => d.dsn === 'PAY.RATES');
+  assert.deepEqual([rates.writtenBy, rates.readBy], [['S2'], ['S3']]);
+  assert.deepEqual(rates.writers[0].copiedFrom, [{ dd: null, dsn: null, remote: { host: 'partner.example.com', name: '/out/rates.dat' } }]);
+});

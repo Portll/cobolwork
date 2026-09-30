@@ -548,3 +548,15 @@ test('a backward scan stops nothing without the test, past a write, or when it c
     assert.equal(f.guard, undefined, file);
   }
 });
+
+test('a reference modification is judged on its last byte: a constant length past the start, or a constant start before the length', () => {
+  for (const file of ['SPANPAST.cbl', 'SPANSTART.cbl']) {
+    const [f] = found(file);
+    assert.ok(f, file);
+    assert.deepEqual(stopped(file), [], file);
+  }
+  for (const file of ['SPANFIT.cbl', 'SPANSTARTFIT.cbl', 'SPANOPEN.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+});

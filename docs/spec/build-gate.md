@@ -653,6 +653,11 @@ alphanumeric item or table element, written alike in the test and the scan, and 
 anything its subscript reads between the two ends the fact. `UNTIL I = 0` and `I <= 0` count as
 `I < 1`.
 
+A reference modification is judged on the bytes it names. Where its length is a constant `L`, the
+start must be kept at or below the item's size less `L - 1`: `X(I:3)` on a 256-byte `X` needs `I` at
+most 254. Where its start is a constant `S`, the length must be kept at or below the size less `S - 1`.
+A start with no length runs to the end of the item and is judged on the size.
+
 A check that ran on every route and did not bound the index lowers an index finding (a rule ending
 `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or `-to-loop-bound`) one
 step only where one of its outcomes holds on every route to the use. Where both outcomes reach the

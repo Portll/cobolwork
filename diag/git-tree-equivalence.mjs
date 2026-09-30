@@ -16,6 +16,9 @@ import { gitTree, directoryTree } from '../lib/kernel/source-tree.mjs';
 import { withRefs, diffRefs, diffTrees } from '../lib/diff.mjs';
 import { isProgram } from '../lib/sources.mjs';
 
+// Unpinned, the memory guard stops a scan early on whatever else the machine is doing, and the two sides differ by that.
+process.env.COBOLWORK_FREE_MEMORY_MB ||= '4096';
+
 const args = process.argv.slice(2);
 const diffMode = args[0] === '--diff';
 const [corpus, size = '200', seed = '20260930', ref = 'HEAD'] = diffMode ? args.slice(1) : args;
@@ -70,10 +73,18 @@ function withEdit(repo) {
   return null;
 }
 
+// A diff scans each side in full, and a repository of this many bytes takes hours to scan either way.
+const MAX_TREE_BYTES = 48 * 1024 * 1024;
+const treeBytes = (repo) => spawnSync('git', ['-C', repo, 'ls-tree', '-r', '-l', ref], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).stdout
+  .split('\n').reduce((n, line) => n + (Number(line.split(/\s+/)[3]) || 0), 0);
+
 if (diffMode) {
-  const tally = { repos: 0, same: 0, differ: 0, noCopybook: 0, withFindings: 0, skipped: [] };
+  const tally = { repos: 0, same: 0, differ: 0, noCopybook: 0, withFindings: 0, tooLarge: [], skipped: [] };
   const differences = [];
-  for (const repo of sample) {
+  for (const [i, repo] of sample.entries()) {
+    process.stderr.write(`${i + 1}/${sample.length} ${repo}\n`);
+    const bytes = treeBytes(join(corpus, repo));
+    if (bytes > MAX_TREE_BYTES) { tally.tooLarge.push(`${repo}: ${Math.round(bytes / 2 ** 20)} MB`); continue; }
     const edit = withEdit(join(corpus, repo));
     if (!edit) { tally.noCopybook++; continue; }
     let a, b;

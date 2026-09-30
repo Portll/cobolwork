@@ -161,6 +161,18 @@ test('diff between two revisions writes nothing to disk and reports a copybook e
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+// A PDS member has no extension and is classified by its contents, which a git tree holds and the disk does not.
+test('a member with no extension is a program in a git tree, as it is on disk', () => {
+  const dir = repo({ 'members/PAYCALC': program('PAYCALC', '       COPY A.', '           DISPLAY A'), 'cpy/A.cpy': '       01 A PIC X(3).\n' });
+  try {
+    writeFileSync(join(dir, 'cpy', 'A.cpy'), '       01 A PIC X(9).\n');
+    git(dir, ['commit', '-qam', 'wider']);
+    const res = diffRefs(dir, 'HEAD~1', 'HEAD');
+    assert.equal(res.summary.programsCompared, 1);
+    assert.deepEqual(res.findings.map((f) => [f.rule, f.path]), [['diff-layout-changed-unedited-program', 'members/PAYCALC']]);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('a memory tree parses, and a COPY it does not hold is missing even where a file of that name sits on disk', () => {
   const dir = tmp('memory');
   try {

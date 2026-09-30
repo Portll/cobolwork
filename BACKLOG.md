@@ -417,6 +417,21 @@ synthetic cases is not the same evidence. Three things it surfaced:
   A whole scan of it was 1,911s before; it has not been re-measured whole, because the flow
   set exhausts a 16 GB machine with under a gigabyte free and stops early whichever parser it uses.
 
+- **Index findings the check model still cannot settle**, left when roadmap 1.4 closed on
+  2026-10-01, each read on the corpus:
+  - `dc-http.cob:335` in `ReoShiozawa_discord.cob`: the true bound, `LINE-END <= RAW-LEN - 1 <= 8191`,
+    needs a lower bound on `WS-LINE-END`, which comes from sums the model treats as able to overflow.
+  - `StReImMt` `SUB-1`: about 80 writes, some of them a transient 0 (`MOVE 0` then a `PERFORM` or
+    `ADD`) that a flow-insensitive invariant cannot express. Whether `SCROLL-NEXT` reads `SUB-1 = 0`
+    decides the verdicts; neither real nor false is confirmed.
+  - A length checked only after it is computed, `COMPUTE L = E - S` then `IF L > 0`, as in
+    `cobolcc.cob:7394` and `dc-http.cob:359`: the unsigned result may be an absolute value, so the
+    span `S + L = E` holds only with an order `S < E` before the statement.
+  - A bound through a third field, `IF S + L - 1 > B`, credits nothing unless `B` itself is bounded
+    at the test. In `dc-websocket.cob:298` it is not: the caller supplies the buffer length.
+- **Format: 118 files read as free that compile only as fixed** (column-72 census of 314,910 corpus
+  files, cobc 3.2 as the oracle). Not yet read one by one.
+
 ## Structure
 
 The rule-set contract landed over 2026-09-20/21, specified in

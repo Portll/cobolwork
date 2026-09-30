@@ -432,14 +432,19 @@ only one of the five that does.
 
 ## Integration
 
-- **The remediation gate is built; nothing calls it yet.** `cobolwork gate` passes a drafted
-  patch only where the engine says why its target left: a check that stops the route, or the
-  statement or source gone and not written back. It fails a patch that adds a finding, moves a
-  layout another program reads, adds a call target or edits the site file or baseline, and leaves
-  a route cut mid-trace, or a scan the memory guard stopped, to a person
-  ([`docs/spec/remediation-gate.md`](docs/spec/remediation-gate.md)). A caller commits the draft in
-  a scratch worktree and gates `--head <sha>`, passes `reasons` to a model only inside the
-  untrusted-text envelope, caps retries, and runs `--target-only` for the resweep. The compiler
-  check has never met a real `cobc`.
+- **The remediation gate has a caller: commitwork's `cobolwork-remediate`** (commitwork 43217458,
+  `lib/cobolwork-remediation.mjs`). `cobolwork gate` passes a drafted patch only where the engine
+  says why its target left: a check that stops the route, or the statement or source gone and not
+  written back. It fails a patch that adds a finding, moves a layout another program reads, adds a
+  call target or edits the site file or baseline, and leaves a route cut mid-trace, or a scan the
+  memory guard stopped, to a person ([`docs/spec/remediation-gate.md`](docs/spec/remediation-gate.md)).
+  The caller builds each draft through a private index and gates `--head <sha>`, fences `reasons`
+  as untrusted text before a model sees them, stops at three attempts or a repeated draft, and
+  resweeps with `--target-only`. On 2026-09-30 the gate met a real compiler (GnuCOBOL 3.2.0 on
+  PATH): a batch fix that tests the value first passed with `compile` true, the same fix with a
+  misspelt scope terminator failed with `compile` false, and `--target-only` passed the fix on a
+  later revision where someone else had added a finding the full gate fails. No draft has run end to
+  end: commitwork's remediation policy is in report mode until an operator sets `hitl-item`, and its
+  drafter sends Qwen 3.8 no reasoning setting.
 - The mainframe credential rules are ready to offer upstream to gitleaks. The pull request is not
   drafted, and cobolwork itself only prints their path.

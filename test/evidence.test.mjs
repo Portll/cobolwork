@@ -639,6 +639,71 @@ test('V7.3 A dynamic CALL is a property, not a dependency', (t) => {
   assert.ok(!deps(bom, 'PAYMAIN.cbl').some((r) => /WS-PGM/.test(r)));
 });
 
+function runEstate(t) {
+  const d = tmp(t);
+  const src = join(d, 'estate');
+  for (const dir of ['jcl', 'proc', 'bms']) mkdirSync(join(src, dir), { recursive: true });
+  const program = (id, lines) => ['       IDENTIFICATION DIVISION.', `       PROGRAM-ID. ${id}.`, '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
+    "       01 WS-NEXT PIC X(8) VALUE 'PAYCALC'.", '       PROCEDURE DIVISION.', ...lines, '           GOBACK.', ''].join('\n');
+  writeFileSync(join(src, 'PAYMAIN.cbl'), program('PAYMAIN', []));
+  writeFileSync(join(src, 'PAYCALC.cbl'), program('PAYCALC', []));
+  writeFileSync(join(src, 'PAYMENU.cbl'), program('PAYMENU', [
+    "           EXEC CICS XCTL PROGRAM('PAYMAIN') END-EXEC",
+    '           EXEC CICS LINK PROGRAM(WS-NEXT) END-EXEC',
+    "           EXEC CICS SEND MAP('PAYM1') MAPSET('PAYSET') END-EXEC",
+    "           CALL 'EXTPGM'",
+    "           CALL 'MQPUT1'",
+  ]));
+  writeFileSync(join(src, 'bms', 'PAYSET.bms'), 'PAYSET   DFHMSD TYPE=MAP,LANG=COBOL\nPAYM1    DFHMDI SIZE=(24,80)\n         DFHMSD TYPE=FINAL\n         END\n');
+  writeFileSync(join(src, 'jcl', 'TSO.jcl'), '//TSO JOB 1\n//S1 EXEC PGM=IKJEFT01\n//SYSTSIN DD *\n  DSN SYSTEM(DB2A)\n  RUN PROGRAM(PAYMAIN) PLAN(PAYPLAN)\n/*\n');
+  writeFileSync(join(src, 'jcl', 'IMS.jcl'), "//IMS JOB 1\n//S1 EXEC PGM=DFSRRC00,PARM='BMP,PAYCALC,PAYPSB'\n");
+  writeFileSync(join(src, 'jcl', 'PROCJOB.jcl'), '//PROCJOB JOB 1\n//S1 EXEC PAYPROC\n//S2 EXEC NOSUCH\n');
+  writeFileSync(join(src, 'proc', 'PAYPROC.prc'), '//PAYPROC PROC\n//S EXEC PGM=IDCAMS\n');
+  return src;
+}
+
+test('V7.6 A job depends on the program a TSO batch step or an IMS region runs, and on the procedure it calls', (t) => {
+  const bom = bomOf(runEstate(t));
+  assert.deepEqual(deps(bom, 'jcl/TSO.jcl'), ['PAYMAIN.cbl', 'program:IKJEFT01']);
+  assert.deepEqual(deps(bom, 'jcl/IMS.jcl'), ['PAYCALC.cbl', 'program:DFSRRC00']);
+  assert.deepEqual(deps(bom, 'jcl/PROCJOB.jcl'), ['proc/PAYPROC.prc']);
+  assert.equal(prop(comp(bom, 'jcl/PROCJOB.jcl'), 'cobolwork:unresolved-proc'), 'NOSUCH');
+  assert.deepEqual(deps(bom, 'proc/PAYPROC.prc'), ['program:IDCAMS']);
+});
+
+test('V7.7 A program outside the estate is a component, marked system or external; a platform routine is not', (t) => {
+  const bom = bomOf(runEstate(t));
+  assert.equal(comp(bom, 'program:IDCAMS').type, 'application');
+  assert.equal(prop(comp(bom, 'program:IDCAMS'), 'cobolwork:kind'), 'system-program');
+  assert.equal(prop(comp(bom, 'program:EXTPGM'), 'cobolwork:kind'), 'external-program');
+  assert.ok(deps(bom, 'PAYMENU.cbl').includes('program:EXTPGM'));
+  assert.equal(comp(bom, 'program:MQPUT1'), undefined, 'MQPUT1 is the MQ platform');
+  assert.ok(deps(bom, 'PAYMENU.cbl').includes('platform:MQ'));
+});
+
+test('V7.8 CICS XCTL and LINK by literal are edges, through a field a property; SEND MAP depends on its mapset', (t) => {
+  const bom = bomOf(runEstate(t));
+  const d = deps(bom, 'PAYMENU.cbl');
+  assert.ok(d.includes('PAYMAIN.cbl'), 'XCTL PROGRAM literal');
+  assert.ok(d.includes('bms/PAYSET.bms'), 'SEND MAP MAPSET');
+  assert.ok(!d.includes('PAYCALC.cbl'), 'LINK through a field is not an edge');
+  assert.equal(prop(comp(bom, 'PAYMENU.cbl'), 'cobolwork:unresolved-call'), 'WS-NEXT');
+});
+
+test('V7.9 The estate carries the commit it was read at, and no version outside a repository', (t) => {
+  const src = runEstate(t);
+  assert.equal(bomOf(src).metadata.component.version, undefined);
+  const git = (args) => spawnSync('git', ['-C', src, ...args], { encoding: 'utf8' });
+  git(['init', '-q']);
+  for (const [k, v] of [['user.email', 't@example.com'], ['user.name', 't'], ['core.autocrlf', 'false']]) git(['config', k, v]);
+  git(['add', '-A']);
+  git(['commit', '-qm', 'estate']);
+  const head = git(['rev-parse', 'HEAD']).stdout.trim();
+  const c = bomOf(src).metadata.component;
+  assert.equal(c.version, head);
+  assert.deepEqual(c.properties, [{ name: 'cobolwork:dirty', value: 'false' }]);
+});
+
 test('V7.4 The same tree gives the same SBOM bytes', (t) => {
   const { src } = estate(t);
   const a = cli(['sbom', src], { SOURCE_DATE_EPOCH: '1790700000' }).stdout;

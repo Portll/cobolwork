@@ -229,18 +229,28 @@ L2; cobolwork makes no level claim, and the document says which fields a verifie
 
 `cobolwork sbom <root> [--out <file>]` writes CycloneDX 1.6 JSON.
 
-- `metadata.component`: the estate, `type: application`, named by `--name` or the root's directory.
+- `metadata.component`: the estate, `type: application`, named by `--name` or the root's directory. In
+  a git repository its `version` is the commit read, with `cobolwork:dirty` saying whether the tree
+  differed from it.
 - `components`: one per file cobolwork reads, `type: file`, `hashes: [{alg: SHA-256, content}]` over the file's bytes,
   `properties` `cobolwork:kind` = `program`, `copybook`, `jcl`, `proc`, `csd`, `bms`, `ddl`, and for
-  programs `cobolwork:program-id`, `cobolwork:dialect`, and `cobolwork:options` (the `CBL`/`PROCESS`
+  programs `cobolwork:program-id`, `cobolwork:format` (the reference format read), and `cobolwork:options` (the `CBL`/`PROCESS`
   options in force).
 - Platforms a program uses (CICS, Db2, IMS, MQ, LE) as `type: platform` components, named, with no
   version: the source does not say which release it runs on, and a guessed version would feed a
   vulnerability matcher a claim nobody made.
+- A program the estate does not hold, named by a job step, a literal `CALL`, `LINK` or `XCTL`, is a
+  `type: application` component `program:NAME`, `cobolwork:kind` = `system-program` for IBM's
+  utilities and subsystem programs (IDCAMS, SORT, IKJEFT01, DFSRRC00, the compilers and binders) and
+  `external-program` otherwise. A routine a platform provides (`CEE…`, `CBLTDLI`, `MQ…`) is its
+  platform, not a program.
 - `dependencies`: program → copybooks it copies (resolved path), program → programs it calls
-  statically or links or transfers to by literal, job → programs its steps run, program →
-  platforms. A dynamic `CALL`, `LINK` or `XCTL` through a field is a property
-  `cobolwork:unresolved-call` on the caller, never an edge.
+  statically or links or transfers to by literal, program → the BMS mapset a `SEND MAP` or
+  `RECEIVE MAP` names, job → programs its steps run, including the program a TSO batch step's
+  `DSN RUN PROGRAM(...)` runs and the application program an IMS region's `PARM='BMP,PGM,PSB'`
+  names, job → procedures its steps call, program → platforms. A dynamic `CALL`, `LINK` or `XCTL`
+  through a field is a property `cobolwork:unresolved-call` on the caller, never an edge; a
+  procedure the estate does not hold is `cobolwork:unresolved-proc` on the job.
 - `serialNumber` is a UUID version 5 over the sorted component digests, and `metadata.timestamp`
   comes from `SOURCE_DATE_EPOCH` or is omitted, so the same tree gives the same bytes.
 
@@ -507,6 +517,18 @@ It is advisory: a change that drops a run-time check the policy requires already
 
 #### V7.5 A platform has no version
     Then  a CICS program depends on a platform component named CICS with no version field
+
+#### V7.6 A job depends on the program a TSO batch step or an IMS region runs, and on the procedure it calls
+    Then  DSN RUN PROGRAM and PARM='BMP,PGM,PSB' are edges to the programs, EXEC PROC an edge to the procedure, and a missing procedure is cobolwork:unresolved-proc
+
+#### V7.7 A program outside the estate is a component, marked system or external; a platform routine is not
+    Then  IDCAMS is a system-program, a literal CALL to a program not held is an external-program, and MQPUT1 is the MQ platform
+
+#### V7.8 CICS XCTL and LINK by literal are edges, through a field a property; SEND MAP depends on its mapset
+    Then  XCTL PROGRAM('X') is an edge, LINK PROGRAM(field) is cobolwork:unresolved-call, and SEND MAP MAPSET('S') depends on the BMS file that defines S
+
+#### V7.9 The estate carries the commit it was read at, and no version outside a repository
+    Then  metadata.component.version is HEAD with cobolwork:dirty, and absent where the root is not in a repository
 
 ### V8 - Zowe and agent configuration
 

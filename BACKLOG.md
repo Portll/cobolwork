@@ -62,9 +62,8 @@ A prospective client could not tell from a report which programs an attacker cou
 every path finding now carries an `exploitability` verdict ([`docs/spec/reach.md`](docs/spec/reach.md)
 §9). On `bench/cases` with no site file it labels 23 findings `attacker-driven` and 8 `upstream`, and
 none `exploitable`, because no repository says who may start a transaction. Each carries `fixAt`, a
-test the check model credits placed before the operation. It names the value at the operation, not
-the input before it was folded into a statement, so for a built SQL or command string the test it
-names is on the whole string; naming the input field instead is open. `diag/propose-site.mjs` lists
+test the check model credits placed before the operation, or, for a statement a `STRING` built,
+before the `STRING` on the field folded in. `diag/propose-site.mjs` lists
 the transactions and jobs to classify, with any listener or URI map in front of each; a program a
 server `URIMAP` serves is started by its alias transaction. The estate's own test results, brought
 as `COBOLWORK_WITNESS`, make a verdict `confirmed`. `explain` carries a verification plan per finding

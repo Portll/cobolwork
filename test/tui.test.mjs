@@ -382,7 +382,7 @@ test('T1.17 A path finding says whether an attacker can use it', () => {
   const whole = `${text(opened)}\n${text(press(opened, 'F8').state)}`;
   assert.match(whole, /Because\s+- A terminal user supplies it/);
   assert.match(whole, /Unknown\s+whether it reproduces/);
-  assert.match(whole, /Fix at\s+before the operation at INQUIRY\.cbl:13/);
+  assert.match(whole, /Fix at\s+before the STRING at INQUIRY\.cbl:11 that builds WS-STMT/);
 
   const sorted = type(findings, 'SORT EXPLOIT').state;
   assert.match(text(press(sorted, 'Enter').state), /Exploit\s+exploitable,/, 'the exploitable finding sorts first');

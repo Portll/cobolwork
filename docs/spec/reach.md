@@ -170,8 +170,9 @@ Every `path` finding, and every route under `checked`, carries `exploitability`:
   ],
   "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation",
   "fixAt": {
-    "program": "INQUIRY", "path": "INQUIRY.cbl", "line": 13, "item": "WS-STMT",
-    "test": "before the operation at INQUIRY.cbl:13, on every route to it, test WS-STMT against a list of the values allowed (...), and let only a value that passes reach it; a static statement with host variables needs no test"
+    "program": "INQUIRY", "path": "INQUIRY.cbl", "line": 11, "item": "WS-ACCT",
+    "builtInto": { "item": "WS-STMT", "path": "INQUIRY.cbl", "line": 13 },
+    "test": "before the STRING at INQUIRY.cbl:11 that builds WS-STMT, on every route to it, test WS-ACCT against a list of the values allowed (...), or WS-ACCT IS NUMERIC where it is a number, and let only a value that passes reach it; a static statement with host variables needs no test"
   }
 }
 ```
@@ -187,6 +188,11 @@ for a name - so a patch written to it moves the finding to `refuted` on the next
 `test/exploitability.test.mjs` shows on three benchmark cases. Where no test on the value makes the
 operation safe - a key a protected field carries, data leaving the region, a response code - `test`
 is null and `why` points to the rule's remedy. A refuted route carries no `fixAt`.
+
+Where a `STRING` built the value the operation uses - an SQL statement, a command - the input is one
+part among literals, and no allow-list or class test describes the whole. `fixAt` then names the
+field folded in and the `STRING` statement, and `builtInto` names the value and the operation it
+reaches; the check model credits a test there the same way.
 
 ### 9.1 The verdicts, most urgent first
 

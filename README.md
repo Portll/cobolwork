@@ -160,8 +160,9 @@ declares its transaction open:
   ],
   "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation",
   "fixAt": {
-    "program": "INQUIRY", "path": "INQUIRY.cbl", "line": 13, "item": "WS-STMT",
-    "test": "before the operation at INQUIRY.cbl:13, on every route to it, test WS-STMT against a list of the values allowed (...), and let only a value that passes reach it; a static statement with host variables needs no test"
+    "program": "INQUIRY", "path": "INQUIRY.cbl", "line": 11, "item": "WS-ACCT",
+    "builtInto": { "item": "WS-STMT", "path": "INQUIRY.cbl", "line": 13 },
+    "test": "before the STRING at INQUIRY.cbl:11 that builds WS-STMT, on every route to it, test WS-ACCT against a list of the values allowed (...), or WS-ACCT IS NUMERIC where it is a number, and let only a value that passes reach it; a static statement with host variables needs no test"
   }
 }
 ```

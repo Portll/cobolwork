@@ -144,21 +144,22 @@ reasons.
 
 ## Precision and coverage, measured
 
-**Execution labels, 2026-10-01 (roadmap 2.1, `bench/label.mjs`).** Over 495 of the 500 held-out
-repositories (5 stopped on the memory guard; rerun with `COBOLWORK_FREE_MEMORY_MB`), 683 path
-findings: 7 confirmed, every one `cics-terminal-to-log` (GenApp's LGSTSQ in five repositories,
-the health-API sample's HCAZERRS in two); the rest unknown, and why is what to build next:
-- 250 `jcl-instream` findings, all in one repository: feed a job's in-stream data through
-  `ironwork job`.
-- 310 sinks ironwork has no trace for: `dynamic-file-path` 160 (ASSIGN to a data item, which
-  ironwork does not run), then the storage sinks (`subscript` 52, `reference-modification` 37,
-  `loop-bound` 23, `occurs-depending-count` 18), witnessed by a range abend under SSRANGE with
-  one-past-the-end as the value; `message-queue` 11 (no MQ in ironwork).
-- 27 `argv-or-env`: GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT, which ironwork refuses as
-  not Enterprise COBOL; 12 `cics-protected-field`, which a terminal cannot type into.
-- 23 in programs ironwork does not compile; 14 BMS maps not in the repository.
-- 14 `cics-terminal-to-arithmetic` that ran through the operation without a data exception, not
-  yet read.
+**Execution labels, 2026-10-01 (roadmap 2.1, `bench/label.mjs`).** Over the 500 held-out
+repositories with `COBOLWORK_FREE_MEMORY_MB=12288` (without it five repositories stop on the memory
+guard), 3,591 path findings in 42 repositories, 2,889 of them in the research dataset: 34
+confirmed, every one `cics-terminal-to-log` and two programs underneath (GenApp's LGSTSQ and the
+health-API sample's HCAZERRS, in 8 repositories' copies). The rest are unknown, and why is what
+to build next:
+- 2,606 sinks ironwork has no trace for: `dynamic-file-path` 2,369 (ASSIGN to a data item, which
+  ironwork does not run), then the storage sinks (`occurs-depending-count` 76,
+  `reference-modification` 66, `subscript` 52, `loop-bound` 23), which wait on ironwork giving an
+  SSRANGE violation its own abend code (ironwork-roadmap 5.8); `message-queue` 11 (no MQ).
+- 384 sources not fed: `jcl-instream` 250, all in one repository, through `ironwork job`;
+  `argv-or-env` 114, GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT, which ironwork refuses
+  as not Enterprise COBOL; 12 `cics-protected-field`, which a terminal cannot type into.
+- 323 in programs ironwork does not compile; 86 BMS maps not in the repository.
+- 109 operations that ran without the marker in the operand, and 42 `cics-terminal-to-arithmetic`
+  that ran through without a data exception, not yet read.
 
 Found on the way: `lib/sets/flow.mjs`'s `scan()` given a relative root returns no findings and
 reports its coverage complete (the CLI resolves roots, bench tools must); cobolwork reads no

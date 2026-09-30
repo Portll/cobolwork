@@ -62,6 +62,7 @@ const FRAMEWORKS = {
     prefix: 'Article ',
     perRule: {
       'jcl-instream-credential': '9(4)(d)',
+      'program-checks-stored-password': '9(4)(d)',
       'jcl-instream-security-command': '9(4)(c)',
       'jcl-instream-destructive': '9(3)(c)',
       'jcl-dlm-hides-instream': '9(3)(b)',
@@ -123,6 +124,7 @@ const FRAMEWORKS = {
     prefix: '',
     perRule: {
       'jcl-instream-credential': 'IS II.C.19',
+      'program-checks-stored-password': 'IS II.C.19',
       'jcl-instream-security-command': 'IS II.C.7',
       'jcl-instream-destructive': 'IS II.C.7',
       'jcl-dlm-hides-instream': 'DA&M V',
@@ -188,6 +190,7 @@ const FRAMEWORKS = {
     prefix: '',
     perRule: {
       'jcl-instream-credential': 'IA-5',
+      'program-checks-stored-password': 'IA-5',
       'jcl-instream-security-command': 'AC-6',
       'jcl-instream-destructive': 'AC-6',
       'jcl-dlm-hides-instream': 'SI-10',

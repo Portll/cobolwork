@@ -3,5 +3,6 @@
  "title": "The menu is reached only past the password comparison, whatever key is pressed",
  "cwe": "CWE-288",
  "expect": [],
- "negativeFor": ["cics-signon-bypassed"]
+ "negativeFor": ["cics-signon-bypassed"],
+ "alsoExpected": ["program-checks-stored-password"]
 }

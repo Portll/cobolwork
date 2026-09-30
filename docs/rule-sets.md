@@ -100,7 +100,25 @@ IBM GenApp's `LGSTSQ`, which writes whatever a terminal sends to the CSMT messag
 code or SQL error the system set - a command's `RESP`, `EIBRESP`, `SQLCODE` - sent in a web response
 or header is `system-response-to-web-response` or `system-response-to-http-header` (CWE-209, low),
 and no check lowers it. Nothing in the public corpus uses the CICS web API, so those two ship with
-benchmark cases and no measured rate.
+benchmark cases and no measured rate. Db2's message text, `SQLERRMC`, shown on a terminal by `SEND
+TEXT` or `SEND MAP` is `system-response-to-screen` (low): it names the tables, columns and
+constraints behind the program, where a `RESP` on an error line is ordinary and is not followed there.
+
+**What a caller chooses beyond the data.** Input that sets how much storage a program acquires - the
+`FLENGTH` or `LENGTH` of `EXEC CICS GETMAIN`, the size `CALL 'CEEGTST'` is given - is
+`*-to-storage-length` (CWE-770): medium in a CICS region, whose storage every task shares, low from a
+job's own `PARM` or command line; an upper bound tested first clears it. Input naming the Db2 location
+of `EXEC SQL CONNECT TO` or `SET CONNECTION`, or the queue manager `MQCONN` or `MQCONNX` is given
+first, is `*-to-connection-target` (CWE-99). Input naming the `SYSID` a CICS command is shipped to is
+`*-to-cics-sysid` (CWE-15, medium: the other region applies its own link security); input naming
+the resource an `EXEC CICS SET` changes is `*-to-cics-system-resource` (high, and privilege
+escalation, since that is a system-programming command). An allow-list of literals clears either.
+Web or terminal input parsed by `XML PARSE` is `*-to-xml-document` (CWE-611, low): whether a DTD in
+the document is honoured is the `XMLPARSE` compiler option's, which is not read, and no public
+repository parses XML from outside. These are the z/OS-derived designs N-RECVLIMIT, N-CONNSTR,
+N8 and N-XXE of `docs/spec/z-sibling-rules.md`; `GETMAIN` with a field is in two public repositories,
+`MQCONN` in two and `CONNECT TO` with a host variable in none, so all of them ship with fixtures and
+no measured rate.
 
 ## CICS and CALL interfaces
 
@@ -111,7 +129,27 @@ on. A sign-on a program performs itself, bypassed: where a password comparison s
 transfers somewhere, and a route to that same program that does not pass the comparison - a PF key
 the sign-on screen does not expect, a missing communication area - is a way in without a password.
 Which comparison is the sign-on is read from field names (`PWD`, `PSWD`, `PASSW`), and a sign-on
-that only sets a flag for a later test is not followed.
+that only sets a flag for a later test is not followed. The same comparison, where one side is read
+back from the program's own file record, `EXEC CICS READ INTO` area or `SELECT` host variable, is
+`program-checks-stored-password` (CWE-256, medium): the password is stored where the application
+can read it, rather than checked by `EXEC CICS VERIFY PASSWORD` or `SIGNON`. A copy made by `MOVE`
+before the comparison is not followed. A password field folded to one case by `FUNCTION UPPER-CASE`
+or `LOWER-CASE`, or by `INSPECT CONVERTING`, in a program that compares passwords is
+`password-case-folded-before-compare` (CWE-178, low). CardDemo's `COSGN00C` does both.
+
+**Failures nobody looks at.** `NOHANDLE` with no `RESP` and no `EIBRESP` test before the next
+command, and `IGNORE CONDITION`, are `cics-condition-ignored` (CWE-252, low): one finding per
+program, at the first, with the count. Deleting a temporary-storage queue, a line written to a
+transient-data log, the clock, a `SEND` to a terminal, `ASSIGN` and `RETURN` are the ordinary uses
+of `NOHANDLE` and are not counted.
+
+**Cross-site request forgery.** A program that receives a web request and changes state - `EXEC
+CICS WRITE`, `REWRITE` or `DELETE` on a file, `EXEC SQL UPDATE`, `INSERT`, `DELETE` or `MERGE`, or
+`EXEC CICS START` of a transaction - with no condition comparing a token-named field with another
+field is `web-request-changes-state-without-a-token` (CWE-352, medium). A token tested only against
+`SPACES` verifies nothing, and a test of the HTTP method, which a forged request sets too, is named
+in the finding. A temporary-storage queue is where a web program keeps its own conversation and is
+not counted as a change.
 
 **CALL interfaces.** The same size check for `CALL ... USING`: a called program that declares a
 parameter longer than its caller's argument reaches past it on every call. Past the caller's whole

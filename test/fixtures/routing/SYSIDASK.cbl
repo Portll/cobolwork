@@ -1,0 +1,12 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. SYSIDASK.
+      * ASSIGN returns the local SYSID into a field the terminal filled.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-INPUT.
+          05 WS-SYSID    PIC X(4).
+       PROCEDURE DIVISION.
+           EXEC CICS RECEIVE INTO(WS-INPUT) LENGTH(LENGTH OF WS-INPUT)
+           END-EXEC
+           EXEC CICS ASSIGN SYSID(WS-SYSID) END-EXEC
+           EXEC CICS RETURN END-EXEC.

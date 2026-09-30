@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. GETMAINLIT.
+      * A length the program chose itself.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-INPUT      PIC X(80).
+       01 WS-LEN        PIC S9(8) COMP VALUE 4096.
+       01 WS-PTR        USAGE POINTER.
+       PROCEDURE DIVISION.
+           EXEC CICS RECEIVE INTO(WS-INPUT) LENGTH(LENGTH OF WS-INPUT)
+           END-EXEC
+           EXEC CICS GETMAIN SET(WS-PTR) FLENGTH(WS-LEN)
+           END-EXEC
+           EXEC CICS RETURN END-EXEC.

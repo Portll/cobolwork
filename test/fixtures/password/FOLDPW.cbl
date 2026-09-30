@@ -1,0 +1,18 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. FOLDPW.
+      * The typed password is upper-cased before it is compared.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-INPUT.
+          05 WS-USER-ID     PIC X(8).
+          05 WS-PASSWD-IN   PIC X(8).
+       01 WS-USER-PWD       PIC X(8).
+       01 WS-EXPECTED-PWD   PIC X(8) VALUE 'SECRET01'.
+       PROCEDURE DIVISION.
+           EXEC CICS RECEIVE INTO(WS-INPUT) LENGTH(LENGTH OF WS-INPUT)
+           END-EXEC
+           MOVE FUNCTION UPPER-CASE(WS-PASSWD-IN) TO WS-USER-PWD
+           IF WS-USER-PWD = WS-EXPECTED-PWD
+              EXEC CICS XCTL PROGRAM('MENU') END-EXEC
+           END-IF
+           EXEC CICS RETURN END-EXEC.

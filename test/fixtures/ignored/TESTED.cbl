@@ -1,0 +1,17 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TESTED.
+      * NOHANDLE with the outcome read: by RESP, or by EIBRESP next.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-REC         PIC X(80).
+       01 WS-KEY         PIC X(8).
+       01 WS-RESP        PIC S9(8) COMP.
+       PROCEDURE DIVISION.
+           EXEC CICS READ FILE('ACCTDAT') INTO(WS-REC) RIDFLD(WS-KEY)
+                NOHANDLE RESP(WS-RESP) END-EXEC
+           EXEC CICS WRITEQ TS QUEUE('AUDIT') FROM(WS-REC) NOHANDLE
+           END-EXEC
+           IF EIBRESP NOT = DFHRESP(NORMAL)
+              EXEC CICS RETURN END-EXEC
+           END-IF
+           EXEC CICS RETURN END-EXEC.

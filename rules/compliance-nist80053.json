@@ -65,6 +65,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "argv-or-env-to-connection-target",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Command-line or environment input names the database or queue manager the program connects to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "argv-or-env-to-dynamic-file-path",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -161,6 +174,19 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: Command-line or environment input decides where a reference modification starts or how long it is. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-storage-length",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Command-line or environment input decides how much storage the program acquires. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -338,6 +364,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-condition-ignored",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A program issues CICS commands whose failure it cannot see: NOHANDLE with no RESP, or IGNORE CONDITION. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-listener-accepts-cleartext",
    "framework": "nist-800-53r5",
    "clause": "SC-8",
@@ -434,6 +473,45 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: Terminal input decides which program CICS transfers to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-cics-sysid",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Terminal input decides which region a CICS command is shipped to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-cics-system-resource",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Terminal input names the resource an EXEC CICS SET changes. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-connection-target",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Terminal input names the database or queue manager the program connects to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -598,6 +676,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-terminal-to-storage-length",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Terminal input decides how much storage the program acquires. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-terminal-to-subscript",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -616,6 +707,19 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: Terminal input is written into the response this program returns. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-xml-document",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Terminal input is parsed as an XML document. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -655,6 +759,45 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: Web input decides which program CICS transfers to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-cics-sysid",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Web input decides which region a CICS command is shipped to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-cics-system-resource",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Web input names the resource an EXEC CICS SET changes. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-connection-target",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Web input names the database or queue manager the program connects to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -819,6 +962,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-web-to-storage-length",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Web input decides how much storage the program acquires. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-web-to-subscript",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -837,6 +993,19 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: Web input is written into the response this program returns. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-xml-document",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Web input is parsed as an XML document. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -928,6 +1097,32 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A database value decides which program CICS transfers to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-cics-sysid",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A database value decides which region a CICS command is shipped to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-cics-system-resource",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A database value names the resource an EXEC CICS SET changes. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1214,6 +1409,32 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A file record decides which program CICS transfers to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-cics-sysid",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A file record decides which region a CICS command is shipped to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-cics-system-resource",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A file record names the resource an EXEC CICS SET changes. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1547,6 +1768,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-instream-to-connection-target",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: In-stream job data names the database or queue manager the program connects to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-instream-to-dynamic-file-path",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -1651,6 +1885,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-instream-to-storage-length",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: In-stream job data decides how much storage the program acquires. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-instream-to-subscript",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -1695,6 +1942,19 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A JCL PARM decides which program CICS transfers to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-connection-target",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A JCL PARM names the database or queue manager the program connects to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1799,6 +2059,19 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A JCL PARM decides where a reference modification starts or how long it is. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-storage-length",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A JCL PARM decides how much storage the program acquires. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1976,6 +2249,32 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "password-case-folded-before-compare",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A sign-on folds a password's case before comparing it. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "program-checks-stored-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: A program compares a password it reads back from its own file or table. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "program-without-entry",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -2046,6 +2345,19 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A response code or SQL error the system set is sent in a response header. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "system-response-to-screen",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Db2's error message text is shown on the terminal. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",

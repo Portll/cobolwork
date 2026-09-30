@@ -281,6 +281,8 @@ is zero.
 
 What is left is `GETMAIN` with a length from outside, which is two repositories and is a dataflow
 sink rather than a construct - it belongs in the `*-to-*` family the flow engine owns, not here.
+Built so on 2026-09-30: `*-to-storage-length`, on `GETMAIN FLENGTH` or `LENGTH` and the size
+`CEEGTST` is given, cleared by an upper bound tested first.
 
 ### N-XXE - 7 defects
 
@@ -308,7 +310,10 @@ application that does.
 
 The design stands if an estate ever supplies the artefact, and the caution stands with it: the
 finding would be about expansion and about what the code does with `XML-EVENT`, not about entity
-resolution, and it needs grading against the compiler before it ships.
+resolution, and it needs grading against the compiler before it ships. What shipped on 2026-09-30
+is the route only: `*-to-xml-document` at low, saying the document reached `XML PARSE` and that
+what the parser does with a DTD is the `XMLPARSE` option's, which is not read. `TRANSFORM
+XMLTODATA` is not read.
 
 ### N-COOKIE - 6 defects
 
@@ -346,7 +351,11 @@ should be built when someone has a repository that uses the CICS web API at all.
 
 The caution stands: the token may be checked in a different program reached by `LINK`, and
 cross-program guards are what the guard model refuses to invent, so it reports at `med` with
-evidence `advisory` and says what it could not follow.
+evidence `advisory` and says what it could not follow. As it stands since 2026-09-30,
+`web-request-changes-state-without-a-token` counts file writes, `EXEC SQL UPDATE`, `INSERT`,
+`DELETE` and `MERGE` and `START TRANSID` as changes, and a token only where a condition compares it
+with another field; a temporary-storage queue is not a change, since a web program keeps its
+conversation there.
 
 ### N-HEADERS - 5 defects
 
@@ -398,7 +407,9 @@ Covers: CVE-2024-52899 (JDBC URL parameter injection in Data Virtualization Mana
 **0 of 124 repositories**. What does appear is `EXEC SQL CONNECT` in 6 and `MQCONN`/`MQCONNX` in 2,
 which is a different thing: the connection is named by a host variable or a queue-manager name, not
 assembled into a URL. A rule for those is a dataflow sink on the `*-to-*` family rather than a
-construct here, and it is one row - the smallest return in the whole study.
+construct here, and it is one row - the smallest return in the whole study. Built so on
+2026-09-30: `*-to-connection-target`, on the host variable `CONNECT TO` or `SET CONNECTION` names and
+the queue manager `MQCONN` is given first. Every `CONNECT TO` in the corpus names a literal location.
 
 ### N-BMS - 1 defect, and the largest class of technique
 

@@ -4,5 +4,6 @@
  "cwe": "CWE-288",
  "expect": [
   { "rule": "cics-signon-bypassed", "file": "SIGNPF5.cbl" }
- ]
+ ],
+ "alsoExpected": ["program-checks-stored-password"]
 }

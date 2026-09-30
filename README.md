@@ -340,9 +340,9 @@ Every rule is mapped to the clause of each framework that makes it an obligation
 
 | File | Instrument | Rules mapped |
 |---|---|---|
-| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 167 |
-| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 165, and 2 recorded as unmapped |
-| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 165, and 2 recorded as unmapped |
+| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 191 |
+| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 189, and 2 recorded as unmapped |
+| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 189, and 2 recorded as unmapped |
 
 `node diag/map-compliance.mjs` refuses to write a quote the cached instrument does not contain, and
 every scan carries the mapping as `ruleCompliance`. The clause choice is a judgement that no

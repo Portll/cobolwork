@@ -4,5 +4,6 @@
  "cwe": "CWE-204",
  "expect": [
   { "rule": "cics-signon-says-which-half-failed", "file": "SIGNTELL.cbl" }
- ]
+ ],
+ "alsoExpected": ["program-checks-stored-password"]
 }

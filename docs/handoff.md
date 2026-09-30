@@ -244,7 +244,10 @@ the corpus, with volume repositories and test paths out; the figure in brackets 
 
 By 2026-09-24, N1, N2, N5 and N7 had landed (above). N3 landed in part, as N2's record-key sink for
 a key a program kept in a protected field, where a key the user typed stays unreported as the table
-advises. N4, N6, N8 and N9 are not started.
+advises. N4, N6, N8 and N9 landed on 2026-09-30, as `program-checks-stored-password` and
+`password-case-folded-before-compare`, `system-response-to-screen` (Db2's message text only),
+`*-to-cics-sysid` and `*-to-cics-system-resource`, and `cics-condition-ignored`; see
+`docs/rule-sets.md`.
 
 **Researched and not worth writing now:**
 

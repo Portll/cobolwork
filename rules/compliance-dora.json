@@ -56,6 +56,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "argv-or-env-to-connection-target",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Command-line or environment input names the database or queue manager the program connects to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "argv-or-env-to-dynamic-file-path",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -152,6 +165,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: Command-line or environment input decides where a reference modification starts or how long it is. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-storage-length",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Command-line or environment input decides how much storage the program acquires. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -329,6 +355,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-condition-ignored",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program issues CICS commands whose failure it cannot see: NOHANDLE with no RESP, or IGNORE CONDITION. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-listener-accepts-cleartext",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -425,6 +464,45 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: Terminal input decides which program CICS transfers to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-cics-sysid",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Terminal input decides which region a CICS command is shipped to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-cics-system-resource",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Terminal input names the resource an EXEC CICS SET changes. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-connection-target",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Terminal input names the database or queue manager the program connects to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -589,6 +667,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-terminal-to-storage-length",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Terminal input decides how much storage the program acquires. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-terminal-to-subscript",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -607,6 +698,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: Terminal input is written into the response this program returns. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-xml-document",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Terminal input is parsed as an XML document. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -646,6 +750,45 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: Web input decides which program CICS transfers to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-cics-sysid",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Web input decides which region a CICS command is shipped to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-cics-system-resource",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Web input names the resource an EXEC CICS SET changes. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-connection-target",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Web input names the database or queue manager the program connects to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -810,6 +953,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-web-to-storage-length",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Web input decides how much storage the program acquires. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-web-to-subscript",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -828,6 +984,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: Web input is written into the response this program returns. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-xml-document",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Web input is parsed as an XML document. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -919,6 +1088,32 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A database value decides which program CICS transfers to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-cics-sysid",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A database value decides which region a CICS command is shipped to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-cics-system-resource",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A database value names the resource an EXEC CICS SET changes. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1205,6 +1400,32 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record decides which program CICS transfers to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-cics-sysid",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A file record decides which region a CICS command is shipped to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-cics-system-resource",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A file record names the resource an EXEC CICS SET changes. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1538,6 +1759,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-instream-to-connection-target",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: In-stream job data names the database or queue manager the program connects to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-instream-to-dynamic-file-path",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -1642,6 +1876,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-instream-to-storage-length",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: In-stream job data decides how much storage the program acquires. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-instream-to-subscript",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -1686,6 +1933,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A JCL PARM decides which program CICS transfers to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-connection-target",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A JCL PARM names the database or queue manager the program connects to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1790,6 +2050,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A JCL PARM decides where a reference modification starts or how long it is. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-storage-length",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A JCL PARM decides how much storage the program acquires. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1967,6 +2240,32 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "password-case-folded-before-compare",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A sign-on folds a password's case before comparing it. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "program-checks-stored-password",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program compares a password it reads back from its own file or table. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "program-without-entry",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -2063,6 +2362,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A response code or SQL error the system set is sent in a response header. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "system-response-to-screen",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Db2's error message text is shown on the terminal. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

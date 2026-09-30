@@ -22,7 +22,8 @@ const report = scanCics(FIXTURES);
 const of = (file) => report.findings.filter((f) => f.path === file).map((f) => [f.rule, f.line]).sort();
 
 test('a sign-on with a message for each failure is reported, at the message', () => {
-  assert.deepEqual(of('SIGNTELL.cbl'), [['cics-signon-says-which-half-failed', 14]]);
+  // Both fixtures compare a password read back from the user file, which is a finding of its own.
+  assert.deepEqual(of('SIGNTELL.cbl'), [['cics-signon-says-which-half-failed', 14], ['program-checks-stored-password', 16]]);
   const f = report.findings.find((x) => x.path === 'SIGNTELL.cbl');
   assert.match(f.detail, /answers a bad user with 'User not found/);
   assert.match(f.detail, /a bad password with 'Wrong Password/);
@@ -30,7 +31,7 @@ test('a sign-on with a message for each failure is reported, at the message', ()
 });
 
 test('the same sign-on answering both with one message is the fix, not a finding', () => {
-  assert.deepEqual(of('SIGNSAME.cbl'), []);
+  assert.deepEqual(of('SIGNSAME.cbl'), [['program-checks-stored-password', 16]]);
 });
 
 test('a program with no password is not a sign-on, whatever its messages say', () => {

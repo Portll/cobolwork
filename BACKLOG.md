@@ -401,12 +401,14 @@ only one of the five that does.
   sell may itself need an arrangement with the Council. Ask them. ISACA's COBIT terms are unverified.
 
 - **Utility knowledge base.** `feed/worklists/utility.json` holds 34 targets and no rows have been
-  generated. `feed/generate.mjs` has never been run against a real model. Six of the targets'
+  generated. `feed/generate.mjs` has never been run against a real model. Ten of the targets'
   data movement is written by hand in `lib/utilities.mjs`, each entry citing the IBM page it came
   from, by "feat: a dataset flow says which program wrote it, and what a utility copied in":
   `IEBGENER/SYSUT2`, `SORT/OUTFIL`, `IDCAMS/REPRO`, `IEBCOPY/COPY`, `ADRDSSU/DUMP` and
-  `ADRDSSU/RESTORE`, plus ICEGENER, SORTINnn merges and IEBCOPY's COPYGRP. The other 28 are not
-  covered there, and COPYMOD, ADRDSSU COPY and ICETOOL are not either.
+  `ADRDSSU/RESTORE`, plus ICEGENER, SORTINnn merges and IEBCOPY's COPYGRP, and since then
+  `IDCAMS/EXPORT`, `IDCAMS/IMPORT`, `IEBCOPY/COPYMOD` and `ADRDSSU/COPY`, with IEBPTPCH, IEBUPDTE
+  and ICETOOL's COPY, SORT and MERGE, which the worklist does not list. The other 24 are not
+  covered there.
 
 ## Build and release
 

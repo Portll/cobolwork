@@ -180,6 +180,126 @@ test('ADRDSSU DUMP and RESTORE copy from INDDNAME to each OUTDDNAME', () => {
     'and so is a logical restore with no output volume');
 });
 
+test('IEBPTPCH and IEBUPDTE copy SYSUT1 to SYSUT2', () => {
+  for (const pgm of ['IEBPTPCH', 'IEBUPDTE']) {
+    const r = parse([
+      '//J JOB (X)', `//P EXEC PGM=${pgm}`,
+      '//SYSPRINT DD SYSOUT=*',
+      '//SYSUT1 DD DSN=PAY.SRC(PAYCALC),DISP=SHR',
+      '//SYSUT2 DD DSN=PAY.NEWSRC,DISP=(NEW,CATLG)',
+      '//SYSIN DD *',
+      '  PRINT TYPORG=PO,MAXFLDS=1',
+      '/*',
+    ]);
+    assert.deepEqual(pairs(r), ['P: SYSUT1=PAY.SRC(PAYCALC) > SYSUT2=PAY.NEWSRC'], pgm);
+    assert.equal(r.copies[0].utility, pgm);
+  }
+});
+
+test('IDCAMS EXPORT and IMPORT move a cluster to and from its portable data set', () => {
+  const r = parse([
+    '//J JOB (X)', '//PORT EXEC PGM=IDCAMS',
+    '//SYSPRINT DD SYSOUT=*',
+    '//CLUSTER DD DSN=PAY.KSDS,DISP=OLD',
+    '//PORTOUT DD DSN=PAY.PORTABLE,DISP=(NEW,CATLG)',
+    '//SYSIN DD *',
+    '  EXPORT PAY.KSDS OUTFILE(PORTOUT) TEMPORARY',
+    '  EXP PAY.KSDS INFILE(CLUSTER) -',
+    '      OFILE(PORTOUT)',
+    '  EXPORT PAY.KSDS OUTDATASET(PAY.PORTABLE2)',
+    '  IMPORT INDATASET(PAY.PORTABLE2) OUTFILE(CLUSTER)',
+    '  IMPORT INFILE(PORTOUT) OUTDATASET(PAY.KSDS.NEW)',
+    '/*',
+  ]);
+  assert.deepEqual(pairs(r), [
+    'PORT: -=PAY.KSDS > PORTOUT=PAY.PORTABLE',
+    'PORT: CLUSTER=PAY.KSDS > PORTOUT=PAY.PORTABLE',
+    'PORT: -=PAY.KSDS > -=PAY.PORTABLE2',
+    'PORT: -=PAY.PORTABLE2 > CLUSTER=PAY.KSDS',
+    'PORT: PORTOUT=PAY.PORTABLE > -=PAY.KSDS.NEW',
+  ]);
+  assert.deepEqual(r.copies.map((c) => c.line), [7, 8, 10, 11, 12]);
+});
+
+test('IEBCOPY COPYMOD copies each INDD to the OUTDD like COPY', () => {
+  const r = parse([
+    '//J JOB (X)', '//LIB EXEC PGM=IEBCOPY',
+    '//SYSPRINT DD SYSOUT=A',
+    '//TESTLIB DD DSN=PAY.TEST.LOAD,DISP=SHR',
+    '//PRODLIB DD DSN=PAY.PROD.LOAD,DISP=(OLD,KEEP)',
+    '//SYSIN DD *',
+    '  COPYMOD OUTDD=PRODLIB,INDD=TESTLIB',
+    '  SELECT MEMBER=((WAGETAX,,R))',
+    '/*',
+  ]);
+  assert.deepEqual(pairs(r), ['LIB: TESTLIB=PAY.TEST.LOAD > PRODLIB=PAY.PROD.LOAD']);
+  assert.equal(r.copies[0].line, 7);
+});
+
+test('ADRDSSU COPY copies from INDDNAME or LOGINDDNAME to OUTDDNAME', () => {
+  const r = parse([
+    '//J JOB (X)', '//MOVE EXEC PGM=ADRDSSU',
+    '//SRC DD UNIT=3390,VOL=SER=PAY001,DISP=OLD',
+    '//DST DD UNIT=3390,VOL=SER=PAY002,DISP=OLD',
+    '//SYSIN DD *',
+    '  COPY DATASET(INCLUDE(PAY.**)) -',
+    '       INDDNAME(SRC) OUTDDNAME(DST)',
+    '  COPY DS(INCLUDE(PAY.**)) LIDD(SRC) ODD(DST)',
+    '  COPY DS(INCLUDE(PAY.**)) OUTDDNAME(DST)',
+    '  COPY DS(INCLUDE(PAY.**)) INDDNAME(SRC)',
+    '/*',
+  ]);
+  assert.deepEqual(pairs(r), ['MOVE: SRC=null > DST=null', 'MOVE: SRC=null > DST=null']);
+  assert.deepEqual(r.copies.map((c) => c.line), [6, 8]);
+  const notes = r.diags.filter((d) => d.sev === 'info');
+  assert.ok(notes.some((d) => d.line === 9 && /input volume the command names no DD for/.test(d.text)));
+  assert.ok(notes.some((d) => d.line === 10 && /output volume the command names no DD for/.test(d.text)));
+});
+
+test('ICETOOL COPY, SORT and MERGE read each FROM DD and write each TO DD', () => {
+  const r = parse([
+    '//J JOB (X)', '//TOOL EXEC PGM=ICETOOL',
+    '//TOOLMSG DD SYSOUT=*', '//DFSMSG DD SYSOUT=*',
+    '//IN1 DD DSN=PAY.A,DISP=SHR', '//IN2 DD DSN=PAY.B,DISP=SHR', '//IN3 DD DSN=PAY.C,DISP=SHR',
+    '//OUT1 DD DSN=PAY.OUT1,DISP=(NEW,CATLG)', '//OUT2 DD DSN=PAY.OUT2,DISP=(NEW,CATLG)',
+    '//TOOLIN DD *',
+    '* COPY, THEN SORT, THEN MERGE',
+    '  COPY FROM(IN1) TO(OUT1,OUT2)',
+    '  SORT FROM(IN2) -   ANYTHING HERE IS IGNORED',
+    '       TO(OUT2)',
+    '  MERGE FROM(IN1,IN2) FROM(IN3) TO(OUT1)',
+    '  COUNT FROM(IN1)',
+    '/*',
+  ]);
+  assert.deepEqual(pairs(r), [
+    'TOOL: IN1=PAY.A > OUT1=PAY.OUT1',
+    'TOOL: IN1=PAY.A > OUT2=PAY.OUT2',
+    'TOOL: IN2=PAY.B > OUT2=PAY.OUT2',
+    'TOOL: IN1=PAY.A > OUT1=PAY.OUT1',
+    'TOOL: IN2=PAY.B > OUT1=PAY.OUT1',
+    'TOOL: IN3=PAY.C > OUT1=PAY.OUT1',
+  ]);
+  assert.deepEqual(r.copies.map((c) => c.line), [12, 12, 13, 15, 15, 15], 'a continued statement is placed on its first line');
+});
+
+test('ICETOOL says when its statements or its USING control statements are out of sight', () => {
+  const job = (...tail) => parse([
+    '//J JOB (X)', '//TOOL EXEC PGM=ICETOOL',
+    '//IN DD DSN=PAY.A,DISP=SHR', '//OUT DD DSN=PAY.OUT,DISP=(NEW,CATLG)',
+    ...tail,
+  ]);
+  const unread = job('//TOOLIN DD DSN=PAY.TOOLCARDS(SPLIT),DISP=SHR');
+  assert.deepEqual(unread.copies, []);
+  assert.ok(unread.diags.some((d) => /PAY\.TOOLCARDS\(SPLIT\)/.test(d.text)));
+
+  const split = job('//SPLITCNTL DD *', '  OUTFIL FNAMES=EAST,INCLUDE=(1,1,CH,EQ,C\'E\')', '/*', '//TOOLIN DD *', '  COPY FROM(IN) TO(OUT) USING(SPLIT)', '/*');
+  assert.deepEqual(pairs(split), ['TOOL: IN=PAY.A > OUT=PAY.OUT']);
+  assert.ok(split.diags.some((d) => /SPLITCNTL that may write OUTFIL data sets/.test(d.text)));
+
+  const plain = job('//INCLCNTL DD *', '  INCLUDE COND=(1,1,CH,EQ,C\'E\')', '/*', '//TOOLIN DD *', '  COPY FROM(IN) TO(OUT) USING(INCL)', '/*');
+  assert.ok(!plain.diags.some((d) => /OUTFIL/.test(d.text)));
+});
+
 test('a program the table does not know copies nothing here, and nothing is invented for it', () => {
   const r = parse(['//J JOB (X)', '//S EXEC PGM=PAYCALC', '//SYSUT1 DD DSN=PAY.IN,DISP=SHR', '//SYSUT2 DD DSN=PAY.OUT,DISP=OLD']);
   assert.deepEqual(r.copies, []);

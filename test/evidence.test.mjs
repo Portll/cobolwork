@@ -229,6 +229,19 @@ test('V2.2 A held lock leaves the run unrecorded, not lost', (t) => {
   assert.ok(!existsSync(join(d, LEDGER)));
 });
 
+test('V2.4 A ledger whose last line is no record is not extended', (t) => {
+  const d = tmp(t);
+  run(d);
+  const good = readFileSync(join(d, LEDGER), 'utf8');
+  const last = JSON.parse(good.trimEnd().split('\n').at(-1));
+  for (const bad of [{ ...last, chain: undefined }, { ...last, runTip: '0'.repeat(64) }]) {
+    const tail = `${good}${JSON.stringify(bad)}\n`;
+    writeFileSync(join(d, LEDGER), tail);
+    assert.equal(run(d).result.ledger, 'unrecorded');
+    assert.equal(readFileSync(join(d, LEDGER), 'utf8'), tail);
+  }
+});
+
 test('V2.3 A stale lock is broken and the break is recorded', (t) => {
   const d = tmp(t);
   prepareDir(d);

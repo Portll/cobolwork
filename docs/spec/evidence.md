@@ -397,6 +397,10 @@ It is advisory: a change that drops a run-time check the policy requires already
     Given ledger.lock older than 60 seconds whose pid is not running
     Then  the run is recorded and a lock-broken record precedes it
 
+#### V2.4 A ledger whose last line is no record is not extended
+    Given ledger.jsonl whose last line lacks a chain, or whose hash does not hold
+    Then  the run is unrecorded and the ledger is unchanged
+
 ### V3 - Verify
 
 #### V3.1 An untouched evidence directory verifies

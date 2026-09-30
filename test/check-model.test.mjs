@@ -532,3 +532,19 @@ test('a bound above the table size does not keep the index in the table', () => 
   assert.deepEqual(found('CAPFIT.cbl'), []);
   assert.equal(stopped('CAPFIT.cbl').length, 1);
 });
+
+test('a backward scan under a test that the field is not blank stops at 1 or more', () => {
+  for (const file of ['SCANWIT.cbl', 'SCANWITNE.cbl', 'SCANWITCONT.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.ok(stopped(file).length >= 1, file);
+  }
+});
+
+test('a backward scan stops nothing without the test, past a write, or when it cannot meet the byte', () => {
+  for (const file of ['SCANNOWIT.cbl', 'SCANWITNEABOVE.cbl', 'SCANWITWRITE.cbl', 'SCANWITSUB.cbl', 'SCANWITSHORT.cbl', 'SCANWITAFTER.cbl', 'SCANWITBODY.cbl', 'SCANWITOTHER.cbl']) {
+    const [f] = found(file);
+    assert.ok(f, file);
+    assert.equal(f.sev, 'high', file);
+    assert.equal(f.guard, undefined, file);
+  }
+});

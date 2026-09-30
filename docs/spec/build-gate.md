@@ -643,6 +643,16 @@ greatest `B` can hold, and `B` at least the least `A` can hold, on the outcome t
 true. Every interval a fact rests on also gives every looser fact about the field, so routes that
 reached different intervals meet at the looser.
 
+A backward scan for the last byte above a space, an inline `PERFORM VARYING I FROM n BY -1 UNTIL I < 1
+OR F(I:1) > SPACE` whose body is empty or `CONTINUE`, tested before its body, where `n` is the size of
+`F` as a constant or `LENGTH OF`, keeps `I` at most `n` throughout. It leaves `I` from 1 to `n` where
+`F > SPACES` held on every route to the loop: a field that compares above spaces has a byte above a
+space under any collating sequence, and the scan meets it before 0. `F NOT = SPACES` gives the same
+for a scan `UNTIL ... OR F(I:1) NOT = SPACE`, and not for one testing `> SPACE`. `F` is a whole
+alphanumeric item or table element, written alike in the test and the scan, and a write to it or to
+anything its subscript reads between the two ends the fact. `UNTIL I = 0` and `I <= 0` count as
+`I < 1`.
+
 A check that ran on every route and did not bound the index lowers an index finding (a rule ending
 `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or `-to-loop-bound`) one
 step only where one of its outcomes holds on every route to the use. Where both outcomes reach the

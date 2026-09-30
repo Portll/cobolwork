@@ -187,6 +187,11 @@ since a test that missed the route does not show it safe.
 `summary.handling`, because it is then a list of what to attack first. Upload it only where the RACF
 facts behind it may go. [docs/spec/reach.md](docs/spec/reach.md) §9 is the full specification.
 
+`COBOLWORK_EXECUTION` names reports `ironwork run --coverage` wrote from runs of the estate's own
+tests. A finding inside a paragraph they cover carries `executed`, the paragraph and how often the
+runs entered it, and `summary.byExecution` counts the findings in paragraphs entered and never
+entered ([docs/spec/evidence.md](docs/spec/evidence.md) §13.5).
+
 ### What each finding lets someone do, and the fix
 
 A defect finding carries two more facts, the same for every finding of its rule: what someone can do

@@ -106,6 +106,7 @@ ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence
 | `dd` | `dd`, `event` (`open`, `close`, `end`), `mode`, `sha256`, `bytes` | a file's digest before it is opened, after it is closed, and as the run left it |
 | `call` | `program`, `from`, `sha256` | a program CALL loaded from a library, with its source's digest |
 | `abend` | `code`, `file`, `line` | the abend a run ended with |
+| `step` | `step`, `pgm`, `outcome` | a job step ironwork ran or bypassed, and how it ended (`RC=0004`, `ABEND S0C7: …`, `BYPASSED: …`, `JCL ERROR: …`) |
 
 A reason is recorded as its digest, not its text: a reason is free prose, and free prose is where a
 secret or a person's name ends up.

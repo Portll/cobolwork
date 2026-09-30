@@ -427,8 +427,10 @@ that declares it rather than to whoever merged the findings. What that specifica
 
 - **What still writes a revision to disk.** `diff` reads both revisions out of git through
   `gitTree` (roadmap 3.1, see [`docs/execution-plan.md`](docs/execution-plan.md) §3.1). `build` and
-  `gate` still write them out through `withRefs`, because the compiler and ironwork read files. A
-  PDS-export adapter can now be built on `heldTree`, and `memoryTree` parses.
+  `gate` still write them out through `withRefs`, because the compiler and ironwork read files.
+  `scan --pds-export` reads a Zowe all-members download or data-set-named directories through
+  `pdsExportTree` (roadmap 3.2). `diff`, `build` and the other commands do not take it yet, and
+  XMIT and IEBCOPY unload files are not read.
 
 - **Scan time on very large programs.** A 1.6 GB repository of 17 MB programs
   (joe-tingsanchali-sonarsource_cnafbadboy) does not finish a scan in 900 s and reaches 3.9 GB

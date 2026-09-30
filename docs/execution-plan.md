@@ -90,7 +90,8 @@ The evidence it was taken on:
   37 that had such a copybook. Three repositories over 48 MB were left out; 110 had no copybook to
   widen. Parsed program by program over 400 repositories, 7,390 of 7,398 programs with an extension
   came out identical. The 8 that differ have names that differ only in case, which macOS's filesystem
-  merges into one file on disk; the git tree keeps both.
+  merges into one file on disk; the git tree keeps both. Run again after the fix below, with
+  extensionless programs counted, 7,576 of 7,584 came out identical, and the same 8 differ.
 - **One defect found by it.** Files with no extension, which is how PDS members arrive, were
   classified by opening them on disk, so a git tree lost them. They are now classified from the
   tree's own bytes.

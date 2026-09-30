@@ -68,8 +68,19 @@ sample of the 3185-repository corpus, parsed out of git and from the same revisi
 and `diff` read both ways. The results are recorded in `docs/execution-plan.md` §3.1.
 
 `diff` reads revisions with `gitTree` and writes nothing. `build` and `gate` still write them out:
-they hand the tree to a compiler, `cobc` or ironwork, which reads files. `PdsExportTree` is now
-buildable (cobolwork-roadmap 3.2).
+they hand the tree to a compiler, `cobc` or ironwork, which reads files.
+
+**`pdsExportTree` is built (2026-09-30, cobolwork-roadmap 3.2), and `scan --pds-export` uses it.**
+It reads what exists: no repository in the 3,185-repository corpus or the random and active samples
+holds an XMIT or IEBCOPY unload file, while 89 hold extensionless members, many in a directory
+named for the data set (`COBOL.TESTE`, `HERC01.DLONG.COBLIB`). The goldens route downloads through
+Zowe, and `zowe zos-files download all-members` writes `ibmuser/new/cntl/member.txt`, lower-cased,
+which a directory scan reads as nothing at all. The adapter takes both layouts, and text, `--binary`
+and `--record` downloads. Each member is held as `DATA.SET/MEMBER` under a root beside the export
+that does not exist, so a finding names the member as z/OS does. Members are read from disk when
+asked for, with no link followed at read time. A file whose path is not a data set and member name,
+or that names a member already held, is counted in `summary.pdsExport` and not read. XMIT and
+IEBCOPY unloads wait for an estate that brings one.
 
 One near-miss worth recording. Routing reads through the tree broke `programIds()` in the JCL set —
 a module-level helper with no tree in scope — and its `catch { continue }` **swallowed the
@@ -437,6 +448,15 @@ monotonic counter: under `--repos` it would report the cumulative total across e
 rather than the one being reported on.
 
 Under the port, sniffing belongs to the adapter that needs it, with a lifetime bounded by the scan.
+
+**Done (cobolwork-roadmap 3.2).** Each tree classifies its own paths and keeps the answers for as
+long as it lives: a directory tree sniffs from disk once per path, a held tree from the bytes it
+holds, and a PDS export by what each member holds, whatever extension the download gave it.
+`sources.mjs` keeps only a map from each live tree's root to its classifier, held weakly, so an
+entry goes with its tree. A path under no live tree is sniffed from disk and not remembered.
+`sniffed`, `sniffedCount` and `holdSources` are gone. Over 115 corpus repositories, 75 of them
+with extensionless members, a directory scan found the same 3,190 findings in the same 6,675 files
+as before.
 
 ---
 
@@ -869,7 +889,7 @@ Each step ends green.
    modules today** — that is the point.
 11. Convert `build`, `recon`, `vendor`; then add the guard to `hidden`, `copybook`, `jcl`,
     `inventory`, `opaque`.
-12. Move the sniff cache into `DirectoryTree` with a scan-bounded lifetime.
+12. Move the sniff cache into `DirectoryTree` with a scan-bounded lifetime. **Done in roadmap 3.2.**
 13. Introduce `filesConsidered`/`filesRead`/`filesNotRead`, keeping `filesScanned` as a derived
     alias for one release.
 

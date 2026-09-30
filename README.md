@@ -23,8 +23,10 @@ COBOL, exits zero and reports a clean result.
 ## Install
 
     npm install -g @portll/cobolwork
+    pip install cobolwork
 
-The command it installs is `cobolwork`. The same package is attached to each
+Either installs the command `cobolwork`; the PyPI package runs the same files with the Node.js on
+your PATH. The same package is attached to each
 [release](https://github.com/Portll/cobolwork/releases) as `cobolwork-<version>.tgz`, which is the
 one to pin, and as `cobolwork.tgz`, which
 `npm install -g https://github.com/Portll/cobolwork/releases/latest/download/cobolwork.tgz`

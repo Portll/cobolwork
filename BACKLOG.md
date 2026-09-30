@@ -407,12 +407,16 @@ commits from `89b42ea` to `5a580a8`. Adding a rule set went from nine edits acro
 two lines in one; a scan walks the tree once rather than ten times; severity belongs to the rule
 that declares it rather than to whoever merged the findings. What that specification leaves open:
 
-- **A git-ref source tree.** `lib/kernel/source-tree.mjs` has the port and three adapters, but not
-  one that reads a git revision, so `lib/diff.mjs` still materialises each side into a temporary
-  directory. It is blocked on `lib/parser.mjs`, which reads copybooks from disk while parsing
-  (`:578`, `:1283`) and resolves them with `statSync` (`:520`). Making the graded parser read
-  through the port is a larger decision than the refactor that found it, and should be taken on its
-  own evidence. The same limit stops `memoryTree` parsing, and stops a PDS-export adapter existing.
+- **What still writes a revision to disk.** `diff` reads both revisions out of git through
+  `gitTree` (roadmap 3.1, see [`docs/execution-plan.md`](docs/execution-plan.md) §3.1). `build` and
+  `gate` still write them out through `withRefs`, because the compiler and ironwork read files. A
+  PDS-export adapter can now be built on `heldTree`, and `memoryTree` parses.
+
+- **Scan time on very large programs.** A 1.6 GB repository of 17 MB programs
+  (joe-tingsanchali-sonarsource_cnafbadboy) does not finish a scan in 900 s and reaches 3.9 GB
+  resident, read from disk or from git. One of its programs parses in 1.25 s; there are 156 of them,
+  and more than one rule set parses each. Before this change `diff` refused it outright, because
+  `git cat-file` overflowed a 256 MB buffer.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

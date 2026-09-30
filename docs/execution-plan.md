@@ -78,9 +78,30 @@ substantial change to the one file that is graded against GnuCOBOL and backed by
 **The specification promised this and was wrong to.** §3 said the port lets `diff` read git blobs;
 §10 said `parser.mjs` is out of scope. Both cannot hold.
 
-**Recommendation:** not yet, and not as part of anything else. The temp directories work. Take this
-on its own evidence — a measured cost of the current approach on a large repository — rather than
-because a refactor noticed it.
+**Decided: yes, and done (roadmap 3.1, 2026-09-30).** The parser reads copybook text through
+`ctx.readText`, which defaults to the disk read it always did. `gitTree` holds a revision in memory
+and `diff` reads both sides through it. `build` and `gate` still write revisions to disk, because
+the compiler and ironwork read files.
+
+The evidence it was taken on:
+
+- **Same answers.** Over 150 corpus repositories, each given one commit that widens a copybook's
+  first `PIC X(n)`, `diff` read out of git reported what it reported from revisions on disk in 37 of
+  37 that had such a copybook. Three repositories over 48 MB were left out; 110 had no copybook to
+  widen. Parsed program by program over 400 repositories, 7,390 of 7,398 programs with an extension
+  came out identical. The 8 that differ have names that differ only in case, which macOS's filesystem
+  merges into one file on disk; the git tree keeps both.
+- **One defect found by it.** Files with no extension, which is how PDS members arrive, were
+  classified by opening them on disk, so a git tree lost them. They are now classified from the
+  tree's own bytes.
+- **Cost.** On OCamlPro_gnucobol-contrib (3,223 files, 152 MB, 1,275 programs compared), diff took
+  23.0 s and 24.9 s read from git against 30.3 s and 26.7 s written to disk. Peak memory was
+  846–935 MB against 561–739 MB, because both revisions are held. Nothing is written to disk.
+- **A failure it removes.** The old materialiser read blobs in batches of 500 into a 256 MB
+  buffer, so a repository with large programs failed at `git cat-file`. Batches are now sized by
+  bytes.
+
+The graded parser's golden fixtures and the full suite pass unchanged.
 
 ### 3.2 Should the five languages be built?
 

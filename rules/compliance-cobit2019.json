@@ -1,0 +1,2438 @@
+{
+ "schemaVersion": 1,
+ "framework": "cobit-2019",
+ "instrument": "COBIT 2019 governance and management objectives (ISACA)",
+ "source": "https://www.isaca.org/resources/cobit",
+ "retrieved": "2026-09-20",
+ "verified": "Identifiers only, with this project's own rationale; no COBIT text is reproduced. Every identifier is checked against the forty COBIT 2019 objectives. The choice of practice is a human judgement and has not been reviewed by a qualified assessor or by ISACA.",
+ "coverage": "COBIT 2019 objective and practice identifiers only. No COBIT text is reproduced: the titles, descriptions and activities are ISACA's, and reading them needs a copy of the framework. Design factors, focus areas and capability levels are outside it.",
+ "appliesToTool": [
+  {
+   "clause": "BAI03.06"
+  }
+ ],
+ "unmapped": [
+  {
+   "ruleId": "recon-production-name-outside-production",
+   "why": "No COBIT 2019 practice is about disclosing internal system names in source. DSS06.06 secures information assets in general, and mapping to it would be the same near miss NIST declines."
+  },
+  {
+   "ruleId": "recon-routable-address-committed",
+   "why": "As above. DSS05.02 governs the connection rather than the disclosure of its address in a repository."
+  }
+ ],
+ "rows": [
+  {
+   "kind": "compliance",
+   "ruleId": "agent-directive-in-comment",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A comment tells its reader to ignore instructions, or to fetch and run something. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-arithmetic",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input reaches arithmetic on a decimal field, where bytes that are not digits abend the program. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-cics-dynamic-transfer",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input decides which program CICS transfers to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-connection-target",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input names the database or queue manager the program connects to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-dynamic-file-path",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input decides which file is opened. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-dynamic-program-load",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input decides which program is called. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-dynamic-sql",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input reaches dynamic SQL. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-internal-reader",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input is written into a job the internal reader submits. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-loop-bound",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input decides how far a loop that subscripts a table runs. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-occurs-depending-count",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input decides how many entries an OCCURS DEPENDING ON table holds. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-os-command",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input reaches an operating-system command routine. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-reference-modification",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input decides where a reference modification starts or how long it is. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-storage-length",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input decides how much storage the program acquires. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-subscript",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Command-line or environment input is used as a subscript. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "bidi-or-invisible-characters",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Characters that reorder or hide text appear in the source. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "binary-store-exceeds-picture-under-trunc-opt",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Under TRUNC(OPT) a binary field receives a value that can have more digits than its PICTURE. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "build-pins-exploited-compiler",
+   "framework": "cobit-2019",
+   "clause": "DSS05.07",
+   "rationale": "The rule reports: The build pins a compiler version with a vulnerability CISA lists as known to be exploited. That is a known vulnerability present in the build, which this practice requires be managed.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "build-pins-exploited-component",
+   "framework": "cobit-2019",
+   "clause": "DSS05.07",
+   "rationale": "The rule reports: The build pins a component version with a vulnerability CISA lists as known to be exploited. That is a known vulnerability present in the build, which this practice requires be managed.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "build-pins-vulnerable-compiler",
+   "framework": "cobit-2019",
+   "clause": "DSS05.07",
+   "rationale": "The rule reports: The build pins a compiler version with a published advisory against it. That is a known vulnerability present in the build, which this practice requires be managed.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "build-pins-vulnerable-component",
+   "framework": "cobit-2019",
+   "clause": "DSS05.07",
+   "rationale": "The rule reports: The build pins a component version with a published advisory against it. That is a known vulnerability present in the build, which this practice requires be managed.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "call-parameter-exceeds-argument",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A called program declares a parameter longer than the field its caller passes, reaching into the fields beside it. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "call-parameter-exceeds-caller-record",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A called program declares a parameter longer than the whole record its caller passes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "character-range-reverses-in-ascii",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A range of characters is in order in EBCDIC and reversed in ASCII, or the other way round, so it holds values in one and none in the other. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-commarea-length-exceeds-area",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A CICS call passes a length longer than the area it passes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-commarea-length-exceeds-callee",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A CICS call passes a length longer than the callee declares. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-commarea-without-length-check",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A program reads its communication area without checking EIBCALEN. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-condition-ignored",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A program issues CICS commands whose failure it cannot see: NOHANDLE with no RESP, or IGNORE CONDITION. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-listener-accepts-cleartext",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A CICS listener accepts connections without TLS. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-protected-field-to-record-key",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A field the map protects, which a modified 3270 client can change, decides which record the program reads or browses from. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-protected-field-to-record-update",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A field the map protects, which a modified 3270 client can change, decides which record the program changes or deletes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-signon-bypassed",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A route reaches the program a sign-on grants without passing the password check. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-signon-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: cics signon password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-signon-says-which-half-failed",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A sign-on answers a bad user and a bad password differently. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-arithmetic",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input reaches arithmetic on a decimal field, where bytes that are not digits abend the program. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-cics-dynamic-transfer",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides which program CICS transfers to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-cics-sysid",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides which region a CICS command is shipped to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-cics-system-resource",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input names the resource an EXEC CICS SET changes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-connection-target",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input names the database or queue manager the program connects to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-dynamic-file-path",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides which file is opened. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-dynamic-program-load",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides which program is called. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-dynamic-sql",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input reaches dynamic SQL. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-http-header",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input is written into a header of the response. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-internal-reader",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input is written into a job the internal reader submits. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-log",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input is written to a log unchecked, where control characters in it can start a line the program did not write. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-loop-bound",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides how far a loop that subscripts a table runs. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-occurs-depending-count",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides how many entries an OCCURS DEPENDING ON table holds. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-os-command",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input reaches an operating-system command routine. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-outbound-host",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides the host or path this program sends a request to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-queue-name",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input names the queue a command reads, writes or deletes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-reference-modification",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides where a reference modification starts or how long it is. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-storage-length",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input decides how much storage the program acquires. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-subscript",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input is used as a subscript. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-web-response",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input is written into the response this program returns. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-xml-document",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Terminal input is parsed as an XML document. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-transfer-to-variable-program",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: CICS transfers control to a program named by a variable. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-arithmetic",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input reaches arithmetic on a decimal field, where bytes that are not digits abend the program. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-cics-dynamic-transfer",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides which program CICS transfers to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-cics-sysid",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides which region a CICS command is shipped to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-cics-system-resource",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input names the resource an EXEC CICS SET changes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-connection-target",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input names the database or queue manager the program connects to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-dynamic-file-path",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides which file is opened. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-dynamic-program-load",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides which program is called. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-dynamic-sql",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input reaches dynamic SQL. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-http-header",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input is written into a header of the response. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-internal-reader",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input is written into a job the internal reader submits. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-log",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web request data is written to a log unchecked, where control characters in it can start a line the program did not write. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-loop-bound",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides how far a loop that subscripts a table runs. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-occurs-depending-count",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides how many entries an OCCURS DEPENDING ON table holds. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-os-command",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input reaches an operating-system command routine. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-outbound-host",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides the host or path this program sends a request to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-queue-name",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input names the queue a command reads, writes or deletes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-reference-modification",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides where a reference modification starts or how long it is. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-storage-length",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input decides how much storage the program acquires. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-subscript",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input is used as a subscript. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-web-response",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input is written into the response this program returns. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-xml-document",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Web input is parsed as an XML document. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cobol-value-credential",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: cobol value credential. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "compile-undefined-name",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A program uses names that nothing it declares or copies defines, so it cannot compile. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "control-cards-from-dataset",
+   "framework": "cobit-2019",
+   "clause": "BAI06.01",
+   "rationale": "The rule reports: A utility step reads the commands it runs from a cataloged data set, so what it runs is not in the reviewed JCL. That is a change whose impact has to be assessed before it is authorised, which this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "copybook-shadowed",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: Two copybooks with different contents answer to the same name, and programs resolve it to different files. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "copybook-shadows-system",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A copybook in the repository has the name of a system copybook, and is found before it. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "csd-defines-diagnostic-transaction",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A definition in this repository installs one of the CICS diagnostic transactions. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "csd-transaction-without-command-security",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A transaction whose program issues system commands runs without command security. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-cics-dynamic-transfer",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value decides which program CICS transfers to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-cics-sysid",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value decides which region a CICS command is shipped to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-cics-system-resource",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value names the resource an EXEC CICS SET changes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-dynamic-file-path",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value decides which file is opened. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-dynamic-program-load",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value decides which program is called. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-dynamic-sql",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value reaches dynamic SQL. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-extrapartition-queue",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A database value is written to a transient-data queue that leaves the region. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-http-header",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value is written into a header of the response. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-internal-reader",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value is written into a job the internal reader submits. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-message-queue",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A database value is put on a message queue. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-os-command",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value reaches an operating-system command routine. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-outbound-host",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value decides the host or path this program sends a request to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-outbound-http",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A database value is sent to a remote server over HTTP. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-queue-name",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value names the queue a command reads, writes or deletes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-socket-send",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A database value is written to a network socket. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "database-to-web-response",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A database value is written into the response this program returns. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "diff-interface-layout-changed",
+   "framework": "cobit-2019",
+   "clause": "BAI06.01",
+   "rationale": "The rule reports: A record this program passes to or receives from another program changed size or position. That is a change whose impact has to be assessed before it is authorised, which this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "diff-layout-changed",
+   "framework": "cobit-2019",
+   "clause": "BAI06.01",
+   "rationale": "The rule reports: Fields in this program changed size or position. That is a change whose impact has to be assessed before it is authorised, which this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "diff-layout-changed-unedited-program",
+   "framework": "cobit-2019",
+   "clause": "BAI06.01",
+   "rationale": "The rule reports: Fields in this program changed size or position although its own source did not change. That is a change whose impact has to be assessed before it is authorised, which this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "diff-new-call-target",
+   "framework": "cobit-2019",
+   "clause": "BAI06.01",
+   "rationale": "The rule reports: The change makes this program call or transfer to a program it did not before. That is a change whose impact has to be assessed before it is authorised, which this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "diff-new-dynamic-call",
+   "framework": "cobit-2019",
+   "clause": "BAI06.01",
+   "rationale": "The rule reports: The change adds a call or transfer whose target is a variable. That is a change whose impact has to be assessed before it is authorised, which this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "display-echoes-a-credential",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program displays a credential back to the terminal or HTTP request that supplied it. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "embedded-sql-connect-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: embedded sql connect password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "encoded-blob",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A long encoded run sits in a comment or literal. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-cics-dynamic-transfer",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record decides which program CICS transfers to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-cics-sysid",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record decides which region a CICS command is shipped to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-cics-system-resource",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record names the resource an EXEC CICS SET changes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-dynamic-file-path",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record decides which file is opened. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-dynamic-program-load",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record decides which program is called. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-dynamic-sql",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record reaches dynamic SQL. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-extrapartition-queue",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A file record is written to a transient-data queue that leaves the region. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-http-header",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record is written into a header of the response. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-internal-reader",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record is written into a job the internal reader submits. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-message-queue",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A file record is put on a message queue. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-os-command",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record reaches an operating-system command routine. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-outbound-host",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record decides the host or path this program sends a request to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-outbound-http",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A file record is sent to a remote server over HTTP. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-queue-name",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record names the queue a command reads, writes or deletes. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-socket-send",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A file record is written to a network socket. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-web-response",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file record is written into the response this program returns. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hidden-payload-in-identification-area",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Columns 73 to 80, which the compiler ignores, carry a payload rather than a change tag. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hidden-payload-in-sequence-area",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: The sequence area carries varying text rather than line numbers or a change tag. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "intermediate-result-loses-high-order-digits",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A COMPUTE has an intermediate result wider than the compiler carries, so high-order digits can be lost. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-dlm-hides-instream",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream data uses a non-default delimiter, so it does not end where a line-by-line reader expects. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-exec-pgm-unresolved",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A step runs a program that is neither a system utility nor defined by any source in this tree. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-ftp-cleartext",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A step runs FTP with no TLS option on its PARM or in its in-stream configuration, so its logon and data cross the network in cleartext. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-ftp-sends-production-dataset",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A step sends a dataset the estate calls production off the system by FTP. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-credential",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A password or pass phrase is set in in-stream job data. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-destructive",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: In-stream job data deletes or overwrites a catalogued dataset. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-security-command",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: In-stream job data issues security product commands that grant or alter authority. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-arithmetic",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data reaches arithmetic on a decimal field, where bytes that are not digits abend the program. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-cics-dynamic-transfer",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data decides which program CICS transfers to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-connection-target",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data names the database or queue manager the program connects to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-dynamic-file-path",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data decides which file is opened. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-dynamic-program-load",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data decides which program is called. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-dynamic-sql",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data reaches dynamic SQL. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-internal-reader",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data is written into a job the internal reader submits. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-loop-bound",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data decides how far a loop that subscripts a table runs. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-occurs-depending-count",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data decides how many entries an OCCURS DEPENDING ON table holds. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-os-command",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data reaches an operating-system command routine. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-reference-modification",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data decides where a reference modification starts or how long it is. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-storage-length",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data decides how much storage the program acquires. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-subscript",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: In-stream job data is used as a subscript. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-is-an-entry-point",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A step passes PARM= to a program in this tree, which the flow rules follow as an untrusted source. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-arithmetic",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM reaches arithmetic on a decimal field, where bytes that are not digits abend the program. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-cics-dynamic-transfer",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM decides which program CICS transfers to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-connection-target",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM names the database or queue manager the program connects to. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-dynamic-file-path",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM decides which file is opened. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-dynamic-program-load",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM decides which program is called. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-dynamic-sql",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM reaches dynamic SQL. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-internal-reader",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM is written into a job the internal reader submits. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-loop-bound",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM decides how far a loop that subscripts a table runs. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-occurs-depending-count",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM decides how many entries an OCCURS DEPENDING ON table holds. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-os-command",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM reaches an operating-system command routine. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-reference-modification",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM decides where a reference modification starts or how long it is. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-storage-length",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM decides how much storage the program acquires. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-subscript",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A JCL PARM is used as a subscript. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-racf-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: jcl racf password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "job-loads-from-an-authorised-library",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A job loads from a library the estate calls authorised. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "job-reaches-unix-system-services",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A job runs a shell through UNIX System Services. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "job-runs-under-another-user",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A job names the user it runs as. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "job-unloads-the-security-database",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A job unloads the security database. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "job-writes-diagnostic-output-unrestricted",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A job writes a dump, trace, log or unload to a dataset the estate has not called restricted. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "log-writes-a-credential",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program writes a field named as a credential into a log. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "log-writes-personal-data",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program writes a field named as personal data into a log. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "opaque-altered-control-flow",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A program changes where a GO TO goes at run time, so its control flow is not followed. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "opaque-alternate-entry",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A program declares an alternate entry point, which the flow rules do not start from. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "opaque-pointer-addressing",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A program addresses storage through a pointer, so data flow through it is not followed. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "opaque-procedure-pointer",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A program calls through a procedure pointer, so the callee is not known statically. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "password-case-folded-before-compare",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A sign-on folds a password's case before comparing it. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "program-checks-stored-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A program compares a password it reads back from its own file or table. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "program-without-entry",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Nothing in this tree starts this program: no transaction, job step or program reaches it. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "racf-command-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: racf command password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "recon-nonproduction-job-reads-production-dataset",
+   "framework": "cobit-2019",
+   "clause": "BAI07.04",
+   "rationale": "The rule reports: A job the estate calls non-production reads a production dataset. That is live data put to use outside production, where the test environment this practice requires should not reach it.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "recon-nonproduction-job-writes-production-dataset",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A job the estate calls non-production creates, extends, overwrites or deletes a production dataset. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "site-declares-vulnerable-runtime",
+   "framework": "cobit-2019",
+   "clause": "DSS05.07",
+   "rationale": "The rule reports: The estate declares a runtime version with a published advisory against it. That is a known vulnerability present in the build, which this practice requires be managed.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "sort-exit-named",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A DFSORT or ICETOOL step names an exit routine on a MODS statement, a load module the sort loads and runs. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "system-response-to-http-header",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A response code or SQL error the system set is sent in a response header. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "system-response-to-screen",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Db2's error message text is shown on the terminal. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "system-response-to-web-response",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A response code or SQL error the system set is sent in a web response. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "tso-batch-runs-program",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A TSO batch step runs another program, CLIST, REXX exec or job from its in-stream commands. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "tso-logon-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: tso logon password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "vendor-privileged-command",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A job issues a vendor product command that creates, grants or alters authority. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-cookie-without-secure-attributes",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A program sets a cookie without the attributes that keep it off a cleartext hop. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-link-opens-without-noopener",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A program writes a link that opens a new window with a handle back to this one. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-request-changes-state-without-a-token",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A program changes state on a web request without comparing anything the browser could not forge. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-response-tells-the-caller-what-it-runs",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A program writes a header naming the software behind it. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-response-without-protective-headers",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A program sends HTML without the headers that say who may frame or reinterpret it. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-uri-carries-a-credential",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A program puts a credential in a URI rather than in the request body. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-cleartext",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A Zowe profile for z/OSMF, API ML or RSE connects over plain HTTP. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-secret-in-clear",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A Zowe team configuration holds a password or token in the file rather than in the credential vault. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-tls-verify-off",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A Zowe profile turns off TLS certificate verification. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-data-marking-off",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A Zowe MCP server has its untrusted-data marking turned off. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-password-in-config",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: An MCP client configuration sets a Zowe MCP password, credential map or key passphrase to a literal value. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-tier-full",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A Zowe MCP server runs at the full capability tier. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-tier-writes",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A Zowe MCP server runs at a capability tier that lets the agent change or delete mainframe data. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-unpinned",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A Zowe MCP server is launched from the registry with no pinned version. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mock-credentials",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A Zowe MCP mock systems.json holds a password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  }
+ ]
+}

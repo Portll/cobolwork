@@ -89,8 +89,9 @@ its source URL and retrieval date:
 - **NIST SP 800-53 Rev. 5** — a work of the US Government.
 - **FFIEC IT Examination Handbook** — a work of the US Government.
 
-PCI DSS and the COBIT-derived SOX material are deliberately absent: they may not be redistributed,
-so they belong in a licensed feed rather than in this repository. Full instrument texts are never
+COBIT 2019 appears as objective and practice identifiers only, with this project's own rationale;
+no text of COBIT, which is ISACA's, is reproduced. PCI DSS is deliberately absent: it may not be
+redistributed. Full instrument texts are never
 committed (`feed/sources/` is ignored); the feed ships citations, not text.
 
 ## Vulnerability data

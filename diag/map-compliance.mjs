@@ -1,13 +1,13 @@
 // Maps every rule this engine reports to the clause of each framework that makes it an obligation,
 // and refuses to write a framework's file unless every row passes the feed gate.
 //
-//   node diag/map-compliance.mjs [--write] [--framework dora|ffiec|nist80053]
+//   node diag/map-compliance.mjs [--write] [--framework dora|ffiec|nist80053|cobit2019]
 //
-// Three frameworks ship openly here because their instruments may be reproduced: DORA is EU law,
-// and NIST SP 800-53 and the FFIEC IT Examination Handbook are US Government works. PCI DSS and the
-// COBIT-derived SOX material may not be redistributed and belong in the licensed feed. That is a
-// licensing fact before it is a product decision, and it happens to make the free matrices the
-// argument for the paid ones.
+// Three frameworks ship with quotes because their instruments may be reproduced: DORA is EU law,
+// and NIST SP 800-53 and the FFIEC IT Examination Handbook are US Government works. COBIT 2019
+// ships as identifiers only: ISACA's text may not be reproduced, so a row names the objective or
+// practice and gives this project's own rationale, and the gate checks the identifier instead of a
+// quote. PCI DSS may not be redistributed and is not mapped.
 //
 // The clause each rule maps to is a judgement, written down here rather than inferred. The gate
 // checks that the document says what the row claims it says; it cannot check that the mapping is
@@ -261,7 +261,51 @@ const FRAMEWORKS = {
   },
 };
 
-if (!existsSync(join(SOURCES, 'dora.txt'))) {
+// COBIT 2019 follows NIST's per-rule and per-set choices through this crosswalk, so a rule's COBIT
+// practice is decided once, at the control, and cannot drift from its NIST clause. Only the
+// semantics set departs: NIST files it under flaw remediation, but a store the generated code
+// decides is a processing-accuracy question, not a vulnerability.
+const COBIT_OBJECTIVE = /^(EDM0[1-5]|APO(0[1-9]|1[0-4])|BAI(0[1-9]|1[01])|DSS0[1-6]|MEA0[1-4])(\.\d{2})?$/;
+const NIST_TO_COBIT = {
+  'SI-10': 'DSS06.02', 'SC-23': 'DSS06.02',
+  'AC-6': 'DSS05.04', 'IA-5': 'DSS05.04',
+  'IA-5(1)': 'DSS05.02', 'SC-7': 'DSS05.02', 'SC-8': 'DSS05.02',
+  'SI-2': 'DSS05.07', 'CM-8': 'BAI09.01', 'CM-3': 'BAI06.01',
+  'SI-11': 'DSS06.06', 'SA-3(2)': 'BAI07.04',
+};
+const toCobit = (table) => Object.fromEntries(Object.entries(table).map(([k, c]) => [k, NIST_TO_COBIT[c]]));
+FRAMEWORKS.cobit2019 = {
+  id: 'cobit-2019',
+  doc: 'cobit2019',
+  idsOnly: true,
+  instrument: 'COBIT 2019 governance and management objectives (ISACA)',
+  source: 'https://www.isaca.org/resources/cobit',
+  out: 'compliance-cobit2019.json',
+  coverage: 'COBIT 2019 objective and practice identifiers only. No COBIT text is reproduced: the titles, descriptions and activities are ISACA\'s, and reading them needs a copy of the framework. Design factors, focus areas and capability levels are outside it.',
+  clauses: Object.fromEntries([...new Set([...Object.values(NIST_TO_COBIT), 'BAI03.06'])].map((c) => [c, {}])),
+  // Quality assurance is the practice the whole tool serves, so it is claimed once, for the tool.
+  documentLevel: ['BAI03.06'],
+  prefix: '',
+  perRule: toCobit(FRAMEWORKS.nist80053.perRule),
+  perSet: { ...toCobit(FRAMEWORKS.nist80053.perSet), semantics: 'DSS06.02' },
+  exfil: NIST_TO_COBIT[FRAMEWORKS.nist80053.exfil],
+  frame: {
+    'DSS06.02': 'That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.',
+    'DSS05.04': 'That is access or authentication handled outside the managed identity and logical access this practice requires.',
+    'DSS05.02': 'That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.',
+    'DSS05.07': 'That is a known vulnerability present in the build, which this practice requires be managed.',
+    'BAI09.01': 'That is a component the record of assets does not account for, which this practice requires be identified and recorded.',
+    'BAI06.01': 'That is a change whose impact has to be assessed before it is authorised, which this practice requires.',
+    'DSS06.06': 'That is information released to people it was never meant for, which this practice requires be secured.',
+    'BAI07.04': 'That is live data put to use outside production, where the test environment this practice requires should not reach it.',
+  },
+  unmapped: {
+    'recon-production-name-outside-production': 'No COBIT 2019 practice is about disclosing internal system names in source. DSS06.06 secures information assets in general, and mapping to it would be the same near miss NIST declines.',
+    'recon-routable-address-committed': 'As above. DSS05.02 governs the connection rather than the disclosure of its address in a repository.',
+  },
+};
+
+if (Object.entries(FRAMEWORKS).some(([k, F]) => !F.idsOnly && (!only || only === k)) && !existsSync(join(SOURCES, 'dora.txt'))) {
   console.error('feed/sources/ is not populated. Without the instruments there is nothing to verify a quote against.');
   process.exit(2);
 }
@@ -270,7 +314,7 @@ let anyBad = 0;
 for (const key of Object.keys(FRAMEWORKS)) {
   if (only && only !== key) continue;
   const F = FRAMEWORKS[key];
-  if (!existsSync(join(SOURCES, F.doc + '.txt'))) {
+  if (!F.idsOnly && !existsSync(join(SOURCES, F.doc + '.txt'))) {
     console.error(`${key}: feed/sources/${F.doc}.txt is not cached; skipping`);
     anyBad++;
     continue;
@@ -289,9 +333,9 @@ for (const key of Object.keys(FRAMEWORKS)) {
       ruleId: rule.id,
       framework: F.id,
       clause: F.prefix + clause,
-      title: c.title,
+      ...(F.idsOnly ? {} : { title: c.title }),
       rationale: `The rule reports: ${rule.text}. ${F.frame[clause]}`,
-      source: { doc: F.doc, retrieved: RETRIEVED, quote: c.quote },
+      source: F.idsOnly ? { doc: F.doc, retrieved: RETRIEVED, idsOnly: true } : { doc: F.doc, retrieved: RETRIEVED, quote: c.quote },
     });
   }
 
@@ -304,7 +348,9 @@ for (const key of Object.keys(FRAMEWORKS)) {
 
   let bad = 0;
   for (const row of rows) {
-    const problems = verifyRow(row, { sourcesDir: SOURCES });
+    const problems = F.idsOnly
+      ? (COBIT_OBJECTIVE.test(row.clause) ? [] : [`${row.clause} is not a COBIT 2019 objective or practice identifier`])
+      : verifyRow(row, { sourcesDir: SOURCES });
     if (problems.length) { bad++; console.error(`${key}: REJECTED ${row.ruleId}: ${problems.join('; ')}`); }
   }
 
@@ -323,9 +369,11 @@ for (const key of Object.keys(FRAMEWORKS)) {
       instrument: F.instrument,
       source: F.source,
       retrieved: RETRIEVED,
-      verified: 'Every quote was matched verbatim against the cited instrument. The choice of clause is a human judgement and has not been reviewed by a qualified assessor.',
+      verified: F.idsOnly
+        ? 'Identifiers only, with this project\'s own rationale; no COBIT text is reproduced. Every identifier is checked against the forty COBIT 2019 objectives. The choice of practice is a human judgement and has not been reviewed by a qualified assessor or by ISACA.'
+        : 'Every quote was matched verbatim against the cited instrument. The choice of clause is a human judgement and has not been reviewed by a qualified assessor.',
       coverage: F.coverage,
-      appliesToTool: F.documentLevel.map((c) => ({ clause: F.prefix + c, title: F.clauses[c].title, quote: F.clauses[c].quote })),
+      appliesToTool: F.documentLevel.map((c) => (F.idsOnly ? { clause: F.prefix + c } : { clause: F.prefix + c, title: F.clauses[c].title, quote: F.clauses[c].quote })),
       // Rules this framework does not cover, and why. A matrix that hides its gaps invites the
       // reader to assume it has none.
       unmapped,

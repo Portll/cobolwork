@@ -444,8 +444,10 @@ only one of the five that does.
   blocker there is this project's own gate, which requires a verbatim quote. The way out is to ship
   those mappings without quotes and have the customer drop their licensed copy into `feed/sources/`,
   where the gate verifies locally against it.
-  Before building that: PCI's permitted use says non-commercial, so caching it to build a mapping we
-  sell may itself need an arrangement with the Council. Ask them. ISACA's COBIT terms are unverified.
+  COBIT 2019 now ships that way, as identifiers only (`rules/compliance-cobit2019.json`), on the
+  operator's ruling of 2026-09-30; its practice numbers have not yet been checked against a licensed
+  copy. PCI is still open: its permitted use says non-commercial, so caching it to build a mapping we
+  sell may itself need an arrangement with the Council. Ask them.
 
 - **Utility knowledge base.** `feed/worklists/utility.json` holds 34 targets and no rows have been
   generated. `feed/generate.mjs` has never been run against a real model. Ten of the targets'

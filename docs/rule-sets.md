@@ -345,5 +345,7 @@ section numbers repeat across booklets and mean different things in each. `DA&M 
 analysis as a control and describes what it does, so it is claimed once for the tool rather than per
 rule.
 
-All three ship here because their instruments may be reproduced: one is EU law, two are US
-Government works. PCI DSS and COBIT-derived material may not be redistributed.
+All three ship with quotes because their instruments may be reproduced: one is EU law, two are US
+Government works. COBIT 2019 ships as identifiers with this project's rationale and no ISACA text,
+each practice following the rule's NIST control through a crosswalk. PCI DSS may not be
+redistributed and is not mapped.

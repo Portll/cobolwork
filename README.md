@@ -339,13 +339,20 @@ the guard off, it just stops the host's load from deciding. A spawned scan inher
 
 ## Compliance
 
-Every rule is mapped to the clause of each framework that makes it an obligation, quoted verbatim:
+Every rule is mapped to the clause of each framework that makes it an obligation, quoted verbatim,
+and to a COBIT 2019 practice by identifier alone:
 
 | File | Instrument | Rules mapped |
 |---|---|---|
 | `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 203 |
 | `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 201, and 2 recorded as unmapped |
 | `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 201, and 2 recorded as unmapped |
+| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 201, and 2 recorded as unmapped |
+
+A COBIT 2019 row names the objective or practice and gives this project's own rationale; no ISACA
+text is reproduced, so reading what a practice says needs a copy of the framework. The practice is
+chosen at the NIST control, through a crosswalk in `diag/map-compliance.mjs`, so it cannot drift
+from the rule's NIST clause.
 
 `node diag/map-compliance.mjs` refuses to write a quote the cached instrument does not contain, and
 every scan carries the mapping as `ruleCompliance`. The clause choice is a judgement that no

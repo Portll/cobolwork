@@ -581,3 +581,10 @@ only one of the five that does.
   drafter sends Qwen 3.8 no reasoning setting.
 - The mainframe credential rules are ready to offer upstream to gitleaks. The pull request is not
   drafted, and cobolwork itself only prints their path.
+- **A gcobol patch is ready to send to GCC, and has not been sent.** In gcobol 16, FUNCTION
+  DISPLAY-OF crashes the compiler, and FUNCTION NATIONAL-OF compiles but does not link, because
+  libgcobol has no `__gg__national_of`. The patch reports both as unimplemented and accepts
+  NATIONAL-OF's one-argument form. Waiting on the operator: a sign-off under a known identity, and
+  the email to gcc-patches. GCC's AI policy caps LLM-written code at about 15 lines per person, so a
+  follow-up is written by hand. The patch, the Bugzilla drafts and the security evidence are kept
+  outside the history, in `.upstream/gcc-cobol/` (excluded by `.git/info/exclude`).

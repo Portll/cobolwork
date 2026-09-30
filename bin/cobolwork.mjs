@@ -16,6 +16,8 @@ import { build, buildSarif, buildSummaryLine } from '../lib/build.mjs';
 import { capabilities } from '../lib/capabilities.mjs';
 import { commitAt, revisionOf, toolRevision } from '../lib/revision.mjs';
 import { stampFingerprints } from '../lib/kernel/identity.mjs';
+import { pdsExportTree } from '../lib/kernel/source-tree.mjs';
+import { SITE_FILE } from '../lib/site.mjs';
 import { tally } from '../lib/kernel/findings.mjs';
 import { loadBaseline, applyBaseline, baselineEntries, BASELINE_FILE, SUPPRESSING } from '../lib/baseline.mjs';
 import { readReport } from '../lib/tui/model.mjs';
@@ -86,6 +88,9 @@ Options
                         baseline: the judgement each new entry records, and which rules it covers
   --advisories <file>[,<file>]  a customer's own advisory extract (JSON), loaded for this scan only;
                         never kept in the tree
+  --pds-export          scan: the directory holds partitioned data sets' members as files, as
+                        zowe zos-files download all-members writes them (hlq/llq/member.txt) or in a
+                        directory named for each data set; findings name DATA.SET/MEMBER
   --copylib <dir>[,<dir>]  copy libraries the estate keeps outside the repository, searched after the
                         tree's own copybooks, as COBCPY is; a copybook found there is read, not reported missing
   --report <file>       tui, explain: read a stored scan report instead of scanning
@@ -150,6 +155,7 @@ function parseArgs(argv) {
     else if (a === '--action') opts.action = value();
     else if (a === '--rule') opts.rule = list();
     else if (a === '--advisories') opts.advisoryFeeds = [...new Set(list().map(x => resolve(x)))];
+    else if (a === '--pds-export') opts.pdsExport = true;
     else if (a === '--copylib') opts.copylib = [...new Set(list().map(x => resolve(x)))];
     else if (a === '--report') opts.report = value();
     else if (a === '--keys') opts.keys = value();
@@ -198,6 +204,7 @@ function warnCoverage(report) {
 }
 
 const isLink = (p) => { try { return lstatSync(p).isSymbolicLink(); } catch { return false; } };
+const isFile = (p) => { try { return statSync(p).isFile(); } catch { return false; } };
 
 let journal = null;
 
@@ -262,6 +269,8 @@ if (opts.copylib && opts._.length && !COPYLIB_COMMANDS.includes(opts._[0])) {
 const notDirs = (opts.copylib || []).filter((d) => { try { return !statSync(d).isDirectory(); } catch { return true; } });
 if (notDirs.length) { process.stderr.write(`cobolwork: --copylib ${notDirs.join(', ')} is not a directory\n`); process.exit(2); }
 const systemDirs = opts.copylib || [];
+if (opts.pdsExport && opts._.length && opts._[0] !== 'scan') { process.stderr.write('cobolwork: --pds-export is for scan only\n'); process.exit(2); }
+if (opts.pdsExport && opts.repos) { process.stderr.write('cobolwork: --pds-export reads one export; --repos does not apply\n'); process.exit(2); }
 if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
   process.stderr.write(`cobolwork: --json is for capabilities; every other command writes JSON unless --format says otherwise\n`);
   process.exit(2);
@@ -332,7 +341,13 @@ try {
     process.exitCode = evidenceCommand(target, opts, { toolVersion: VERSION, write: (s) => process.stdout.write(s) });
   } else if (command === 'scan' || command === 'flow') {
     const flowOpts = { repos, fullTrace: opts.fullTrace === true, systemDirs };
-    const report = command === 'flow' ? scanFlow(root, flowOpts) : scanAll(root, { ...flowOpts, only: opts.only, advisoryFeeds: opts.advisoryFeeds });
+    // The site file sits beside the members and is not one of them, so it is named rather than found.
+    const site = resolve(root, SITE_FILE);
+    const pds = opts.pdsExport ? pdsExportTree(root, { systemDirs }) : null;
+    const report = command === 'flow' ? scanFlow(root, flowOpts)
+      : pds ? scanAll(pds.root, { ...flowOpts, only: opts.only, advisoryFeeds: opts.advisoryFeeds, tree: pds, feedRoot: root, site: isFile(site) && !isLink(site) ? site : null })
+      : scanAll(root, { ...flowOpts, only: opts.only, advisoryFeeds: opts.advisoryFeeds });
+    if (pds) report.summary.pdsExport = pds.export;
     if (command === 'flow') {
       report.summary.identity = stampFingerprints(report.findings, { root });
       stampFingerprints(report.checked, { root });

@@ -22,6 +22,8 @@ import { nodeTerminal } from '../lib/tui/terminal.mjs';
 import { runTui } from '../lib/tui/run.mjs';
 import { explainFinding } from '../lib/explain.mjs';
 import { printable } from '../lib/kernel/printable.mjs';
+import { startEvidence, recordInputs, recordHashed, recordFindings, recordOutput, recordVerdict, recordBaselineWrite, finishEvidence } from '../lib/evidence/run.mjs';
+import { evidenceCommand } from '../lib/evidence/cli.mjs';
 
 const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 
@@ -53,6 +55,12 @@ const USAGE = `cobolwork ${VERSION} — COBOL, JCL and CICS security analysis, n
                                policy's blocking findings and compiler options checked, and the
                                compiler run only on a pass. Exits 0 pass, 1 fail, 3 undecided, 4 the
                                compiler failed after a pass, 2 could not run
+  cobolwork evidence verify|seal|anchor --evidence <dir>
+                               the evidence a run records: verify its chains, seals and witnesses;
+                               seal the ledger (--ssh-key <file> or --signer <program>); anchor a seal
+                               in a git witness (--anchor-git <repo> [--push]) or write an RFC 3161
+                               request (--tsq <file>). verify exits 0 sealed, 1 broken or contradicted,
+                               3 undetermined
 
 Options
   --format json|sarif   output format (default json)
@@ -85,6 +93,13 @@ Options
   --ironwork <path>     build: after a pass, run ironwork check on every program, for an estate that
                         compiles with IBM Enterprise COBOL; a program ironwork rejects exits 4, one it
                         does not model yet leaves the build undecided
+  --evidence <dir>      scan, flow, diff, gate, build, baseline, inventory: record this run in a
+                        hash-chained journal and ledger there (or COBOLWORK_EVIDENCE); never inside
+                        the tree being read
+  --allowed-signers <file>  evidence verify: OpenSSH allowed_signers for namespace cobolwork-evidence
+  --anchor-git <repo>, --ref <ref>, --push, --max-unsealed <n>
+                        evidence: the git witness, the ref that counts (default @{upstream}), whether
+                        anchor pushes, and how many ledger records may follow the newest seal
 
 Exit codes: 0 the command ran, 2 it could not run. A run that examined nothing says so in
 summary.filesScanned and summary.nosrc rather than reporting a clean zero.
@@ -132,6 +147,16 @@ function parseArgs(argv) {
     else if (a === '--policy') opts.policy = value();
     else if (a === '--provenance') opts.provenance = value();
     else if (a === '--ironwork') opts.ironwork = value();
+    else if (a === '--evidence') opts.evidence = value();
+    else if (a === '--ssh-key') opts.sshKey = value();
+    else if (a === '--signer') opts.signer = value();
+    else if (a === '--allowed-signers') opts.allowedSigners = value();
+    else if (a === '--anchor-git') opts.anchorGit = value();
+    else if (a === '--ref') opts.ref = value();
+    else if (a === '--push') opts.push = true;
+    else if (a === '--max-unsealed') opts.maxUnsealed = value();
+    else if (a === '--tsq') opts.tsq = value();
+    else if (a === '--expect-key') opts.expectKey = value();
     else if (a === '--help' || a === '-h') opts.help = true;
     else if (a === '--version' || a === '-v') opts.version = true;
     else if (a.startsWith('-')) { opts.unknown = a; }
@@ -156,8 +181,11 @@ function warnCoverage(report) {
 
 const isLink = (p) => { try { return lstatSync(p).isSymbolicLink(); } catch { return false; } };
 
+let journal = null;
+
 function emit(obj, opts) {
   const text = JSON.stringify(obj, null, opts.quiet ? 0 : 1);
+  recordOutput(journal, 'report', text + '\n', opts.out || null);
   if (opts.out) { writeFileSync(opts.out, text + '\n'); return; }
   // A pipe drains asynchronously and process.exit discards what has not drained: past 64 KB the
   // reader got a truncated document and exit 0. The process ends on its own once stdout is flushed.
@@ -228,10 +256,29 @@ if (buildFlag !== null && opts._.length && opts._[0] !== 'build') {
 // A misspelled set would run nothing and report a clean zero.
 const badSets = (opts.only || []).filter(s => !RULE_SETS.includes(s));
 if (badSets.length || (opts.only && !opts.only.length)) { process.stderr.write(`cobolwork: --only takes ${RULE_SETS.join(',')}; got ${badSets.join(',') || 'nothing'}\n`); process.exit(2); }
+const JOURNALED = ['scan', 'flow', 'diff', 'gate', 'build', 'baseline', 'inventory'];
+if (opts.evidence !== undefined && opts._.length && ![...JOURNALED, 'evidence'].includes(opts._[0])) {
+  process.stderr.write(`cobolwork: ${opts._[0]} records no evidence; ${JOURNALED.join(', ')} and evidence do\n`);
+  process.exit(2);
+}
+const evidenceFlag = ['sshKey', 'signer', 'allowedSigners', 'anchorGit', 'ref', 'push', 'maxUnsealed', 'tsq', 'expectKey'].find((k) => opts[k] !== undefined);
+if (evidenceFlag && opts._.length && opts._[0] !== 'evidence') {
+  process.stderr.write(`cobolwork: --${evidenceFlag.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)} is for evidence only\n`);
+  process.exit(2);
+}
 
 const [command, target] = opts._;
 const root = resolve(target || '.');
 const repos = opts.repos ? readdirSync(root, { withFileTypes: true }).filter(d => d.isDirectory() && !d.name.startsWith('.')).map(d => d.name) : [''];
+
+if (JOURNALED.includes(command)) {
+  try {
+    journal = startEvidence(opts, { command, argv, roots: [root], toolVersion: VERSION });
+  } catch (e) {
+    process.stderr.write(`cobolwork: ${printable(e && e.message ? e.message : e)}\n`);
+    process.exit(2);
+  }
+}
 
 function storedReport(file) {
   const path = resolve(file);
@@ -259,6 +306,8 @@ function baselinedScan() {
 try {
   if (command === 'capabilities') {
     emit(capabilities(), opts);
+  } else if (command === 'evidence') {
+    process.exitCode = evidenceCommand(target, opts, { toolVersion: VERSION, write: (s) => process.stdout.write(s) });
   } else if (command === 'scan' || command === 'flow') {
     const flowOpts = { repos, fullTrace: opts.fullTrace === true, systemDirs };
     const report = command === 'flow' ? scanFlow(root, flowOpts) : scanAll(root, { ...flowOpts, only: opts.only, advisoryFeeds: opts.advisoryFeeds });
@@ -271,6 +320,8 @@ try {
     }
     applyBaseline(report, loadBaseline(root, { explicit: opts.baseline ? resolve(opts.baseline) : null, use: !opts.noBaseline }));
     stampRevisions(report.summary);
+    recordInputs(journal, 0, root);
+    recordFindings(journal, report);
     if (command === 'flow') emit(report, opts);
     else if (opts.format === 'sarif') emit(toSarif(report, { toolVersion: VERSION }), opts);
     else emit(opts.quiet ? { tool: report.tool, schemaVersion: report.schemaVersion, summary: report.summary } : report, opts);
@@ -279,6 +330,7 @@ try {
     if (!opts.base) { process.stderr.write(`cobolwork: diff needs --base <ref>\n`); process.exit(2); }
     const report = diffRefs(root, opts.base, opts.head || null, { only: opts.only, fullTrace: opts.fullTrace === true, systemDirs });
     stampRevisions(report.summary, opts.head || null);
+    recordFindings(journal, { findings: [...report.findings, ...(report.introduced || [])] });
     if (opts.format === 'sarif') emit(toSarif({ ...report, findings: [...report.findings, ...report.introduced] }, { toolVersion: VERSION }), opts);
     else emit(opts.quiet ? { tool: report.tool, schemaVersion: report.schemaVersion, summary: report.summary } : report, opts);
   } else if (command === 'gate') {
@@ -291,6 +343,7 @@ try {
     stampRevisions(doc.summary, opts.head || null);
     emit(doc, opts);
     if (opts.exitCode) process.exitCode = VERDICT_EXIT[doc.verdict];
+    recordVerdict(journal, doc, process.exitCode ?? 0);
   } else if (command === 'build') {
     // A rule set left out is findings not seen, and a waiver file from elsewhere is not the one the
     // change was reviewed against.
@@ -305,9 +358,16 @@ try {
       const report = result.report;
       emit(buildSarif(toSarif({ ...report, findings: report.findings }, { toolVersion: VERSION }), result.doc), opts);
     } else emit(result.doc, opts);
-    if (opts.provenance) writeFileSync(resolve(opts.provenance), JSON.stringify(result.provenance, null, 1) + '\n');
+    recordHashed(journal, 0, result.provenance.sources);
+    recordFindings(journal, result.report);
+    if (opts.provenance) {
+      const text = JSON.stringify(result.provenance, null, 1) + '\n';
+      writeFileSync(resolve(opts.provenance), text);
+      recordOutput(journal, 'provenance', text, resolve(opts.provenance));
+    }
     process.stderr.write(`${buildSummaryLine(result.doc)}\n`);
     process.exitCode = result.exit;
+    recordVerdict(journal, result.doc, result.exit);
   } else if (command === 'baseline') {
     // A suppression nobody dated is never looked at again, so every part of the judgement is asked for.
     const missing = ['reason', 'who', 'expires'].filter((k) => !opts[k]);
@@ -324,8 +384,14 @@ try {
     if (held.problems.length) { process.stderr.write(`cobolwork: ${path} holds entries that do not validate, so it is left as it is:\n  ${held.problems.join('\n  ')}\n`); process.exit(2); }
     const report = scanAll(root, { repos, only: opts.only, advisoryFeeds: opts.advisoryFeeds, systemDirs });
     const { entries, added } = baselineEntries(report.findings, held.entries, { action, reason: opts.reason, who: opts.who, expires: expires.toISOString(), at, rules: opts.rule || null });
-    writeFileSync(path, JSON.stringify({ _comment: 'Judgements over cobolwork findings, matched by fingerprint. A suppression lapses at its expires date and the finding comes back.', entries }, null, 1) + '\n');
-    process.stdout.write(`${JSON.stringify({ tool: 'cobolwork-baseline', path, added, entries: entries.length })}\n`);
+    const written = JSON.stringify({ _comment: 'Judgements over cobolwork findings, matched by fingerprint. A suppression lapses at its expires date and the finding comes back.', entries }, null, 1) + '\n';
+    writeFileSync(path, written);
+    recordInputs(journal, 0, root);
+    recordFindings(journal, report);
+    recordBaselineWrite(journal, { before: held.entries, after: entries, who: opts.who, expires: expires.toISOString(), reason: opts.reason, path, text: written });
+    const line = `${JSON.stringify({ tool: 'cobolwork-baseline', path, added, entries: entries.length })}\n`;
+    recordOutput(journal, 'baseline', line);
+    process.stdout.write(line);
   } else if (command === 'tui') {
     if (!process.stdin.isTTY || !process.stdout.isTTY) {
       process.stderr.write('cobolwork: tui needs a terminal on standard input and output; cobolwork scan writes the same report without one\n');
@@ -345,6 +411,7 @@ try {
     emit(packet, opts);
   } else if (command === 'inventory') {
     const inv = inventory(root, { systemDirs });
+    recordInputs(journal, 0, root);
     emit(inv, opts);
     warnCoverage(inv);
   } else if (command === 'parse') {
@@ -359,7 +426,9 @@ try {
     process.stderr.write(`cobolwork: unknown command ${command}\n${USAGE}`);
     process.exit(2);
   }
+  finishEvidence(journal, process.exitCode ?? 0);
 } catch (e) {
   process.stderr.write(`cobolwork: ${printable(e && e.message ? e.message : e)}\n`);
+  finishEvidence(journal, 2);
   process.exit(2);
 }

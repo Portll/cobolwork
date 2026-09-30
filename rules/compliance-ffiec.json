@@ -1040,6 +1040,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "control-cards-from-dataset",
+   "framework": "ffiec",
+   "clause": "DA&M VII.B.3",
+   "title": "Additional Control Considerations in Change Management",
+   "rationale": "The rule reports: A utility step reads the commands it runs from a cataloged data set, so what it runs is not in the reviewed JCL. That is an unreviewed modification reaching code nobody edited, which is what change control over the repository exists to prevent.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "To prevent unauthorized access to or modification of code, access to code repositories should be role-based, follow the principle of least privilege, and limit access to authorized personnel, tools, and services."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "copybook-shadowed",
    "framework": "ffiec",
    "clause": "DA&M IV",
@@ -2340,6 +2353,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "sort-exit-named",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A DFSORT or ICETOOL step names an exit routine on a MODS statement, a load module the sort loads and runs. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "system-response-to-http-header",
    "framework": "ffiec",
    "clause": "DA&M V",
@@ -2375,6 +2401,19 @@
     "doc": "ffiec",
     "retrieved": "2026-09-20",
     "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "tso-batch-runs-program",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A TSO batch step runs another program, CLIST, REXX exec or job from its in-stream commands. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
    }
   },
   {
@@ -2479,6 +2518,123 @@
     "doc": "ffiec",
     "retrieved": "2026-09-20",
     "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-cleartext",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A Zowe profile for z/OSMF, API ML or RSE connects over plain HTTP. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-secret-in-clear",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A Zowe team configuration holds a password or token in the file rather than in the credential vault. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-tls-verify-off",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A Zowe profile turns off TLS certificate verification. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-data-marking-off",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A Zowe MCP server has its untrusted-data marking turned off. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-password-in-config",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: An MCP client configuration sets a Zowe MCP password, credential map or key passphrase to a literal value. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-tier-full",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: A Zowe MCP server runs at the full capability tier. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-tier-writes",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: A Zowe MCP server runs at a capability tier that lets the agent change or delete mainframe data. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-unpinned",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A Zowe MCP server is launched by npx with no pinned version. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mock-credentials",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A Zowe MCP mock systems.json holds a password. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
    }
   }
  ]

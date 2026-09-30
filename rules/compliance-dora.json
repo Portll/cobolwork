@@ -1031,6 +1031,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "control-cards-from-dataset",
+   "framework": "dora",
+   "clause": "Article 8(3)",
+   "title": "Identification",
+   "rationale": "The rule reports: A utility step reads the commands it runs from a cataloged data set, so what it runs is not in the reviewed JCL. That is what a change reaches, which is the assessment this clause requires on each major change, performed per change rather than per year.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "perform a risk assessment upon each major change in the network and information system infrastructure, in the processes or procedures affecting their ICT supported business functions, information assets or ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "copybook-shadowed",
    "framework": "dora",
    "clause": "Article 8(4)",
@@ -2357,6 +2370,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "sort-exit-named",
+   "framework": "dora",
+   "clause": "Article 8(4)",
+   "title": "Identification",
+   "rationale": "The rule reports: A DFSORT or ICETOOL step names an exit routine on a MODS statement, a load module the sort loads and runs. That is an interdependency between assets which no single file records, and mapping it is what this clause asks for.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "system-response-to-http-header",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -2392,6 +2418,19 @@
     "doc": "dora",
     "retrieved": "2026-09-20",
     "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "tso-batch-runs-program",
+   "framework": "dora",
+   "clause": "Article 8(6)",
+   "title": "Identification",
+   "rationale": "The rule reports: A TSO batch step runs another program, CLIST, REXX exec or job from its in-stream commands. That is an inventory gap - the job runs something the inventory does not account for - and this clause requires the inventory be kept current.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "maintain relevant inventories and update them periodically and every time any major change as referred to in paragraph 3 occurs"
    }
   },
   {
@@ -2496,6 +2535,123 @@
     "doc": "dora",
     "retrieved": "2026-09-20",
     "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-cleartext",
+   "framework": "dora",
+   "clause": "Article 9(3)(a)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A Zowe profile for z/OSMF, API ML or RSE connects over plain HTTP. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-secret-in-clear",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A Zowe team configuration holds a password or token in the file rather than in the credential vault. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-config-tls-verify-off",
+   "framework": "dora",
+   "clause": "Article 9(3)(a)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A Zowe profile turns off TLS certificate verification. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-data-marking-off",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A Zowe MCP server has its untrusted-data marking turned off. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-password-in-config",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An MCP client configuration sets a Zowe MCP password, credential map or key passphrase to a literal value. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-tier-full",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A Zowe MCP server runs at the full capability tier. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-tier-writes",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A Zowe MCP server runs at a capability tier that lets the agent change or delete mainframe data. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mcp-unpinned",
+   "framework": "dora",
+   "clause": "Article 8(2)",
+   "title": "Identification",
+   "rationale": "The rule reports: A Zowe MCP server is launched by npx with no pinned version. That is a source of ICT risk in a business-supporting function, identified by reading the source rather than by asking the team that maintains it.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "identify all sources of ICT risk, in particular the risk exposure to and from other financial entities, and assess cyber threats and ICT vulnerabilities relevant to their ICT supported business functions"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "zowe-mock-credentials",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A Zowe MCP mock systems.json holds a password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
    }
   }
  ]

@@ -51,6 +51,13 @@ test('a DFHCOMMAREA in a program with no EXEC CICS, or one it points at its own 
   assert.deepEqual(cicsTree({ 'CONV.cbl': pointed }), []);
 });
 
+test('a program that takes DFHCOMMAREA\'s address into a pointer still reads the caller\'s area', () => {
+  // GenApp's LGACDB01 shape: SET WS-ADDR-DFHCOMMAREA TO ADDRESS OF DFHCOMMAREA.
+  const addressed = prog('ADDR', ['       01 CA-PTR POINTER.', '       01 WS-X PIC X(10).'], ['       01 DFHCOMMAREA PIC X(834).'],
+    ['           SET CA-PTR TO ADDRESS OF DFHCOMMAREA', '           MOVE DFHCOMMAREA(1:10) TO WS-X', '           EXEC CICS RETURN END-EXEC']);
+  assert.deepEqual(cicsTree({ 'ADDR.cbl': addressed }).map(f => f.rule), ['cics-commarea-without-length-check']);
+});
+
 test('a length longer than the area passed is reported', () => {
   const f = of(pos, 'cics-commarea-length-exceeds-area');
   assert.equal(f.length, 1);

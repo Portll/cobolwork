@@ -304,16 +304,18 @@ synthetic cases is not the same evidence. Three things it surfaced:
   | command line to the first literal `CALL` | the target read from the command line | flaw | 25 of 25 |
   | | read, and `GOBACK` unless it names the program the call made | near-miss | 13 of 25 |
   | | the call through a field holding that program's name | near-miss | 0 of 25 |
-  | `EIBCALEN` check removed | every test of it gone | flaw | 17 of 25 |
+  | `EIBCALEN` check removed | every test of it gone | flaw | 17 of 25; 25 of 25 fixed |
   | | gone, and `EIBCALEN` copied to a field nothing tests | flaw | 0 of 25 |
   | | gone, and a return on entry unless the whole area was passed | near-miss | 0 of 25 |
 
-  Three rule gaps, none fixed here:
-  - `cics-commarea-without-length-check` exempts a program that points `DFHCOMMAREA` at its own
-    storage by finding `ADDRESS OF DFHCOMMAREA` anywhere in a `SET` (`pointsItself`,
+  Three rule gaps:
+  - Fixed: `cics-commarea-without-length-check` exempted a program that points `DFHCOMMAREA` at its
+    own storage by finding `ADDRESS OF DFHCOMMAREA` anywhere in a `SET` (`pointsItself`,
     `lib/sets/cics.mjs`), so `SET WS-ADDR-DFHCOMMAREA TO ADDRESS OF DFHCOMMAREA`, which takes the
-    caller's area's address, exempts it too. All 8 misses are GenApp's `LGACDB01`, `LGACDB02` and
-    `LGACUS01` in five forks; with that one statement commented out the rule reports each.
+    caller's area's address, exempted it too. All 8 misses were GenApp's `LGACDB01`, `LGACDB02` and
+    `LGACUS01` in five forks. Only the receiving side, before `TO`, exempts now: seeded 25 of 25.
+    The 10 corpus repositories holding that `SET` (volume-10k skipped) give the same findings
+    before and after, all 10 read completely, since every such program tests `EIBCALEN`.
   - The same rule takes any mention of `EIBCALEN` for a test of it (`checksLength`), so a copy that
     nothing tests hides the flaw in every host.
   - `argv-or-env-to-dynamic-program-load` reports 13 of 25 programs whose command-line value is

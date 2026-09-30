@@ -11,9 +11,6 @@ import './pin-machine.mjs';
 
 const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), 'fixtures');
 
-// The rule takes any mention of EIBCALEN for a test of it, so a copy nothing tests hides the flaw.
-const KNOWN_MISSES = new Set(['length-copied-never-tested']);
-
 test('every operator plants its flaws and near-misses into the same hosts and labels each program', () => {
   const corpus = mkdtempSync(join(tmpdir(), 'cobolwork-seed-corpus-'));
   try {
@@ -28,7 +25,7 @@ test('every operator plants its flaws and near-misses into the same hosts and la
       for (const [v, s] of Object.entries(r.variants)) {
         assert.equal(s.planted, r.hosts.length, `${op} planted ${v} in only some hosts`);
         if (s.label === NEAR_MISS) assert.equal(s.reported, 0, `${op} reported ${r.falseAlarms.join(', ')}`);
-        else if (!KNOWN_MISSES.has(v)) assert.equal(s.reported, s.planted, `${op} missed ${r.missed.join(', ')}`);
+        else assert.equal(s.reported, s.planted, `${op} missed ${r.missed.join(', ')}`);
       }
     }
     // A host that declares its communication area and never reads it is refused, not counted.

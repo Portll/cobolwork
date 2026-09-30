@@ -294,33 +294,49 @@ synthetic cases is not the same evidence. Three things it surfaced:
   plants near-misses beside its flaws, into the same host: the flaw's change with the property that
   makes it a flaw taken away. Every planted program is a label record (`labels` in `--out`, source
   `planted`) for per-rule precision from machine labels. Over the 500-repository corpus, 25 hosts
-  per operator, `--skip volume`: 225 labels, 125 flaws and 100 near-misses.
+  per operator, `--skip volume`: 225 labels, 100 flaws and 125 near-misses. The first run found 67
+  flaws and reported 13 near-misses; with the three gaps below fixed, 100 and 1.
 
-  | Operator | Variant | Label | Reported |
-  |---|---|---|---|
-  | command line to `CALL 'SYSTEM'` | the command read from the command line | flaw | 25 of 25 |
-  | | an EVALUATE lets two commands through (bench 062) | near-miss | 0 of 25 |
-  | | the command line read, a literal command run (bench 002) | near-miss | 0 of 25 |
-  | command line to the first literal `CALL` | the target read from the command line | flaw | 25 of 25 |
-  | | read, and `GOBACK` unless it names the program the call made | near-miss | 13 of 25 |
-  | | the call through a field holding that program's name | near-miss | 0 of 25 |
-  | `EIBCALEN` check removed | every test of it gone | flaw | 17 of 25; 25 of 25 fixed |
-  | | gone, and `EIBCALEN` copied to a field nothing tests | flaw | 0 of 25 |
-  | | gone, and a return on entry unless the whole area was passed | near-miss | 0 of 25 |
+  | Operator | Variant | Label | First run | Fixed |
+  |---|---|---|---|---|
+  | command line to `CALL 'SYSTEM'` | the command read from the command line | flaw | 25 of 25 | 25 of 25 |
+  | | an EVALUATE lets two commands through (bench 062) | near-miss | 0 of 25 | 0 of 25 |
+  | | the command line read, a literal command run (bench 002) | near-miss | 0 of 25 | 0 of 25 |
+  | command line to the first literal `CALL` | the target read from the command line | flaw | 25 of 25 | 25 of 25 |
+  | | read, and `GOBACK` unless it names the program the call made | near-miss | 13 of 25 | 1 of 25 |
+  | | the call through a field holding that program's name | near-miss | 0 of 25 | 0 of 25 |
+  | `EIBCALEN` check removed | every test of it gone | flaw | 17 of 25 | 25 of 25 |
+  | | gone, and `EIBCALEN` copied to a field nothing tests | flaw | 0 of 25 | 25 of 25 |
+  | | gone, and a return on entry unless the whole area was passed | near-miss | 0 of 25 | 0 of 25 |
 
-  Three rule gaps:
-  - Fixed: `cics-commarea-without-length-check` exempted a program that points `DFHCOMMAREA` at its
-    own storage by finding `ADDRESS OF DFHCOMMAREA` anywhere in a `SET` (`pointsItself`,
+  Three rule gaps, fixed:
+  - `cics-commarea-without-length-check` exempted a program that points `DFHCOMMAREA` at its own
+    storage by finding `ADDRESS OF DFHCOMMAREA` anywhere in a `SET` (`pointsItself`,
     `lib/sets/cics.mjs`), so `SET WS-ADDR-DFHCOMMAREA TO ADDRESS OF DFHCOMMAREA`, which takes the
     caller's area's address, exempted it too. All 8 misses were GenApp's `LGACDB01`, `LGACDB02` and
-    `LGACUS01` in five forks. Only the receiving side, before `TO`, exempts now: seeded 25 of 25.
-    The 10 corpus repositories holding that `SET` (volume-10k skipped) give the same findings
-    before and after, all 10 read completely, since every such program tests `EIBCALEN`.
-  - The same rule takes any mention of `EIBCALEN` for a test of it (`checksLength`), so a copy that
-    nothing tests hides the flaw in every host.
-  - `argv-or-env-to-dynamic-program-load` reports 13 of 25 programs whose command-line value is
-    tested against the one name the call may take, with `GOBACK` on any other, before the call.
-    Bench 062's `EVALUATE` form is honoured. What separates the 13 from the 12 is not yet read.
+    `LGACUS01` in five forks. Only the receiving side, before `TO`, exempts now. The 10 corpus
+    repositories holding that `SET` (volume-10k skipped) give the same findings before and after,
+    all 10 read completely, since every such program tests `EIBCALEN`.
+  - The same rule took any mention of `EIBCALEN` for a test of it, so a copy that nothing tests hid
+    the flaw in every host. It counts now where `EIBCALEN` bounds the read: a condition tests it or
+    a field it was moved or computed into, it is the start or length of a reference modification,
+    or what an `OCCURS DEPENDING ON` counts by; a `CALL` handed it or the whole EIB counts too. Over
+    the corpus: 40 new findings, all in three programs - GenApp's `LGICVS01` and `LGSTSQ` and the
+    health sample's `HCAZERRS`, in forks and copies - each of which, started by a program, moves
+    its area's 90 or 80 bytes whole and only copies `EIBCALEN` into the length of a later write.
+    Conditions read by the statement's own tokens, since its sources leave out what parentheses
+    wrap: `IF (EIBCALEN > 0)` in `CPAT400` and `CINT` would otherwise have been two false findings.
+  - The first-literal-`CALL` near-miss was reported in 13 hosts, and not for its `IF`: every loop
+    between a check and a `CALL` through the checked field lost the check, because the control
+    analysis took the field naming the program for one the callee may write (`writtenBy`,
+    `lib/control.mjs`). The call's first pass removed the fact and the loop's back edge carried the
+    loss to the next. Bench 062's `EVALUATE` form failed the same way inside a loop. The name, and
+    what goes `BY CONTENT` or `BY VALUE`, is no longer written by a call unless it is `EXTERNAL`.
+    Over the corpus: 2 findings fewer, both `file-record-to-dynamic-program-load` in
+    `pingleware_apac-accounting-code`'s `JOB001`, whose program number is forced into five values
+    before a loop calls it. The one near-miss still reported calls from a paragraph nothing
+    performs (`CGS100`, `S7200-LINK-IG`); the analysis holds no facts where it cannot say the code
+    runs.
 
   Harness faults found on the way, each of which made a plant something other than its label:
   - The rule reports a communication area where it is declared, and a finding in a copybook of the
@@ -334,8 +350,10 @@ synthetic cases is not the same evidence. Three things it surfaced:
     `DFHEIBLK`, an area that `OCCURS DEPENDING ON` it, a copybook it includes - may still check the
     length after the plant, and is no longer a host for the length check.
   - A skipped host's staging directory could be reused by a later host from the same repository.
+  - A program whose procedure division opens with `DECLARATIVES` took its plants ahead of them,
+    which is not COBOL (`parserjs`). Such a program is no longer a host.
 
-  The 25 of 25 above for the removed check was over a host set these filters change.
+  The earlier 25 of 25 for the removed check was over a host set these filters change.
 
 - **The source budget is cumulative across a repository rather than per file**, so a repository
   stops being read partway through and which files survive depends on sort order. At the 64 MB

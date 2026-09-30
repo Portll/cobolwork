@@ -51,6 +51,23 @@ test('a DFHCOMMAREA in a program with no EXEC CICS, or one it points at its own 
   assert.deepEqual(cicsTree({ 'CONV.cbl': pointed }), []);
 });
 
+test('EIBCALEN checks the area only where it bounds the read', () => {
+  const lengthRule = (body, ws = [], linkage = ['       01 DFHCOMMAREA PIC X(100).']) =>
+    cicsTree({ 'LEN.cbl': prog('LEN', ['       01 WS-LEN PIC S9(4) COMP.', '       01 WS-X PIC X(10).', ...ws], linkage, body) })
+      .filter(f => f.rule === 'cics-commarea-without-length-check').length;
+  const read = ['           MOVE DFHCOMMAREA(1:10) TO WS-X', '           EXEC CICS RETURN END-EXEC'];
+  assert.equal(lengthRule(['           MOVE EIBCALEN TO WS-LEN', ...read]), 1, 'copied and never tested');
+  assert.equal(lengthRule(['           DISPLAY EIBCALEN', ...read]), 1, 'logged');
+  assert.equal(lengthRule(['           MOVE EIBCALEN TO WS-LEN', '           IF WS-LEN < 10', '              EXEC CICS RETURN END-EXEC', '           END-IF', ...read]), 0, 'tested through a copy');
+  assert.equal(lengthRule(['           EVALUATE TRUE', '              WHEN EIBCALEN = 0', '                 EXEC CICS RETURN END-EXEC', '           END-EVALUATE', ...read]), 0, 'EVALUATE');
+  // The corpus's CPAT400 and CINT: operands inside parentheses are not a statement's sources.
+  assert.equal(lengthRule(['           IF (EIBCALEN > 0)', '              MOVE DFHCOMMAREA(1:10) TO WS-X', '           END-IF', '           EXEC CICS RETURN END-EXEC']), 0, 'IF (EIBCALEN > 0)');
+  assert.equal(lengthRule(['           COMPUTE WS-LEN = (EIBCALEN - 4)', '           IF WS-LEN < 6', '              EXEC CICS RETURN END-EXEC', '           END-IF', ...read]), 0, 'computed in parentheses');
+  assert.equal(lengthRule(['           MOVE DFHCOMMAREA(1:EIBCALEN) TO WS-X', '           EXEC CICS RETURN END-EXEC']), 0, 'the length of the read');
+  assert.equal(lengthRule(['           CALL \'CHKLEN\' USING DFHEIBLK DFHCOMMAREA', ...read]), 0, 'handed to a routine with the EIB');
+  assert.equal(lengthRule(read, [], ['       01 DFHCOMMAREA.', '          05 CA-BYTE PIC X OCCURS 1 TO 100 DEPENDING ON EIBCALEN.']), 0, 'OCCURS DEPENDING ON');
+});
+
 test('a program that takes DFHCOMMAREA\'s address into a pointer still reads the caller\'s area', () => {
   // GenApp's LGACDB01 shape: SET WS-ADDR-DFHCOMMAREA TO ADDRESS OF DFHCOMMAREA.
   const addressed = prog('ADDR', ['       01 CA-PTR POINTER.', '       01 WS-X PIC X(10).'], ['       01 DFHCOMMAREA PIC X(834).'],

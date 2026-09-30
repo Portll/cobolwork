@@ -172,6 +172,35 @@ test('V1.8 A non-integer number is refused by the writer', () => {
   assert.throws(() => canonical({ n: 1.5 }), /integers only/);
 });
 
+test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
+  const d = tmp(t);
+  prepareDir(d);
+  const chain = newChain();
+  const at = '2026-09-30T03:39:36.241Z';
+  const records = [
+    ['open', { tool: 'ironwork', toolVersion: '0.1.1', command: 'run', argv: ['run', 'PAYROLL.cbl'], roots: ['src'], platform: 'macos' }],
+    ['input', { root: 0, path: 'PAYROLL.cbl', sha256: 'a'.repeat(64), bytes: 701 }],
+    ['dd', { dd: 'INFILE', event: 'open', mode: 'INPUT', sha256: 'b'.repeat(64), bytes: 11 }],
+    ['call', { program: 'HELPER', from: 'HELPER.cbl', sha256: 'c'.repeat(64) }],
+    ['dd', { dd: 'INFILE', event: 'end', sha256: 'b'.repeat(64), bytes: 11 }],
+    ['abend', { code: 'S0C7', file: 'PAYROLL.cbl', line: 42 }],
+    ['close', { exit: 16, counts: { dd: 2 }, durationMs: 5, ledger: 'unrecorded' }],
+  ];
+  let prev = null;
+  let text = '';
+  for (const [kind, fields] of records) {
+    const r = makeRecord({ chain, prev, kind, fields, at });
+    text += r.line;
+    prev = r.record;
+  }
+  const id = '20260930T033936Z-dddddddddddddddd';
+  writeFileSync(join(d, 'runs', `${id}.jsonl`), text);
+  let v = verifyEvidence(d);
+  assert.equal(v.verified, true, JSON.stringify(v.broken));
+  assert.deepEqual(v.unrecorded, [id]);
+  assert.throws(() => makeRecord({ chain, prev, kind: 'dd', fields: { dd: 'X', event: 'rewind' }, at }), TypeError);
+});
+
 // V2 - The ledger
 
 test('V2.1 Each closed run adds one ledger record carrying its tip', (t) => {

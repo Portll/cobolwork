@@ -98,6 +98,15 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
 | `output` | `name` (`report`, `sarif`, `provenance`, `sbom`, `baseline`), `sha256`, `bytes`, `path` or `stdout` | once per document written |
 | `close` | `exit`, `counts` (`input`, `finding`, `suppressed`, ...), `durationMs` | last |
 
+ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence.rs`), with `tool`
+`ironwork` and three kinds of its own, so `evidence verify` reads both tools' journals:
+
+| kind | fields | written |
+|---|---|---|
+| `dd` | `dd`, `event` (`open`, `close`, `end`), `mode`, `sha256`, `bytes` | a file's digest before it is opened, after it is closed, and as the run left it |
+| `call` | `program`, `from`, `sha256` | a program CALL loaded from a library, with its source's digest |
+| `abend` | `code`, `file`, `line` | the abend a run ended with |
+
 A reason is recorded as its digest, not its text: a reason is free prose, and free prose is where a
 secret or a person's name ends up.
 
@@ -358,6 +367,10 @@ the default is advisory.
 #### V1.8 A non-integer number is refused by the writer
     When  a record holds 1.5
     Then  it throws
+
+#### V1.9 An ironwork run journal verifies with the same verifier
+    Given a journal of ironwork's open, input, dd, call, abend and close records
+    Then  verify reports it verified, and a dd record with an event it does not know as broken
 
 ### V2 - The ledger
 

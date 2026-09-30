@@ -358,6 +358,18 @@ each change in `optionsChanged` (`path`, `option`, `base`, `head`, `line`) and s
 It is advisory: a change that drops a run-time check the policy requires already fails the build
 (§7 of `build-gate.md`); a policy key that blocks on any watched change is a follow-up.
 
+### 13.5 Execution coverage
+
+`COBOLWORK_EXECUTION` names reports `ironwork run --coverage` wrote (several, separated as `PATH`
+is), from runs of the estate's own tests. A finding inside a paragraph of a program a report covers
+carries `executed: { paragraph, entered }`: the paragraph it is in, by the report's line for each
+paragraph, and how often the runs entered it, summed over the reports. The summary counts
+`byExecution` (`entered`, `never-entered`) and names the reports in `executionFeeds`; a report that
+cannot be read is in `executionFeedProblems`. A finding before a program's first paragraph, or in a
+program no report covers, has no `executed`. The program a finding is in is the last PROGRAM-ID at
+or before its line. It annotates and does not re-rank: a paragraph the tests never enter is code
+nobody has seen run, and one they enter is code whose behaviour a change to it would show.
+
 ## 14. Specification (BDD)
 
 ### V1 - Records and journals
@@ -605,6 +617,19 @@ It is advisory: a change that drops a run-time check the policy requires already
     Given requireEquivalence always and a change that edits only a copybook
     Then  the build fails on equivalence, naming the program and the copybook
 
+### V11 - Execution coverage
+
+#### V11.1 A finding in a paragraph the runs entered says so
+    Given COBOLWORK_EXECUTION naming an ironwork coverage report of the program
+    Then  the finding carries executed with its paragraph and entered above zero
+
+#### V11.2 A finding in a paragraph no run entered says never entered
+    Then  executed.entered is 0 and byExecution counts it as never-entered
+
+#### V11.3 A report not written by ironwork is named, and no finding changes
+    Given COBOLWORK_EXECUTION naming a file that is not a coverage report
+    Then  executionFeedProblems names it and no finding carries executed
+
 ## 15. Out of scope, deliberately
 
 - Transporting anything to a witness. cobolwork writes requests and reads responses.
@@ -627,3 +652,4 @@ It is advisory: a change that drops a run-time check the policy requires already
 | 7 | `cobolwork sbom`; V7 | - |
 | 8 | Lanes 13.1-13.4; V8, V9 | - |
 | 9 | `--equivalence` and `requireEquivalence`; V10 | ironwork compare |
+| 10 | Execution coverage, §13.5; V11 | ironwork run --coverage |

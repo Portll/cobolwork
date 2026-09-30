@@ -15,6 +15,7 @@ import { parseAllowedSigners } from '../lib/evidence/sshsig.mjs';
 import { verifyEvidence } from '../lib/evidence/verify.mjs';
 import { ZOWE_RULES, scanZowe } from '../lib/sets/zowe.mjs';
 import { scanJcl } from '../lib/sets/jcl.mjs';
+import { applyEstateFacts } from '../lib/scan.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -793,6 +794,39 @@ test('V8.11 native-config.json is read for passwords and TLS verification', (t) 
   const r = zoweTree(t, { 'server/native-config.json': { systems: [{ host: 'lpar1.example.invalid', password: 'Q7WX2KPL', rejectUnauthorized: false }, { host: 'lpar2.example.invalid', password: '${env:PW}' }] } });
   assert.deepEqual(rules(r), ['zowe-config-secret-in-clear', 'zowe-config-tls-verify-off']);
   assert.ok(!JSON.stringify(r).includes('Q7WX2KPL'));
+});
+
+// V11 - Execution coverage
+
+function executionTree(t, report) {
+  const d = tmp(t);
+  const src = join(d, 'src');
+  mkdirSync(src);
+  writeFileSync(join(src, 'TWO.cbl'), ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. TWO.', '       PROCEDURE DIVISION.', '       MAIN-LINE.', '           PERFORM USED-PARA.', '           GOBACK.', '       USED-PARA.', '           DISPLAY 1.', '       UNUSED-PARA.', '           DISPLAY 2.', ''].join('\n'));
+  const feed = join(d, 'coverage.json');
+  writeFileSync(feed, typeof report === 'string' ? report : JSON.stringify(report));
+  const findings = [{ rule: 'r', path: 'TWO.cbl', line: 8 }, { rule: 'r', path: 'TWO.cbl', line: 10 }, { rule: 'r', path: 'TWO.cbl', line: 2 }];
+  const summary = applyEstateFacts(findings, [], src, { executionFeeds: [feed] });
+  return { findings, summary };
+}
+const IRONWORK_REPORT = { called: [], programs: [{ program: 'TWO', paragraphs: 3, reached: 2, detail: [{ name: 'MAIN-LINE', line: 4, section: false, entered: 1 }, { name: 'USED-PARA', line: 7, section: false, entered: 1 }, { name: 'UNUSED-PARA', line: 9, section: false, entered: 0 }] }] };
+
+test('V11.1 A finding in a paragraph the runs entered says so', (t) => {
+  const { findings } = executionTree(t, IRONWORK_REPORT);
+  assert.deepEqual(findings[0].executed, { paragraph: 'USED-PARA', entered: 1 });
+  assert.equal(findings[2].executed, undefined);
+});
+
+test('V11.2 A finding in a paragraph no run entered says never entered', (t) => {
+  const { findings, summary } = executionTree(t, IRONWORK_REPORT);
+  assert.deepEqual(findings[1].executed, { paragraph: 'UNUSED-PARA', entered: 0 });
+  assert.deepEqual(summary.byExecution, { entered: 1, 'never-entered': 1 });
+});
+
+test('V11.3 A report not written by ironwork is named, and no finding changes', (t) => {
+  const { findings, summary } = executionTree(t, '{"programs":[{"program":"TWO"}]}');
+  assert.ok(findings.every((f) => f.executed === undefined));
+  assert.match(summary.executionFeedProblems[0], /coverage\.json: a program's paragraphs are not/);
 });
 
 // V9 - Control cards, shadowing and options

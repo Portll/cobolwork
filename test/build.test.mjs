@@ -698,12 +698,12 @@ test('B6.7 A construct ironwork does not model yet leaves the build undecided', 
   assert.equal(warned.exit, 0);
   assert.deepEqual(warned.doc.relaxed, ['compile']);
   assert.match(buildSummaryLine(warned.doc), /pass \(relaxed: compile\); .*ironwork: 1 program not decided/);
-  // A statement ironwork stops at without naming it, and a field the DL/I translator declares, are
-  // its gaps too; a word that is no statement is the program's error.
+  // A field the DL/I translator declares is its gap too; a statement it stops at is the program's
+  // error, now that ironwork reads ENTRY and ALTER.
   const quiet = (id, name) => program(id, [`01 WS-${name} PIC X.`], ['GOBACK.']);
   const r = build(repo({ 'E.cbl': quiet('E', 'ENTRYMARK'), 'D.cbl': quiet('D', 'DIBMARK'), 'W.cbl': quiet('W', 'WORDMARK') }), { ironwork: iw.path });
-  assert.deepEqual(r.doc.compiled.notModelled.map((x) => x.path).sort(), ['D.cbl', 'E.cbl']);
-  assert.deepEqual(r.doc.compiled.failed.map((x) => x.path), ['W.cbl']);
+  assert.deepEqual(r.doc.compiled.notModelled.map((x) => x.path), ['D.cbl']);
+  assert.deepEqual(r.doc.compiled.failed.map((x) => x.path).sort(), ['E.cbl', 'W.cbl']);
   assert.equal(r.exit, 4);
 });
 

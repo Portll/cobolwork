@@ -411,8 +411,7 @@ stops after the front end and exits with IBM's highest return code: 0 clean, 4 w
 - The path is resolved as the compiler's is, and one inside the repository is refused with exit 2.
 - Each program lands in one of four lists in `compiled`: `failed`, a program ironwork rejects;
   `notModelled`, one it refuses by name for a construct it does not model yet, or whose only errors
-  are a COBOL statement verb its parser stopped at (`a statement, found ENTRY`) or a field the CICS,
-  DL/I or SQL translator declares (`DIBSTAT is not defined`); `unresolved`, one
+  are a field the CICS, DL/I or SQL translator declares (`DIBSTAT is not defined`); `unresolved`, one
   that copies a member no copy library holds; `unrun`, one whose check ended some other way or took
   more than 60 seconds.
 - `compile` is `false` with any program in `failed`, and the gate exits 4 as for a compiler. It is

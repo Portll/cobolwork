@@ -9,11 +9,13 @@ is the record of what is open; this is the context that makes it readable. Writt
 
 ## Where it stands
 
-At this file's last commit, **516 tests pass run serially, and all 93 bench cases score as declared** -
-but read the first trap before you believe a failure or a pass.
+At this file's last commit, **977 of 1,007 tests pass run serially (30 are todo, none fail), and
+all 102 bench cases score as declared** - but read the first trap before you believe a failure or
+a pass.
 
-Thirteen rule sets - the nine below, plus `web`, `compile`, `priv` and `log` - and 156 rules in the
-catalogue, which also counts the gitleaks credential rules and `diff`'s.
+Fifteen rule sets - the nine below, plus `web`, `compile`, `priv`, `log`, `semantics` and `zowe` -
+and 192 rules in the registry. The 203 rows of the compliance files also count the gitleaks
+credential rules and `diff`'s.
 
 ### What September 24 added
 
@@ -149,7 +151,7 @@ Do not "fix" it by guessing.
 
 - **A CI run that fails every job in seconds may not have run at all.** `gh api
   repos/Portll/cobolwork/check-runs/<id>/annotations` tells a refusal to start - an exhausted
-  Actions budget, as on this repository from 2026-09-20 - from a real failure.
+  Actions budget - from a real failure.
 - **`lib/diff.mjs` deliberately does not use `git archive`**, which applies `export-ignore`.
   `test/sources.test.mjs:144` guards it.
 - **Containment is a filesystem fact and a vulnerability class.** `realpathSync` in `lib/parser.mjs`;
@@ -191,9 +193,9 @@ findings against 22 from outside input.
 
 In order. Each item says what it is worth and what it costs.
 
-1. **Run CI again.** Nothing since 2026-09-20 has been through it; the serial suite and the bench
-   were run by hand on every change instead. A trimmed matrix (ubuntu on Node 18 and 24, windows on
-   18) costs about a thirteenth of the matrix as written, if minutes are ever short again.
+1. **Read CI after each push.** `.github/workflows/ci.yml` runs the suite on ubuntu with Node 18
+   and 24 and on windows with Node 18, and scans the benchmark on ubuntu. `npm test` is parallel
+   there; the serial run is still the one to trust locally.
 
 2. **Label the corpus.** `diag/label-sheet.mjs` writes a blind worksheet and a sealed answer key;
    `diag/score-corpus.mjs` turns labelled rows into precision and recall per rule. The labelling is

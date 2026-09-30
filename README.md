@@ -36,7 +36,8 @@ follows. To run from a checkout instead:
 
 Node 18 or later. No dependencies, runtime or development. `npm link` puts `cobolwork` on your PATH;
 adding `bin/` to PATH does the same thing. GnuCOBOL is needed only to regrade the parser or validate
-benchmark cases.
+benchmark cases. In a GitHub workflow, `uses: Portll/cobolwork@main` runs the build gate on a pull
+request and writes SARIF for code scanning: [docs/github-action.md](docs/github-action.md).
 
 ## What it does
 
@@ -242,7 +243,7 @@ A scan says what each rule set read, not only what it found:
       "why": "no cobolwork.site.json: the production-name and production-dataset rules did not run, because nothing declares what production means in this estate" }
   ],
   "flowModel": "byte-range",
-  "toolVersion": "0.2.0"
+  "toolVersion": "0.2.90"
 }
 ```
 
@@ -312,7 +313,7 @@ stand-in in `diag/precompiler.mjs`, which rewrites what the parser would otherwi
 tests compare the parser with the compiler's answers kept in `test/fixtures/parser/*.golden.json`,
 so they run without GnuCOBOL.
 
-`bench/cases/` holds 93 CWE-labelled cases, each paired with a near-miss negative: the same shape
+`bench/cases/` holds 102 CWE-labelled cases, each paired with a near-miss negative: the same shape
 with the flaw removed. `node bench/run.mjs` scores any scanner's findings against them, by rule and
 file, never by line, and `npm test` fails if any case scores differently from its declaration.
 `--validate` compiles every COBOL case with GnuCOBOL and checks every JCL case against the
@@ -342,9 +343,9 @@ Every rule is mapped to the clause of each framework that makes it an obligation
 
 | File | Instrument | Rules mapped |
 |---|---|---|
-| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 191 |
-| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 189, and 2 recorded as unmapped |
-| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 189, and 2 recorded as unmapped |
+| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 203 |
+| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 201, and 2 recorded as unmapped |
+| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 201, and 2 recorded as unmapped |
 
 `node diag/map-compliance.mjs` refuses to write a quote the cached instrument does not contain, and
 every scan carries the mapping as `ruleCompliance`. The clause choice is a judgement that no

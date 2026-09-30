@@ -19,8 +19,8 @@ came from, and what finishing it would show. Items leave this file when they lan
    `diag/sweep-z.mjs` re-runs the sweep and prints what the worklist does not hold;
    `diag/refresh-advisories.mjs` re-resolves what is loaded and exits non-zero on a mismatch.
 
-2. **Ten rules the public z record justifies, and what can witness them.** 83 of 187 publicly named
-   z vulnerabilities have a sibling in customer artefacts, and
+2. **What is left of the twelve rules the public z record justifies, and what can witness them.**
+   83 of 187 publicly named z vulnerabilities have a sibling in customer artefacts, and
    [`docs/spec/z-sibling-rules.md`](docs/spec/z-sibling-rules.md) designs the twelve rules that
    would report them. Two landed as the `web` set, and `N-BMS` as
    `cics-protected-field-to-record-key` ("feat: a key the program kept in a protected screen field
@@ -28,25 +28,33 @@ came from, and what finishing it would show. Items leave this file when they lan
    `cics-web-to-log` and `system-response-to-web-response`: over the 16 repositories that write a
    log from a CICS program, one program writes terminal input to a log unchecked (IBM GenApp's
    `LGSTSQ`, to CSMT), and the response-code rule has no witness, since no repository uses the CICS
-   web API. The rest are ordered in its section 6.
+   web API. `N-RECVLIMIT`, `N-XXE`, `N-CONNSTR` and `N-CSRF` landed in "feat: the z/OS-derived rules
+   the corpus left unbuilt, and N4, N6, N8, N9", all over fixtures with no measured rate:
+   `*-to-storage-length` (a `GETMAIN` length or `CEEGTST` size from input), `*-to-xml-document`
+   (input reaching `XML PARSE`, low, since whether a DTD is honoured is the `XMLPARSE` option's and
+   that is not read), `*-to-connection-target` (a Db2 location or MQ queue manager from input; one
+   CGI program in the 500-repository corpus), and the CSRF rule now counting SQL changes and started
+   transactions. The handoff's `N4`, `N6`, `N8` and `N9` landed with them. Open: the `WEB RECEIVE`
+   half of `N-RECVLIMIT`, which nothing in the corpus reads; `TRANSFORM XMLTODATA`; and the rest of
+   `N-IDENTITY` and `N-CRYPTO`, ordered in section 6 of the design.
 
    Its section 5a is the constraint on all of them: no repository in the 127-repository corpus uses
    `EXEC CICS WEB` at all, against 42 that use `EXEC CICS` and 34 that send BMS maps, so every rule
-   over the CICS web API - `N-COOKIE` and `N-HEADERS` as shipped, and `N-CSRF`, `N-XXE` and half of
-   `N-RECVLIMIT` to come - has a benchmark case and no false-positive rate. That is the same gap
-   already recorded for `BPXWDYN` and `DISPLAY UPON CONSOLE` below, and it wants a practitioner's
-   estate, not more public repositories. `N-BMS` is the opposite case and the best-witnessed rule of
-   the twelve: 31 repositories commit BMS map source, 25,701 `DFHMDF` definitions in all, and 34
-   send maps from COBOL, so its join was measured before it was written. In CardDemo, of 362 named
-   fields in the maps its programs receive, 204 are read back and 137 of those are protected or
-   dark - nearly all list-screen rows - so reading a protected field back is not the defect. Using
-   it as a record key is: 3 findings, each a row ID a list program kept in an `ASKIP,FSET` field
-   and passed on to the program that views a transaction (medium), or reads a user for update and
-   then rewrites or deletes it (high: `cics-protected-field-to-record-update`, split out because a
-   `REWRITE` or `DELETE` carries no key, so the `READ UPDATE` before it is where the record is
-   chosen). Not yet read: an attribute a program sets at run time by moving `DFHBMPRO` or the like
-   into `NAMEA`; a key used in an SQL `WHERE` rather than as `RIDFLD`; and the corpus beyond
-   CardDemo, because corpus runs stopped at the memory reserve on the machine it was measured on.
+   over the CICS web API - `N-COOKIE`, `N-HEADERS`, `N-CSRF` and `N-XXE` - has a benchmark case and
+   no false-positive rate. That is the same gap already recorded for `BPXWDYN` and `DISPLAY UPON
+   CONSOLE` below, and it wants a practitioner's estate, not more public repositories. `N-BMS` is
+   the opposite case and the best-witnessed rule of the twelve: 31 repositories commit BMS map
+   source, 25,701 `DFHMDF` definitions in all, and 34 send maps from COBOL, so its join was measured
+   before it was written. In CardDemo, of 362 named fields in the maps its programs receive, 204 are
+   read back and 137 of those are protected or dark - nearly all list-screen rows - so reading a
+   protected field back is not the defect. Using it as a record key is: 3 findings, each a row ID a
+   list program kept in an `ASKIP,FSET` field and passed on to the program that views a transaction
+   (medium), or reads a user for update and then rewrites or deletes it (high:
+   `cics-protected-field-to-record-update`, split out because a `REWRITE` or `DELETE` carries no
+   key, so the `READ UPDATE` before it is where the record is chosen). Not yet read: an attribute a
+   program sets at run time by moving `DFHBMPRO` or the like into `NAMEA`; a key used in an SQL
+   `WHERE` rather than as `RIDFLD`; and the corpus beyond CardDemo, because corpus runs stopped at
+   the memory reserve on the machine it was measured on.
 
 ## Exploitability: from verdict to witness
 
@@ -402,10 +410,9 @@ only one of the five that does.
 
 ## Build and release
 
-- **CI is refused, not failing.** Every job ends in seconds with "the job was not started because an
-  Actions budget is preventing further use". Nothing in the seventeen structural commits has been
-  through CI; all of it is verified locally on one machine. Re-running will not help — jobs are
-  refused before they start.
+- **CI runs on Linux and Windows.** `.github/workflows/ci.yml` runs `npm test` on ubuntu with Node
+  18 and 24 and on windows with Node 18, and scans the benchmark on ubuntu. Every platform-specific
+  failure so far has been a Windows one, which is why one Windows job stays in the matrix.
 
 - **The test suite is not reproducible across machines.** `npm test` runs `node --test`, which is
   parallel. `test/memory.test.mjs` asserted on real machine state, and `available` is the lesser of

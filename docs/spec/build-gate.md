@@ -258,8 +258,8 @@ dataset name is still symbolic is not attributed. What no level sets is the inst
 which an installation can change from IBM's: a compile step that does not mention `SSRANGE` leaves it
 unknown, and only `compilerOptions` in the site file says what the default is.
 
-For GnuCOBOL, the argument vector after `--`; without one, every `cobc` command the tree's build
-scripts run - Makefiles, shell and batch scripts, CI workflows, Dockerfiles, VS Code's
+For GnuCOBOL and for GCC's `gcobol`, the argument vector after `--`; without one, every `cobc` and
+`gcobol` command the tree's build scripts run - Makefiles, shell and batch scripts, CI workflows, Dockerfiles, VS Code's
 `.vscode/tasks.json`, and scripts with no extension up to 64 KB - with the variables the same file
 assigns substituted. A program with no Enterprise COBOL level of its own takes its options
 from those commands, and every command must generate the required checks: a script is a build the
@@ -278,8 +278,9 @@ repository declares, so a check it leaves out is missing, not undecided.
   PowerShell `$name = …`; in a Dockerfile `ENV` and `ARG`. A shell assignment in front of a command
   on the same line, `PATH="…" $(COBC) …`, belongs to that command. A Makefile line opening with a
   tab is a recipe line while a rule is open, and make's `@`, `-` and `+` before it are not part of
-  the command. A Makefile whose compiler variable ends up naming another compiler, `CBLC ?= gcobol`,
-  runs no `cobc`.
+  the command. The command is `cobc`, or `gcobol` under its versioned and cross-compiler names
+  (`gcobol-16`, `aarch64-linux-gnu-gcobol`); a Makefile whose compiler variable ends up naming
+  another compiler, `CBLC ?= ccbl`, runs neither.
 - A task in `.vscode/tasks.json` is its `command` followed by its `args`, read the same way, and its
   `windows`, `linux` and `osx` variants are tasks too. Comments and trailing commas are accepted.
   `${workspaceFolder}` is the folder that holds `.vscode`, where the task runs unless its
@@ -290,17 +291,19 @@ repository declares, so a check it leaves out is missing, not undecided.
   `command -v cobc`, `echo "cobc is not installed"`. A source file is an operand with a program
   extension, or one that a variable, a batch argument, a glob or `find`'s `{}` supplies. The values
   of `-o`, `-I`, `-L`, `-l`, `-A` and `-Q` are not operands: each takes the next argument
-  (`provenance/compiler-options.json`).
+  (`provenance/compiler-options.json`). For `gcobol` the values of `-o`, `-I`, `-L`, `-l`, `-D`,
+  `-x`, `-dialect`, `-copyext`, `-include`, `-fcobol-exceptions` and `-fno-cobol-exceptions` are
+  not; `-main` takes none, and marks the source that follows it.
 
 **The checks.** The Enterprise COBOL rows are from IBM's documentation for 6.3 and 6.4. The GnuCOBOL
-rows rest on observed behaviour, not on GnuCOBOL's source (§16):
+and gcobol rows rest on observed behaviour, not on either compiler's source (§16):
 
-| Check | Enterprise COBOL | GnuCOBOL | Default |
-|---|---|---|---|
-| `subscript` | `SSRANGE`, abending: a bare `SSRANGE` is `SSRANGE(NOZLEN,ABD)`. Covers subscripts, `ALL` and indexes; an `OCCURS DEPENDING ON` object is checked only against the table's maximum | `-fec=EC-BOUND-SUBSCRIPT`, which also generates the `OCCURS DEPENDING ON` check: `-fec=EC-BOUND-ODO` alone generates nothing | yes |
-| `reference-modification` | `SSRANGE`, as above | `-fec=EC-BOUND-REF-MOD`, generated where the offset or length is known only at run time | yes |
-| `numeric-data` | `NUMCHECK(ZON,PAC,ABD)`: an implicit class test on zoned and packed senders | `-fec=EC-DATA-INCOMPATIBLE`: display and packed items, not binary | no |
-| `argument-length` | `PARMCHECK(ABD)`: a called program writing past the end of the caller's WORKING-STORAGE, not past each argument | `-fec=EC-PROGRAM-ARG-MISMATCH` (3.2): on entry, every required `USING` item was passed and the caller's copy is at least as large | no: it needs GnuCOBOL 3.2 and Enterprise COBOL 6.2 |
+| Check | Enterprise COBOL | GnuCOBOL | gcobol | Default |
+|---|---|---|---|---|
+| `subscript` | `SSRANGE`, abending: a bare `SSRANGE` is `SSRANGE(NOZLEN,ABD)`. Covers subscripts, `ALL` and indexes; an `OCCURS DEPENDING ON` object is checked only against the table's maximum | `-fec=EC-BOUND-SUBSCRIPT`, which also generates the `OCCURS DEPENDING ON` check: `-fec=EC-BOUND-ODO` alone generates nothing | `-fcobol-exceptions=EC-BOUND-SUBSCRIPT` | yes |
+| `reference-modification` | `SSRANGE`, as above | `-fec=EC-BOUND-REF-MOD`, generated where the offset or length is known only at run time | `-fcobol-exceptions=EC-BOUND-REF-MOD` | yes |
+| `numeric-data` | `NUMCHECK(ZON,PAC,ABD)`: an implicit class test on zoned and packed senders | `-fec=EC-DATA-INCOMPATIBLE`: display and packed items, not binary | none: gcobol 16 does not implement `EC-DATA-INCOMPATIBLE` | no |
+| `argument-length` | `PARMCHECK(ABD)`: a called program writing past the end of the caller's WORKING-STORAGE, not past each argument | `-fec=EC-PROGRAM-ARG-MISMATCH` (3.2): on entry, every required `USING` item was passed and the caller's copy is at least as large | none: gcobol 16 does not implement `EC-PROGRAM-ARG-MISMATCH` | no: it needs GnuCOBOL 3.2 and Enterprise COBOL 6.2 |
 
 Each GnuCOBOL row was confirmed with GnuCOBOL 3.2.0 on 2026-09-26 by compiling a program that
 breaks the check and running it; `provenance/compiler-options.json` records each observation.
@@ -308,6 +311,19 @@ Without the checks, invalid digits `A1B` computed as `0112`, and a called progra
 LINKAGE item wrote 18 bytes past its caller's 2-byte argument. `-fec` takes one name, with or without
 `EC-`, as `-fec=<name>` or `-fec <name>`; a comma list is refused. A later `-fno-ec` overrides an
 earlier `-fec` or `-debug`, and a name covers every condition below it.
+
+Each gcobol row was confirmed with gcobol 16.2.0 (Debian 16.2.0-3, aarch64 Linux) on 2026-09-30 the
+same way: without the option the out-of-range subscript and reference modification ran on, with it
+each program ended at the statement with `fatal exception: … EC-BOUND-SUBSCRIPT` (or `EC-BOUND-REF-MOD`)
+and exit status 133. Enabling `EC-DATA-INCOMPATIBLE` or `EC-PROGRAM-ARG-MISMATCH` stops the compile
+with `sorry, unimplemented`, and `EC-ALL` does not generate them: `A1B` computed as `0011`. So a
+policy requiring `numeric-data` or `argument-length` fails `options` for gcobol, and nothing is added
+for it. `-fcobol-exceptions` takes a comma list, as `-fcobol-exceptions=<list>` or
+`-fcobol-exceptions <list>`, names in either case, and may be repeated. `-fno-cobol-exceptions N`
+withdraws the enabled conditions N covers and nothing else: after `-fcobol-exceptions EC-BOUND`,
+`-fno-cobol-exceptions EC-BOUND-SUBSCRIPT` leaves the subscript check on, and after `EC-ALL`,
+withdrawing `EC-BOUND` leaves it on too. A later `-fcobol-exceptions` re-enables what an earlier
+`-fno-cobol-exceptions` withdrew. gcobol has no `-debug` equivalent: `-g` is debugging information.
 
 `-debug` generates every GnuCOBOL row: it is `-fstack-check -fec=EC-ALL`. `-fec` exists from
 GnuCOBOL 3.1 and `EC-PROGRAM-ARG-MISMATCH` from 3.2; where the build set has found the pinned
@@ -318,7 +334,8 @@ finding for it.
 An option that reports and continues does not count. `SSRANGE(MSG)`, `NUMCHECK(MSG)` and
 `PARMCHECK(MSG)`, which is also what a bare `PARMCHECK` means, write a message and carry on, which is
 the overwrite with a log line. An option that turns a required check off is forbidden without being
-listed: `NOSSRANGE`, `NOPARMCHECK`, `-fno-ec` naming the check or naming none.
+listed: `NOSSRANGE`, `NOPARMCHECK`, `-fno-ec` naming the check or naming none,
+`-fno-cobol-exceptions` withdrawing the condition that generated the check.
 
 `INITCHECK` is not a run-time check: it is compile-time analysis that issues warnings, and the gate
 does not read compiler listings.
@@ -343,18 +360,19 @@ behaviours (`provenance/compiler-options.json`), not yet observed on a z/OS syst
   policy asked for that by name.
 - In ratchet mode a change that removes a check the base's build generated fails the `options` check
   under either setting, program by program and script by script: the change made the build weaker.
-  A script generates a check only if every `cobc` command in it does.
+  A script generates a check only if every `cobc` and `gcobol` command in it does.
 - For GnuCOBOL with a compiler given, a missing check is added to the argument vector as its
-  `-fec=` option, after the caller's own, and `optionsAdded` lists it. `-debug` is not added, because
+  `-fec=` option, after the caller's own, and `optionsAdded` lists it; for gcobol, as its
+  `-fcobol-exceptions=` option. `-debug` is not added, because
   it also turns on checks the policy did not ask for, each with a cost.
 - An option the caller passed that turns a required check off is never removed: removing it silently
   would hide a build configured against the policy. Under `warn` the build passes relaxed and
   compiles as the caller asked; under `block`, or when `forbid` names it, nothing compiles.
 - For Enterprise COBOL the gate compiles nothing and adds nothing. The reason says where to add the
   option, and the build is fixed where it is defined.
-- A compiler command that is not `cobc` - `make`, a script - makes `options` undecided: the gate
-  cannot tell what reaches the compiler through it. Gate the `cobc` step, or run without `--` and
-  declare the options.
+- A compiler command that is not `cobc` or `gcobol` - `make`, a script - makes `options` undecided:
+  the gate cannot tell what reaches the compiler through it. Gate the `cobc` or `gcobol` step, or
+  run without `--` and declare the options.
 - A program whose effective options cannot be worked out, because no compile step names it and the
   estate declares no defaults, is unknown. Declaring the installation defaults turns that into an
   answer. Under `warn` the build passes relaxed; under `block` `options` is undecided, for an estate
@@ -977,6 +995,30 @@ are about what the default, `warn`, does with them.
 #### B5.25 A cobc command that names no source compiles nothing
     Given a script holding command -v cobc, echo "cobc is not on PATH…", cobc --version and cobc -x -debug prog.cbl
     Then  options is true
+
+#### B5.26 A missing gcobol check is added as its -fcobol-exceptions option
+    When  the compiler is gcobol with no -fcobol-exceptions
+    Then  -fcobol-exceptions=EC-BOUND-REF-MOD and -fcobol-exceptions=EC-BOUND-SUBSCRIPT are appended after the caller's arguments, and optionsAdded lists them
+
+#### B5.27 gcobol's -fno-cobol-exceptions withdraws only the conditions it covers
+    When  the compiler's arguments are -fcobol-exceptions EC-BOUND -fno-cobol-exceptions EC-BOUND-SUBSCRIPT
+    Then  options is true and nothing is added
+    When  they are -fcobol-exceptions EC-ALL -fno-cobol-exceptions EC-ALL -fcobol-exceptions EC-BOUND-REF-MOD
+    Then  options is false, the reason names the subscript check, and the compiler does not run
+
+#### B5.28 A check gcobol does not implement fails, and is not added
+    Given a policy requiring numeric-data
+    When  the compiler is gcobol with -fcobol-exceptions=EC-ALL
+    Then  options is false, the reason names EC-DATA-INCOMPATIBLE, and optionsAdded is empty
+
+#### B5.29 A build script's gcobol command is read as cobc's is
+    Given a Makefile whose CBLC ?= gcobol-16 runs $(CBLC) -o prog prog.cbl, and a script running aarch64-linux-gnu-gcobol -fcobol-exceptions ec-bound -o prog prog.cbl
+    Then  options is false, the reasons name the Makefile's line and -fcobol-exceptions, and none names the script
+
+#### B5.30 An option forbid.gcobol names is refused
+    Given a policy whose forbid.gcobol lists -fdefaultbyte
+    When  the compiler is gcobol with -fdefaultbyte=0
+    Then  options is false and the compiler does not run
 
 ### B6 - The compiler
 

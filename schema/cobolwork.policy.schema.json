@@ -42,7 +42,8 @@
    "additionalProperties": false,
    "properties": {
     "enterprise": { "$ref": "#/$defs/options" },
-    "gnucobol": { "$ref": "#/$defs/options" }
+    "gnucobol": { "$ref": "#/$defs/options" },
+    "gcobol": { "$ref": "#/$defs/options" }
    },
    "description": "Options a build must not pass, beyond those that turn a required check off."
   }

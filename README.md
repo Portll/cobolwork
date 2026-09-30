@@ -288,7 +288,7 @@ gate. An incomplete scan is undecided, never a pass.
 
 The compiler options are held to the policy too. A program compiled without `SSRANGE`, or with
 `SSRANGE(MSG)`, which reports a bad subscript and carries on, fails; for `cobc` the missing `-fec`
-checks are added to the command. `cobolwork.policy.json` changes any of this, and `--policy <file>`
+checks are added to the command, and for GCC's `gcobol` the missing `-fcobol-exceptions`. `cobolwork.policy.json` changes any of this, and `--policy <file>`
 names an organisation's floor, which a repository can tighten and never loosen.
 [docs/spec/build-gate.md](docs/spec/build-gate.md) is the full specification.
 

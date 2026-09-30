@@ -117,10 +117,11 @@ const outside = (name, text) => {
   writeFileSync(p, text);
   return p;
 };
-// A compiler named cobc, outside every repository, that records its arguments and exits as told.
-function standInCobc() {
+// A compiler named cobc, or `name`, outside every repository, that records its arguments and exits
+// as told.
+function standInCobc(name = 'cobc') {
   const dir = mkdtempSync(join(tmpdir(), 'cw-cobc-'));
-  const path = join(dir, 'cobc');
+  const path = join(dir, name);
   writeFileSync(path, '#!/bin/sh\nprintf "%s\\n" "$@" > "$0.args"\nexit ${STAND_IN_STATUS:-0}\n');
   chmodSync(path, 0o755);
   return { path, args: () => (existsSync(`${path}.args`) ? readFileSync(`${path}.args`, 'utf8').trim().split('\n') : null) };
@@ -567,6 +568,53 @@ test('B5.25 A cobc command that names no source compiles nothing', { skip }, () 
   const script = ['#!/bin/sh', 'if ! command -v cobc >/dev/null 2>&1; then', '  echo "cobc is not on PATH: install GnuCOBOL"', '  exit 1', 'fi', 'cobc --version', 'cobc -x -debug prog.cbl', ''].join('\n');
   const doc = absolute(strict(repo({ ...NO_SITE, 'prog.cbl': QUIET, 'build.sh': script })));
   assert.equal(doc.checks.options, true, doc.reasons.join('\n'));
+});
+
+test('B5.26 A missing gcobol check is added as its -fcobol-exceptions option', { skip: skip || posix }, () => {
+  const gcobol = standInCobc('gcobol');
+  const doc = absolute(repo({ 'Q0.cbl': QUIET }), { compiler: [gcobol.path, '-o', 'q0', 'Q0.cbl'] });
+  assert.deepEqual(doc.optionsAdded, ['-fcobol-exceptions=EC-BOUND-REF-MOD', '-fcobol-exceptions=EC-BOUND-SUBSCRIPT']);
+  assert.deepEqual(gcobol.args(), ['-o', 'q0', 'Q0.cbl', '-fcobol-exceptions=EC-BOUND-REF-MOD', '-fcobol-exceptions=EC-BOUND-SUBSCRIPT']);
+  assert.equal(doc.checks.compile, true);
+});
+
+test('B5.27 gcobol\'s -fno-cobol-exceptions withdraws only the conditions it covers', { skip: skip || posix }, () => {
+  const kept = standInCobc('gcobol');
+  const on = absolute(strict(repo({ 'Q0.cbl': QUIET })), { compiler: [kept.path, '-fcobol-exceptions', 'EC-BOUND', '-fno-cobol-exceptions', 'EC-BOUND-SUBSCRIPT', 'Q0.cbl'] });
+  assert.equal(on.checks.options, true, on.reasons.join('\n'));
+  assert.deepEqual(on.optionsAdded, []);
+  const withdrawn = standInCobc('gcobol');
+  const off = absolute(strict(repo({ 'Q0.cbl': QUIET })), { compiler: [withdrawn.path, '-fcobol-exceptions', 'EC-ALL', '-fno-cobol-exceptions', 'EC-ALL', '-fcobol-exceptions', 'EC-BOUND-REF-MOD', 'Q0.cbl'] });
+  assert.equal(off.checks.options, false);
+  assert.ok(off.reasons.some((r) => /^-fno-cobol-exceptions EC-ALL turns off the subscript check$/.test(r)), off.reasons.join('\n'));
+  assert.equal(withdrawn.args(), null, 'the compiler did not run');
+});
+
+test('B5.28 A check gcobol does not implement fails, and is not added', { skip: skip || posix }, () => {
+  const gcobol = standInCobc('gcobol');
+  const root = repo({ 'Q0.cbl': QUIET, 'cobolwork.policy.json': policy({ checks: ['subscript', 'numeric-data'], options: 'block' }) });
+  const doc = absolute(root, { compiler: [gcobol.path, '-fcobol-exceptions=EC-ALL', 'Q0.cbl'] });
+  assert.equal(doc.checks.options, false);
+  assert.ok(doc.reasons.some((r) => /numeric-data needs EC-DATA-INCOMPATIBLE, which gcobol does not implement/.test(r)), doc.reasons.join('\n'));
+  assert.deepEqual(doc.optionsAdded, []);
+});
+
+test('B5.29 A build script\'s gcobol command is read as cobc\'s is', { skip }, () => {
+  const make = ['CBLC ?= gcobol-16', 'prog: prog.cbl', '\t$(CBLC) -o prog prog.cbl', ''].join('\n');
+  const script = ['#!/bin/sh', 'aarch64-linux-gnu-gcobol -fcobol-exceptions ec-bound -o prog prog.cbl', ''].join('\n');
+  const doc = absolute(strict(repo({ ...NO_SITE, 'prog.cbl': QUIET, Makefile: make, 'build.sh': script })));
+  assert.equal(doc.checks.options, false);
+  assert.ok(doc.reasons.some((r) => /^Makefile:3: subscript needs -fcobol-exceptions=EC-BOUND-SUBSCRIPT, and the command does not give it$/.test(r)), doc.reasons.join('\n'));
+  assert.ok(!doc.reasons.some((r) => r.startsWith('build.sh')), doc.reasons.join('\n'));
+});
+
+test('B5.30 An option forbid.gcobol names is refused', { skip: skip || posix }, () => {
+  const gcobol = standInCobc('gcobol');
+  const root = repo({ 'Q0.cbl': QUIET, 'cobolwork.policy.json': policy({ forbid: { gcobol: ['-fdefaultbyte'] } }) });
+  const doc = absolute(root, { compiler: [gcobol.path, '-fdefaultbyte=0', '-fcobol-exceptions=EC-BOUND', 'Q0.cbl'] });
+  assert.equal(doc.checks.options, false);
+  assert.ok(doc.reasons.some((r) => /^-fdefaultbyte=0 is on the command line, and the policy forbids it$/.test(r)), doc.reasons.join('\n'));
+  assert.equal(gcobol.args(), null, 'the compiler did not run');
 });
 
 // B6 - The compiler

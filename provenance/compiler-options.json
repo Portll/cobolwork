@@ -1,5 +1,5 @@
 {
- "_comment": "Where each compiler option lib/options.mjs reads comes from, and how its effect was established. Enterprise COBOL rows cite IBM's documentation; GnuCOBOL rows cite the published manual page for the flag's name and were confirmed by compiling a program and running it. Nothing was taken from GnuCOBOL's source (docs/spec/build-gate.md §16). Meanings are this project's own words.",
+ "_comment": "Where each compiler option lib/options.mjs reads comes from, and how its effect was established. Enterprise COBOL rows cite IBM's documentation; GnuCOBOL and gcobol rows cite the published manual page for the flag's name and were confirmed by compiling a program and running it. Nothing was taken from either compiler's source (docs/spec/build-gate.md §16). Meanings are this project's own words.",
  "enterprise": [
   {
    "option": "SSRANGE / NOSSRANGE, abbreviated SSR / NOSSR",
@@ -71,6 +71,46 @@
    "check": "argument-length",
    "condition": "EC-PROGRAM-ARG-MISMATCH",
    "observed": "GnuCOBOL 3.2.0, 2026-09-26: stops a callee whose LINKAGE item is 20 bytes when the caller passed 2; without it the callee writes 18 bytes past the caller's item"
+  }
+ ],
+ "gcobol": [
+  {
+   "option": "-fcobol-exceptions=<list>, -fcobol-exceptions <list>",
+   "meaning": "Enables the run-time check for each exception condition in a comma list, and every condition below each: EC-BOUND covers EC-BOUND-SUBSCRIPT. Names are read in either case, and the option may be repeated. A condition gcobol does not implement stops the compile.",
+   "source": { "title": "gcobol(1), GCC 16 (Debian gcobol-16)", "url": "https://manpages.debian.org/testing/gcobol-16/gcobol-16.1.en.html", "retrieved": "2026-09-30" },
+   "observed": "gcobol 16.2.0 (Debian 16.2.0-3, aarch64 Linux), 2026-09-30: -fcobol-exceptions EC-BOUND-SUBSCRIPT,EC-BOUND-REF-MOD, -fcobol-exceptions=EC-ALL, -fcobol-exceptions EC-BOUND and -fcobol-exceptions ec-bound-subscript each stop MOVE 'Z' TO E(5) on a table of 3 with 'fatal exception: … EC-BOUND-SUBSCRIPT' and exit status 133; -fcobol-exceptions EC-DATA-INCOMPATIBLE and EC-PROGRAM-ARG-MISMATCH each end the compile with 'sorry, unimplemented' and status 1"
+  },
+  {
+   "option": "-fno-cobol-exceptions=<list>, -fno-cobol-exceptions <list>",
+   "meaning": "Withdraws the enabled conditions each name covers, and nothing else: it does not withdraw a broader condition enabled earlier, and a later -fcobol-exceptions enables again what it withdrew.",
+   "source": { "title": "gcobol(1), GCC 16 (Debian gcobol-16)", "url": "https://manpages.debian.org/testing/gcobol-16/gcobol-16.1.en.html", "retrieved": "2026-09-30" },
+   "observed": "gcobol 16.2.0, 2026-09-30, on the out-of-range subscript: stopped after EC-BOUND then -fno EC-BOUND-SUBSCRIPT, after EC-ALL then -fno EC-BOUND, and after -fno EC-ALL then EC-BOUND-SUBSCRIPT; ran on after EC-BOUND-SUBSCRIPT then -fno EC-BOUND-SUBSCRIPT, after EC-BOUND then -fno EC-BOUND, after EC-BOUND-SUBSCRIPT then -fno EC-BOUND, and after EC-ALL, -fno EC-ALL, then EC-BOUND-REF-MOD"
+  },
+  {
+   "option": "-o <file>, -I <directory>, -L <directory>, -l <lib>, -D <name>[=<expr>], -x <language>, -dialect <name>, -copyext <ext>, -include <file>",
+   "meaning": "Each takes the next argument as its value, which is not a source file. -main takes none: it marks the source that follows it as the one whose first program is the entry point.",
+   "source": { "title": "gcobol(1), GCC 16 (Debian gcobol-16)", "url": "https://manpages.debian.org/testing/gcobol-16/gcobol-16.1.en.html", "retrieved": "2026-09-30" },
+   "observed": "gcobol 16.2.0, 2026-09-30: gcobol -fsyntax-only <option> <value> sub.cbl accepted each option with its value and compiled sub.cbl; -include inc.cpy read inc.cpy as included text; a bare -dialect before sub.cbl took it as the dialect and reported no input files; -main sub.cbl compiled sub.cbl"
+  },
+  {
+   "check": "subscript",
+   "condition": "EC-BOUND-SUBSCRIPT",
+   "observed": "gcobol 16.2.0, 2026-09-30: stops MOVE 'Z' TO E(5) on a table of 3; without it the program runs on"
+  },
+  {
+   "check": "reference-modification",
+   "condition": "EC-BOUND-REF-MOD",
+   "observed": "gcobol 16.2.0, 2026-09-30: stops DISPLAY S(3:5) on a 4-byte item; without it the DISPLAY shows CD and the program runs on"
+  },
+  {
+   "check": "numeric-data",
+   "condition": "EC-DATA-INCOMPATIBLE",
+   "observed": "gcobol 16.2.0, 2026-09-30: not implemented; with -fcobol-exceptions=EC-ALL, ADD 1 TO a PIC 9(3) redefining 'A1B' computes 0011"
+  },
+  {
+   "check": "argument-length",
+   "condition": "EC-PROGRAM-ARG-MISMATCH",
+   "observed": "gcobol 16.2.0, 2026-09-30: not implemented"
   }
  ]
 }

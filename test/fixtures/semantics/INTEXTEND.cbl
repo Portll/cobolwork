@@ -1,0 +1,16 @@
+       CBL ARITH(EXTEND)
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. INTEXTEND.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-A       PIC S9(14)V99 COMP-3.
+       01 WS-B       PIC S9(15)V99 COMP-3.
+       01 WS-C       PIC S9(7)V99 COMP-3.
+       01 WS-D       PIC S9(7)V99 COMP-3.
+       01 WS-R       PIC S9(15)V99 COMP-3.
+       01 WS-S       PIC S9(15)V99 COMP-3.
+       PROCEDURE DIVISION.
+           COMPUTE WS-R = WS-A * WS-B
+           COMPUTE WS-S = WS-C * WS-D
+           COMPUTE WS-S = FUNCTION MAX(WS-C WS-D) * WS-A
+           GOBACK.

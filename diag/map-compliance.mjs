@@ -80,6 +80,8 @@ const FRAMEWORKS = {
       // 8(6) would be the inventory, but its frame speaks of a job; source nobody can build is a
       // risk found by reading the source, which is 8(2)'s.
       compile: '8(2)',
+      // A result that depends on the generated code, or loses digits, is data corrupted by a flaw.
+      semantics: '9(3)(b)',
     },
     exfil: '9(3)(a)',
     frame: {
@@ -138,6 +140,7 @@ const FRAMEWORKS = {
       diff: 'DA&M VII.B.3', build: 'AIO VI.C.3', credential: 'IS II.C.19', vendor: 'IS II.C.7', opaque: 'DA&M IV',
       web: 'DA&M V', priv: 'IS II.C.7', log: 'IS II.C.19',
       compile: 'DA&M IV',
+      semantics: 'DA&M V',
     },
     exfil: 'IS II.C.19',
     frame: {
@@ -202,6 +205,7 @@ const FRAMEWORKS = {
       build: 'SI-2', credential: 'IA-5', vendor: 'AC-6', opaque: 'CM-8',
       web: 'SC-23', priv: 'AC-6', log: 'SI-11',
       compile: 'CM-8',
+      semantics: 'SI-2',
     },
     exfil: 'SC-7',
     frame: {

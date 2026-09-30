@@ -32,7 +32,7 @@ test('a quote is compared with whitespace collapsed and punctuation folded', () 
 });
 
 test('the catalogue holds every rule the engine can report', () => {
-  assert.equal(CATALOGUE.size, 164);
+  assert.equal(CATALOGUE.size, 167);
   assert.ok(CATALOGUE.has('cics-commarea-without-length-check'));
   assert.equal(CATALOGUE.get('call-parameter-exceeds-caller-record').set, 'flow');
   assert.ok(CATALOGUE.has('jcl-racf-password'), 'the credential pack counts');

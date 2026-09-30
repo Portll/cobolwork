@@ -195,6 +195,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "binary-store-exceeds-picture-under-trunc-opt",
+   "framework": "nist-800-53r5",
+   "clause": "SI-2",
+   "title": "Flaw Remediation",
+   "rationale": "The rule reports: Under TRUNC(OPT) a binary field receives a value that can have more digits than its PICTURE. That is a known system flaw present in the build, which this control requires be identified, reported and corrected.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Identify, report, and correct system flaws"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "build-pins-exploited-compiler",
    "framework": "nist-800-53r5",
    "clause": "SI-2",
@@ -269,6 +282,19 @@
     "doc": "nist80053",
     "retrieved": "2026-09-20",
     "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "character-range-reverses-in-ascii",
+   "framework": "nist-800-53r5",
+   "clause": "SI-2",
+   "title": "Flaw Remediation",
+   "rationale": "The rule reports: A range of characters is in order in EBCDIC and reversed in ASCII, or the other way round, so it holds values in one and none in the other. That is a known system flaw present in the build, which this control requires be identified, reported and corrected.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Identify, report, and correct system flaws"
    }
   },
   {
@@ -1387,6 +1413,19 @@
     "doc": "nist80053",
     "retrieved": "2026-09-20",
     "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "intermediate-result-loses-high-order-digits",
+   "framework": "nist-800-53r5",
+   "clause": "SI-2",
+   "title": "Flaw Remediation",
+   "rationale": "The rule reports: A COMPUTE has an intermediate result wider than the compiler carries, so high-order digits can be lost. That is a known system flaw present in the build, which this control requires be identified, reported and corrected.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Identify, report, and correct system flaws"
    }
   },
   {

@@ -195,6 +195,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "binary-store-exceeds-picture-under-trunc-opt",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: Under TRUNC(OPT) a binary field receives a value that can have more digits than its PICTURE. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "build-pins-exploited-compiler",
    "framework": "ffiec",
    "clause": "AIO VI.C.3",
@@ -265,6 +278,19 @@
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A called program declares a parameter longer than the whole record its caller passes. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "character-range-reverses-in-ascii",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A range of characters is in order in EBCDIC and reversed in ASCII, or the other way round, so it holds values in one and none in the other. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -1383,6 +1409,19 @@
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: The sequence area carries varying text rather than line numbers or a change tag. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "intermediate-result-loses-high-order-digits",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A COMPUTE has an intermediate result wider than the compiler carries, so high-order digits can be lost. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",

@@ -224,6 +224,21 @@ undefined only when every copybook the program includes was found and the parse 
 otherwise the program is counted as undecided, with the reason, and the set reports its coverage as
 incomplete.
 
+**What the generated code decides.** Three rules read the options a program is compiled with - its
+`CBL` and `PROCESS` cards, the JCL step that compiles it, and `compilerOptions` in
+`cobolwork.site.json` - and report what the source does not say. Under `TRUNC(OPT)`, a `COMP` or
+`BINARY` receiver given a value with more integer digits than its `PICTURE`, by a `MOVE` from a wider
+field or an operand or product wider than it (an increment is not counted, and `ON SIZE ERROR` is the
+program saying what happens): the field then holds what the generated code happens to keep. A
+`COMPUTE` whose fixed-point intermediate is wider than `ARITH` lets the compiler carry, 30 digits or
+31 under `ARITH(EXTEND)`, so high-order integer digits can be dropped without `SIZE ERROR`;
+exponentiation and functions are counted as unread. And a `THRU` range of characters, in an 88-level
+`VALUE` or a `WHEN`, that is in order in EBCDIC and reversed in ASCII or the other way round, so it
+is empty on one of them. The first two follow ironwork's model of the compiler, assumptions C2 and
+C1 in its register, which no Enterprise COBOL compile has settled yet, and every finding says so. A
+program with no `TRUNC(OPT)` anywhere is not judged by the first, and one that declares its own
+`PROGRAM COLLATING SEQUENCE` is not judged by the third.
+
 **Copybook shadowing.** Two copybooks answering to one name with different layouts, with the
 programs that resolve each; a repository copy of a system copybook (`SQLCA`, `DFHAID`, …), which the
 search path finds before the system's own.

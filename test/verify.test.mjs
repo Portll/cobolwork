@@ -58,9 +58,9 @@ test('V1.3 No plan carries a value that would run', () => {
   }
 });
 
-test('V1.4 A letter in a numeric field, watched for the data exception', () => {
+test('V1.4 An asterisk in a numeric field, watched for the data exception', () => {
   const { p } = planOf('057-terminal-quantity-reaches-arithmetic', 'cics-terminal-to-arithmetic');
-  assert.match(p.verify.value, /a letter where WS-QTY expects a digit/);
+  assert.match(p.verify.value, /an asterisk in every position of WS-QTY/);
   assert.match(p.verify.run, /ASRA.*S0C7/);
   assert.match(p.verify.observe, /ARITH\.cbl:14/);
   assert.match(p.verify.tool, /^CEDF/);

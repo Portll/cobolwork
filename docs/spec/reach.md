@@ -263,12 +263,21 @@ unmatched only where no repository's finding carries it.
 
 ### 9.6 Measuring it
 
-The sealed answer key `diag/label-sheet.mjs` writes records each site's verdict, and
-`diag/score-corpus.mjs` gives a rate per verdict against blind human labels
-(`feed/specs/06-corpus.md`): how often a verdict that names a route sits at a reachable site, and how
-often `refuted` sits at one that is not. That is the route half, the part §7.3 says a public corpus
-can witness; the reach half still needs an estate's facts. The labels are not started, so no rate is
-published.
+Labels are made by machine, execution first. `bench/label.mjs` runs each path finding's
+verification plan (§9.7) in ironwork. The marker goes in at the finding's source:
+- a batch program: every DD it assigns, and SYSIN, with the records shifted through the marker's
+  eight alignments;
+- a RECEIVE MAP: typed into the map's unprotected fields, across the pseudo-conversation the
+  program's RETURN TRANSID starts;
+- a RECEIVE without a map: typed on a cleared screen after the transaction's name.
+
+ironwork runs with `--trace-marker`. The finding is confirmed where the run's sealed journal has a
+`sink` record at its line with the marker in the operand. An arithmetic finding is confirmed by a
+data exception at its line, where asterisks went in, that the same run with digits gets past.
+Anything else is unknown, with its reason. A run that did not carry the marker to the operation
+shows only that these inputs did not, so refuting a finding needs every route to its sink covered.
+`bench/seed.mjs` adds planted labels. The sealed answer key `diag/label-sheet.mjs` writes and
+`diag/score-corpus.mjs` score each verdict against a label set. No rate is published yet.
 
 ### 9.7 The verification plan
 
@@ -282,8 +291,8 @@ it; the packet it rides in already carries source and is handled as the source i
   "start": "transaction INQ1",
   "tool": "CEDF at the terminal that runs INQ1, or a debugger such as z/OS Debugger where the operation is not an EXEC command",
   "enter": "field QTY of map INQM in mapset INQS, received at INQUIRY.cbl:10",
-  "value": "a letter where WS-QTY expects a digit, such as A in its first position",
-  "observe": "stop at INQUIRY.cbl:14 and read WS-QTY holding the letter: that is the defect, whatever the operation does next",
+  "value": "an asterisk in every position of WS-QTY, whose digits it expects: a letter will not do, since zoned decimal reads a letter as a digit",
+  "observe": "stop at INQUIRY.cbl:14 and read WS-QTY holding the asterisks: that is the defect, whatever the operation does next",
   "run": "the task abends ASRA, a data exception (S0C7 in batch), at the operation",
   "record": "bring the result in a COBOLWORK_WITNESS feed under \"<fingerprint>\": ..."
 }
@@ -295,7 +304,7 @@ that fails to resolve. Where it would act, `run` is null and `stopBefore` says t
 
 | Sink | `value` | Let it run |
 |---|---|---|
-| arithmetic | a letter in a numeric field | yes: ASRA or S0C7 |
+| arithmetic | an asterisk in every position of a numeric field (a letter's low half is a digit, so it passes) | yes: ASRA or S0C7 |
 | subscript, loop bound, reference modification, `OCCURS DEPENDING` count | one past the table or field, from the finding where it names the size, or 0 | only under SSRANGE |
 | record key, record update | the key of a test record set up for another test user | yes, on test data |
 | variable program, transfer, file, SYSID | `CWVRFY01`, after checking nothing by that name is defined | yes: PGMIDERR, S806, file status 35, SYSIDERR |

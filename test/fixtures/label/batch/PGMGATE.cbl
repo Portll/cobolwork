@@ -1,0 +1,23 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PGMGATE.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT CTL-FILE ASSIGN TO CTLIN.
+       DATA DIVISION.
+       FILE SECTION.
+       FD CTL-FILE.
+       01 CTL-REC PIC X(80).
+       WORKING-STORAGE SECTION.
+       01 WS-REC.
+          05 WS-FLAG PIC X.
+          05 WS-PGM PIC X(8).
+          05 FILLER PIC X(71).
+       PROCEDURE DIVISION.
+           OPEN INPUT CTL-FILE
+           READ CTL-FILE INTO WS-REC
+           IF WS-FLAG = '#'
+               CALL WS-PGM ON EXCEPTION CONTINUE END-CALL
+           END-IF
+           CLOSE CTL-FILE
+           GOBACK.

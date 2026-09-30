@@ -144,6 +144,27 @@ reasons.
 
 ## Precision and coverage, measured
 
+**Execution labels, 2026-10-01 (roadmap 2.1, `bench/label.mjs`).** Over 495 of the 500 held-out
+repositories (5 stopped on the memory guard; rerun with `COBOLWORK_FREE_MEMORY_MB`), 683 path
+findings: 7 confirmed, every one `cics-terminal-to-log` (GenApp's LGSTSQ in five repositories,
+the health-API sample's HCAZERRS in two); the rest unknown, and why is what to build next:
+- 250 `jcl-instream` findings, all in one repository: feed a job's in-stream data through
+  `ironwork job`.
+- 310 sinks ironwork has no trace for: `dynamic-file-path` 160 (ASSIGN to a data item, which
+  ironwork does not run), then the storage sinks (`subscript` 52, `reference-modification` 37,
+  `loop-bound` 23, `occurs-depending-count` 18), witnessed by a range abend under SSRANGE with
+  one-past-the-end as the value; `message-queue` 11 (no MQ in ironwork).
+- 27 `argv-or-env`: GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT, which ironwork refuses as
+  not Enterprise COBOL; 12 `cics-protected-field`, which a terminal cannot type into.
+- 23 in programs ironwork does not compile; 14 BMS maps not in the repository.
+- 14 `cics-terminal-to-arithmetic` that ran through the operation without a data exception, not
+  yet read.
+
+Found on the way: `lib/sets/flow.mjs`'s `scan()` given a relative root returns no findings and
+reports its coverage complete (the CLI resolves roots, bench tools must); cobolwork reads no
+symbolic map from a `.bms` where ironwork builds one, so a program that copies a mapset with only
+its BMS source compiles in ironwork and has no terminal source in the scan.
+
 **The 500-repository run, 2026-09-26.** Every set over all 500 held-out repositories, with
 `COBOLWORK_FREE_MEMORY_MB=12288`; without it the same run read 156,184 of 274,087 files, because the
 memory guard watches the whole machine and other jobs shared it. What is left open:

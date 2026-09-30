@@ -17,6 +17,7 @@ import { ZOWE_RULES, scanZowe } from '../lib/sets/zowe.mjs';
 import { scanJcl } from '../lib/sets/jcl.mjs';
 import { applyEstateFacts } from '../lib/scan.mjs';
 import { machineAuthored } from '../lib/equivalence.mjs';
+import { slsaStatement } from '../lib/evidence/slsa.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -611,6 +612,25 @@ const bomOf = (src, env = {}) => JSON.parse(cli(['sbom', src, '--quiet'], env).s
 const comp = (bom, ref) => bom.components.find((c) => c['bom-ref'] === ref);
 const prop = (c, name) => (c.properties || []).find((p) => p.name === name)?.value;
 const deps = (bom, ref) => (bom.dependencies.find((x) => x.ref === ref) || { dependsOn: [] }).dependsOn;
+
+test('V6.5 The compiler arguments are recorded without their values', (t) => {
+  const argv = ['-x', '-I', '/home/someone/copy', '-DKEY=hunter2', '-I/opt/lib', 'PAY.cbl'];
+  const st = slsaStatement({ provenance: { sources: [], revisions: {}, policy: { sha256: 'b'.repeat(64), setBy: 'floor' }, compiler: { path: '/usr/bin/cobc', sha256: 'a'.repeat(64), argv } }, docBytes: Buffer.from('{}'), root: tmp(t) });
+  const p = st.predicate.buildDefinition.externalParameters;
+  assert.deepEqual(p.compilerArguments, ['-x', '-I', '<value>', '-DKEY=<value>', '-I<value>', '<value>']);
+  assert.equal(p.compilerArgumentsSha256, sha256(argv.join('\0')));
+  assert.ok(!JSON.stringify(st).includes('hunter2') && !JSON.stringify(st).includes('/home/someone'));
+});
+
+test('V7.10 A PROGRAM-ID two files hold is an edge to each, and each says where the other is', (t) => {
+  const { src } = estate(t);
+  writeFileSync(join(src, 'OLDCALC.cbl'), ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. PAYCALC.', '       PROCEDURE DIVISION.', '           GOBACK.', ''].join('\n'));
+  const bom = bomOf(src);
+  const dependsOn = bom.dependencies.find((x) => x.ref === 'PAYMAIN.cbl').dependsOn;
+  assert.ok(dependsOn.includes('PAYCALC.cbl') && dependsOn.includes('OLDCALC.cbl'), dependsOn.join(','));
+  assert.equal(prop(comp(bom, 'PAYCALC.cbl'), 'cobolwork:program-id-also-in'), 'OLDCALC.cbl');
+  assert.equal(prop(comp(bom, 'OLDCALC.cbl'), 'cobolwork:program-id-also-in'), 'PAYCALC.cbl');
+});
 
 test('V7.1 The SBOM is CycloneDX 1.6 with one file component per source', (t) => {
   const { src } = estate(t);

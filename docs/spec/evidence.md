@@ -215,8 +215,10 @@ way, and by `unsealedTail` against a policy that says how often seals are due.
 - `subject`: the build document (`name: build.json`) and, for each `--artifact <path>` the pipeline
   names, that file. cobolwork does not guess what a compiler produced.
 - `buildDefinition.buildType`: `https://github.com/Portll/cobolwork/blob/main/docs/spec/evidence.md#build-v1`.
-- `externalParameters`: revisions, the canonical policy and its digest, copylibs, the compiler's
-  argument vector.
+- `externalParameters`: revisions, the canonical policy and its digest, copylibs, and the compiler's
+  arguments with every value replaced by `<value>` (option names kept, as `-DKEY=<value>`), beside
+  `compilerArgumentsSha256`, the digest of the arguments as run joined by NUL: a path or a secret on
+  the command line is not published, and a holder of the arguments can still check them.
 - `resolvedDependencies`: every source read (`uri: file:<relative path>`, `digest.sha256`), every
   copy library member resolved, the compiler binary, ironwork with its version.
 - `runDetails.builder.id`: `COBOLWORK_BUILDER_ID` when a pipeline sets it, else
@@ -251,7 +253,12 @@ L2; cobolwork makes no level claim, and the document says which fields a verifie
   `DSN RUN PROGRAM(...)` runs and the application program an IMS region's `PARM='BMP,PGM,PSB'`
   names, job → procedures its steps call, program → platforms. A dynamic `CALL`, `LINK` or `XCTL`
   through a field is a property `cobolwork:unresolved-call` on the caller, never an edge; a
-  procedure the estate does not hold is `cobolwork:unresolved-proc` on the job.
+  procedure the estate does not hold is `cobolwork:unresolved-proc` on the job. A PROGRAM-ID two
+  files hold is an edge to each (which one a run loads is the load library's order), and each carries
+  `cobolwork:program-id-also-in`. A source whose text cannot be decoded is still a component with its
+  digest, marked `cobolwork:undecodable`; a copy library member gone since the parse read it is
+  `cobolwork:unread` and has no hash; members of one name in two copy libraries are two components,
+  the second named with its directory's digest.
 - `serialNumber` is a UUID version 5 over the sorted component digests, and `metadata.timestamp`
   comes from `SOURCE_DATE_EPOCH` or is omitted, so the same tree gives the same bytes.
 
@@ -517,6 +524,9 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
 
 ### V7 - The bill of materials
 
+#### V6.5 The compiler arguments are recorded without their values
+    Then  compilerArguments keeps each option's name with <value> for its value, and compilerArgumentsSha256 is the digest of the arguments as run
+
 #### V7.1 The SBOM is CycloneDX 1.6 with one file component per source
     Then  bomFormat is CycloneDX, specVersion 1.6, and every program, copybook and JCL member has a SHA-256
 
@@ -544,6 +554,9 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
 
 #### V7.9 The estate carries the commit it was read at, and no version outside a repository
     Then  metadata.component.version is HEAD with cobolwork:dirty, and absent where the root is not in a repository
+
+#### V7.10 A PROGRAM-ID two files hold is an edge to each, and each says where the other is
+    Then  the caller depends on both files and each carries cobolwork:program-id-also-in
 
 ### V8 - Zowe and agent configuration
 

@@ -209,3 +209,14 @@ test('in fixed form a header in Area A ends the sentence before it under the IBM
 test('a file the parser cannot read is refused, not reported as empty', () => {
   assert.throws(() => parseFile(join(FIXTURES, 'no-such-file.cbl')), (e) => e.code === 'ENOENT');
 });
+
+test('UNSTRING writes every receiver and each field its DELIMITER IN, COUNT IN, POINTER and TALLYING IN phrases name', () => {
+  const src = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. U.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
+    '       01 A PIC X(80).', '       01 R.', '          05 B PIC X(80).', '          05 E PIC X(80).', '       01 D PIC X.',
+    '       01 C PIC 9(4) COMP.', '       01 C2 PIC 9(4) COMP.', '       01 P PIC 9(4) COMP.', '       01 T PIC 9(4) COMP.', '       PROCEDURE DIVISION.',
+    '           UNSTRING A DELIMITED BY ","', '               INTO B IN R DELIMITER IN D COUNT IN C',
+    '               E COUNT C2 WITH POINTER P TALLYING IN T END-UNSTRING', '           GOBACK.', ''].join('\n');
+  const [p] = parseSource(src, 'U.cbl').programs;
+  const st = p.statements.find((s) => s.verb === 'UNSTRING');
+  assert.deepEqual(st.targets.map((t) => t.u).filter((u) => u !== 'IN'), ['B', 'D', 'C', 'E', 'C2', 'P', 'T']);
+});

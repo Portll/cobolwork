@@ -16,6 +16,7 @@ import { verifyEvidence } from '../lib/evidence/verify.mjs';
 import { ZOWE_RULES, scanZowe } from '../lib/sets/zowe.mjs';
 import { scanJcl } from '../lib/sets/jcl.mjs';
 import { applyEstateFacts } from '../lib/scan.mjs';
+import { machineAuthored } from '../lib/equivalence.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -794,6 +795,55 @@ test('V8.11 native-config.json is read for passwords and TLS verification', (t) 
   const r = zoweTree(t, { 'server/native-config.json': { systems: [{ host: 'lpar1.example.invalid', password: 'Q7WX2KPL', rejectUnauthorized: false }, { host: 'lpar2.example.invalid', password: '${env:PW}' }] } });
   assert.deepEqual(rules(r), ['zowe-config-secret-in-clear', 'zowe-config-tls-verify-off']);
   assert.ok(!JSON.stringify(r).includes('Q7WX2KPL'));
+});
+
+test('V10.5 A change that deletes a program fails requireEquivalence always', GIT, (t) => {
+  const { repo } = changeRepo(t);
+  writeFileSync(join(repo, 'GONE.cbl'), payProgram(null, 'GOBACK'));
+  spawnSync('git', ['-C', repo, 'add', 'GONE.cbl']);
+  spawnSync('git', ['-C', repo, 'commit', '-q', '-m', 'add a program']);
+  spawnSync('git', ['-C', repo, 'rm', '-q', 'GONE.cbl']);
+  spawnSync('git', ['-C', repo, 'commit', '-q', '-m', 'delete it']);
+  const { doc } = buildChange(repo, []);
+  assert.equal(doc.checks.equivalence, false);
+  const gone = doc.equivalence.programs.find((p) => p.path === 'GONE.cbl');
+  assert.equal(gone.deleted, true);
+  assert.match(gone.because, /deletes this program/);
+});
+
+test('V10.6 A commit message holding a record separator still shows its trailers', GIT, (t) => {
+  const d = tmp(t);
+  const repo = join(d, 'repo');
+  const git = gitRepo(repo);
+  writeFileSync(join(repo, 'A.cbl'), 'x\n');
+  git('add', '.');
+  git('commit', '-q', '-m', 'base');
+  writeFileSync(join(repo, 'A.cbl'), 'y\n');
+  git('commit', '-q', '-am', 'fix a thing\n\n\x1eCo-authored-by: Claude <noreply@anthropic.com>');
+  const r = machineAuthored(repo, 'HEAD~1', 'HEAD');
+  assert.equal(r.known, true);
+  assert.equal(r.commits.length, 1);
+});
+
+test('V10.7 Coverage whose unreached is not a list of names is inconclusive', GIT, (t) => {
+  const { d, repo, base, head } = changeRepo(t);
+  for (const [i, unreached] of ['', 0, {}, 'CALC'].entries()) {
+    const f = statementFile(d, `odd${i}.json`, { base, head, coverage: { paragraphs: 1, reached: 1, unreached } });
+    const { doc } = buildChange(repo, ['--equivalence', f]);
+    assert.equal(doc.checks.equivalence, false, JSON.stringify(unreached));
+    assert.match(doc.equivalence.programs[0].because, /measured no coverage/);
+  }
+});
+
+test('V10.8 Every statement naming a program must pass', GIT, (t) => {
+  const { d, repo, base, head } = changeRepo(t);
+  const good = statementFile(d, 'good.json', { base, head });
+  const bad = statementFile(d, 'bad.json', { base, head, verdict: 'diverged' });
+  for (const order of [[good, bad], [bad, good]]) {
+    const { doc } = buildChange(repo, order.flatMap((f) => ['--equivalence', f]));
+    assert.equal(doc.checks.equivalence, false);
+    assert.match(doc.equivalence.programs[0].because, /verdict is diverged/);
+  }
 });
 
 // V11 - Execution coverage

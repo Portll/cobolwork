@@ -289,10 +289,12 @@ evidence.
    repository wins) says when every edited program needs one. `machineAuthored` reads the commits in
    `base..head`: an author, committer or `Co-authored-by`/`Generated-by` trailer naming a code
    assistant or bot makes the change machine-authored; commits that cannot be read leave the check
-   undecided. A statement with `coverage: null`, as ironwork writes until E9 lands, is inconclusive
-   under this check. A program whose bytes are unchanged but whose copybooks the change edits counts
-   as edited, and its statement's `closure.head` must hold each edited copybook's digest, so the
-   statement shows the head run read the new copybook.
+   undecided. A statement with `coverage: null` (the head did not run), or whose `coverage.unreached`
+   is not a list of paragraph names, is inconclusive under this check. A program whose bytes are
+   unchanged but whose copybooks the change edits counts as edited, and its statement's
+   `closure.head` must hold each edited copybook's digest, so the statement shows the head run read
+   the new copybook. A program the change deletes fails where equivalence is required: no statement
+   can show what its callers do now. Where several statements name one program, each must pass.
 7. **Translations.** For COBOL translated to Java, `ironwork run` of the original produces the
    expected outputs and a statement over them; the translation's own run is compared with
    `ironwork compare --expected`.
@@ -616,6 +618,20 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
 #### V10.4 A change to a copybook alone needs a statement for each program that copies it
     Given requireEquivalence always and a change that edits only a copybook
     Then  the build fails on equivalence, naming the program and the copybook
+
+#### V10.5 A change that deletes a program fails requireEquivalence always
+    Then  the program is listed as deleted and the build fails on equivalence
+
+#### V10.6 A commit message holding a record separator still shows its trailers
+    Given a commit whose message has the byte 0x1E before a Co-authored-by trailer
+    Then  machineAuthored names the commit
+
+#### V10.7 Coverage whose unreached is not a list of names is inconclusive
+    Then  the program fails as measuring no coverage
+
+#### V10.8 Every statement naming a program must pass
+    Given two statements for one change, one equivalent and one diverged, in either order
+    Then  the build fails on equivalence, naming the diverged verdict
 
 ### V11 - Execution coverage
 

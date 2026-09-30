@@ -146,3 +146,18 @@ test('a READ UPDATE of a record the program never changes, or changes in another
     assert.equal(keys(r)[0].sev, 'med');
   }
 });
+
+test('a protected key the program puts in a field the user may type into is typed input by the time it is used', () => {
+  const retyped = cobol([
+    'IDENTIFICATION DIVISION.', 'PROGRAM-ID. LISTP.', 'DATA DIVISION.', 'WORKING-STORAGE SECTION.',
+    '01 CA.', '   05 CA-SELECTED PIC X(10).',
+    'COPY LISTS.',
+    'PROCEDURE DIVISION.',
+    "    EXEC CICS RECEIVE MAP('LISTA') MAPSET('LISTS')",
+    '        INTO(LISTAI) END-EXEC.',
+    '    MOVE ROWID1I TO OPTI.',
+    '    MOVE OPTI TO CA-SELECTED.',
+    "    EXEC CICS XCTL PROGRAM('VIEWP') COMMAREA(CA) END-EXEC.",
+  ]);
+  assert.equal(keys(scan(estate({ files: { 'cbl/LISTP.cbl': retyped } }))).length, 0);
+});

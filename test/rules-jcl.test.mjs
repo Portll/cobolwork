@@ -221,3 +221,15 @@ test('a pack vouches only for its own programs', () => {
   assert.deepEqual(unresolved.map((f) => f.step), ['S2'],
     'loading the transfer pack says nothing about the scheduler');
 });
+
+test('SQL a Db2 sample program reads is not a security command, as a step or under DSN RUN', () => {
+  const sql = ['  CONNECT TO DB2P;', "  INSERT INTO AUTOSALE.SYSTEM_CONFIG (CONFIG_KEY) VALUES ('X');", '  CHANGE_LOG_ROWS = 1;'];
+  const asStep = ['//J JOB (X)', '//S1 EXEC PGM=DSNTEP2', '//SYSIN DD *', ...sql, '/*'];
+  const underTso = ['//J JOB (X)', '//S1 EXEC PGM=IKJEFT01', '//SYSTSIN DD *', ' DSN SYSTEM(DB2P)', ' RUN  PROGRAM (DSNTIAD) PLAN(DSNTIAD)', ' END', '/*', '//SYSIN DD *', ...sql, '/*'];
+  for (const job of [asStep, underTso]) {
+    const f = scanJcl(tree({ 'job.jcl': job.join('\n') + '\n' })).findings.filter((x) => x.rule === 'jcl-instream-security-command');
+    assert.deepEqual(f, [], job[1]);
+  }
+  const tsoConnect = ['//J JOB (X)', '//S1 EXEC PGM=IKJEFT01', '//SYSTSIN DD *', '  CONNECT OPER01 GROUP(SYSADM)', '/*'];
+  assert.equal(scanJcl(tree({ 'job.jcl': tsoConnect.join('\n') + '\n' })).findings.filter((x) => x.rule === 'jcl-instream-security-command').length, 1);
+});

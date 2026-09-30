@@ -374,3 +374,9 @@ test('each statement in the shared host-variable table reads and writes what the
     assert.deepEqual({ read: sending, written: receiving }, { read: list(read), written: list(written) }, statement);
   }
 });
+
+test('DFHVALUE has the CVDAs CICS TS added after 5.3, ADDRESS from 5.4, and AWARE as 6.x numbers it', async () => {
+  const { DFHVALUE } = await import('../lib/cics-commands.mjs');
+  assert.deepEqual([DFHVALUE.SECERROR, DFHVALUE.NODEJSAPP, DFHVALUE.ADDRESS, DFHVALUE.AWARE, DFHVALUE.NOTAWARE, DFHVALUE.VALIDATEWARN], [1214, 1215, 859, 1256, 1257, 1266]);
+  assert.equal(Object.keys(DFHVALUE).length, 1061);
+});

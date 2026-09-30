@@ -1,1003 +1,1065 @@
-# The number DFHVALUE(cvda) stands for: CICS Transaction Server for z/OS Version 5 Release 3, System Programming Reference (SC34-7429-00) (https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf), pages 761-785.
-# Where the alphabetic and numeric tables both list a name they agree except for the names under 'omitted'; a name only one table lists (the alphabetic one abbreviates some, as ALLOCATD for ALLOCATED) is taken from that table. Omitted: ADDRESS, the alphabetic and numeric tables disagree: 859 and 895.
+# The number DFHVALUE(cvda) stands for: CICS Transaction Server for z/OS Version 5 Release 3, System Programming Reference (SC34-7429-00), pages 761-785, then the CVDA tables of CICS TS 5.4, 5.5, 5.6, 6.x for the names each release adds; since is the first release that lists a name.
+# Where the alphabetic and numeric tables both list a name they agree except for ADDRESS in 5.3 and AWARE in 6.x, below; a name only one table lists (the alphabetic one abbreviates some, as ALLOCATD for ALLOCATED) is taken from that table. ADDRESS: 5.3's tables disagree (859 and 895); 5.4 and every later release give 859 in both, which is taken. AWARE: 6.x's alphabetic table gives 1257, which is NOTAWARE's number in both tables; its numeric table gives 1256, which is taken. VALIDATEYES and VALIDATEWARN (1265, 1266) are in 6.x's numeric table only. A name's since is the first release whose tables list it; every name is accepted whatever the target release. 6.x's separate table of CVDA values for the DEVICE option is not included.
 # GENERATED from cobolwork's provenance/precompile.json by diag/generate-precompile.mjs; ironwork vendors this file.
-# cvda	value
-ABEND	900
-ACQFAIL	515
-ACQUIRED	69
-ACQUIRING	71
-ACTIVE	181
-ACTIVITY	1002
-ADD	291
-ADDABLE	41
-ADDFAIL	519
-ADVANCE	265
-AINIT	282
-ALARM	501
-ALL	856
-ALLCONN	169
-ALLOCATD	81
-ALLOCATED	81
-ALLQUERY	431
-ALLVALUES	860
-ALTERABLE	52
-ALTERNATE	197
-ALTPRTCOPY	446
-ANALYZER	1126
-AND	1005
-ANY	158
-APLKYBD	391
-APLTEXT	393
-APPC	124
-APPCPARALLEL	374
-APPCSINGLE	373
-APPEND	1036
-APPLICATION	559
-APPLID	303
-APPLNAME	338
-ASACTL	224
-ASCII7	616
-ASCII8	617
-ASSEMBLER	150
-ASSERTED	1104
-ASYNCHRONOUS	570
-ATI	75
-ATOM	1119
-ATOMSERVICE	1179
-ATTACH	576
-ATTENTION	524
-ATTLSAWARE	1205
-AUDALARM	395
-AUTOACTIVE	630
-AUTOARCH	262
-AUTOAUTH	1095
-AUTOCONN	170
-AUTOINACTIVE	631
-AUTOINIT	284
-AUTOINSTALL	1140
-AUTOPAGE	80
-AUTOPAGEABLE	80
-AUTOREGISTER	1094
-AUTOSTART	618
-AUTOTERMID	1120
-AUXILIARY	247
-AUXPAUSE	313
-AUXSTART	312
-AUXSTOP	314
-AVAILABLE	95
-BACKOUT	192
-BACKTRANS	397
-BACKUPNONBWO	800
-BASE	10
-BASE64	50
-BASEAPI	1052
-BASESPACE	664
-BASICAUTH	1092
-BDAM	2
-BEGINSESSION	510
-BELOW	159
-BGAM	63
-BINARY	1038
-BINIT	283
-BIT	1020
-BLK	47
-BLOCKED	16
-BOTH	1100
-BRIDGE	935
-BROWSABLE	39
-BSAM	61
-BTAM	62
-BUNDLE	1180
-BUSY	612
-C	149
-CACHE	791
-CANCEL	526
-CANCELLED	624
-CANCELLING	1025
-CAPTURESPEC	1195
-CATEGORY	474
-CBE	582
-CBER	581
-CCE	583
-CD	491
-CEDF	370
-CERTIFICAUTH	1093
-CERTUSER	1061
-CFE	584
-CFTABLE	833
-CGROUP	902
-CHANNEL	1047
-CHAR	1019
-CHUNKEND	737
-CHUNKNO	735
-CHUNKYES	736
-CICS	660
-CICSAPI	1052
-CICSDATAKEY	379
-CICSECURITY	195
-CICSEXECKEY	381
-CICSTABLE	101
-CKOPEN	1055
-CLASSCACHE	1075
-CLEAR	640
-CLICONVERT	743
-CLIENT	1122
-CLIENTAUTH	1032
-CLIENTCERT	1087
-CLOSE	741
-CLOSED	19
-CLOSEFAILED	349
-CLOSELEAVE	261
-CLOSEREQ	22
-CLOSEREQUEST	22
-CLOSING	21
-CLOUD	848
-CMDPROT	673
-CMDSECEXT	207
-CMDSECNO	205
-CMDSECYES	207
-COBOL	151
-COBOLII	375
-COLD	788
-COLDACQ	72
-COLDQUERY	433
-COLDSTART	266
-COLLECTION	473
-COLOR	399
-COMMAREA	1048
-COMMIT	208
-COMMITFAIL	792
-COMPAT	107
-COMPLETE	1026
-COMPOSITE	1003
-COMPRESS	1130
-CONFFREE	82
-CONFRECEIVE	83
-CONFRECV	83
-CONFSEND	84
-CONNECT	903
-CONNECTED	690
-CONNECTING	904
-CONNECTION	755
-CONSISTENT	723
-CONSOLE	66
-CONTAINER	869
-CONTENTION	836
-CONTEXT	574
-CONTROLSHUT	623
-CONVERSE	600
-CONVIDLE	518
-COORDINATOR	770
-COPID	908
-COPY	401
-CORBA	1101
-CORBASERVER	1141
-CPLUSPLUS	148
-CREATE	67
-CREATESPI	844
-CRITICAL	11
-CSDAPI	840
-CSDBATCH	841
-CSIGN	905
-CTERM	906
-CTLGALL	632
-CTLGMODIFY	633
-CTLGNONE	634
-CTRLABLE	56
-CTX	907
-CURRENT	260
-CURRENTPGM	870
-CUSERID	909
-CUSTOM	579
-DAE	684
-DAEOPT	684
-DATA	508
-DATASET	756
-DATASETFULL	793
-DATASTREAM	543
-DB2CONN	1142
-DB2ENTRY	1143
-DB2TRAN	1184
-DBTRAN	1184
-DEADLOCK	794
-DEBUG	1082
-DEC	46
-DEFAULT	198
-DEFAULTUSER	1070
-DEFINITION	990
-DEFRESP1	497
-DEFRESP1OR2	528
-DEFRESP2	498
-DEFRESP3	499
-DELAY	637
-DELETABLE	43
-DELETE	292
-DELETEFAIL	520
-DELEXITERROR	795
-DEREGERROR	679
-DEREGISTERED	678
-DEST	235
-DISABLED	24
-DISABLEDHOST	1125
-DISABLING	25
-DISCARDFAIL	513
-DISCARDING	1118
-DISCONNING	910
-DISCREQ	444
-DISK1	252
-DISK2	253
-DISK2PAUSE	254
-DISPATCHABLE	228
-DISPATCHER	1144
-DJAR	1189
-DOCDELETE	295
-DOCTEMPLATE	1145
-DOESNOTEQUAL	861
-DOESNOTEXIST	872
-DOESNOTSTART	862
-DORMANT	1024
-DPLSUBSET	383
-DRAINING	619
-DREPAPI	843
-DREPBATCH	845
-DS3270	615
-DUALCASE	403
-DUMMY	781
-DUPERROR	106
-DUPNOREPLACE	105
-DUPREPLACE	104
-DYNAMIC	178
-EB	490
-EBCDIC	1039
-ECI	1098
-EJB	1102
-EMERGENCY	268
-EMPTY	210
-EMPTYREQ	31
-ENABLED	23
-ENABLING	51
-ENDAFFINITY	790
-ENQMODEL	1188
-ENQUEUE	1146
-ENTRYPOINT	993
-EPADAPTER	1196
-EPADAPTERSET	1200
-EQUAL	911
-EQUALS	863
-ESDS	5
-EVENT	334
-EVENTBINDING	1191
-EVENTPROCESS	1192
-EVENTUAL	3
-EXCEPT	332
-EXCEPTRESP	523
-EXCI	650
-EXCTL	48
-EXECENQ	751
-EXECENQADDR	752
-EXECINSTALL	846
-EXISTS	871
-EXIT	912
-EXITTRACE	362
-EXPECT	747
-EXPIRED	1017
-EXPORT	991
-EXTENDED	1128
-EXTENDEDDS	405
-EXTRA	221
-EXTSECURITY	194
-FAILED	782
-FAILEDBKOUT	357
-FAILINGBKOUT	358
-FAULTTOEPR	853
-FCLOSE	273
-FEED	472
-FILE	238
-FINALQ	183
-FINALQUIESCE	183
-FINPUT	270
-FIRED	1001
-FIRSTINIT	625
-FIRSTQ	182
-FIRSTQUIESCE	182
-FIXED	12
-FLUSH	783
-FMH	502
-FMHPARM	385
-FOPEN	272
-FORCE	342
-FORCECANCEL	655
-FORCECLOSE	351
-FORCECLOSING	353
-FORCED	1013
-FORCEPURGE	237
-FORCLOSING	353
-FORMATEDF	606
-FORMATTED	542
-FORMFEED	407
-FOUTPUT	271
-FREE	85
-FREEING	94
-FROMEPR	850
-FULL	212
-FULLAPI	384
-FULLAUTO	1073
-FWDRECOVABLE	354
-GENERIC	651
-GET	748
-GMT	604
-GOHIGHERTHAN	873
-GOINGOUT	172
-GOLOWERTHAN	874
-GREATERTHAN	864
-GROUP	913
-GROUPRESYNC	947
-GRPLIST	842
-GTFSTART	317
-GTFSTOP	318
-HEAD	750
-HEURBACKOUT	758
-HEURCOMMIT	757
-HEX	45
-HFORM	409
-HFSFILE	1040
-HIGH	914
-HILIGHT	413
-HOLD	163
-HOME	1103
-HOSTNAME	302
-HTTP	1096
-HTTPNO	1034
-HTTPS	1029
-HTTPYES	1033
-IDENTIFY	1074
-IDNTY	328
-IGNORE	1
-IGNORERR	816
-IIOP	1097
-IMMCLOSE	350
-IMMCLOSING	352
-IMMEDIATE	2
-IMMQUIESCED	706
-IMPORT	992
-INACTIVE	378
-INBOUND	547
-INCOMPLETE	1014
-INDEXRECFULL	796
-INDIRECT	122
-INDOUBT	620
-INFLIGHT	621
-INITCOMPLETE	628
-INITIAL	789
-INITING	1112
-INOUT	532
-INPUT	226
-INSERVICE	73
-INSTALLED	550
-INSTALLFAIL	512
-INTERNAL	1058
-INTRA	222
-INTSTART	310
-INTSTOP	311
-INVALID	359
-IOERROR	797
-IPCONN	1176
-IPECI	936
-IPIC	1089
-IPV4	300
-IPV6	301
-IRC	121
-ISNOTGREATER	865
-ISNOTLESS	866
-ISOLATE	658
-JAVA	147
-JOURNALMODEL	1185
-JOURNALNAME	1147
-JOURNALNUM	1148
-JVM	1080
-JVMPOOL	1149
-JVMPROFILE	1150
-JVMPROGRAM	1151
-JVMSERVER	1193
-KATAKANA	415
-KEEP	786
-KERBEROS	1105
-KEYED	8
-KILL	232
-KSDS	6
-LCKSTRUCFULL	832
-LE370	377
-LEAVE	811
-LESSTHAN	867
-LIBRARY	1177
-LIC	493
-LIGHTPEN	417
-LINK	577
-LOAD	834
-LOC24	159
-LOC31	158
-LOCAL	605
-LOCKING	837
-LOG	54
-LOGICAL	216
-LOGREPLICATE	1198
-LOGTERM	269
-LOSE	544
-LOW	915
-LPA	165
-LSRPOOL	1152
-LU61	125
-LUP	541
-LUSTAT	525
-LUW	246
-MAIN	248
-MAP	155
-MAPSET	155
-MCHCTL	241
-MDT	506
-MESSAGEID	1197
-METADATA	857
-MIXED	403
-MNPS	999
-MOD	813
-MODE24	190
-MODE31	191
-MODEANY	189
-MODEL	370
-MONITOR	1153
-MORE	492
-MQCONN	1175
-MRO	938
-MSRCONTROL	419
-MTOM	460
-MTOMNOXOP	469
-MVS	780
-MVSTCB	1154
-N906	931
-N906D	921
-NEGATIVE	530
-NEW	28
-NEWCOPY	167
-NEWSESSION	485
-NOALARM	500
-NOALTPRTCOPY	447
-NOANALYZER	1127
-NOAPLKYBD	392
-NOAPLTEXT	394
-NOAPPEND	1037
-NOAPPLNAME	339
-NOATI	76
-NOAUDALARM	396
-NOAUTHENTIC	1091
-NOAUTO	1071
-NOAUTOARCH	263
-NOBACKOUT	193
-NOBACKTRANS	398
-NOCEDF	371
-NOCLASSCACHE	1076
-NOCLEAR	641
-NOCLICONVERT	744
-NOCLOSE	742
-NOCMDPROT	674
-NOCOLOR	400
-NOCOMPAT	108
-NOCOMPRESS	1131
-NOCONNECT	916
-NOCONV	556
-NOCONVERSE	601
-NOCONVERT	734
-NOCOPY	402
-NOCREATE	68
-NOCTL	223
-NODAE	685
-NODAEOPT	685
-NODE	1155
-NODEBUG	1083
-NODISCREQ	445
-NODOCDELETE	296
-NODUALCASE	404
-NOEMPTYREQ	32
-NOEVENT	335
-NOEXCEPT	333
-NOEXCTL	49
-NOEXIT	917
-NOEXITTRACE	363
-NOEXTENDEDDS	406
-NOFMH	503
-NOFMHPARM	386
-NOFORCE	1054
-NOFORMATEDF	607
-NOFORMFEED	408
-NOHFORM	410
-NOHILIGHT	414
-NOHOLD	164
-NOIDNTY	329
-NOINCONVERT	745
-NOISOLATE	657
-NOJVM	1081
-NOKATAKANA	416
-NOKEEP	787
-NOLIGHTPEN	418
-NOLOAD	835
-NOLOG	55
-NOLOGREPLICA	1199
-NOLOSTLOCKS	710
-NOMDT	507
-NOMSGJRNL	531
-NOMSRCONTROL	420
-NOMTOM	461
-NOMTOMNOXOP	470
-NONAUTOCONN	171
-NONCICS	661
-NONCRITICAL	1090
-NONE	496
-NONLE370	1084
-NONRESIDENT	1202
-NONTRANS	572
-NOOBFORMAT	422
-NOOBOPERID	388
-NOOUTCONVERT	746
-NOOUTLINE	424
-NOPARTITIONS	426
-NOPERF	331
-NOPHASEOUT	1110
-NOPRESETSEC	243
-NOPRINTADAPT	428
-NOPROGSYMBOL	430
-NOPRTCOPY	449
-NOPS	997
-NOQUERY	432
-NORECOVDATA	700
-NOREENTPROT	681
-NORELEASE	918
-NORELREQ	443
-NORESRCE	337
-NORESYNC	934
-NORETAINED	711
-NOREUSE	294
-NORMAL	1016
-NORMALBKOUT	356
-NORMALRESP	522
-NORMI	775
-NOROLLBACK	919
-NOSECURITY	196
-NOSENDMTOM	464
-NOSHUTDOWN	289
-NOSOSI	435
-NOSPI	694
-NOSRVCONVERT	739
-NOSSL	1031
-NOSTSN	487
-NOSWITCH	285
-NOSYNCPOINT	603
-NOSYSDUMP	185
-NOSYSLOG	784
-NOTADDABLE	42
-NOTALLOWED	327
-NOTALTERABLE	53
-NOTAPPLIC	1
-NOTASKSTART	608
-NOTBROWSABLE	40
-NOTBRWBLE	40
-NOTBUSY	613
-NOTCDEB	495
-NOTCONNECTED	691
-NOTCTRLABLE	57
-NOTDEFINED	659
-NOTDELBLE	44
-NOTDELETABLE	44
-NOTDYNAMIC	1021
-NOTEMPTY	211
-NOTERMINAL	214
-NOTEXTENDED	1129
-NOTEXTKYBD	437
-NOTEXTPRINT	439
-NOTFIRED	1000
-NOTFWDRCVBLE	361
-NOTHOTPOOL	1066
-NOTINBOUND	546
-NOTINIT	376
-NOTINSTALLED	551
-NOTKEYED	9
-NOTLPA	166
-NOTPENDING	127
-NOTPURGEABLE	161
-NOTRANDUMP	187
-NOTREADABLE	36
-NOTREADY	259
-NOTRECOVABLE	30
-NOTREQUIRED	667
-NOTRLS	721
-NOTROUTABLE	1022
-NOTSOS	669
-NOTSUPPORTED	15
-NOTSUSPENDED	1027
-NOTTABLE	100
-NOTTI	78
-NOTUPDATABLE	38
-NOTUPDBLE	38
-NOTWAIT	920
-NOUCTRAN	451
-NOUSER	1011
-NOVALIDATION	441
-NOVFORM	412
-NOWAIT	341
-NOWRITE	275
-NOXOPDIRECT	466
-NOXOPSUPPORT	468
-NOZCPTRACE	365
-NRS	774
-OBFORMAT	421
-OBOPERID	387
-OBTAINING	96
-OFF	200
-OK	274
-OLD	26
-OLDCOPY	162
-OLDSESSION	486
-ON	201
-OPEN	18
-OPENAPI	1053
-OPENERROR	798
-OPENING	20
-OPENINPUT	256
-OPENOUTPUT	257
-OPID	933
-OPTIONAL	326
-OPTIONS	759
-OR	1006
-OTS	1107
-OUTLINE	423
-OUTPUT	227
-OUTSERVICE	74
-OWNER	753
-PAGEABLE	79
-PARTITIONS	425
-PARTITIONSET	156
-PARTNER	1182
-PATH	11
-PDSMEMBER	1035
-PENDBEGIN	558
-PENDDATA	560
-PENDFREE	86
-PENDING	126
-PENDINIT	1113
-PENDPASS	565
-PENDRECEIVE	87
-PENDRELEASE	562
-PENDRESOLVE	1114
-PENDSTART	561
-PENDSTSN	557
-PENDUNSOL	564
-PERF	330
-PERMANENT	484
-PHASEIN	168
-PHASEOUT	1111
-PHYSICAL	215
-PIPELINE	1124
-PL1	152
-PLI	152
-POLICYSCOPE	994
-POOL	922
-POSITIVE	529
-POST	636
-POSTCOMMAND	697
-PRECOMMAND	696
-PRESETSEC	242
-PRIMARY	110
-PRINCIPAL	199
-PRINTADAPT	427
-PRIVATE	174
-PROCESS	1010
-PROCESSTYPE	1190
-PROFILE	157
-PROGAUTO	1072
-PROGRAM	154
-PROGRAMDEF	1178
-PROGRAMINIT	698
-PROGSYMBOL	429
-PROTECTED	504
-PROVIDER	1041
-PRTCOPY	448
-PUBLISH	1085
-PURGE	236
-PURGEABLE	160
-PUT	749
-QR	1057
-QUASIRENT	1050
-QUEUE	814
-QUIESCED	707
-QUIESCING	708
-READABLE	35
-READBACK	209
-READONLY	275
-READY	258
-REBUILD	923
-RECEIVE	88
-RECEIVER	1046
-RECONNECT	924
-RECOVDATA	701
-RECOVERABLE	29
-RECOVERED	277
-RECOVERLOCKS	712
-RECOVERY	1156
-REENTPROT	680
-REFPARMS	858
-REGERROR	677
-REGION	575
-REGISTERED	670
-REJECT	815
-RELATED	675
-RELEASE	563
-RELEASED	70
-RELEASING	549
-RELOAD	1078
-RELOADING	1079
-RELREQ	442
-REMLOSTLOCKS	713
-REMOTE	4
-REMOVE	276
-REMSESSION	740
-REMTABLE	103
-REPEATABLE	724
-REPLYTOEPR	852
-REQCONTEXT	854
-REQUEST	249
-REQUESTER	1042
-REQUESTMODEL	1157
-REQUIRED	666
-REREAD	812
-RESET	290
-RESETLOCKS	714
-RESIDENT	1201
-RESOLVED	347
-RESOLVING	1115
-RESPCONTEXT	855
-RESPECTED	1109
-RESRCE	336
-RESSECEXT	204
-RESSECINT	203
-RESSECNO	202
-RESSECYES	204
-RESYNC	702
-RETAINED	715
-RETRACT	1086
-RETRY	716
-REUSE	293
-REVERTED	264
-RFC1123	646
-RFC3339	647
-RLS	720
-RLSACTIVE	730
-RLSGONE	799
-RLSINACTIVE	731
-RLSSERVER	761
-RMI	771
-ROLLBACK	89
-ROUTABLE	1023
-ROUTE	638
-RPG	153
-RRCOMMITFAIL	830
-RRDS	7
-RRINDOUBT	831
-RRMS	1063
-RRSUR	939
-RTR	527
-RU	494
-RUNNING	229
-RZINSTOR	940
-SAMESENDMTOM	462
-SCAN	1088
-SCHEDULER	941
-SCS	614
-SECONDINIT	626
-SECUSER	1060
-SEND	90
-SENDER	1045
-SENDMTOM	463
-SERVER	1123
-SERVICE	475
-SESSION	372
-SESSIONFAIL	517
-SESSIONLOST	516
-SESSIONS	1187
-SETFAIL	514
-SHARE	27
-SHARED	173
-SHUNTED	762
-SHUTDISABLED	645
-SHUTDOWN	288
-SHUTENABLED	644
-SIGN	925
-SIGNEDOFF	245
-SIGNEDON	244
-SINGLEOFF	324
-SINGLEON	323
-SKIP	810
-SMF	255
-SNPS	998
-SOAP	1044
-SOCKET	942
-SOMEAVAIL	1204
-SOS	668
-SOSABOVE	683
-SOSBELOW	682
-SOSI	434
-SPECIAL	98
-SPECIFIC	652
-SPECTRACE	177
-SPI	693
-SPRSTRACE	175
-SQLCODE	926
-SRVCONVERT	738
-SSL	1030
-STANDARD	97
-STANDBY	629
-STANTRACE	176
-START	635
-STARTED	609
-STARTING	772
-STARTSWITH	868
-STARTTERM	943
-STARTUP	180
-STATIC	179
-STATS	1158
-STOPPED	610
-STOPPING	348
-STORAGE	1159
-STREAMNAME	1160
-STSN	509
-STSNSET	488
-STSNTEST	489
-SUBORDINATE	773
-SUBPOOL	1161
-SUBSPACE	663
-SUMMUNLIKE	566
-SUPPORTED	1106
-SURROGATE	371
-SUSPENDED	231
-SWITCH	188
-SWITCHALL	287
-SWITCHING	225
-SWITCHNEXT	286
-SYNCFREE	91
-SYNCHRONOUS	571
-SYNCPOINT	602
-SYNCRECEIVE	92
-SYNCRECV	92
-SYNCSEND	93
-SYSCONNECT	653
-SYSDUMP	184
-SYSDUMPCODE	1162
-SYSLOG	785
-SYSPLEX	656
-SYSTEM	643
-SYSTEMOFF	320
-SYSTEMON	319
-T3278M2	533
-T3278M3	534
-T3278M4	535
-T3278M5	536
-T3279M2	537
-T3279M3	538
-T3279M4	539
-T3279M5	540
-TABLE	847
-TABLEMGR	1163
-TAKEOVER	111
-TAPE1	250
-TAPE2	251
-TASK	233
-TASKSTART	611
-TASKSUBPOOL	1164
-TCAM	64
-TCAMSNA	65
-TCEXITALL	366
-TCEXITALLOFF	369
-TCEXITNONE	368
-TCEXITSYSTEM	367
-TCLASS	239
-TCPIP	802
-TCPIPSERVICE	1166
-TDQ	767
-TDQUEUE	767
-TEMPLATENAME	1168
-TEMPORARY	483
-TERM	234
-TERMINAL	213
-TERMINATE	1077
-TEXTKYBD	436
-TEXTPRINT	438
-THIRDINIT	627
-THREADSAFE	1051
-TIME	240
-TIMEOUT	511
-TIMER	1004
-TOEPR	851
-TPOOL	932
-TPS55M2	552
-TPS55M3	553
-TPS55M4	554
-TPS55M5	555
-TRACE	760
-TRANCLASS	1169
-TRANDATA	944
-TRANDUMP	186
-TRANDUMPCODE	1170
-TRANIDONLY	452
-TRANS	573
-TRANSACTION	1171
-TRANSTART	580
-TSMODEL	1183
-TSQ	768
-TSQUEUE	768
-TTI	77
-TWAIT	927
-TX	929
-TXID	928
-TYPETERM	1186
-UCTRAN	450
-UKOPEN	1056
-UNATTEMPTED	820
-UNAVAILABLE	672
-UNBLOCKED	17
-UNCOMMITTED	722
-UNCONNECTED	703
-UNDEFINED	14
-UNDETERMINED	355
-UNENABLED	33
-UNENABLING	34
-UNEXPECTED	1015
-UNEXPIRED	1018
-UNINSTALLED	548
-UNKNOWN	774
-UNPROTECTED	505
-UNQUIESCED	709
-UNREGISTERED	671
-UNRESOLVED	1116
-UNSOLDATA	521
-UNUSABLE	1117
-UOW	246
-UPDATABLE	37
-UPDATING	1049
-URIMAP	1173
-URMTERMID	1121
-USER	642
-USERDATAKEY	380
-USEREXECKEY	382
-USERID	930
-USEROFF	322
-USERON	321
-USERTABLE	102
-UTC	1203
-VALID	360
-VALIDATION	440
-VARIABLE	13
-VERIFY	1099
-VFORM	411
-VRRDS	732
-VSAM	3
-VTAM	60
-WAIT	340
-WAITCOMMIT	763
-WAITER	754
-WAITFORGET	622
-WAITING	765
-WAITRMI	766
-WAITRRMS	1063
-WARMSTART	267
-WBE	585
-WEB	945
-WEBSERVICE	1174
-WIN	545
-WMQ	578
-XCF	665
-XM	123
-XMLTRANSFORM	1194
-XMRUNTRAN	946
-XNOTDONE	144
-XOK	143
-XOPDIRECT	465
-XOPSUPPORT	467
-XPLINK	1068
-ZCPTRACE	364
+# cvda	value	since	source
+ABEND	900	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ACQFAIL	515	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ACQUIRED	69	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ACQUIRING	71	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ACTIVE	181	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ACTIVITY	1002	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ADD	291	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ADDABLE	41	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ADDFAIL	519	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ADDRESS	859	≤5.3	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+ADVANCE	265	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AINIT	282	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALARM	501	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALL	856	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALLCONN	169	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALLOCATD	81	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALLOCATED	81	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALLQUERY	431	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALLVALUES	860	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALTERABLE	52	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALTERNATE	197	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ALTPRTCOPY	446	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ANALYZER	1126	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AND	1005	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ANY	158	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APLKYBD	391	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APLTEXT	393	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APPC	124	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APPCPARALLEL	374	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APPCSINGLE	373	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APPEND	1036	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APPLICATION	559	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APPLID	303	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+APPLNAME	338	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ASACTL	224	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ASCII7	616	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ASCII8	617	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ASRUNTRAN	1209	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+ASSEMBLER	150	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ASSERTED	1104	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ASYNCHRONOUS	570	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ASYNCSERVICE	1213	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+ATI	75	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ATOM	1119	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ATOMSERVICE	1179	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ATTACH	576	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ATTENTION	524	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ATTLSAWARE	1205	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUDALARM	395	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOACTIVE	630	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOARCH	262	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOAUTH	1095	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOCONN	170	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOINACTIVE	631	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOINIT	284	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOINSTALL	1140	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOPAGE	80	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOPAGEABLE	80	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOREGISTER	1094	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOSTART	618	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUTOTERMID	1120	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUXILIARY	247	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUXPAUSE	313	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUXSTART	312	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AUXSTOP	314	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AVAILABLE	95	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+AWARE	1256	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+BACKOUT	192	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BACKTRANS	397	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BACKUPNONBWO	800	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BASE	10	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BASE64	50	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BASEAPI	1052	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BASESPACE	664	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BASICAUTH	1092	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BDAM	2	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BEGINSESSION	510	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BELOW	159	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BGAM	63	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BINARY	1038	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BINIT	283	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BIT	1020	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BLK	47	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BLOCKED	16	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BOTH	1100	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BRIDGE	935	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BROWSABLE	39	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BSAM	61	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BTAM	62	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BUNDLE	1180	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+BUSY	612	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+C	149	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CACHE	791	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CANCEL	526	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CANCELLED	624	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CANCELLING	1025	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CAPTURESPEC	1195	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CATEGORY	474	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CBE	582	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CBER	581	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CCE	583	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CD	491	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CEDF	370	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CERTIFICAUTH	1093	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CERTUSER	1061	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CFE	584	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CFTABLE	833	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CGROUP	902	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CHANNEL	1047	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CHAR	1019	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CHECK	1241	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+CHUNKEND	737	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CHUNKNO	735	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CHUNKYES	736	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CICS	660	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CICSAPI	1052	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CICSDATAKEY	379	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CICSECURITY	195	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CICSEXECKEY	381	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CICSTABLE	101	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CKOPEN	1055	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLASSCACHE	1075	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLEAR	640	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLICONVERT	743	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLIENT	1122	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLIENTAUTH	1032	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLIENTCERT	1087	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLOSE	741	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLOSED	19	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLOSEFAILED	349	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLOSELEAVE	261	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLOSEREQ	22	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLOSEREQUEST	22	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLOSING	21	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CLOUD	848	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CMDPROT	673	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CMDSECEXT	207	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CMDSECNO	205	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CMDSECYES	207	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COBOL	151	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COBOLII	375	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COLD	788	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COLDACQ	72	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COLDQUERY	433	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COLDSTART	266	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COLLECTION	473	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COLOR	399	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COMMAREA	1048	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COMMIT	208	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COMMITFAIL	792	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COMPAT	107	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COMPLETE	1026	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COMPOSITE	1003	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COMPRESS	1130	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONFFREE	82	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONFIG	1232	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+CONFRECEIVE	83	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONFRECV	83	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONFSEND	84	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONNECT	903	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONNECTED	690	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONNECTING	904	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONNECTION	755	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONSISTENT	723	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONSOLE	66	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONTAINER	869	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONTENTION	836	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONTEXT	574	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONTROLSHUT	623	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONVERSE	600	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CONVIDLE	518	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COORDINATOR	770	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COPID	908	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+COPY	401	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CORBA	1101	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CORBASERVER	1141	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CPLUSPLUS	148	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CREATE	67	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CREATESPI	844	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CRITICAL	11	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CSDAPI	840	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CSDBATCH	841	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CSIGN	905	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CTERM	906	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CTLGALL	632	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CTLGMODIFY	633	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CTLGNONE	634	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CTRLABLE	56	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CTX	907	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CURRENT	260	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CURRENTPGM	870	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CUSERID	909	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+CUSTOM	579	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DAE	684	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DAEOPT	684	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DATA	508	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DATASET	756	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DATASETFULL	793	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DATASTREAM	543	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DB2CONN	1142	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DB2ENTRY	1143	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DB2TRAN	1184	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DBTRAN	1184	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEADLOCK	794	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEBUG	1082	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEC	46	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEFAULT	198	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEFAULTUSER	1070	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEFINITION	990	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEFRESP1	497	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEFRESP1OR2	528	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEFRESP2	498	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEFRESP3	499	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DELAY	637	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DELETABLE	43	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DELETE	292	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DELETEFAIL	520	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DELEXITERROR	795	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEREGERROR	679	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEREGISTERED	678	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DEST	235	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DIAGNOSTICS	1231	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+DISABLED	24	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISABLEDHOST	1125	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISABLING	25	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISCARD	1254	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+DISCARDFAIL	513	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISCARDING	1118	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISCONNECT	1247	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+DISCONNING	910	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISCOVER	1252	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+DISCREQ	444	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISK1	252	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISK2	253	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISK2PAUSE	254	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISPATCHABLE	228	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DISPATCHER	1144	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DJAR	1189	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DOCDELETE	295	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DOCTEMPLATE	1145	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DOESNOTEQUAL	861	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DOESNOTEXIST	872	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DOESNOTSTART	862	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DORMANT	1024	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DPLSUBSET	383	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DRAINING	619	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DREPAPI	843	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DREPBATCH	845	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DS3270	615	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DSIE	1206	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+DUALCASE	403	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DUMMY	781	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DUMP	1223	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+DUMPCODE	1218	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+DUPERROR	106	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DUPNOREPLACE	105	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DUPREPLACE	104	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+DYNAMIC	178	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EB	490	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EBCDIC	1039	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ECI	1098	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EJB	1102	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EMERGENCY	268	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EMPTY	210	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EMPTYREQ	31	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ENABLED	23	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ENABLING	51	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ENDAFFINITY	790	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ENQMODEL	1188	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ENQUEUE	1146	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ENTRYPOINT	993	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EPADAPTER	1196	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EPADAPTERSET	1200	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EQUAL	911	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EQUALS	863	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ESDS	5	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EVENT	334	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EVENTBINDING	1191	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EVENTPROCESS	1192	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EVENTUAL	3	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXCEPT	332	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXCEPTRESP	523	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXCI	650	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXCTL	48	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXECENQ	751	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXECENQADDR	752	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXECINSTALL	846	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXISTS	871	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXIT	912	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXITTRACE	362	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXPECT	747	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXPIRED	1017	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXPORT	991	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXTENDED	1128	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXTENDEDDS	405	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXTRA	221	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+EXTSECURITY	194	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FAILED	782	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FAILEDBKOUT	357	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FAILINGBKOUT	358	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FAULTTOEPR	853	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FCLOSE	273	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FEED	472	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FILE	238	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FINALQ	183	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FINALQUIESCE	183	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FINPUT	270	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FIRED	1001	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FIRSTINIT	625	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FIRSTQ	182	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FIRSTQUIESCE	182	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FIXED	12	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FLUSH	783	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FMH	502	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FMHPARM	385	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FOPEN	272	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORCE	342	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORCECANCEL	655	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORCECLOSE	351	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORCECLOSING	353	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORCED	1013	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORCEPURGE	237	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORCLOSING	353	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORMATEDF	606	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORMATTED	542	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FORMFEED	407	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FOUTPUT	271	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FREE	85	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FREEING	94	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FROMEPR	850	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FULL	212	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FULLAPI	384	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FULLAUTO	1073	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+FWDRECOVABLE	354	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GATHER	1224	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+GENERIC	651	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GET	748	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GMT	604	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GOHIGHERTHAN	873	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GOINGOUT	172	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GOLOWERTHAN	874	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GREATERTHAN	864	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GROUP	913	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GROUPRESYNC	947	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GRPLIST	842	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GTFSTART	317	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+GTFSTOP	318	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HEAD	750	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HEAP	1229	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+HEURBACKOUT	758	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HEURCOMMIT	757	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HEX	45	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HFORM	409	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HFSFILE	1040	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HIGH	914	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HILIGHT	413	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HOLD	163	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HOME	1103	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HOSTNAME	302	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HTTP	1096	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HTTPNO	1034	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HTTPS	1029	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+HTTPYES	1033	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IDENTIFY	1074	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IDNTY	328	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IGNORE	1	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IGNORERR	816	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IIOP	1097	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IMMCLOSE	350	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IMMCLOSING	352	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IMMEDIATE	2	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IMMQUIESCED	706	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IMPORT	992	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INACTIVE	378	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INBOUND	547	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INCOMPLETE	1014	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INDEXRECFULL	796	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INDIRECT	122	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INDOUBT	620	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INFLIGHT	621	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INITCOMPLETE	628	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INITIAL	789	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INITING	1112	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INITPROP	1261	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+INOUT	532	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INPUT	226	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INSERVICE	73	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INSTALLED	550	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INSTALLFAIL	512	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INTERNAL	1058	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INTRA	222	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INTSTART	310	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INTSTOP	311	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+INVALID	359	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IOERROR	797	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IPCONN	1176	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IPECI	936	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IPIC	1089	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IPV4	300	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IPV6	301	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+IRC	121	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ISNOTGREATER	865	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ISNOTLESS	866	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ISOLATE	658	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JAVA	147	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JAVACORE	1228	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+JMS	1239	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+JOURNALMODEL	1185	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JOURNALNAME	1147	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JOURNALNUM	1148	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JVM	1080	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JVMPOOL	1149	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JVMPROFILE	1150	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JVMPROGRAM	1151	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JVMSERVER	1193	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+JWT	1217	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+KATAKANA	415	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+KEEP	786	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+KERBEROS	1105	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+KEYED	8	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+KILL	232	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+KSDS	6	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LCKSTRUCFULL	832	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LE370	377	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LEAVE	811	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LESSTHAN	867	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LIBERTY	1222	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+LIBRARY	1177	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LIC	493	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LIGHTPEN	417	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LINK	577	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOAD	834	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOC24	159	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOC31	158	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOCAL	605	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOCKING	837	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOG	54	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOGICAL	216	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOGREPLICATE	1198	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOGTERM	269	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOSE	544	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LOW	915	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LPA	165	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LSRPOOL	1152	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LU61	125	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LUP	541	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LUSTAT	525	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+LUW	246	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MAIN	248	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MAP	155	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MAPSET	155	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MCHCTL	241	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MDT	506	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MESSAGE	1245	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+MESSAGEID	1197	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+METADATA	857	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MIXED	403	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MNPS	999	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MOD	813	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MODE24	190	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MODE31	191	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MODEANY	189	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MODEL	370	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MODIFY	1242	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+MONITOR	1153	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MORE	492	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MQCONN	1175	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MQMONITOR	1207	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+MRO	938	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MSRCONTROL	419	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MTOM	460	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MTOMNOXOP	469	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MVS	780	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+MVSTCB	1154	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+N906	931	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+N906D	921	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NEGATIVE	530	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NEW	28	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NEWCOPY	167	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NEWSESSION	485	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOALARM	500	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOALTPRTCOPY	447	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOANALYZER	1127	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAPLKYBD	392	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAPLTEXT	394	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAPPEND	1037	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAPPLNAME	339	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOATI	76	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAUDALARM	396	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAUTHENTIC	1091	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAUTO	1071	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAUTOARCH	263	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOAUTOSTART	1208	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+NOBACKOUT	193	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOBACKTRANS	398	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCEDF	371	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCHECK	1240	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+NOCLASSCACHE	1076	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCLEAR	641	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCLICONVERT	744	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCLOSE	742	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCMDPROT	674	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCOLOR	400	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCOMPAT	108	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCOMPRESS	1131	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCONNECT	916	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCONV	556	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCONVERSE	601	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCONVERT	734	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCOPY	402	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCREATE	68	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOCTL	223	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NODAE	685	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NODAEOPT	685	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NODE	1155	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NODEBUG	1083	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NODEJSAPP	1215	5.5	https://www.ibm.com/docs/en/SSGMCP_5.5.0/reference/commands-api/dfha813.html
+NODISCOVER	1253	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+NODISCREQ	445	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NODOCDELETE	296	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NODUALCASE	404	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOEMIT	1262	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+NOEMPTYREQ	32	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOEVENT	335	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOEXCEPT	333	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOEXCTL	49	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOEXIT	917	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOEXITTRACE	363	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOEXTENDEDDS	406	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOFMH	503	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOFMHPARM	386	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOFORCE	1054	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOFORMATEDF	607	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOFORMFEED	408	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOHFORM	410	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOHILIGHT	414	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOHOLD	164	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOIDNTY	329	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOINCONVERT	745	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOISOLATE	657	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOJVM	1081	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOKATAKANA	416	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOKEEP	787	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOLIGHTPEN	418	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOLOAD	835	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOLOG	55	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOLOGREPLICA	1199	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOLOSTLOCKS	710	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOMDT	507	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOMSGJRNL	531	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOMSRCONTROL	420	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOMTOM	461	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOMTOMNOXOP	470	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NONAUTOCONN	171	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NONCICS	661	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NONCRITICAL	1090	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NONE	496	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NONLE370	1084	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NONRESIDENT	1202	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NONTRANS	572	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOOBFORMAT	422	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOOBOPERID	388	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOOTELTRACE	1258	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+NOOUTCONVERT	746	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOOUTLINE	424	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOPARTITIONS	426	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOPERF	331	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOPHASEOUT	1110	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOPRESETSEC	243	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOPRINTADAPT	428	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOPROGSYMBOL	430	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOPROP	1259	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+NOPRTCOPY	449	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOPS	997	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOQUERY	432	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORECOVDATA	700	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOREENTPROT	681	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORELEASE	918	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORELREQ	443	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOREPLICATOR	1212	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+NORESRCE	337	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORESYNC	934	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORETAINED	711	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOREUSE	294	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORMAL	1016	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORMALBKOUT	356	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORMALRESP	522	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NORMI	775	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOROLLBACK	919	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSECURITY	196	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSENDMTOM	464	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSHUTDOWN	289	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSOSI	435	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSPI	694	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSRVCONVERT	739	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSSL	1031	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSTSN	487	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSWITCH	285	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSYNCPOINT	603	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSYSDUMP	185	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOSYSLOG	784	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTADDABLE	42	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTALLOWED	327	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTALTERABLE	53	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTAPPLIC	1	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTASKSTART	608	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTAWARE	1257	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+NOTBROWSABLE	40	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTBRWBLE	40	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTBUSY	613	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTCDEB	495	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTCONNECTED	691	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTCTRLABLE	57	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTDEFINED	659	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTDELBLE	44	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTDELETABLE	44	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTDYNAMIC	1021	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTEMPTY	211	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTERMINAL	214	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTEXTENDED	1129	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTEXTKYBD	437	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTEXTPRINT	439	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTFIRED	1000	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTFWDRCVBLE	361	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTHOTPOOL	1066	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTINBOUND	546	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTINIT	376	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTINSTALLED	551	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTKEYED	9	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTLPA	166	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTPENDING	127	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTPURGEABLE	161	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTRANDUMP	187	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTREADABLE	36	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTREADY	259	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTRECOVABLE	30	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTREQUIRED	667	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTRLS	721	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTROUTABLE	1022	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTSHARED	1238	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+NOTSOS	669	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTSUPPORTED	15	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTSUSPENDED	1027	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTTABLE	100	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTTI	78	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTUPDATABLE	38	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTUPDBLE	38	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOTUSED	1248	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+NOTWAIT	920	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOUCTRAN	451	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOUSER	1011	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOVALIDATION	441	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOVFORM	412	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOWAIT	341	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOWRITE	275	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOXOPDIRECT	466	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOXOPSUPPORT	468	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NOZCPTRACE	365	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+NRS	774	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OBFORMAT	421	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OBOPERID	387	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OBTAINING	96	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OFF	200	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OK	274	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OLD	26	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OLDCOPY	162	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OLDSESSION	486	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ON	201	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPEN	18	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPENAPI	1053	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPENERROR	798	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPENING	20	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPENINPUT	256	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPENOUTPUT	257	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPID	933	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPTIONAL	326	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OPTIONS	759	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OR	1006	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OSGI	1221	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+OTELTRACE	1263	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+OTS	1107	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OUTLINE	423	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OUTPUT	227	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OUTSERVICE	74	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+OVERRIDE	1236	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+OWNER	753	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PAGEABLE	79	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PARTITIONS	425	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PARTITIONSET	156	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PARTNER	1182	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PATCH	1220	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+PATH	11	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PAUSED	1233	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+PDSMEMBER	1035	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDBEGIN	558	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDDATA	560	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDFREE	86	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDING	126	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDINIT	1113	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDPASS	565	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDRECEIVE	87	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDRELEASE	562	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDRESOLVE	1114	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDSTART	561	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDSTSN	557	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PENDUNSOL	564	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PERF	330	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PERMANENT	484	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PHASEIN	168	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PHASEOUT	1111	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PHYSICAL	215	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PIPELINE	1124	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PL1	152	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PLI	152	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+POLICY	1243	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+POLICYRULE	1244	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+POLICYSCOPE	994	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+POOL	922	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+POSITIVE	529	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+POST	636	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+POSTCOMMAND	697	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PRECOMMAND	696	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PRESETSEC	242	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PRIMARY	110	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PRINCIPAL	199	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PRINTADAPT	427	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PRIVATE	174	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROCESS	1010	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROCESSTYPE	1190	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROFILE	157	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROGAUTO	1072	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROGRAM	154	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROGRAMDEF	1178	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROGRAMINIT	698	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROGSYMBOL	429	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROPONLY	1260	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+PROTECTED	504	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PROVIDER	1041	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PRTCOPY	448	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PUBLISH	1085	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PURGE	236	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PURGEABLE	160	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+PUT	749	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+QR	1057	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+QUASIRENT	1050	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+QUEUE	814	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+QUIESCED	707	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+QUIESCING	708	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+READABLE	35	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+READBACK	209	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+READONLY	275	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+READY	258	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REBUILD	923	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RECEIVE	88	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RECEIVER	1046	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RECONNECT	924	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RECOVDATA	701	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RECOVERABLE	29	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RECOVERED	277	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RECOVERLOCKS	712	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RECOVERY	1156	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REENTPROT	680	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REFPARMS	858	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REFRESH	1227	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+REFRESHPKGS	1225	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+REGERROR	677	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REGION	575	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REGISTERED	670	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REJECT	815	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RELATED	675	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RELEASE	563	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RELEASED	70	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RELEASING	549	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RELOAD	1078	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RELOADING	1079	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RELREQ	442	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REMLOSTLOCKS	713	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REMOTE	4	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REMOVE	276	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REMSESSION	740	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REMTABLE	103	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REPEATABLE	724	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REPLICATOR	1211	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+REPLYTOEPR	852	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REQCONTEXT	854	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REQUEST	249	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REQUESTER	1042	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REQUESTMODEL	1157	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REQUIRED	666	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REREAD	812	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESET	290	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESETLOCKS	714	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESIDENT	1201	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESOLVED	347	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESOLVING	1115	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESPCONTEXT	855	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESPECTED	1109	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESRCE	336	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESSECEXT	204	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESSECINT	203	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESSECNO	202	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESSECYES	204	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RESUMED	1234	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+RESYNC	702	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RETAINED	715	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RETRACT	1086	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RETRY	716	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REUSE	293	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+REVERTED	264	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RFC1123	646	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RFC3339	647	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RLS	720	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RLSACTIVE	730	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RLSGONE	799	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RLSINACTIVE	731	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RLSSERVER	761	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RMI	771	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ROLLBACK	89	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ROUTABLE	1023	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ROUTE	638	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RPG	153	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RRCOMMITFAIL	830	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RRDS	7	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RREPL	1210	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+RRINDOUBT	831	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RRMS	1063	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RRSUR	939	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RTR	527	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RU	494	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RUNNING	229	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+RZINSTOR	940	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SAMESENDMTOM	462	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SCAN	1088	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SCHEDULER	941	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SCS	614	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SECERROR	1214	5.4	https://www.ibm.com/docs/en/SSGMCP_5.4.0/reference/commands-api/dfha813.html
+SECONDINIT	626	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SECURITY	1216	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+SECUSER	1060	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SEND	90	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SENDER	1045	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SENDMTOM	463	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SERVER	1123	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SERVERDUMP	1226	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+SERVICE	475	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SESSION	372	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SESSIONFAIL	517	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SESSIONLOST	516	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SESSIONS	1187	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SETFAIL	514	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SHARE	27	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SHARED	173	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SHUNTED	762	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SHUTDISABLED	645	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SHUTDOWN	288	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SHUTENABLED	644	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SIGN	925	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SIGNEDOFF	245	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SIGNEDON	244	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SINGLEOFF	324	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SINGLEON	323	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SKIP	810	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SMF	255	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SNAPTRACE	1230	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+SNPS	998	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SOAP	1044	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SOCKET	942	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SOMEAVAIL	1204	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SOS	668	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SOSABOVE	683	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SOSBELOW	682	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SOSI	434	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SPECIAL	98	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SPECIFIC	652	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SPECTRACE	177	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SPI	693	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SPRSTRACE	175	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SQLCODE	926	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SRRACTIVE	1250	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+SRRINACTIVE	1251	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+SRVCONVERT	738	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SSL	1030	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STACKTRACE	1237	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+STANDARD	97	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STANDBY	629	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STANTRACE	176	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+START	635	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STARTED	609	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STARTING	772	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STARTSWITH	868	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STARTTERM	943	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STARTUP	180	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STATIC	179	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STATS	1158	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STOPPED	610	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STOPPING	348	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STORAGE	1159	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STREAMNAME	1160	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STSN	509	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STSNSET	488	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+STSNTEST	489	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SUBORDINATE	773	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SUBPOOL	1161	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SUBSPACE	663	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SUMMUNLIKE	566	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SUPPORTED	1106	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SURROGATE	371	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SUSPENDED	231	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SWITCH	188	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SWITCHALL	287	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SWITCHING	225	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SWITCHNEXT	286	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYNCFREE	91	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYNCHRONOUS	571	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYNCPOINT	602	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYNCRECEIVE	92	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYNCRECV	92	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYNCSEND	93	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYSCONNECT	653	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYSDUMP	184	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYSDUMPCODE	1162	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYSLOG	785	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYSPLEX	656	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYSTEM	643	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYSTEMOFF	320	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+SYSTEMON	319	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+T3278M2	533	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+T3278M3	534	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+T3278M4	535	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+T3278M5	536	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+T3279M2	537	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+T3279M3	538	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+T3279M4	539	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+T3279M5	540	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TABLE	847	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TABLEMGR	1163	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TABLEONLY	1219	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+TAKEOVER	111	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TAPE1	250	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TAPE2	251	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TASK	233	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TASKEND	1264	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+TASKSTART	611	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TASKSUBPOOL	1164	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCAM	64	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCAMSNA	65	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCEXITALL	366	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCEXITALLOFF	369	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCEXITNONE	368	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCEXITSYSTEM	367	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCLASS	239	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCPIP	802	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TCPIPSERVICE	1166	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TDQ	767	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TDQUEUE	767	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TEMPLATENAME	1168	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TEMPORARY	483	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TERM	234	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TERMINAL	213	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TERMINATE	1077	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TEXTKYBD	436	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TEXTPRINT	438	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+THIRDINIT	627	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+THREADSAFE	1051	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TIME	240	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TIMEOUT	511	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TIMER	1004	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TOEPR	851	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TPOOL	932	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TPS55M2	552	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TPS55M3	553	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TPS55M4	554	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TPS55M5	555	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRACE	760	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRAN	1235	5.6	https://www.ibm.com/docs/en/SSGMCP_5.6.0/reference-applications/commands-api/dfha813.html
+TRANCLASS	1169	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRANDATA	944	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRANDUMP	186	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRANDUMPCODE	1170	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRANIDONLY	452	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRANS	573	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRANSACTION	1171	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TRANSTART	580	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TSMODEL	1183	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TSQ	768	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TSQUEUE	768	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TTI	77	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TWAIT	927	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TX	929	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TXID	928	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+TYPETERM	1186	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UCTRAN	450	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UKOPEN	1056	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNATTEMPTED	820	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNAVAILABLE	672	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNBLOCKED	17	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNCOMMITTED	722	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNCONNECTED	703	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNDEFINED	14	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNDETERMINED	355	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNENABLED	33	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNENABLING	34	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNEXPECTED	1015	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNEXPIRED	1018	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNINSTALLED	548	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNKNOWN	774	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNPROTECTED	505	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNQUIESCED	709	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNREGISTERED	671	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNRESOLVED	1116	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNSOLDATA	521	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UNUSABLE	1117	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UOW	246	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UPDATABLE	37	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UPDATING	1049	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+URIMAP	1173	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+URMTERMID	1121	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+USED	1249	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+USER	642	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+USERDATAKEY	380	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+USEREXECKEY	382	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+USERID	930	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+USEROFF	322	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+USERON	321	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+USERTABLE	102	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+UTC	1203	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+VALID	360	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+VALIDATEWARN	1266	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+VALIDATEYES	1265	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+VALIDATION	440	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+VARIABLE	13	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+VERIFY	1099	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+VFORM	411	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+VRRDS	732	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+VSAM	3	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+VTAM	60	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WAIT	340	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WAITCOMMIT	763	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WAITER	754	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WAITFORGET	622	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WAITING	765	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WAITRMI	766	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WAITRRMS	1063	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WARMSTART	267	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WBE	585	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WEB	945	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WEBSERVICE	1174	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WIN	545	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WLMHEALTH	1246	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+WMQ	578	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+WRITE	1255	6.x	https://www.ibm.com/docs/en/SSJL4D_6.x/reference-applications/commands-api/dfha80c.html
+XCF	665	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+XM	123	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+XMLTRANSFORM	1194	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+XMRUNTRAN	946	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+XNOTDONE	144	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+XOK	143	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+XOPDIRECT	465	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+XOPSUPPORT	467	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+XPLINK	1068	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785
+ZCPTRACE	364	≤5.3	https://publibfp.dhe.ibm.com/epubs/pdf/dfha8h00.pdf pp. 761-785

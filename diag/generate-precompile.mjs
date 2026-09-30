@@ -102,9 +102,14 @@ tsv('dfhresp.tsv', [
   'condition\tvalue\tsource\tpage',
 ], resp);
 
+const cvda = prov.dfhvalue;
+const cited = (name) => {
+  const later = cvda.valueFrom[name] ?? (cvda.since[name] && `cics-cvda-${cvda.since[name]}`);
+  return later ? source(later).url : `${source(cvda.source).url} pp. ${cvda.pages.join('-')}`;
+};
 tsv('dfhvalue.tsv', [
-  `The number DFHVALUE(cvda) stands for: ${source(prov.dfhvalue.source).title} (${source(prov.dfhvalue.source).url}), pages ${prov.dfhvalue.pages.join('-')}.`,
-  `${prov.dfhvalue.notes} Omitted: ${Object.entries(prov.dfhvalue.omitted).map(([n, why]) => `${n}, ${why}`).join('; ')}.`,
+  `The number DFHVALUE(cvda) stands for: ${source(cvda.source).title}, pages ${cvda.pages.join('-')}, then the CVDA tables of CICS TS ${cvda.later.map((id) => id.replace('cics-cvda-', '')).join(', ')} for the names each release adds; since is the first release that lists a name.`,
+  cvda.notes,
   generated,
-  'cvda\tvalue',
-], Object.entries(prov.dfhvalue.values));
+  'cvda\tvalue\tsince\tsource',
+], Object.entries(cvda.values).map(([name, value]) => [name, value, cvda.since[name] ?? '≤5.3', cited(name)]));

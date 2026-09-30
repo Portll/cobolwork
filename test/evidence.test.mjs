@@ -25,7 +25,7 @@ const SELF = readFileSync(fileURLToPath(import.meta.url), 'utf8');
 const sha256 = (b) => createHash('sha256').update(b).digest('hex');
 const tmp = (t) => {
   const d = mkdtempSync(join(tmpdir(), 'cw-evidence-'));
-  t.after(() => rmSync(d, { recursive: true, force: true }));
+  t.after(() => rmSync(d, { recursive: true, force: true, maxRetries: 10, retryDelay: 50 }));
   return d;
 };
 const have = (cmd) => !spawnSync(cmd, ['-V'], { timeout: 5000 }).error;
@@ -154,7 +154,7 @@ test('V1.6 An evidence file reached through a symbolic link is refused', (t) => 
   writeFileSync(target, 'untouched\n');
   const ev = join(d, 'ev');
   prepareDir(ev);
-  symlinkSync(target, join(ev, LEDGER));
+  try { symlinkSync(target, join(ev, LEDGER)); } catch (e) { t.skip(`this platform will not create a symbolic link here (${e.code})`); return; }
   const j = openJournal(ev, { command: 'scan', argv: [], roots: [], toolVersion: '0.0.0' });
   const r = j.close({ exit: 0 });
   assert.equal(r.ledger, 'unrecorded');
@@ -281,10 +281,15 @@ test('V3.5 A run journal the ledger does not name is unrecorded', (t) => {
 
 test('V3.6 A journal with no close is open, not broken', (t) => {
   const d = tmp(t);
-  const j = openJournal(d, { command: 'scan', argv: [], roots: [], toolVersion: '0.0.0' });
-  j.append('finding', FINDING);
+  run(d);
+  const id = '20260930T000000Z-bbbbbbbbbbbbbbbb';
+  const chain = newChain();
+  const open = makeRecord({ chain, prev: null, kind: 'open', fields: { tool: 'cobolwork', toolVersion: '0', command: 'scan', argv: [], roots: [] }, at: '2026-09-30T00:00:00.000Z' });
+  const finding = makeRecord({ chain, prev: open.record, kind: 'finding', fields: FINDING, at: '2026-09-30T00:00:01.000Z' });
+  const fd = createExclusive(join(d, 'runs', `${id}.jsonl`));
+  try { writeAll(fd, open.line + finding.line); } finally { syncClose(fd); }
   const v = verifyEvidence(d);
-  assert.deepEqual(v.open, [j.id]);
+  assert.deepEqual(v.open, [id]);
   assert.equal(v.verified, true);
 });
 
@@ -406,7 +411,7 @@ test('V4.5 A signer outside allowed signers does not seal', { ...SSH, ...GIT }, 
   assert.equal(v.sealed, false);
 });
 
-test('V4.6 A signer program is run with the PAE on standard input', SSH, (t) => {
+test('V4.6 A signer program is run with the PAE on standard input', process.platform === 'win32' ? { skip: 'the signer here is a shell script' } : SSH, (t) => {
   const d = tmp(t);
   const key = sshKey(d);
   const signer = join(d, 'signer.sh');

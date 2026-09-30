@@ -140,6 +140,8 @@ function standInIronwork() {
     'if grep -q ENTRYMARK "$2"; then echo "$2:9:12: a statement, found ENTRY" >&2; exit 12; fi',
     'if grep -q DIBMARK "$2"; then echo "$2:9:12: DIBSTAT is not defined" >&2; exit 12; fi',
     'if grep -q WORDMARK "$2"; then echo "$2:9:12: a statement, found DIVISION" >&2; exit 12; fi',
+    'if grep -q WARNMARK "$2"; then echo "$2:3:8: warning: THREAD is not on the CBL card" >&2; exit 4; fi',
+    'if grep -q EMARK "$2"; then echo "$2:8:12: \'NOPE\' is not a data name" >&2; echo "$2: warning: THREAD is not on the CBL card" >&2; echo "informational: 1 program" >&2; exit 8; fi',
     'exit 0',
   ].join('\n') + '\n');
   chmodSync(path, 0o755);
@@ -676,6 +678,15 @@ test('B6.9 An ironwork inside the repository is refused, and so is naming a comp
   const cobc = standInCobc();
   assert.throws(() => absolute(root, { ironwork: iw.path, compiler: [cobc.path, 'Q0.cbl'] }), /one compiler per build/);
   assert.equal(cli(['build', root, '--ironwork', iw.path, '--', cobc.path, 'Q0.cbl']).status, 2);
+});
+
+test('B6.11 A program with warnings only compiles; errors are read past warning and informational lines', { skip: skip || posix }, () => {
+  const iw = standInIronwork();
+  const quiet = (id, name) => program(id, [`01 WS-${name} PIC X.`], ['GOBACK.']);
+  const r = build(repo({ 'W.cbl': quiet('W', 'WARNMARK'), 'E.cbl': quiet('E', 'EMARK') }), { ironwork: iw.path });
+  assert.deepEqual([r.doc.compiled.accepted, r.doc.compiled.warned], [1, 1]);
+  assert.deepEqual(r.doc.compiled.failed, [{ path: 'E.cbl', line: 8, col: 12, message: "'…' is not a data name", errors: 1 }]);
+  assert.equal(r.exit, 4);
 });
 
 test('B6.10 A copybook no library holds leaves the program unresolved, not failed', { skip: skip || posix }, () => {

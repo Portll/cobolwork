@@ -382,8 +382,9 @@ defaults, and the check reads both.
 ## 8a. Checking with ironwork
 
 ironwork compiles COBOL as IBM Enterprise COBOL does, and `ironwork check <program> -I <dir>…`
-stops after the front end: exit 0 when the program compiles, 12 when it does not, with
-`file:line:col: message` on standard error. cobolwork runs it as a separate program, as it runs
+stops after the front end and exits with IBM's highest return code: 0 clean, 4 warnings only
+(the program compiles), 8, 12 or 16 when it does not. Errors come first on standard error as
+`file:line:col: message`; `warning:` and `informational:` lines after them are not read. cobolwork runs it as a separate program, as it runs
 `cobc`, and links nothing of it.
 
 - It runs only on a pass, once per program in the tree, with the tree's copy directories and every
@@ -931,6 +932,10 @@ are about what the default, `warn`, does with them.
 #### B6.9 An ironwork inside the repository is refused, and so is naming a compiler too
     Given an ironwork inside the repository, or --ironwork with --
     Then  the gate exits 2
+
+#### B6.11 A program with warnings only compiles; errors are read past warning and informational lines
+    Given a program ironwork checks at 4 with a warning, and one at 8 with an error, a warning and an informational line
+    Then  the first counts as accepted and warned, and the second fails naming only its error
 
 #### B6.10 A copybook no library holds leaves the program unresolved, not failed
     Given a program ironwork reports copying a member the copy libraries do not hold

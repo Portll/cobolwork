@@ -404,8 +404,16 @@ only one of the five that does.
   `IEBGENER/SYSUT2`, `SORT/OUTFIL`, `IDCAMS/REPRO`, `IEBCOPY/COPY`, `ADRDSSU/DUMP` and
   `ADRDSSU/RESTORE`, plus ICEGENER, SORTINnn merges and IEBCOPY's COPYGRP, and since then
   `IDCAMS/EXPORT`, `IDCAMS/IMPORT`, `IEBCOPY/COPYMOD` and `ADRDSSU/COPY`, with IEBPTPCH, IEBUPDTE
-  and ICETOOL's COPY, SORT and MERGE, which the worklist does not list. The other 24 are not
-  covered there.
+  and ICETOOL's COPY, SORT and MERGE, which the worklist does not list, and `IDCAMS/PRINT` (to
+  OUTFILE, else SYSPRINT) and `IDCAMS/ALTER` NEWNAME. Of the other 22, none moves data from one
+  data set to another the table could follow: `IDCAMS/DELETE`, `DEFINE`, `LISTCAT`, `VERIFY` and
+  `SETCACHE` and `IEFBR14/DISP` create, delete or describe; `SORT/INCLUDE`, `OMIT`, `INREC` and
+  `OUTREC` and `IEBGENER/SYSIN` choose or reshape records between the DDs the copy already names;
+  `IKJEFT01/ADDUSER`, `ALTUSER`, `PERMIT`, `SETROPTS` and `RDEFINE` are RACF commands that
+  `jcl-instream-security-command` reports; `FTP/PUT` is read by the FTP rules in `lib/sets/jcl.mjs`.
+  Open: `IKJEFT01/ALLOC`, which binds a DD at run time, `EXEC` and `CALL`, which run a program or
+  CLIST whose own DDs then decide the copies, `FTP/GET`, which writes a local data set from outside,
+  and `FTP/SITE`.
 
 ## Build and release
 

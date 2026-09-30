@@ -221,6 +221,43 @@ test('IDCAMS EXPORT and IMPORT move a cluster to and from its portable data set'
   assert.deepEqual(r.copies.map((c) => c.line), [7, 8, 10, 11, 12]);
 });
 
+test('IDCAMS PRINT lists a data set to OUTFILE, or to SYSPRINT when it names none', () => {
+  const r = parse([
+    '//J JOB (X)', '//LIST EXEC PGM=IDCAMS',
+    '//SYSPRINT DD SYSOUT=*',
+    '//MASTER DD DSN=PAY.MASTER,DISP=SHR',
+    '//REPORT DD DSN=PAY.LISTING,DISP=(NEW,CATLG)',
+    '//SYSIN DD *',
+    '  PRINT INFILE(MASTER) CHARACTER COUNT(10)',
+    '  PRINT IDS(PAY.KSDS) -',
+    '        OFILE(REPORT)',
+    '  PRINT INDATASET(PAY.KSDS) OUTFILE(REPORT)',
+    '/*',
+  ]);
+  assert.deepEqual(pairs(r), [
+    'LIST: MASTER=PAY.MASTER > SYSPRINT=null',
+    'LIST: -=PAY.KSDS > REPORT=PAY.LISTING',
+    'LIST: -=PAY.KSDS > REPORT=PAY.LISTING',
+  ]);
+});
+
+test('IDCAMS ALTER NEWNAME moves a data set to its new name; a generic name or a member does not', () => {
+  const r = parse([
+    '//J JOB (X)', '//REN EXEC PGM=IDCAMS',
+    '//SYSPRINT DD SYSOUT=*',
+    '//SYSIN DD *',
+    '  ALTER PAY.MASTER NEWNAME(TEST.MASTER)',
+    '  ALTER \'PAY.EXTRACT\' -',
+    '        NEWNM(TEST.EXTRACT)',
+    '  ALTER PAY.* NEWNAME(TEST.*)',
+    '  ALTER PAY.LIB(OLDMEM) NEWNAME(PAY.LIB(NEWMEM))',
+    '  ALTER PAY.MASTER FREESPACE(10 10)',
+    '/*',
+  ]);
+  assert.deepEqual(pairs(r), ['REN: -=PAY.MASTER > -=TEST.MASTER', 'REN: -=PAY.EXTRACT > -=TEST.EXTRACT']);
+  assert.deepEqual(r.copies.map((c) => c.line), [5, 6]);
+});
+
 test('IEBCOPY COPYMOD copies each INDD to the OUTDD like COPY', () => {
   const r = parse([
     '//J JOB (X)', '//LIB EXEC PGM=IEBCOPY',

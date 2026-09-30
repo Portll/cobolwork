@@ -111,3 +111,13 @@ test('the interface blocks are declared the way a translator would declare them'
   for (const f of DIB_FIELDS) assert.match(f, /^DIB[A-Z0-9]+$/);
   for (const f of SQLCA_FIELDS) assert.match(f, /^SQL[A-Z0-9]+$/);
 });
+
+// ironwork vendors the table and refuses a reserved word used as a user-defined name.
+test('reserved-words.tsv sorts exactly the words IBM\'s appendix attests into its three columns', () => {
+  const table = readFileSync(join(ROOT, 'provenance', 'reserved-words.tsv'), 'utf8');
+  const rows = table.split(/\r?\n/).filter((l) => l && !l.startsWith('#')).map((l) => l.split('\t'));
+  const attested = Object.keys(prov.words).filter((w) => prov.words[w].sources.includes('ibm-ec-zos-reserved')).sort();
+  assert.deepEqual(rows.map(([w]) => w).sort(), attested);
+  assert.deepEqual([...new Set(rows.map(([, c]) => c))].sort(), ['potential', 'reserved', 'standard-only']);
+  assert.ok(rows.every((r) => r.length === 2));
+});

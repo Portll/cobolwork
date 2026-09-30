@@ -25,6 +25,13 @@ and [`enterprise-options.tsv`](enterprise-options.tsv) are generated from it by
 holds them equal. The gate reads SSRANGE, NUMCHECK and PARMCHECK through it. ironwork vendors the TSV
 and tests its own option parsing against it, which is the sharing both READMEs promise.
 
+[`reserved-words.tsv`](reserved-words.tsv) sorts the 515 words of IBM's "Reserved words" appendix,
+the `ibm-ec-zos-reserved` source above, into the column IBM marks each in: Reserved, Standard only
+or Potential reserved words. [`../diag/generate-reserved.mjs`](../diag/generate-reserved.mjs) writes
+it from the appendix page, whose size and hash its header records, and `test/words-provenance.test.mjs`
+holds its words equal to the source's. ironwork vendors it and refuses a Reserved word used as a
+user-defined name, as Enterprise COBOL does.
+
 ## Why it is done this way
 
 The words are derived from online sources - the standards and each vendor's reference for its own

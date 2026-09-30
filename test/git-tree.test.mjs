@@ -152,11 +152,14 @@ test('diff between two revisions writes nothing to disk and reports a copybook e
   try {
     writeFileSync(join(dir, 'cpy', 'A.cpy'), '       01 A PIC X(9).\n');
     git(dir, ['commit', '-qam', 'wider']);
-    const written = () => readdirSync(tmpdir()).filter((n) => n.startsWith('cobolwork-diff-')).length;
-    const before = written();
-    const res = diffRefs(dir, 'HEAD~1', 'HEAD');
-    const after = written();
-    assert.equal(after, before, 'no revision was written out');
+    // A temporary directory of this test's own: other test files write revisions to the shared one at the same time.
+    const own = mkdtempSync(join(tmpdir(), 'cobolwork-git-tree-'));
+    const saved = process.env.TMPDIR;
+    process.env.TMPDIR = own;
+    let res;
+    try { res = diffRefs(dir, 'HEAD~1', 'HEAD'); } finally { if (saved === undefined) delete process.env.TMPDIR; else process.env.TMPDIR = saved; }
+    assert.deepEqual(readdirSync(own), [], 'no revision was written out');
+    rmSync(own, { recursive: true, force: true });
     assert.deepEqual(res.findings.map((f) => [f.rule, f.path]), [['diff-layout-changed-unedited-program', 'src/P.cbl']]);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

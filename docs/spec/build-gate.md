@@ -637,8 +637,8 @@ leaves the field as it was on the path that overflows. A statement with several 
 its operands overlaps, or with `REMAINDER` or `CORRESPONDING`, bounds nothing. The interval counts as a
 bound for an index only where it lies between 1 and the sink's limit, as a constant moved into the
 index does. A statement's interval is worked out from the facts that held at it on every route, so it
-holds only where those facts held; a performed paragraph's summary carries only the intervals that need
-none. An ordering test between two integer fields, `IF A < B` or `UNTIL A > B`, makes `A` at most the
+holds only where those facts held; a performed paragraph's summary carries only the intervals whose
+facts the paragraph itself makes. An ordering test between two integer fields, `IF A < B` or `UNTIL A > B`, makes `A` at most the
 greatest `B` can hold, and `B` at least the least `A` can hold, on the outcome that makes the relation
 true. Every interval a fact rests on also gives every looser fact about the field, so routes that
 reached different intervals meet at the looser.
@@ -663,9 +663,11 @@ nothing is stored as an absolute value or wraps. Any other write to the field en
 A constant a statement moves, and the outcome of a check on a whole-number field, also hold every
 interval arithmetic derives that contains them, and each such outcome is an interval arithmetic can
 widen into. A counter moved to 1 and raised by `ADD 1` only under `IF C < 10`, around a `GO TO` loop,
-meets at its head as 1 to 10 from both routes. A performed paragraph's summary still carries only the
-intervals that need no fact before it, so the same counter raised in a paragraph `PERFORM ... UNTIL`
-runs is not bounded this way.
+meets at its head as 1 to 10 from both routes. A performed paragraph's summary carries an interval
+that needs other facts where the paragraph's own statements make those facts on every route through
+it, whatever its caller brings, so the same counter raised under the same test in a paragraph
+`PERFORM ... UNTIL` runs is bounded too. An arithmetic result that can pass one end of what its field
+keeps is still bounded at the other: a cut-off digit keeps the sign.
 
 A reference modification is judged on the bytes it names. Where its length is a constant `L`, the
 start must be kept at or below the item's size less `L - 1`: `X(I:3)` on a 256-byte `X` needs `I` at

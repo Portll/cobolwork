@@ -613,6 +613,16 @@ test('a length computed as the end less its start stops at the end where the sta
   }
 });
 
+test('a counter raised under a test that leaves room stays in its table across a paragraph PERFORM UNTIL runs', () => {
+  assert.deepEqual(found('GUARDINC.cbl'), []);
+  assert.equal(stopped('GUARDINC.cbl').length, 1);
+  for (const file of ['GUARDINCHI.cbl', 'GUARDINCBARE.cbl', 'GUARDINCCALLER.cbl', 'GUARDINCINPUT.cbl']) {
+    const [f] = found(file);
+    assert.ok(f, file);
+    assert.equal(f.sev, 'high', file);
+  }
+});
+
 test('a count UNSTRING writes is not the constant moved into it before', () => {
   const [f] = found('UNSTRCOUNT.cbl');
   assert.ok(f, 'WS-I can wrap once a count of up to 3000 is added to it');

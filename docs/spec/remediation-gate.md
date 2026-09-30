@@ -217,7 +217,10 @@ alike, as `cobc -fsyntax-only` with the directories that hold the tree's copyboo
 file the patch changed and every program whose resolved `COPY` statements include a file the patch
 changed: a one-line copybook edit breaks the programs that copy it, not the copybook. Only a
 regression fails: a program that did not compile before cannot fail the gate for not compiling
-after, because the gate cannot tell a missing copy library from a broken patch.
+after, because the gate cannot tell a missing copy library from a broken patch. A program that
+stopped compiling adds up to three of the compiler's error lines to `reasons`, each as
+`the compiler: <path>:<line>: error: ...` with the path as the repository names it, so a drafter's
+next attempt knows where its patch broke the program.
 
 Each run of the compiler is stopped at 60 seconds, at most 50 programs are compiled, and the whole
 check has one budget of 10 minutes; past either limit `compile` is null and `compiled` says which.
@@ -336,6 +339,10 @@ applies the patch to the working tree or a second commit.
     Given a compiler that fails the head and passed the base
     Then  compile is false and the verdict is fail
     And   given one that fails both, compile is null
+
+#### G3.3a A program that stopped compiling carries the compiler's error lines
+    Given a compiler that fails the head with four error lines
+    Then  reasons carry the first three, each named by the path in the repository
 
 #### G3.4 The same inputs give the same document
     When  the gate runs twice on the same revisions

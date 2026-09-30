@@ -282,6 +282,20 @@ test('G3.3 A program that stopped compiling fails; one that never compiled does 
   assert.equal(fine.checks.compile, true);
 });
 
+test('G3.3a A program that stopped compiling carries the compiler\'s error lines, named by the path in the repository', { skip }, () => {
+  const root = repo({ 'P.cbl': BASE });
+  const fp = fingerprintOf(root, osCommandIn('P.cbl'));
+  patch(root, { 'P.cbl': program('P', [ACCEPT, MOVE, 'GOBACK.']) });
+  const headFails = {
+    run: (file) => (readFileSync(file, 'latin1').includes(CALL) ? { ok: true, messages: [] }
+      : { ok: false, messages: [1, 2, 3, 4].map((n) => `${file}:${n}: error: syntax error ${n}`) }),
+  };
+  const doc = gate(root, fp, { compiler: headFails });
+  assert.equal(doc.checks.compile, false);
+  const said = doc.reasons.filter((r) => r.startsWith('the compiler: '));
+  assert.deepEqual(said, [1, 2, 3].map((n) => `the compiler: P.cbl:${n}: error: syntax error ${n}`));
+});
+
 test('G3.4 The same inputs give the same document', { skip }, () => {
   const root = repo({ 'P.cbl': BASE });
   const fp = fingerprintOf(root, osCommandIn('P.cbl'));

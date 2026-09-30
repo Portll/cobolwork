@@ -215,3 +215,24 @@ test('X1.13 An error cannot write to the terminal', () => {
   assert.ok(!/[\u0000-\u0009\u000b-\u001f\u007f-\u009f]/.test(r.stderr), JSON.stringify(r.stderr));
   assert.ok(r.stderr.length < 400, `${r.stderr.length} characters`);
 });
+
+test('X1.14 A statement that runs past its first line carries its end and the lines after the first', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'cw-explain-extent-'));
+  try {
+    writeFileSync(join(dir, 'P.cbl'), [
+      '       IDENTIFICATION DIVISION.', '       PROGRAM-ID. P.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
+      '       01 WS-IN PIC X(80).', '       01 WS-CMD PIC X(80).', '       PROCEDURE DIVISION.',
+      '           ACCEPT WS-IN FROM COMMAND-LINE', '           MOVE WS-IN', '               TO WS-CMD',
+      '           CALL "SYSTEM"', '               USING WS-CMD', '           GOBACK.', ''].join('\n'));
+    setMemoryReaders({ heap: () => ({ used_heap_size: 64 * MB, heap_size_limit: 4096 * MB }), free: () => 4096 * MB });
+    const r = scanAll(dir);
+    setMemoryReaders();
+    const f = r.findings.find((x) => x.rule === 'argv-or-env-to-os-command');
+    const p = explainFinding(r, f.fingerprint, { root: dir });
+    assert.deepEqual([p.sink.line, p.sink.endLine, p.sink.rest], [11, 12, [{ line: 12, code: '         USING WS-CMD' }]]);
+    const move = p.hops.find((h) => h.line === 9);
+    assert.deepEqual([move.endLine, move.rest.map((x) => x.code)], [10, ['         TO WS-CMD']]);
+    const accept = p.hops.find((h) => h.line === 8);
+    assert.equal(accept.endLine, undefined, 'a one-line statement carries no extent');
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

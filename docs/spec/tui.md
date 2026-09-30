@@ -302,6 +302,13 @@ Given a report whose finding names a file under the root that cobolwork does not
 Given an error whose message carries control characters, when any command reports it, then the
 characters reach standard error replaced, and the message is capped in length.
 
+#### X1.14 A statement that runs past its first line carries its end
+
+Given a quoted COBOL statement that continues on later lines, then its entry carries `endLine`, the
+line of its period or matching `END-` terminator, and `rest`, each later line quoted as the first
+is. A drafter shown `MOVE A` alone cannot tell that `TO B` follows. A one-line statement carries
+neither, and past 30 lines nothing is claimed.
+
 ## 7. Out of scope, deliberately
 
 - **Mouse input.** A 3270 has none, and nothing here needs it.

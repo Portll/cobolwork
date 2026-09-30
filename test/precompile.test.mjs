@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { precompile } from '../lib/precompile.mjs';
+import { hostVariableRoles, precompile } from '../lib/precompile.mjs';
 import { parseSource } from '../lib/parser.mjs';
 import { parseBms } from '../lib/bms.mjs';
 import './pin-machine.mjs';
@@ -357,5 +357,17 @@ test('lib/cics-commands.mjs is what provenance/precompile.json generates, and ev
       const plain = prov.argumentTypes.directions[argument];
       if (plain !== direction) assert.ok(c.notes?.[option], `${name} ${option}: a ${argument} that ${direction} needs a note saying why`);
     }
+  }
+});
+
+// ironwork vendors the table and checks its own reading of the same rows against it.
+test('each statement in the shared host-variable table reads and writes what the table says', () => {
+  const table = readFileSync(fileURLToPath(new URL('fixtures/sql/host-variables.tsv', import.meta.url)), 'utf8');
+  const list = (cell) => (cell === '-' ? [] : cell.split(' '));
+  const rows = table.split(/\r?\n/).filter((l) => l && !l.startsWith('#')).map((l) => l.split('\t'));
+  assert.ok(rows.length >= 20);
+  for (const [statement, read, written] of rows) {
+    const { sending, receiving } = hostVariableRoles(statement);
+    assert.deepEqual({ read: sending, written: receiving }, { read: list(read), written: list(written) }, statement);
   }
 });

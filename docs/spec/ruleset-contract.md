@@ -53,22 +53,23 @@ Landed, at strict parity with the containment tests as the gate rather than the 
 - All six containment tests pass **unweakened**. `DirectoryTree` does not reimplement containment;
   it delegates to the same `buildFileIndex`, so the guarantee is the one the tests already pinned.
 
-**`GitRefTree` is blocked, and this specification was wrong to promise it.**
+**`gitTree` is built (2026-09-30, cobolwork-roadmap 3.1).** It needed `parser.mjs` to read through
+the port, which this specification had said the parser would not do: `parseSource` read copybooks
+from disk while parsing. The change is one reader in the parse context, `readText`, used by the
+three places that read a copybook's text. A parse over a directory passes none and reads from disk
+exactly as before. A held tree, a git revision or a memory tree, passes its own. Copybook resolution
+inside a tree already went through the tree's index, and only a declared library outside the tree
+(the system copybooks, COBCPY) is looked for on disk, as the containment rules allow.
 
-§3 says the port lets `diff` read git revisions without materialising them. §10 says `parser.mjs`
-is out of scope and "becomes a consumer of the port and is otherwise untouched." **Those cannot
-both be true.** `parseSource` reads copybooks from disk *while parsing* — `parser.mjs:578` and
-`:1283` — and resolves them against real directories with `statSync` at `:520`. `diff.facts()`
-parses, so a git-blob adapter would have to make the graded parser read through the port, which is
-a substantial change to the file this specification exists to protect.
+`memoryTree` parses the same way. It no longer refuses with `ETREEPARSE`.
 
-The same limit binds `memoryTree`: it serves the five sets that only read text and refuses to
-parse with `ETREEPARSE` rather than parsing half a program. That refusal is the honest behaviour,
-and it is also the measure of how far the port currently reaches.
+The evidence the change was taken on is in `diag/git-tree-equivalence.mjs`: every program in a
+sample of the 3185-repository corpus, parsed out of git and from the same revision written to disk,
+and `diff` read both ways. The results are recorded in `docs/execution-plan.md` §3.1.
 
-So the temp-directory machinery in `diff.mjs` stays, and `PdsExportTree` is not currently
-buildable either. Removing them needs a decision about `parser.mjs` that is larger than F0 and
-should be taken on its own evidence, not smuggled in behind a refactor.
+`diff` reads revisions with `gitTree` and writes nothing. `build` and `gate` still write them out:
+they hand the tree to a compiler, `cobc` or ironwork, which reads files. `PdsExportTree` is now
+buildable (cobolwork-roadmap 3.2).
 
 One near-miss worth recording. Routing reads through the tree broke `programIds()` in the JCL set —
 a module-level helper with no tree in scope — and its `catch { continue }` **swallowed the
@@ -282,16 +283,10 @@ one; `warnCoverage` is the stderr one.
 
 ### Why `diff` belongs inside, not outside
 
-`lib/diff.mjs` materialises each revision to a temporary directory:
-
-```js
-const dir = mkdtempSync(join(tmpdir(), 'cobolwork-diff-'));
-// git read-tree <ref>^{tree}  into a private GIT_INDEX_FILE
-// git checkout-index --all --prefix=<dir>/
-```
-
-It does that **only because the rule sets demand a real path**. The domain does not need a
-directory; it needs artifacts.
+`lib/diff.mjs` read each revision by writing it to a temporary directory, only because the rule
+sets demanded a real path. The domain does not need a directory; it needs artifacts. `gitTree`
+(`lib/kernel/source-tree.mjs`) now reads the revision into memory with `git ls-tree` and
+`git cat-file --batch`, which `lib/kernel/git.mjs` shares with the writer `build` and `gate` still use.
 
 **It does not use `git archive`, and that is deliberate.** The comment at `lib/diff.mjs:26`
 records the reason: `git archive` applies `export-ignore` and `export-subst`, so a file marked

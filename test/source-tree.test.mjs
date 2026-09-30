@@ -40,13 +40,6 @@ test('a memory tree contains exactly what it was given, and nothing else', () =>
   assert.throws(() => tree.bytes('/etc/passwd'), (e) => e.code === 'ENOENT');
 });
 
-// A tree with no filesystem under it cannot resolve COPY statements, and says so rather than
-// parsing something unexpected.
-test('a memory tree refuses to parse rather than parsing half a program', () => {
-  const tree = memoryTree({ '/memory/P.cbl': 'x' });
-  assert.throws(() => tree.parse('/memory/P.cbl'), (e) => e.code === 'ETREEPARSE');
-});
-
 // Containment on a directory tree is the filesystem's, unchanged. The walk resolves symlinks and
 // refuses the ones that leave; this asserts the tree reports what the walk decided.
 test('a directory tree holds what the walk admitted, and excludes what it refused', () => {

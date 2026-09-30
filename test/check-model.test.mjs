@@ -524,3 +524,11 @@ test('a start moved up by a constant needs the operands that bound it: unsigned,
 test('a loop exit that keeps the counter in range bounds nothing where the subscript moves it out', () => {
   assert.equal(exitBound('LOOPEXITOFF.cbl').length, 1, 'WS-I - 1 is 0 on the first pass');
 });
+
+test('a bound above the table size does not keep the index in the table', () => {
+  const [f] = found('CAPBIG.cbl');
+  assert.ok(f, 'WS-I up to 500 on a table of 100 is reported');
+  assert.deepEqual(stopped('CAPBIG.cbl'), []);
+  assert.deepEqual(found('CAPFIT.cbl'), []);
+  assert.equal(stopped('CAPFIT.cbl').length, 1);
+});

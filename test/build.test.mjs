@@ -140,6 +140,7 @@ function standInIronwork() {
     'if grep -q GONEMARK "$2"; then echo "$2:6:8: COPY GONE: no such member in the copy libraries" >&2; exit 12; fi',
     'if grep -q ENTRYMARK "$2"; then echo "$2:9:12: a statement, found ENTRY" >&2; exit 12; fi',
     'if grep -q DIBMARK "$2"; then echo "$2:9:12: DIBSTAT is not defined" >&2; exit 12; fi',
+    'if grep -q DLIMARK "$2"; then echo "$2:9:12: EXEC DLI GU is not supported: ironwork for COBOL does not run IMS DL/I calls" >&2; echo "$2:10:12: DIBSTAT is not defined" >&2; exit 12; fi',
     'if grep -q WORDMARK "$2"; then echo "$2:9:12: a statement, found DIVISION" >&2; exit 12; fi',
     'if grep -q WARNMARK "$2"; then echo "$2:3:8: warning: THREAD is not on the CBL card" >&2; exit 4; fi',
     'if grep -q EMARK "$2"; then echo "$2:8:12: \'NOPE\' is not a data name" >&2; echo "$2: warning: THREAD is not on the CBL card" >&2; echo "informational: 1 program" >&2; exit 8; fi',
@@ -701,8 +702,8 @@ test('B6.7 A construct ironwork does not model yet leaves the build undecided', 
   // A field the DL/I translator declares is its gap too; a statement it stops at is the program's
   // error, now that ironwork reads ENTRY and ALTER.
   const quiet = (id, name) => program(id, [`01 WS-${name} PIC X.`], ['GOBACK.']);
-  const r = build(repo({ 'E.cbl': quiet('E', 'ENTRYMARK'), 'D.cbl': quiet('D', 'DIBMARK'), 'W.cbl': quiet('W', 'WORDMARK') }), { ironwork: iw.path });
-  assert.deepEqual(r.doc.compiled.notModelled.map((x) => x.path), ['D.cbl']);
+  const r = build(repo({ 'E.cbl': quiet('E', 'ENTRYMARK'), 'D.cbl': quiet('D', 'DIBMARK'), 'L.cbl': quiet('L', 'DLIMARK'), 'W.cbl': quiet('W', 'WORDMARK') }), { ironwork: iw.path });
+  assert.deepEqual(r.doc.compiled.notModelled.map((x) => x.path).sort(), ['D.cbl', 'L.cbl']);
   assert.deepEqual(r.doc.compiled.failed.map((x) => x.path).sort(), ['E.cbl', 'W.cbl']);
   assert.equal(r.exit, 4);
 });

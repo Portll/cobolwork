@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readdirSync, writeFileSync, symlinkSync, rmSync } from 'node:fs';
+import { chmodSync, mkdtempSync, mkdirSync, readdirSync, writeFileSync, symlinkSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { gitTree, memoryTree, validateTree } from '../lib/kernel/source-tree.mjs';
@@ -152,14 +152,23 @@ test('diff between two revisions writes nothing to disk and reports a copybook e
   try {
     writeFileSync(join(dir, 'cpy', 'A.cpy'), '       01 A PIC X(9).\n');
     git(dir, ['commit', '-qam', 'wider']);
-    // A temporary directory of this test's own: other test files write revisions to the shared one at the same time.
-    const own = mkdtempSync(join(tmpdir(), 'cobolwork-git-tree-'));
-    const saved = process.env.TMPDIR;
-    process.env.TMPDIR = own;
+    // A temporary root of its own, which the shared one moving under the build and gate tests beside
+    // this cannot disturb, and read-only, so a revision written out and cleaned up still fails.
+    const own = tmp('tmpdir');
+    const vars = ['TMPDIR', 'TEMP', 'TMP'];
+    const saved = vars.map((v) => process.env[v]);
     let res;
-    try { res = diffRefs(dir, 'HEAD~1', 'HEAD'); } finally { if (saved === undefined) delete process.env.TMPDIR; else process.env.TMPDIR = saved; }
-    assert.deepEqual(readdirSync(own), [], 'no revision was written out');
-    rmSync(own, { recursive: true, force: true });
+    try {
+      for (const v of vars) process.env[v] = own;
+      assert.equal(tmpdir(), own);
+      chmodSync(own, 0o500);
+      res = diffRefs(dir, 'HEAD~1', 'HEAD');
+      assert.deepEqual(readdirSync(own), [], 'no revision was written out');
+    } finally {
+      vars.forEach((v, i) => { if (saved[i] === undefined) delete process.env[v]; else process.env[v] = saved[i]; });
+      chmodSync(own, 0o700);
+      rmSync(own, { recursive: true, force: true });
+    }
     assert.deepEqual(res.findings.map((f) => [f.rule, f.path]), [['diff-layout-changed-unedited-program', 'src/P.cbl']]);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

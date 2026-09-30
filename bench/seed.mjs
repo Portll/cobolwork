@@ -38,11 +38,12 @@ const AREA_A = '       ';
 const AREA_B = '           ';
 const code = (line) => (line.length > 7 && line[6] !== '*' && line[6] !== '/' ? line.slice(7, 72) : '');
 
+// DECLARATIVES open the procedure division, so nothing may be planted between its header and them.
 function sites(lines) {
+  if (lines.some((l) => /\bDECLARATIVES\b/i.test(code(l)))) return null;
   let ws = -1;
   for (let i = 0; i < lines.length; i++) {
     const c = code(lines[i]);
-    if (/\bDECLARATIVES\b/i.test(c)) return null;
     if (ws < 0 && /\bWORKING-STORAGE\s+SECTION\s*\./i.test(c)) ws = i;
     if (/\bPROCEDURE\s+DIVISION\b/i.test(c)) {
       // The header ends at its period, which may be lines later when USING lists many items.

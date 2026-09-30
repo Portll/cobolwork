@@ -75,6 +75,17 @@ test('a bound written as EVALUATE branches, with the rest turned away, stops an 
   assert.equal(c.guard.stops, true);
 });
 
+test('a check holds across a loop whose calls cannot change the field that names the program', () => {
+  const load = (file) => report.findings.filter(x => x.path === file && x.rule === 'argv-or-env-to-dynamic-program-load');
+  assert.equal(load('CALLLOOP.cbl').length, 0);
+  const [c] = report.checked.filter(x => x.path === 'CALLLOOP.cbl');
+  assert.deepEqual(c.guard, { program: 'CALLLOOP', item: 'WS-PGM', file: 'CALLLOOP.cbl', line: 10, stops: true });
+  // Passed by reference, the name may come back changed for the next pass.
+  const [f] = load('CALLBYREF.cbl');
+  assert.ok(f, 'a name passed by reference is reported');
+  assert.equal(f.guard?.stops, undefined);
+});
+
 test('SARIF carries the check beside the evidence kind', () => {
   const sarif = toSarif(report);
   const r = sarif.runs[0].results.find(x => x.ruleId === 'argv-or-env-to-os-command' && x.locations[0].physicalLocation.artifactLocation.uri === 'GUARDED.cbl');

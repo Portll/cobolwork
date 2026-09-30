@@ -230,7 +230,7 @@ L2; cobolwork makes no level claim, and the document says which fields a verifie
 `cobolwork sbom <root> [--out <file>]` writes CycloneDX 1.6 JSON.
 
 - `metadata.component`: the estate, `type: application`, named by `--name` or the root's directory.
-- `components`: one per file cobolwork reads, `type: file`, `hashes: [{alg: SHA-256}]`,
+- `components`: one per file cobolwork reads, `type: file`, `hashes: [{alg: SHA-256, content}]` over the file's bytes,
   `properties` `cobolwork:kind` = `program`, `copybook`, `jcl`, `proc`, `csd`, `bms`, `ddl`, and for
   programs `cobolwork:program-id`, `cobolwork:dialect`, and `cobolwork:options` (the `CBL`/`PROCESS`
   options in force).
@@ -328,10 +328,13 @@ one it got, and a rebuild that resolves a different member is visible as a chang
 
 ### 13.4 Option changes
 
-`option-changed` (med): in `build --base --head`, a program whose `CBL`/`PROCESS` options in force
-differ between base and head for TRUNC, ARITH, NUMPROC, NUMCHECK, SSRANGE, CODEPAGE or INTDATE. The
-detail names the option, the base value and the head value. It blocks only where the policy says;
-the default is advisory.
+In `build --base --head`, each program present on both sides is compared for the options in force
+from its `CBL` and `PROCESS` cards, in the families TRUNC, ARITH, NUMPROC, NUMCHECK, SSRANGE, CODEPAGE
+and INTDATE. Spellings come from IBM's option table (`lib/enterprise-options.mjs`), so `AR(C)` and
+`ARITH(COMPAT)` are one setting, and a later card overrides an earlier one. The build document lists
+each change in `optionsChanged` (`path`, `option`, `base`, `head`, `line`) and says it in `reasons`.
+It is advisory: a change that drops a run-time check the policy requires already fails the build
+(§7 of `build-gate.md`); a policy key that blocks on any watched change is a follow-up.
 
 ## 14. Specification (BDD)
 

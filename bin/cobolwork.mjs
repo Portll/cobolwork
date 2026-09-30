@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { scanAll, applyEstateFacts, RULE_SETS } from '../lib/scan.mjs';
 import { scan as scanFlow } from '../lib/sets/flow.mjs';
 import { inventory } from '../lib/inventory.mjs';
+import { sbom } from '../lib/sbom.mjs';
 import { parseFile } from '../lib/parser.mjs';
 import { toSarif } from '../lib/sarif.mjs';
 import { diffRefs } from '../lib/diff.mjs';
@@ -24,6 +25,9 @@ import { explainFinding } from '../lib/explain.mjs';
 import { printable } from '../lib/kernel/printable.mjs';
 import { startEvidence, recordInputs, recordHashed, recordFindings, recordOutput, recordVerdict, recordBaselineWrite, finishEvidence } from '../lib/evidence/run.mjs';
 import { evidenceCommand } from '../lib/evidence/cli.mjs';
+import { slsaStatement } from '../lib/evidence/slsa.mjs';
+
+const STARTED = new Date().toISOString();
 
 const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 
@@ -31,6 +35,9 @@ const USAGE = `cobolwork ${VERSION} — COBOL, JCL and CICS security analysis, n
 
   cobolwork scan <path>        every rule set: data flow, CICS, JCL, hidden content, copybooks, build pins
   cobolwork inventory <path>   what is there and what could not be read (copybooks, dialects)
+  cobolwork sbom <path> [--name <estate>]
+                               a CycloneDX 1.6 bill of materials: every source by SHA-256, what each
+                               program copies and calls, what each job runs, and the platforms used
   cobolwork flow <path>        data-flow findings with the path the data took, as JSON
   cobolwork parse <file>       parse one source file and print a summary
   cobolwork diff <repo> --base <ref> [--head <ref>]
@@ -90,6 +97,9 @@ Options
   --policy <file>       build: an organisation's floor policy, from outside the repository; the
                         repository's cobolwork.policy.json can tighten it and never loosen it
   --provenance <file>   build: write what was scanned, under which policy, and what was compiled
+  --provenance-format cobolwork|slsa  build: the record as written today, or an in-toto statement with
+                        the SLSA Provenance v1 predicate (unsigned; the pipeline signs it)
+  --artifact <path>[,<path>]  build: what the compiler produced, named as subjects of the SLSA statement
   --ironwork <path>     build: after a pass, run ironwork check on every program, for an estate that
                         compiles with IBM Enterprise COBOL; a program ironwork rejects exits 4, one it
                         does not model yet leaves the build undecided
@@ -146,8 +156,11 @@ function parseArgs(argv) {
     else if (a === '--json') opts.json = true;
     else if (a === '--policy') opts.policy = value();
     else if (a === '--provenance') opts.provenance = value();
+    else if (a === '--provenance-format') opts.provenanceFormat = value();
+    else if (a === '--artifact') opts.artifact = [...(opts.artifact || []), ...list().map((x) => resolve(x))];
     else if (a === '--ironwork') opts.ironwork = value();
     else if (a === '--evidence') opts.evidence = value();
+    else if (a === '--name') opts.name = value();
     else if (a === '--ssh-key') opts.sshKey = value();
     else if (a === '--signer') opts.signer = value();
     else if (a === '--allowed-signers') opts.allowedSigners = value();
@@ -235,7 +248,7 @@ if (gateFlag && opts._.length && opts._[0] !== 'gate') {
   process.stderr.write(`cobolwork: --${gateFlag.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)} is for gate only\n`);
   process.exit(2);
 }
-const COPYLIB_COMMANDS = ['scan', 'flow', 'inventory', 'diff', 'build', 'baseline', 'tui', 'explain'];
+const COPYLIB_COMMANDS = ['scan', 'flow', 'inventory', 'diff', 'build', 'baseline', 'tui', 'explain', 'sbom'];
 if (opts.copylib && opts._.length && !COPYLIB_COMMANDS.includes(opts._[0])) {
   process.stderr.write(`cobolwork: ${opts._[0]} reads no copybooks; ${COPYLIB_COMMANDS.join(', ')} do\n`);
   process.exit(2);
@@ -248,7 +261,9 @@ if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
   process.stderr.write(`cobolwork: --json is for capabilities; every other command writes JSON unless --format says otherwise\n`);
   process.exit(2);
 }
-const buildFlag = ['policy', 'provenance', 'ironwork'].find((k) => opts[k] !== undefined) || (compilerArgv ? '' : null);
+const buildFlag = ['policy', 'provenance', 'provenanceFormat', 'artifact', 'ironwork'].find((k) => opts[k] !== undefined) || (compilerArgv ? '' : null);
+if (opts.provenanceFormat !== undefined && !['cobolwork', 'slsa'].includes(opts.provenanceFormat)) { process.stderr.write(`cobolwork: --provenance-format takes cobolwork or slsa; got ${opts.provenanceFormat}\n`); process.exit(2); }
+if ((opts.provenanceFormat !== undefined || opts.artifact) && !opts.provenance) { process.stderr.write('cobolwork: --provenance-format and --artifact describe the --provenance file; name it\n'); process.exit(2); }
 if (buildFlag !== null && opts._.length && opts._[0] !== 'build') {
   process.stderr.write(`cobolwork: ${buildFlag ? `--${buildFlag}` : '--'} is for build only\n`);
   process.exit(2);
@@ -256,7 +271,8 @@ if (buildFlag !== null && opts._.length && opts._[0] !== 'build') {
 // A misspelled set would run nothing and report a clean zero.
 const badSets = (opts.only || []).filter(s => !RULE_SETS.includes(s));
 if (badSets.length || (opts.only && !opts.only.length)) { process.stderr.write(`cobolwork: --only takes ${RULE_SETS.join(',')}; got ${badSets.join(',') || 'nothing'}\n`); process.exit(2); }
-const JOURNALED = ['scan', 'flow', 'diff', 'gate', 'build', 'baseline', 'inventory'];
+const JOURNALED = ['scan', 'flow', 'diff', 'gate', 'build', 'baseline', 'inventory', 'sbom'];
+if (opts.name !== undefined && opts._.length && opts._[0] !== 'sbom') { process.stderr.write('cobolwork: --name is for sbom only\n'); process.exit(2); }
 if (opts.evidence !== undefined && opts._.length && ![...JOURNALED, 'evidence'].includes(opts._[0])) {
   process.stderr.write(`cobolwork: ${opts._[0]} records no evidence; ${JOURNALED.join(', ')} and evidence do\n`);
   process.exit(2);
@@ -361,7 +377,16 @@ try {
     recordHashed(journal, 0, result.provenance.sources);
     recordFindings(journal, result.report);
     if (opts.provenance) {
-      const text = JSON.stringify(result.provenance, null, 1) + '\n';
+      const record = opts.provenanceFormat === 'slsa'
+        ? slsaStatement({
+          provenance: result.provenance, root, artifacts: opts.artifact || [],
+          docBytes: Buffer.from(JSON.stringify(result.doc, null, opts.quiet ? 0 : 1) + '\n'),
+          runId: journal ? journal.id : null, runTip: journal && journal.tip ? journal.tip.hash : null,
+          builderId: process.env.COBOLWORK_BUILDER_ID || null,
+          ...(process.env.SOURCE_DATE_EPOCH ? {} : { startedOn: STARTED, finishedOn: new Date().toISOString() }),
+        })
+        : result.provenance;
+      const text = JSON.stringify(record, null, 1) + '\n';
       writeFileSync(resolve(opts.provenance), text);
       recordOutput(journal, 'provenance', text, resolve(opts.provenance));
     }
@@ -409,6 +434,12 @@ try {
     const packet = explainFinding({ ...report, findings: [...report.findings, ...(report.suppressed || [])] }, fingerprint, { root });
     if (!packet) { process.stderr.write(`cobolwork: no finding with fingerprint ${fingerprint} in this report\n`); process.exit(2); }
     emit(packet, opts);
+  } else if (command === 'sbom') {
+    const bom = sbom(root, { systemDirs, name: opts.name });
+    recordInputs(journal, 0, root);
+    const text = JSON.stringify(bom, null, opts.quiet ? 0 : 1) + '\n';
+    recordOutput(journal, 'sbom', text, opts.out || null);
+    if (opts.out) writeFileSync(opts.out, text); else process.stdout.write(text);
   } else if (command === 'inventory') {
     const inv = inventory(root, { systemDirs });
     recordInputs(journal, 0, root);

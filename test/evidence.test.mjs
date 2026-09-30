@@ -515,6 +515,134 @@ test('V5.3 An RFC 3161 request is DER over the envelope digest', () => {
 
 test('V5.4 A time-stamp response for another digest does not seal', { todo: 'verify --tsr is not built (spec §16 step 4)' }, () => {});
 
+// V6 - Provenance
+
+function buildTree(t) {
+  const d = tmp(t);
+  const src = join(d, 'repo');
+  mkdirSync(join(src, 'copy'), { recursive: true });
+  writeFileSync(join(src, 'PAY.cbl'), ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. PAY.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.', '       COPY PAYREC.', '       PROCEDURE DIVISION.', '           GOBACK.', ''].join('\n'));
+  writeFileSync(join(src, 'copy', 'PAYREC.cpy'), '       01 PAY-REC PIC X(10).\n');
+  writeFileSync(join(src, 'PAY.obj'), 'object bytes');
+  return { d, src };
+}
+const buildWith = (src, args, env = {}) => cli(['build', src, '--quiet', ...args], env);
+
+test('V6.1 SLSA provenance is a Statement v1 with the SLSA v1 predicate', (t) => {
+  const { d, src } = buildTree(t);
+  const r = buildWith(src, ['--provenance', join(d, 'prov.json'), '--provenance-format', 'slsa', '--artifact', join(src, 'PAY.obj'), '--out', join(d, 'build.json')]);
+  assert.ok([0, 3].includes(r.status), r.stderr);
+  const st = JSON.parse(readFileSync(join(d, 'prov.json'), 'utf8'));
+  assert.equal(st._type, 'https://in-toto.io/Statement/v1');
+  assert.equal(st.predicateType, 'https://slsa.dev/provenance/v1');
+  assert.deepEqual(st.subject[0], { name: 'build.json', digest: { sha256: sha256(readFileSync(join(d, 'build.json'))) } });
+  assert.deepEqual(st.subject[1], { name: 'PAY.obj', digest: { sha256: sha256('object bytes') } });
+  assert.equal(st.predicate.buildDefinition.buildType, 'https://github.com/Portll/cobolwork/blob/main/docs/spec/evidence.md#build-v1');
+  assert.equal(st.predicate.runDetails.builder.id, 'https://github.com/Portll/cobolwork/local');
+  assert.ok(!JSON.stringify(st).includes(d), 'no absolute path of this machine');
+});
+
+test('V6.2 Every source read is a resolved dependency with its digest', (t) => {
+  const { d, src } = buildTree(t);
+  buildWith(src, ['--provenance', join(d, 'plain.json')]);
+  buildWith(src, ['--provenance', join(d, 'slsa.json'), '--provenance-format', 'slsa']);
+  const plain = JSON.parse(readFileSync(join(d, 'plain.json'), 'utf8'));
+  const deps = JSON.parse(readFileSync(join(d, 'slsa.json'), 'utf8')).predicate.buildDefinition.resolvedDependencies;
+  assert.ok(plain.sources.length >= 2, 'the program and its copybook were hashed');
+  for (const s of plain.sources) assert.ok(deps.some((x) => x.uri === `file:${s.path}` && x.digest.sha256 === s.sha256), s.path);
+  assert.ok(deps.some((x) => x.name === 'copy/PAYREC.cpy'));
+});
+
+test("V6.3 The run journal's tip is a byproduct", (t) => {
+  const { d, src } = buildTree(t);
+  buildWith(src, ['--provenance', join(d, 'slsa.json'), '--provenance-format', 'slsa', '--evidence', join(d, 'ev')]);
+  const st = JSON.parse(readFileSync(join(d, 'slsa.json'), 'utf8'));
+  const [run] = readdirSync(join(d, 'ev', 'runs'));
+  const records = readLines(join(d, 'ev', 'runs', run)).lines.map((l) => JSON.parse(l));
+  const [byproduct] = st.predicate.runDetails.byproducts;
+  assert.equal(byproduct.name, `evidence:run:${run.replace(/\.jsonl$/, '')}`);
+  assert.ok(records.some((r) => r.hash === byproduct.digest.sha256), 'the byproduct names a record of the run');
+  const out = records.find((r) => r.kind === 'output' && r.name === 'provenance');
+  assert.equal(out.sha256, sha256(readFileSync(join(d, 'slsa.json'))), 'and the journal records the statement by digest');
+});
+
+test('V6.4 The default provenance record is unchanged', (t) => {
+  const { d, src } = buildTree(t);
+  buildWith(src, ['--provenance', join(d, 'plain.json')], { SOURCE_DATE_EPOCH: '1790700000' });
+  const plain = JSON.parse(readFileSync(join(d, 'plain.json'), 'utf8'));
+  assert.equal(plain.tool, 'cobolwork-build-provenance');
+  assert.ok(Array.isArray(plain.sources));
+  assert.equal(plain.builtAt, new Date(1790700000 * 1000).toISOString());
+  const r = cli(['build', src, '--provenance-format', 'slsa']);
+  assert.equal(r.status, 2, 'a format with no --provenance file is refused');
+});
+
+// V7 - The bill of materials
+
+function estate(t) {
+  const d = tmp(t);
+  const src = join(d, 'estate');
+  mkdirSync(join(src, 'copy'), { recursive: true });
+  mkdirSync(join(src, 'jcl'), { recursive: true });
+  writeFileSync(join(src, 'PAYMAIN.cbl'), ['       CBL TRUNC(OPT),ARITH(EXTEND)', '       IDENTIFICATION DIVISION.', '       PROGRAM-ID. PAYMAIN.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.', '       COPY PAYREC.', "       01 WS-PGM PIC X(8) VALUE 'PAYCALC'.", '       PROCEDURE DIVISION.', "           CALL 'PAYCALC' USING PAY-REC.", '           CALL WS-PGM USING PAY-REC.', '           EXEC CICS RETURN END-EXEC.', '           GOBACK.', ''].join('\n'));
+  writeFileSync(join(src, 'PAYCALC.cbl'), ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. PAYCALC.', '       DATA DIVISION.', '       LINKAGE SECTION.', '       COPY PAYREC.', '       PROCEDURE DIVISION USING PAY-REC.', '           GOBACK.', ''].join('\n'));
+  writeFileSync(join(src, 'copy', 'PAYREC.cpy'), '       01 PAY-REC PIC X(10).\n');
+  writeFileSync(join(src, 'jcl', 'PAYJOB.jcl'), '//PAYJOB JOB 1\n//S1 EXEC PGM=PAYMAIN\n');
+  return { d, src };
+}
+const bomOf = (src, env = {}) => JSON.parse(cli(['sbom', src, '--quiet'], env).stdout);
+const comp = (bom, ref) => bom.components.find((c) => c['bom-ref'] === ref);
+const prop = (c, name) => (c.properties || []).find((p) => p.name === name)?.value;
+const deps = (bom, ref) => (bom.dependencies.find((x) => x.ref === ref) || { dependsOn: [] }).dependsOn;
+
+test('V7.1 The SBOM is CycloneDX 1.6 with one file component per source', (t) => {
+  const { src } = estate(t);
+  const bom = bomOf(src);
+  assert.equal(bom.bomFormat, 'CycloneDX');
+  assert.equal(bom.specVersion, '1.6');
+  assert.match(bom.serialNumber, /^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  for (const [ref, kind] of [['PAYMAIN.cbl', 'program'], ['PAYCALC.cbl', 'program'], ['copy/PAYREC.cpy', 'copybook'], ['jcl/PAYJOB.jcl', 'jcl']]) {
+    const c = comp(bom, ref);
+    assert.equal(c.type, 'file', ref);
+    assert.equal(prop(c, 'cobolwork:kind'), kind, ref);
+    assert.deepEqual(c.hashes, [{ alg: 'SHA-256', content: sha256(readFileSync(join(src, ref))) }], ref);
+  }
+  assert.equal(prop(comp(bom, 'PAYMAIN.cbl'), 'cobolwork:options'), 'TRUNC(OPT) ARITH(EXTEND)');
+});
+
+test('V7.2 A COPY is a dependency from the program to the copybook it resolved to', (t) => {
+  const { src } = estate(t);
+  const bom = bomOf(src);
+  assert.ok(deps(bom, 'PAYMAIN.cbl').includes('copy/PAYREC.cpy'));
+  assert.ok(deps(bom, 'PAYCALC.cbl').includes('copy/PAYREC.cpy'));
+  assert.ok(deps(bom, 'PAYMAIN.cbl').includes('PAYCALC.cbl'), 'a static CALL is an edge');
+  assert.deepEqual(deps(bom, 'jcl/PAYJOB.jcl'), ['PAYMAIN.cbl'], 'a job depends on the program its step runs');
+});
+
+test('V7.3 A dynamic CALL is a property, not a dependency', (t) => {
+  const { src } = estate(t);
+  const bom = bomOf(src);
+  assert.equal(prop(comp(bom, 'PAYMAIN.cbl'), 'cobolwork:unresolved-call'), 'WS-PGM');
+  assert.ok(!deps(bom, 'PAYMAIN.cbl').some((r) => /WS-PGM/.test(r)));
+});
+
+test('V7.4 The same tree gives the same SBOM bytes', (t) => {
+  const { src } = estate(t);
+  const a = cli(['sbom', src], { SOURCE_DATE_EPOCH: '1790700000' }).stdout;
+  const b = cli(['sbom', src], { SOURCE_DATE_EPOCH: '1790700000' }).stdout;
+  assert.equal(a, b);
+  assert.equal(JSON.parse(a).metadata.timestamp, new Date(1790700000 * 1000).toISOString());
+  assert.equal(JSON.parse(cli(['sbom', src]).stdout).metadata.timestamp, undefined, 'no clock without SOURCE_DATE_EPOCH');
+});
+
+test('V7.5 A platform has no version', (t) => {
+  const { src } = estate(t);
+  const bom = bomOf(src);
+  assert.deepEqual(comp(bom, 'platform:CICS'), { 'bom-ref': 'platform:CICS', type: 'platform', name: 'CICS' });
+  assert.ok(deps(bom, 'PAYMAIN.cbl').includes('platform:CICS'));
+  assert.ok(!deps(bom, 'PAYCALC.cbl').includes('platform:CICS'));
+});
+
 // V8 - Zowe and agent configuration
 
 function zoweTree(t, files) {
@@ -600,6 +728,48 @@ test('V9.3 A DFSORT MODS statement naming an exit is reported', (t) => {
   assert.deepEqual(jclRules(t, '//J1 JOB 1\n//S1 EXEC PGM=SORT\n//SYSIN DD *\n  SORT FIELDS=(1,10,CH,A)\n/*\n').filter((x) => x.rule === 'sort-exit-named'), []);
 });
 
+test('V9.4 A copybook in two copy directories is shadowed', (t) => {
+  const d = tmp(t);
+  const src = join(d, 'estate');
+  const prog = (id) => ['       IDENTIFICATION DIVISION.', `       PROGRAM-ID. ${id}.`, '       DATA DIVISION.', '       WORKING-STORAGE SECTION.', '       COPY CUSTREC.', '       PROCEDURE DIVISION.', '           GOBACK.', ''].join('\n');
+  for (const [dir, layout, id] of [['north', 'PIC X(10)', 'NPROG'], ['south', 'PIC X(20)', 'SPROG']]) {
+    mkdirSync(join(src, dir), { recursive: true });
+    writeFileSync(join(src, dir, 'CUSTREC.cpy'), `       01 CUST-REC ${layout}.\n`);
+    writeFileSync(join(src, dir, `${id}.cbl`), prog(id));
+  }
+  const scan = JSON.parse(cli(['scan', src, '--only', 'copybook', '--quiet']).stdout);
+  assert.equal(scan.summary.byRule['copybook-shadowed'], 1);
+  const bom = bomOf(src);
+  assert.ok(deps(bom, 'north/NPROG.cbl').includes('north/CUSTREC.cpy'));
+  assert.ok(deps(bom, 'south/SPROG.cbl').includes('south/CUSTREC.cpy'));
+});
+
+function gitWithProgram(t, base, head) {
+  const d = tmp(t);
+  const repo = join(d, 'repo');
+  const git = gitRepo(repo);
+  writeFileSync(join(repo, 'PAY.cbl'), base);
+  git('add', 'PAY.cbl');
+  git('commit', '-q', '-m', 'base');
+  writeFileSync(join(repo, 'PAY.cbl'), head);
+  git('commit', '-q', '-am', 'head');
+  return repo;
+}
+const payProgram = (card, statement = 'GOBACK') => [...(card ? [`       ${card}`] : []), '       IDENTIFICATION DIVISION.', '       PROGRAM-ID. PAY.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.', '       01 WS-AMT PIC S9(4) COMP.', '       PROCEDURE DIVISION.', `           ${statement}.`, ''].join('\n');
+
+test('V9.5 An option card changing TRUNC between base and head is reported', GIT, (t) => {
+  const repo = gitWithProgram(t, payProgram('CBL TRUNC(STD),ARITH(C)'), payProgram('CBL TRUNC(OPT),AR(COMPAT)'));
+  const doc = JSON.parse(cli(['build', repo, '--base', 'HEAD~1', '--head', 'HEAD', '--quiet']).stdout);
+  assert.deepEqual(doc.optionsChanged, [{ path: 'PAY.cbl', option: 'TRUNC', base: 'TRUNC(STD)', head: 'TRUNC(OPT)', line: 1 }], 'ARITH(C) and AR(COMPAT) are one setting');
+  assert.ok(doc.reasons.some((r) => /changes TRUNC from TRUNC\(STD\) to TRUNC\(OPT\)/.test(r)));
+});
+
+test('V9.6 A change that leaves the options alone reports nothing', GIT, (t) => {
+  const repo = gitWithProgram(t, payProgram('PROCESS NUMPROC(PFD)'), payProgram('PROCESS NUMPROC(PFD)', 'MOVE 1 TO WS-AMT GOBACK'));
+  const doc = JSON.parse(cli(['build', repo, '--base', 'HEAD~1', '--head', 'HEAD', '--quiet']).stdout);
+  assert.deepEqual(doc.optionsChanged, []);
+});
+
 test('V8.8 An unpinned npx launch is reported', (t) => {
   assert.deepEqual(rules(zoweTree(t, { 'claude_desktop_config.json': { mcpServers: { zowe: { command: 'npx', args: ['@zowe/mcp-server'] } } } })), ['zowe-mcp-unpinned']);
   assert.deepEqual(rules(zoweTree(t, { 'claude_desktop_config.json': { mcpServers: { zowe: { command: 'npx', args: ['@zowe/mcp-server@0.9.0'] } } } })), []);
@@ -608,13 +778,10 @@ test('V8.8 An unpinned npx launch is reported', (t) => {
 // V6 - V10: built in later steps of spec §16.
 
 const PENDING = {
-  V6: 'SLSA provenance (spec §16 step 6)',
-  V7: 'cobolwork sbom (spec §16 step 7)',
-  V9: 'control-card, shadowing and option lanes (spec §16 step 8)',
   V10: '--equivalence (spec §16 step 9)',
 };
 const specScenarios = [...SPEC.matchAll(/^#### (V\d+\.\d+) (.+)$/gm)].map((m) => ({ id: m[1], title: m[2].trim() }));
-const writtenHere = new Set([...SELF.matchAll(/^test\('(V\d+\.\d+) /gm)].map((m) => m[1]));
+const writtenHere = new Set([...SELF.matchAll(/^test\(['"](V\d+\.\d+) /gm)].map((m) => m[1]));
 for (const s of specScenarios) {
   const group = s.id.split('.')[0];
   if (!writtenHere.has(s.id) && PENDING[group]) test(`${s.id} ${s.title}`, { todo: PENDING[group] }, () => {});
@@ -630,6 +797,6 @@ test('V0.1 The spec and the suite name the same scenarios', () => {
   for (const id of writtenHere) {
     if (id === 'V0.1') continue;
     const title = specScenarios.find((s) => s.id === id).title;
-    assert.ok(SELF.includes(`test('${id} ${title}'`), `${id} is titled as the spec writes it`);
+    assert.ok(SELF.includes(`test('${id} ${title}'`) || SELF.includes(`test("${id} ${title}"`), `${id} is titled as the spec writes it`);
   }
 });

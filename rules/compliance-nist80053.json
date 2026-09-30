@@ -2617,7 +2617,7 @@
    "framework": "nist-800-53r5",
    "clause": "CM-8",
    "title": "System Component Inventory",
-   "rationale": "The rule reports: A Zowe MCP server is launched by npx with no pinned version. That is a component the inventory does not accurately account for, which this control requires be documented.",
+   "rationale": "The rule reports: A Zowe MCP server is launched from the registry with no pinned version. That is a component the inventory does not accurately account for, which this control requires be documented.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",

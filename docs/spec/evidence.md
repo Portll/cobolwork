@@ -302,17 +302,19 @@ settings (`.vscode/settings.json`), and the Zowe MCP server's `native-config.jso
 
 | Rule | Sev | CWE | Fires on |
 |---|---|---|---|
-| `zowe-config-secret-in-clear` | high | 256 | a profile's `properties.password`, `tokenValue` or `authToken` present in a team configuration and not listed in that profile's `secure` array |
-| `zowe-config-tls-verify-off` | med | 295 | `rejectUnauthorized: false` in a profile or in `defaults` |
+| `zowe-config-secret-in-clear` | high | 256 | a profile's `properties.password`, `tokenValue` or `authToken` present in a team configuration and not listed in that profile's `secure` array, or a literal `password` anywhere in `native-config.json` |
+| `zowe-config-tls-verify-off` | med | 295 | `rejectUnauthorized: false` in a profile or in `defaults`, or anywhere in `native-config.json` |
 | `zowe-config-cleartext` | med | 319 | `protocol: "http"` on a z/OSMF, API ML or RSE profile |
 | `zowe-mcp-password-in-config` | high | 798 | an MCP server entry whose `env` sets `ZOWE_MCP_PASSWORD_*`, `ZOWE_MCP_CREDENTIALS` or `ZOWE_MCP_KEY_PASSPHRASE_*` to a literal |
 | `zowe-mcp-tier-writes` | med | 250 | the capability tier (`--capability-tier`, `ZOWE_MCP_CAPABILITY_TIER`, `zoweMCP.capabilityTier`) is `update` or `delete` |
 | `zowe-mcp-tier-full` | high | 250 | the capability tier is `full`, which lets the agent submit jobs and run commands as the user it logs on as |
 | `zowe-mcp-data-marking-off` | med | 1427 | `ZOWE_MCP_DATA_MARKING=0`, which drops the untrusted-data marking on what the agent reads from the mainframe |
-| `zowe-mcp-unpinned` | low | 829 | the server launched by `npx` from `@zowe/mcp-server` with no version, or `@latest` |
+| `zowe-mcp-unpinned` | low | 829 | the server launched by `npx`, `bunx`, `pnpx`, `pnpm`, `yarn` or `npm` from `@zowe/mcp-server` with no version, or `@latest` |
 | `zowe-mock-credentials` | med | 798 | a `systems.json` under a mock directory holding a password |
 
-A finding names the file, the profile or server, and the key; never the value.
+A server entry is the Zowe MCP server when its command or arguments name `@zowe/mcp-server` or
+`zowe-mcp`, or its `env` sets a `ZOWE_MCP_` variable. `native-config.json` is read without assuming
+its layout. A finding names the file, the profile or server, and the key; never the value.
 
 ### 13.2 Control cards that execute
 
@@ -531,6 +533,18 @@ It is advisory: a change that drops a run-time check the policy requires already
 
 #### V8.8 An unpinned npx launch is reported
     Then  zowe-mcp-unpinned fires, and a pinned version does not
+
+#### V8.9 A comment after a trailing comma does not hide the file
+    Given an MCP client configuration whose last server is followed by a comma and a comment
+    Then  the configuration is read and its findings are reported
+
+#### V8.10 The server is known by its ZOWE_MCP_ variables and by any registry runner
+    Given a server launched from a local path whose env sets ZOWE_MCP_ variables, and one run by bunx unpinned
+    Then  the first's findings and the second's zowe-mcp-unpinned are reported
+
+#### V8.11 native-config.json is read for passwords and TLS verification
+    Given a native-config.json holding a literal password and rejectUnauthorized false
+    Then  zowe-config-secret-in-clear and zowe-config-tls-verify-off are reported, and not the password
 
 ### V9 - Control cards, shadowing and options
 

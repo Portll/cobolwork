@@ -710,6 +710,24 @@ test('V8.7 Data marking turned off is reported', (t) => {
   assert.deepEqual(rules(zoweTree(t, { '.mcp.json': mcp({ env: { ZOWE_MCP_DATA_MARKING: '0' } }) })), ['zowe-mcp-data-marking-off']);
 });
 
+test('V8.9 A comment after a trailing comma does not hide the file', (t) => {
+  const text = `{ "mcpServers": { "zowe": ${JSON.stringify(mcp({ env: { ZOWE_MCP_DATA_MARKING: '0' } }).mcpServers.zowe)},\n  // reserved\n  /* and a block */\n} }`;
+  assert.deepEqual(rules(zoweTree(t, { '.mcp.json': text })), ['zowe-mcp-data-marking-off']);
+});
+
+test('V8.10 The server is known by its ZOWE_MCP_ variables and by any registry runner', (t) => {
+  const r = zoweTree(t, {
+    '.mcp.json': { mcpServers: { local: { command: 'node', args: ['/opt/agents/server/index.js'], env: { ZOWE_MCP_CAPABILITY_TIER: 'full' } }, bun: { command: 'bunx', args: ['@zowe/mcp-server'] } } },
+  });
+  assert.deepEqual(rules(r), ['zowe-mcp-tier-full', 'zowe-mcp-unpinned']);
+});
+
+test('V8.11 native-config.json is read for passwords and TLS verification', (t) => {
+  const r = zoweTree(t, { 'server/native-config.json': { systems: [{ host: 'lpar1.example.invalid', password: 'Q7WX2KPL', rejectUnauthorized: false }, { host: 'lpar2.example.invalid', password: '${env:PW}' }] } });
+  assert.deepEqual(rules(r), ['zowe-config-secret-in-clear', 'zowe-config-tls-verify-off']);
+  assert.ok(!JSON.stringify(r).includes('Q7WX2KPL'));
+});
+
 // V9 - Control cards, shadowing and options
 
 function jclRules(t, text) {

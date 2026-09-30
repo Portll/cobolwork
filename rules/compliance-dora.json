@@ -2634,7 +2634,7 @@
    "framework": "dora",
    "clause": "Article 8(2)",
    "title": "Identification",
-   "rationale": "The rule reports: A Zowe MCP server is launched by npx with no pinned version. That is a source of ICT risk in a business-supporting function, identified by reading the source rather than by asking the team that maintains it.",
+   "rationale": "The rule reports: A Zowe MCP server is launched from the registry with no pinned version. That is a source of ICT risk in a business-supporting function, identified by reading the source rather than by asking the team that maintains it.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

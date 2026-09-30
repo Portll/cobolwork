@@ -2617,7 +2617,7 @@
    "framework": "ffiec",
    "clause": "DA&M IV",
    "title": "Common Development, Acquisition, and Maintenance Practices",
-   "rationale": "The rule reports: A Zowe MCP server is launched by npx with no pinned version. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "rationale": "The rule reports: A Zowe MCP server is launched from the registry with no pinned version. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",

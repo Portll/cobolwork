@@ -770,6 +770,76 @@ test('V9.6 A change that leaves the options alone reports nothing', GIT, (t) => 
   assert.deepEqual(doc.optionsChanged, []);
 });
 
+// V10 - Change assurance in the build
+
+function changeRepo(t) {
+  const d = tmp(t);
+  const repo = join(d, 'repo');
+  const git = gitRepo(repo);
+  writeFileSync(join(repo, 'cobolwork.policy.json'), JSON.stringify({ policyVersion: 1, requireEquivalence: 'always' }));
+  writeFileSync(join(repo, 'PAY.cbl'), payProgram(null, 'COMPUTE WS-AMT ROUNDED = WS-AMT * 1 GOBACK'));
+  git('add', '.');
+  git('commit', '-q', '-m', 'base');
+  const base = sha256(readFileSync(join(repo, 'PAY.cbl')));
+  writeFileSync(join(repo, 'PAY.cbl'), payProgram(null, 'COMPUTE WS-AMT = WS-AMT * 1 GOBACK'));
+  git('commit', '-q', '-am', 'head');
+  const head = sha256(readFileSync(join(repo, 'PAY.cbl')));
+  return { d, repo, base, head };
+}
+function statementFile(d, name, { base, head, verdict = 'equivalent', coverage = { paragraphs: 1, reached: 1, unreached: [] }, inconclusive = [] }) {
+  const st = {
+    _type: 'https://in-toto.io/Statement/v1',
+    subject: [{ name: 'base:PAY.cbl', digest: { sha256: base } }, { name: 'head:PAY.cbl', digest: { sha256: head } }],
+    predicateType: 'https://github.com/Portll/ironwork/blob/main/docs/evidence.md#equivalence-v1',
+    predicate: { verdict, coverage, inconclusive, results: [], inputs: [], limit: 'test' },
+  };
+  const path = join(d, name);
+  writeFileSync(path, JSON.stringify(st));
+  return path;
+}
+const buildChange = (repo, extra) => {
+  const r = cli(['build', repo, '--base', 'HEAD~1', '--head', 'HEAD', '--quiet', ...extra]);
+  return { status: r.status, doc: JSON.parse(r.stdout || '{}'), stderr: r.stderr };
+};
+
+test('V10.1 An equivalence statement for other sources is refused', GIT, (t) => {
+  const { d, repo, base } = changeRepo(t);
+  const other = statementFile(d, 'other.json', { base, head: 'f'.repeat(64) });
+  const { doc } = buildChange(repo, ['--equivalence', other]);
+  assert.equal(doc.checks.equivalence, false);
+  assert.equal(doc.verdict, 'fail');
+  assert.ok(doc.reasons.some((r) => /match no program this change edits/.test(r)), doc.reasons.join('\n'));
+});
+
+test('V10.2 An inconclusive statement does not satisfy requireEquivalence always', GIT, (t) => {
+  const { d, repo, base, head } = changeRepo(t);
+  const unmeasured = statementFile(d, 'unmeasured.json', { base, head, coverage: null });
+  let { doc } = buildChange(repo, ['--equivalence', unmeasured]);
+  assert.equal(doc.checks.equivalence, false);
+  assert.match(doc.equivalence.programs[0].because, /measured no coverage/);
+  const unreached = statementFile(d, 'unreached.json', { base, head, coverage: { paragraphs: 3, reached: 2, unreached: ['CALC-INTEREST'] } });
+  ({ doc } = buildChange(repo, ['--equivalence', unreached]));
+  assert.equal(doc.verdict, 'fail');
+  assert.ok(doc.reasons.some((r) => /never reached CALC-INTEREST/.test(r)), doc.reasons.join('\n'));
+  ({ doc } = buildChange(repo, []));
+  assert.equal(doc.checks.equivalence, false, 'no statement at all fails a requirement of always');
+});
+
+test('V10.3 An equivalent, signed statement satisfies requireEquivalence always', { ...SSH, ...GIT }, (t) => {
+  const { d, repo, base, head } = changeRepo(t);
+  const key = sshKey(d);
+  writeFileSync(join(d, 'allowed'), `assurance namespaces="cobolwork-evidence" ${key.line}\n`);
+  const plain = statementFile(d, 'plain.json', { base, head });
+  const signed = join(d, 'signed.json');
+  const r = cli(['evidence', 'sign', plain, '--ssh-key', key.path, '--out', signed]);
+  assert.equal(r.status, 0, r.stderr);
+  const { doc } = buildChange(repo, ['--equivalence', signed, '--allowed-signers', join(d, 'allowed')]);
+  assert.equal(doc.checks.equivalence, true, doc.reasons.join('\n'));
+  assert.deepEqual(doc.equivalence.programs[0].signer, ['assurance']);
+  const unsigned = buildChange(repo, ['--equivalence', plain, '--allowed-signers', join(d, 'allowed')]).doc;
+  assert.equal(unsigned.checks.equivalence, false, 'an unsigned statement does not satisfy a build that names signers');
+});
+
 test('V8.8 An unpinned npx launch is reported', (t) => {
   assert.deepEqual(rules(zoweTree(t, { 'claude_desktop_config.json': { mcpServers: { zowe: { command: 'npx', args: ['@zowe/mcp-server'] } } } })), ['zowe-mcp-unpinned']);
   assert.deepEqual(rules(zoweTree(t, { 'claude_desktop_config.json': { mcpServers: { zowe: { command: 'npx', args: ['@zowe/mcp-server@0.9.0'] } } } })), []);
@@ -778,7 +848,6 @@ test('V8.8 An unpinned npx launch is reported', (t) => {
 // V6 - V10: built in later steps of spec §16.
 
 const PENDING = {
-  V10: '--equivalence (spec §16 step 9)',
 };
 const specScenarios = [...SPEC.matchAll(/^#### (V\d+\.\d+) (.+)$/gm)].map((m) => ({ id: m[1], title: m[2].trim() }));
 const writtenHere = new Set([...SELF.matchAll(/^test\(['"](V\d+\.\d+) /gm)].map((m) => m[1]));

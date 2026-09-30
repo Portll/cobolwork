@@ -26,6 +26,7 @@ import { printable } from '../lib/kernel/printable.mjs';
 import { startEvidence, recordInputs, recordHashed, recordFindings, recordOutput, recordVerdict, recordBaselineWrite, finishEvidence } from '../lib/evidence/run.mjs';
 import { evidenceCommand } from '../lib/evidence/cli.mjs';
 import { slsaStatement } from '../lib/evidence/slsa.mjs';
+import { parseAllowedSigners } from '../lib/evidence/sshsig.mjs';
 
 const STARTED = new Date().toISOString();
 
@@ -100,6 +101,9 @@ Options
   --provenance-format cobolwork|slsa  build: the record as written today, or an in-toto statement with
                         the SLSA Provenance v1 predicate (unsigned; the pipeline signs it)
   --artifact <path>[,<path>]  build: what the compiler produced, named as subjects of the SLSA statement
+  --equivalence <file>[,<file>]  build --base: ironwork equivalence statements for the programs the
+                        change edits; with --allowed-signers each must be signed by one. The policy's
+                        requireEquivalence (never, machineAuthored, always) says when one is required
   --ironwork <path>     build: after a pass, run ironwork check on every program, for an estate that
                         compiles with IBM Enterprise COBOL; a program ironwork rejects exits 4, one it
                         does not model yet leaves the build undecided
@@ -157,6 +161,7 @@ function parseArgs(argv) {
     else if (a === '--policy') opts.policy = value();
     else if (a === '--provenance') opts.provenance = value();
     else if (a === '--provenance-format') opts.provenanceFormat = value();
+    else if (a === '--equivalence') opts.equivalence = [...(opts.equivalence || []), ...list().map((x) => resolve(x))];
     else if (a === '--artifact') opts.artifact = [...(opts.artifact || []), ...list().map((x) => resolve(x))];
     else if (a === '--ironwork') opts.ironwork = value();
     else if (a === '--evidence') opts.evidence = value();
@@ -261,7 +266,7 @@ if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
   process.stderr.write(`cobolwork: --json is for capabilities; every other command writes JSON unless --format says otherwise\n`);
   process.exit(2);
 }
-const buildFlag = ['policy', 'provenance', 'provenanceFormat', 'artifact', 'ironwork'].find((k) => opts[k] !== undefined) || (compilerArgv ? '' : null);
+const buildFlag = ['policy', 'provenance', 'provenanceFormat', 'artifact', 'equivalence', 'ironwork'].find((k) => opts[k] !== undefined) || (compilerArgv ? '' : null);
 if (opts.provenanceFormat !== undefined && !['cobolwork', 'slsa'].includes(opts.provenanceFormat)) { process.stderr.write(`cobolwork: --provenance-format takes cobolwork or slsa; got ${opts.provenanceFormat}\n`); process.exit(2); }
 if ((opts.provenanceFormat !== undefined || opts.artifact) && !opts.provenance) { process.stderr.write('cobolwork: --provenance-format and --artifact describe the --provenance file; name it\n'); process.exit(2); }
 if (buildFlag !== null && opts._.length && opts._[0] !== 'build') {
@@ -278,7 +283,8 @@ if (opts.evidence !== undefined && opts._.length && ![...JOURNALED, 'evidence'].
   process.exit(2);
 }
 const evidenceFlag = ['sshKey', 'signer', 'allowedSigners', 'anchorGit', 'ref', 'push', 'maxUnsealed', 'tsq', 'expectKey'].find((k) => opts[k] !== undefined);
-if (evidenceFlag && opts._.length && opts._[0] !== 'evidence') {
+if (opts.equivalence && !opts.base) { process.stderr.write('cobolwork: --equivalence judges a change; it needs --base\n'); process.exit(2); }
+if (evidenceFlag && opts._.length && opts._[0] !== 'evidence' && !(evidenceFlag === 'allowedSigners' && opts._[0] === 'build')) {
   process.stderr.write(`cobolwork: --${evidenceFlag.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)} is for evidence only\n`);
   process.exit(2);
 }
@@ -366,7 +372,7 @@ try {
     if (opts.only || opts.repos) { process.stderr.write('cobolwork: build judges one repository with every rule set; --only and --repos do not apply\n'); process.exit(2); }
     if (opts.baseline) { process.stderr.write('cobolwork: build reads the baseline the change was written against; --baseline does not apply, --no-baseline does\n'); process.exit(2); }
     if (opts.head && !opts.base) { process.stderr.write('cobolwork: build --head needs --base\n'); process.exit(2); }
-    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs });
+    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs, equivalence: opts.equivalence || [], allowed: opts.allowedSigners ? parseAllowedSigners(readFileSync(resolve(opts.allowedSigners), 'utf8')) : null });
     stampRevisions(result.doc.summary, opts.head || null);
     Object.assign(result.report.summary, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });
     Object.assign(result.provenance, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });

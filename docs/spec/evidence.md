@@ -268,11 +268,18 @@ evidence.
 5. **Recorded production inputs are masked before they leave production**: `ironwork mask` rewrites
    the fields a copybook names with a keyed, format-preserving transform (the key stays with the
    owner), and both versions read the same masked bytes.
-6. **Policy.** `cobolwork build --equivalence <statement>` checks the statement's subjects against the
-   base and head sources it read, its signature against `--allowed-signers`, and its verdict. A policy
-   key `requireEquivalence` (`never`, `machineAuthored`, `always`) says when a missing or failing
-   statement blocks; `machineAuthored` reads commit provenance as commitwork's `commit-provenance`
-   lane classifies it.
+6. **Policy.** `cobolwork build --base --head --equivalence <statement>[,...]` matches each statement to
+   a program the change edits by the digests of its `base:` and `head:` subjects; a statement that
+   matches no edited program fails the build. A program's statement satisfies the check when its
+   verdict is `equivalent` or `equivalent-as-declared`, its coverage was measured and reached every
+   changed paragraph, and, with `--allowed-signers`, it is signed by one (`cobolwork evidence sign
+   <statement> --ssh-key <file>` wraps a statement in a DSSE envelope as seals are signed). The policy
+   key `requireEquivalence` (`never`, `machineAuthored`, `always`; the stricter of floor and
+   repository wins) says when every edited program needs one. `machineAuthored` reads the commits in
+   `base..head`: an author, committer or `Co-authored-by`/`Generated-by` trailer naming a code
+   assistant or bot makes the change machine-authored; commits that cannot be read leave the check
+   undecided. A statement with `coverage: null`, as ironwork writes until E9 lands, is inconclusive
+   under this check.
 7. **Translations.** For COBOL translated to Java, `ironwork run` of the original produces the
    expected outputs and a statement over them; the translation's own run is compared with
    `ironwork compare --expected`.

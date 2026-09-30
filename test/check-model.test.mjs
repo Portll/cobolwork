@@ -589,6 +589,30 @@ test('a counter moved to 1 and raised only under a test that leaves room stays i
   }
 });
 
+test('a length beside a varying start is judged on the last byte both name', () => {
+  for (const file of ['SPANPAIRFIT.cbl', 'SPANSUM.cbl', 'SPANLIFT.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+  for (const file of ['SPANPAIR.cbl', 'SPANSUMOVER.cbl', 'SPANLIFTOVER.cbl', 'SPANEXPR.cbl']) {
+    const [f] = found(file);
+    assert.ok(f, file);
+    assert.deepEqual(stopped(file), [], file);
+  }
+});
+
+test('a length computed as the end less its start stops at the end where the start was below it', () => {
+  for (const file of ['LENREL.cbl', 'LENRELLT.cbl', 'LENRELBEFORE.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+  for (const file of ['LENRELOPEN.cbl', 'LENRELWRITE.cbl', 'LENRELPLUS2.cbl']) {
+    const [f] = found(file);
+    assert.ok(f, file);
+    assert.equal(f.sev, 'high', file);
+  }
+});
+
 test('a count UNSTRING writes is not the constant moved into it before', () => {
   const [f] = found('UNSTRCOUNT.cbl');
   assert.ok(f, 'WS-I can wrap once a count of up to 3000 is added to it');

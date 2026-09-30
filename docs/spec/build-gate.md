@@ -672,6 +672,16 @@ start must be kept at or below the item's size less `L - 1`: `X(I:3)` on a 256-b
 most 254. Where its start is a constant `S`, the length must be kept at or below the size less `S - 1`.
 A start with no length runs to the end of the item and is judged on the size.
 
+Where both start and length vary, `X(S:L)`, the length stops the index only where the last byte,
+`S + L - 1`, is inside the item: the most `S` can hold where the length is read, plus the most `L`
+can hold, less 1, is at most the size, or a fact bounds the two together. Such a fact comes from an
+outcome that makes `S + L <= k` true (`IF S + L - 1 > LENGTH OF X` failing), or from
+`COMPUTE L = E - S + c` where `S <= E + d` held before it: `L` is then at least `c - d`, and `S + L`
+at most the most `E` could hold plus `c`. An order `S <= E + d` comes from an outcome that makes it
+true. Both kinds end with a write to either of their fields, except that raising one of them by at
+most `n` leaves `S + L <= k + n`. A start that is neither a name nor a name moved by a constant bounds
+no length. Each part is still judged on its own as well.
+
 A check that ran on every route and did not bound the index lowers an index finding (a rule ending
 `-to-subscript`, `-to-reference-modification`, `-to-occurs-depending-count` or `-to-loop-bound`) one
 step only where one of its outcomes holds on every route to the use. Where both outcomes reach the

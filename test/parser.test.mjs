@@ -107,6 +107,23 @@ test('code past column 72 in a program without sequence numbers is free form; an
   assert.equal(detectFormat([head[0], '       REMARKS. A COMMENT ENTRY THAT RUNS PAST THE RIGHT MARGIN OF A FIXED-FORM PROGRAM.', ...head.slice(1)].join('\n')), 'fixed');
 });
 
+test('a tail past column 72 that closes a parenthesis is code, and a balanced note there is a tag', () => {
+  const head = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. W.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
+    '       01 WS-IDX PIC 9(4).', '       01 WS-T.', '          05 WS-E PIC 9(4) OCCURS 10.', '       PROCEDURE DIVISION.'];
+  const program = (line) => [...head, line, '           MOVE 1 TO WS-IDX', '           STOP RUN.'].join('\n');
+  const toColumn72 = (code) => `           MOVE 1 TO${' '.repeat(72 - 20 - code.length)}${code}`;
+  const cut = program(`${toColumn72('WS-E(WS-')}IDX)`);
+  assert.equal(detectFormat(cut), 'free');
+  const [p] = parseSource(cut, 'W.cbl').programs;
+  assert.ok(p.statements.some((s) => s.verb === 'MOVE' && s.line === 10), 'the statement after the long line is its own');
+  assert.equal(detectFormat(program(`${toColumn72('WS-IDX')}(CHG1)`)), 'fixed');
+  assert.equal(detectFormat(program(`${toColumn72('WS-IDX')}(C)2019`)), 'fixed');
+  assert.equal(detectFormat(program(`${toColumn72('WS-IDX')}CHG00012`)), 'fixed');
+  const commented = [...head, '      * A COMMENT IN COLUMN 7', `${toColumn72('WS-E(WS-')}IDX)`, '           STOP RUN.'].join('\n');
+  assert.equal(detectFormat(commented), 'variable', 'code past 72 among column-7 comments keeps the fixed columns');
+  assert.equal(detectFormat(commented.replace('      * A COMMENT', '      *> A COMMENT')), 'free');
+});
+
 test('>>SET CONSTANT names a value as $SET CONSTANT does, and a CD declares its name', () => {
   const src = ['       >>SET CONSTANT DOGGY "Barky"', '       IDENTIFICATION DIVISION.', '       PROGRAM-ID. K.', '       DATA DIVISION.',
     '       WORKING-STORAGE SECTION.', '       01 THEDOG PIC X(6) VALUE DOGGY.', '       >>SET CONSTANT PONY "White"', '       01 K1 PIC X(8).',

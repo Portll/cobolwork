@@ -108,16 +108,10 @@ the extensionless-member work already taught, applied one level up.
 
 ### Build this first: extract `lib/cards.mjs`, then `lib/hlasm-cards.mjs`
 
-**`lib/jcl.mjs` already contains most of the card reader.** It handles the 72-column statement, the
-sequence area, continuation, and operand splitting that respects nested parentheses and quotes:
-
-```
-lib/jcl.mjs:22   const STATEMENT_COLUMNS = 72;
-lib/jcl.mjs:26   const CONTINUE_FROM = 4;
-lib/jcl.mjs:33   export function splitOperands(s)
-lib/jcl.mjs:50   export function parseOperands(field)
-lib/jcl.mjs:65   function keywordSplit(part)
-```
+**`lib/cards.mjs` is extracted** (2026-09-30): the column model (`cobolCard`, `statementCard`) and
+operand splitting that respects nested parentheses and quotes (`splitOperands`, `parseOperands`,
+`keywordSplit`). Continuation folding is still `foldStatements` in `lib/jcl.mjs`, with JCL's
+columns 4-16; it moves when HLASM's reader gives it a second dialect.
 
 The first draft of this plan said to "reuse its shape". That is how duplication gets written: in
 practice it means copy it and let the two drift. **Extract it.**

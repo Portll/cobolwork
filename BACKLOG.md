@@ -414,11 +414,14 @@ that declares it rather than to whoever merged the findings. What that specifica
   through the port is a larger decision than the refactor that found it, and should be taken on its
   own evidence. The same limit stops `memoryTree` parsing, and stops a PDS-export adapter existing.
 
-- **The three extractions the language plan needs.** `lib/cards.mjs` (the 72-column model and
-  operand parsing, out of `lib/jcl.mjs`, five callers), `lib/layout.mjs` (level numbers to byte
-  offsets, out of `lib/parser.mjs`) and `lib/embedded-sql.mjs` (out of `lib/dataflow.mjs`). None is
-  built. `lib/layout.mjs` is the one that matters: it is the graded part of the parser, and a second
-  implementation would be a second thing to grade against nothing.
+- **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
+  (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,
+  BMS, utility, FTP and explain readers and the hidden, copybook and recon rule sets; `lib/layout.mjs`
+  holds picture and usage sizes, record offsets and report layout, out of `lib/parser.mjs`;
+  `lib/embedded-sql.mjs` holds Db2's host-variable roles, which the parser, the flow engine and the
+  precompiler now share. Still in `lib/jcl.mjs`: continuation folding, which has one dialect until
+  HLASM gives it a second to be shaped against. Still in `lib/parser.mjs`: reference-format
+  detection, which two branches in flight edit.
 
 ## Language coverage
 

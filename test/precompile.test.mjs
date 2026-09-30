@@ -341,14 +341,17 @@ test('cobc accepts a translated CICS program', { skip: !hasCobc && 'cobc is not 
   assert.equal(out.status, 0, out.stderr);
 });
 
-test('lib/cics-commands.mjs is what provenance/precompile.json generates, and every command cites IBM', () => {
+test('lib/cics-commands.mjs and the tables ironwork vendors are what provenance/precompile.json generates, and every command cites IBM', () => {
   const dir = mkdtempSync(join(tmpdir(), 'cw-cics-commands-'));
   const root = fileURLToPath(new URL('..', import.meta.url));
   const out = join(dir, 'cics-commands.mjs');
-  const gen = spawnSync(process.execPath, [join(root, 'diag', 'generate-precompile.mjs'), join(root, 'provenance', 'precompile.json'), join(root, 'provenance', 'words.json'), out], { encoding: 'utf8' });
+  const gen = spawnSync(process.execPath, [join(root, 'diag', 'generate-precompile.mjs'), join(root, 'provenance', 'precompile.json'), join(root, 'provenance', 'words.json'), out, dir], { encoding: 'utf8' });
   assert.equal(gen.status, 0, gen.stderr);
   const lf = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
   assert.equal(lf(join(root, 'lib', 'cics-commands.mjs')), lf(out), 'regenerate lib/cics-commands.mjs');
+  for (const table of ['cics-commands.tsv', 'dfhresp.tsv', 'dfhvalue.tsv']) {
+    assert.equal(lf(join(root, 'provenance', table)), lf(join(dir, table)), `regenerate provenance/${table}`);
+  }
   const prov = JSON.parse(readFileSync(join(root, 'provenance', 'precompile.json'), 'utf8'));
   for (const [name, c] of Object.entries(prov.commands)) {
     assert.match(c.doc || '', /^https:\/\/www\.ibm\.com\/docs\//, `${name}: no IBM documentation URL`);

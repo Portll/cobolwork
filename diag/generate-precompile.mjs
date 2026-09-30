@@ -1,12 +1,14 @@
-// Write lib/cics-commands.mjs from provenance/precompile.json and provenance/words.json, and from
+// Write lib/cics-commands.mjs, and the tables ironwork vendors (provenance/cics-commands.tsv,
+// dfhresp.tsv and dfhvalue.tsv), from provenance/precompile.json and provenance/words.json, and from
 // nothing else, so every direction and number the precompiler uses has a document behind it.
 //
-// Usage: node diag/generate-precompile.mjs [precompileJson] [wordsJson] [destMjs]
+// Usage: node diag/generate-precompile.mjs [precompileJson] [wordsJson] [destMjs] [tsvDir]
 import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
-const [provPath = at('../provenance/precompile.json'), wordsPath = at('../provenance/words.json'), dest = at('../lib/cics-commands.mjs')] = process.argv.slice(2);
+const [provPath = at('../provenance/precompile.json'), wordsPath = at('../provenance/words.json'), dest = at('../lib/cics-commands.mjs'), tsvDir = at('../provenance')] = process.argv.slice(2);
 const prov = JSON.parse(readFileSync(provPath, 'utf8'));
 const { dfhaid, dfhbmsca } = JSON.parse(readFileSync(wordsPath, 'utf8')).structured;
 
@@ -65,3 +67,44 @@ export const DFHBMSCA_NAMES = ${words(dfhbmsca.value)};
 
 writeFileSync(dest, out, 'utf8');
 console.log(`wrote ${dest}: ${commands.length} commands, ${Object.keys(prov.dfhresp.values).length + 1} RESP names, ${Object.keys(prov.dfhvalue.values).length} CVDAs`);
+
+const source = (id) => prov.sources[id];
+const tsv = (file, header, rows) => {
+  writeFileSync(join(tsvDir, file), [...header.map((h) => `# ${h}`), ...rows.map((r) => r.join('\t'))].join('\n') + '\n', 'utf8');
+  console.log(`wrote ${join(tsvDir, file)}: ${rows.length} rows`);
+};
+const generated = "GENERATED from cobolwork's provenance/precompile.json by diag/generate-precompile.mjs; ironwork vendors this file.";
+
+const optionRows = (command, c, doc, page) => {
+  const head = [command, c.identify?.join(' ') || '-', c.default ? 'yes' : 'no'];
+  const tail = [doc, page ?? '-'];
+  const options = Object.entries(c.options).map(([option, [argument, direction]]) => [...head, option, argument, direction, ...tail]);
+  if (c.anyOption) options.push([...head, '*', c.anyOption === 'label' ? 'label' : '-', c.anyOption === 'label' ? 'label' : '-', ...tail]);
+  return options.length ? options : [[...head, '-', '-', '-', ...tail]];
+};
+tsv('cics-commands.tsv', [
+  `The CICS commands cobolwork's precompiler translates and each option's argument type and direction, from ${source('cics-api-5.3').title}; doc is each command's CICS TS 6.x topic and page the reference's.`,
+  generated,
+  'A command named in several words is told from its namesakes by an identify option; default marks the one meant when none is written. Command * lists the options every command may carry, option * any condition name, and option - a command with none.',
+  'command\tidentify\tdefault\toption\targument\tdirection\tdoc\tpage',
+], [
+  ...optionRows('*', prov.everyCommand, source(prov.everyCommand.source).url, prov.everyCommand.page),
+  ...Object.entries(prov.commands).flatMap(([name, c]) => optionRows(name, c, c.doc, c.page)),
+]);
+
+const resp = [
+  ...Object.entries(prov.dfhresp.values).map(([name, value]) => [name, value, source(prov.dfhresp.source).url, prov.dfhresp.page]),
+  ...Object.entries(prov.dfhresp.also.values).map(([name, value]) => [name, value, source(prov.dfhresp.also.source).url, '-']),
+].sort((a, b) => a[1] - b[1]);
+tsv('dfhresp.tsv', [
+  `The number DFHRESP(condition) stands for, as EIBRESP holds it: ${source(prov.dfhresp.source).title}, page ${prov.dfhresp.page}, and ${source(prov.dfhresp.also.source).title} for what that reference lacks.`,
+  generated,
+  'condition\tvalue\tsource\tpage',
+], resp);
+
+tsv('dfhvalue.tsv', [
+  `The number DFHVALUE(cvda) stands for: ${source(prov.dfhvalue.source).title} (${source(prov.dfhvalue.source).url}), pages ${prov.dfhvalue.pages.join('-')}.`,
+  `${prov.dfhvalue.notes} Omitted: ${Object.entries(prov.dfhvalue.omitted).map(([n, why]) => `${n}, ${why}`).join('; ')}.`,
+  generated,
+  'cvda\tvalue',
+], Object.entries(prov.dfhvalue.values));

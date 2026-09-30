@@ -13,7 +13,9 @@ lib/words.mjs`, and commit both. Editing `lib/words.mjs` by hand fails the suite
 translates, each option's argument type and direction with the manual page behind it, and the
 numbers DFHRESP and DFHVALUE stand for. [`../lib/cics-commands.mjs`](../lib/cics-commands.mjs) is
 generated from it and `words.json` by [`../diag/generate-precompile.mjs`](../diag/generate-precompile.mjs),
-and `test/precompile.test.mjs` holds the two equal.
+and so are [`cics-commands.tsv`](cics-commands.tsv), [`dfhresp.tsv`](dfhresp.tsv) and
+[`dfhvalue.tsv`](dfhvalue.tsv), which ironwork vendors for its CICS conditions and command list;
+`test/precompile.test.mjs` holds them equal.
 
 [`enterprise-options.json`](enterprise-options.json) is Enterprise COBOL 6.4's compiler-option table:
 the 85 options in Table 45 of IBM's Programming Guide, each with its NO form, every abbreviation IBM

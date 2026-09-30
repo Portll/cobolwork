@@ -411,9 +411,11 @@ only one of the five that does.
   `OUTREC` and `IEBGENER/SYSIN` choose or reshape records between the DDs the copy already names;
   `IKJEFT01/ADDUSER`, `ALTUSER`, `PERMIT`, `SETROPTS` and `RDEFINE` are RACF commands that
   `jcl-instream-security-command` reports; `FTP/PUT` is read by the FTP rules in `lib/sets/jcl.mjs`.
-  Open: `IKJEFT01/ALLOC`, which binds a DD at run time, `EXEC` and `CALL`, which run a program or
-  CLIST whose own DDs then decide the copies, `FTP/GET`, which writes a local data set from outside,
-  and `FTP/SITE`.
+  `IKJEFT01/ALLOC` and `CALL` are read by `tsoCommands`: an ALLOCATE is a DD of the step, and a
+  program TSO CALL or DSN RUN starts gets the step's DDs and its parameter string as PARM. Open:
+  `IKJEFT01/EXEC`, whose CLIST or REXX is in a library the job does not hold; `FTP/GET`, which
+  writes a local data set from outside and needs the FTP session reader moved out of the rules into
+  `lib/` before the dataset flow can see it; and `FTP/SITE`.
 
 ## Build and release
 

@@ -158,3 +158,17 @@ test('the summary counts what crossed and what did not', () => {
   assert.equal(s.jclStepsResolved, 1, 'IEFBR14 is a system utility, not a program in this tree');
   assert.ok(s.jclCrossings >= 1);
 });
+
+test('a TSO CALL parameter and a DSN RUN PARMS reach the program as PARM does, and its SYSIN is joined', () => {
+  const tso = (cmd) => tree({
+    'src/RUNCMD.cbl': TAKES_PARM,
+    'src/RDSYSIN.cbl': READS_SYSIN,
+    'jcl/TSO.jcl': ['//TSOJOB   JOB (ACCT)', '//STEP010  EXEC PGM=IKJEFT01', '//SYSTSIN  DD *', cmd, '/*', '//SYSIN    DD *', 'ANY', '/*'].join('\n'),
+  });
+  const call = scan(tso("  CALL 'PAY.LOAD(RUNCMD)' 'SOMETHING'")).findings.find((f) => f.rule === 'jcl-parm-to-os-command');
+  assert.match(call.related[0].detail, /the parameter TSO CALL passes in step STEP010 of jcl\/TSO\.jcl, which runs RUNCMD/);
+  assert.deepEqual(call.startedBy.map((e) => e.step), ['STEP010']);
+  assert.ok(rules(tso("  RUN PROGRAM(RUNCMD) PARMS('X')")).includes('jcl-parm-to-os-command'));
+  assert.ok(!rules(tso("  CALL 'PAY.LOAD(RUNCMD)'")).includes('jcl-parm-to-os-command'), 'a CALL with no parameter string passes none');
+  assert.ok(rules(tso("  CALL 'PAY.LOAD(RDSYSIN)'")).includes('jcl-instream-to-os-command'));
+});

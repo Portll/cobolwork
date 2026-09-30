@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseJcl } from '../lib/jcl.mjs';
-import { UTILITIES } from '../lib/utilities.mjs';
+import { UTILITIES, tsoCommands } from '../lib/utilities.mjs';
 import './pin-machine.mjs';
 
 const parse = (lines) => parseJcl(lines.join('\n') + '\n', 'job.jcl');
@@ -403,4 +403,76 @@ test('a dataset REPRO names without a DD is still a touch, so the flow through i
   const copy = r.datasetFlow.find((f) => f.dsn === 'PAY.EXTRACT.COPY');
   assert.deepEqual(copy.writers, [{ step: 'S2', program: 'IDCAMS', dd: null, line: 6, copiedFrom: [{ dd: null, dsn: 'PAY.EXTRACT' }] }]);
   assert.deepEqual(copy.readBy, ['S3']);
+});
+
+const TSO_JOB = [
+  '//J JOB (X)',
+  "//S1 EXEC PGM=IKJEFT01,PARM='ALLOC FILE(PARMDD) DA(''PAY.PARM'') SHR'",
+  '//SYSTSPRT DD SYSOUT=*',
+  '//SYSTSIN DD *',
+  "  ALLOC FILE(MASTER) DA('PAY.MASTER') SHR REUSE",
+  "  ALLOCATE DDNAME(REPORT) DATASET('PAY.RPT.A' 'PAY.RPT.B') OLD",
+  '  ALLOC DD(OUT) DA(MY.OUTPUT) NEW -',
+  '        SPACE(1,1) TRACKS',
+  '  ALLOC FILE(PRT) SYSOUT(A)',
+  "  ALLOC F(AMBIG) DA('PAY.X') SHR",
+  "  CALL 'PAY.LOAD(PAYCALC)' 'RUN=NIGHTLY'",
+  '  CALL *(OTHER)',
+  '  CALL LOAD',
+  '  DSN SYSTEM(DB2P)',
+  "  RUN PROGRAM   (SQLPGM) PLAN (SQLPLAN) PARMS ('/ABC')",
+  '  END',
+  '/*',
+];
+
+test('TSO ALLOCATE in a batch step is a DD of the step; a name without quotes has no dsn, and F is not FILE', () => {
+  const r = parse(TSO_JOB);
+  const got = r.steps[0].dds.filter((d) => d.allocated).map((d) => [d.name, d.dsn, d.access, d.sysout, d.line]);
+  assert.deepEqual(got, [
+    ['PARMDD', 'PAY.PARM', 'read', null, 2],
+    ['MASTER', 'PAY.MASTER', 'read', null, 5],
+    ['REPORT', 'PAY.RPT.A', 'exclusive', null, 6],
+    [null, 'PAY.RPT.B', 'exclusive', null, 6],
+    ['OUT', null, 'create', null, 7],
+    ['PRT', null, 'unknown', 'A', 9],
+  ]);
+  assert.equal(r.steps[0].dds.find((d) => d.name === 'OUT').rawDsn, 'MY.OUTPUT');
+});
+
+test('a data set a TSO step allocates joins the dataset flow', () => {
+  const r = parse([
+    '//J JOB (X)', '//S1 EXEC PGM=PAYGEN', '//OUT DD DSN=PAY.MASTER,DISP=(NEW,CATLG)',
+    '//S2 EXEC PGM=IKJEFT01', '//SYSTSIN DD *', "  ALLOC FILE(IN) DA('PAY.MASTER') SHR", "  CALL 'PAY.LOAD(PAYRPT)'", '/*',
+  ]);
+  const master = r.datasetFlow.find((f) => f.dsn === 'PAY.MASTER');
+  assert.deepEqual(master.writtenBy, ['S1']);
+  assert.deepEqual(master.readBy, ['S2']);
+});
+
+test('TSO CALL and DSN RUN name the programs a TSO step runs, with their parameters', () => {
+  const r = parse(TSO_JOB);
+  assert.deepEqual(tsoCommands(r.steps[0]).runs.map((x) => [x.program, x.parm, x.line, x.via]), [
+    ['PAYCALC', 'RUN=NIGHTLY', 11, 'TSO CALL'],
+    ['OTHER', null, 12, 'TSO CALL'],
+    ['TEMPNAME', null, 13, 'TSO CALL'],
+    ['SQLPGM', '/ABC', 15, 'DSN RUN'],
+  ]);
+});
+
+test('TSO commands kept in a data set are named as unread', () => {
+  const r = parse(['//J JOB (X)', '//S1 EXEC PGM=IKJEFT01', '//SYSTSIN DD DSN=PAY.CNTL(TSOCMDS),DISP=SHR']);
+  assert.ok(r.diags.some((d) => /commands in PAY\.CNTL\(TSOCMDS\).*ALLOCATE, CALL or RUN/.test(d.text)));
+});
+
+test('a keyword may stand apart from its parenthesis, and sequence numbers past column 72 are not read', () => {
+  const r = parse([
+    '//J JOB (X)', '//S1 EXEC PGM=IKJEFT01', '//SYSTSIN DD *',
+    "  ALLOC FILE (IN) DA ('PAY.IN') SHR".padEnd(72) + '00010000',
+    '  DSN SYSTEM (DB2P)'.padEnd(72) + '00020000',
+    '    RUN PROGRAM   (GETTAB) -'.padEnd(72) + '00030000',
+    '        PLAN      (PLANA )'.padEnd(72) + '00040000',
+    '/*',
+  ]);
+  assert.deepEqual(r.steps[0].dds.filter((d) => d.allocated).map((d) => [d.name, d.dsn]), [['IN', 'PAY.IN']]);
+  assert.deepEqual(tsoCommands(r.steps[0]).runs.map((x) => x.program), ['GETTAB']);
 });

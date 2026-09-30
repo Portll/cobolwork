@@ -187,6 +187,7 @@ test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
     ['call', { program: 'HELPER', from: 'HELPER.cbl', sha256: 'c'.repeat(64) }],
     ['dd', { dd: 'INFILE', event: 'end', sha256: 'b'.repeat(64), bytes: 11 }],
     ['abend', { code: 'S0C7', file: 'PAYROLL.cbl', line: 42 }],
+    ['sink', { sink: 'dynamic-program-load', file: 'PAYROLL.cbl', line: 40, marker: 'CWVRFY01', reached: true }],
     ['step', { step: 'PAY.CALC', pgm: 'PAYROLL', outcome: 'ABEND S0C7: a data exception' }],
     ['close', { exit: 16, counts: { dd: 2 }, durationMs: 5, ledger: 'unrecorded' }],
   ];
@@ -204,6 +205,7 @@ test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
   assert.deepEqual(v.unrecorded, [id]);
   assert.throws(() => makeRecord({ chain, prev, kind: 'dd', fields: { dd: 'X', event: 'rewind' }, at }), TypeError);
   assert.throws(() => makeRecord({ chain, prev, kind: 'step', fields: { step: 'S1', pgm: 'A' }, at }), TypeError);
+  assert.throws(() => makeRecord({ chain, prev, kind: 'sink', fields: { sink: 'os-command', file: 'A.cbl', line: 1, marker: 'CWVRFY01', reached: 'yes' }, at }), TypeError);
 });
 
 // V2 - The ledger

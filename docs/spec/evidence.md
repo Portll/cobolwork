@@ -107,6 +107,7 @@ ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence
 | `call` | `program`, `from`, `sha256` | a program CALL loaded from a library, with its source's digest |
 | `abend` | `code`, `file`, `line` | the abend a run ended with |
 | `step` | `step`, `pgm`, `outcome` | a job step ironwork ran or bypassed, and how it ended (`RC=0004`, `ABEND S0C7: …`, `BYPASSED: …`, `JCL ERROR: …`) |
+| `sink` | `sink`, `file`, `line`, `marker`, `reached` | an operation an ironwork run with `--trace-marker` reached (ironwork `docs/evidence.md` §1.1): the sink kind as `lib/dataflow.mjs` names it, where it is, the marker, and whether the marker was in its operand; once reached and once not, never the operand |
 
 A reason is recorded as its digest, not its text: a reason is free prose, and free prose is where a
 secret or a person's name ends up.

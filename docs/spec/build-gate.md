@@ -653,6 +653,20 @@ alphanumeric item or table element, written alike in the test and the scan, and 
 anything its subscript reads between the two ends the fact. `UNTIL I = 0` and `I <= 0` count as
 `I < 1`.
 
+A relation between a field and an expression in one other field, `UNTIL J > LEN - 1`, bounds `J` by
+the interval `LEN` holds at the test, whether that interval came from a check, from arithmetic, or from
+`LEN`'s picture; a name read later in the same condition is judged with it. A constant moved into a
+whole-number field also leaves "at most that constant", and an upper bound survives `SUBTRACT n`,
+`SET DOWN BY n` and `COMPUTE X = X - n` where the field was at least `n` before the statement, so
+nothing is stored as an absolute value or wraps. Any other write to the field ends it.
+
+A constant a statement moves, and the outcome of a check on a whole-number field, also hold every
+interval arithmetic derives that contains them, and each such outcome is an interval arithmetic can
+widen into. A counter moved to 1 and raised by `ADD 1` only under `IF C < 10`, around a `GO TO` loop,
+meets at its head as 1 to 10 from both routes. A performed paragraph's summary still carries only the
+intervals that need no fact before it, so the same counter raised in a paragraph `PERFORM ... UNTIL`
+runs is not bounded this way.
+
 A reference modification is judged on the bytes it names. Where its length is a constant `L`, the
 start must be kept at or below the item's size less `L - 1`: `X(I:3)` on a 256-byte `X` needs `I` at
 most 254. Where its start is a constant `S`, the length must be kept at or below the size less `S - 1`.

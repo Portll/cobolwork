@@ -560,3 +560,36 @@ test('a reference modification is judged on its last byte: a constant length pas
     assert.equal(stopped(file).length, 1, file);
   }
 });
+
+test('a loop bound over an expression in another field takes that field interval, a trimmed length included', () => {
+  for (const file of ['LENLOOP.cbl', 'LENSMALL.cbl', 'DECLOOP.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.equal(stopped(file).length, 1, file);
+  }
+  for (const file of ['LENOTHER.cbl', 'LENREWRITE.cbl', 'LENWIDE.cbl']) assert.equal(found(file).length, 1, file);
+});
+
+test('an upper bound survives a decrement only where the field was at least the amount, and not past an increment', () => {
+  for (const file of ['DECLOOPADD.cbl', 'DECLOOPZERO.cbl']) {
+    const [f] = found(file);
+    assert.ok(f, file);
+    assert.deepEqual(stopped(file), [], file);
+  }
+});
+
+test('a counter moved to 1 and raised only under a test that leaves room stays in its table across a GO TO loop', () => {
+  for (const file of ['GOTOLOOP.cbl', 'DCLOOP.cbl']) {
+    assert.deepEqual(found(file), [], file);
+    assert.ok(stopped(file).length >= 1, file);
+  }
+  for (const file of ['GOTOHIGH.cbl', 'GOTOADD2.cbl', 'GOTOBARE.cbl', 'GOTOINPUT.cbl']) {
+    const [f] = found(file);
+    assert.ok(f, file);
+    assert.equal(f.sev, 'high', file);
+  }
+});
+
+test('a count UNSTRING writes is not the constant moved into it before', () => {
+  const [f] = found('UNSTRCOUNT.cbl');
+  assert.ok(f, 'WS-I can wrap once a count of up to 3000 is added to it');
+});

@@ -149,7 +149,7 @@ that gap, in the tool's proper lane:
   the route in a test region the estate owns, under its own authorisation. The tool's part is to
   name the transaction, the field and the missing guard precisely enough to check; it never drives a
   live system or crafts a payload. That boundary is the same one `SECURITY.md` and the exploitability
-  answer already hold.
+  answer already hold. `explain` carries the plan (§9.7).
 
 And the aggregate answer: the hand-labelled corpus (§7.3) measures how often a theoretical claim is
 real per rule, so a single unverified finding can carry a *measured* confidence even before anyone
@@ -269,3 +269,40 @@ The sealed answer key `diag/label-sheet.mjs` writes records each site's verdict,
 often `refuted` sits at one that is not. That is the route half, the part §7.3 says a public corpus
 can witness; the reach half still needs an estate's facts. The labels are not started, so no rate is
 published.
+
+### 9.7 The verification plan
+
+`cobolwork explain <path> <fingerprint>` carries `verify`: the §8 hand-off, for the estate to run in
+a test region it owns under its own authorisation (`lib/verify.mjs`). A scan report never carries
+it; the packet it rides in already carries source and is handled as the source is.
+
+```json
+"verify": {
+  "where": "a test region the estate owns, holding test data, under its own authorisation: ...",
+  "start": "transaction INQ1",
+  "tool": "CEDF at the terminal that runs INQ1, or a debugger such as z/OS Debugger where the operation is not an EXEC command",
+  "enter": "field QTY of map INQM in mapset INQS, received at INQUIRY.cbl:10",
+  "value": "a letter where WS-QTY expects a digit, such as A in its first position",
+  "observe": "stop at INQUIRY.cbl:14 and read WS-QTY holding the letter: that is the defect, whatever the operation does next",
+  "run": "the task abends ASRA, a data exception (S0C7 in batch), at the operation",
+  "record": "bring the result in a COBOLWORK_WITNESS feed under \"<fingerprint>\": ..."
+}
+```
+
+`observe` is the witness in every plan: the value read at the operation. `run` says what letting the
+operation go on shows, where that is harmless - an abend, a record from another test user, a name
+that fails to resolve. Where it would act, `run` is null and `stopBefore` says to end the task first:
+
+| Sink | `value` | Let it run |
+|---|---|---|
+| arithmetic | a letter in a numeric field | yes: ASRA or S0C7 |
+| subscript, loop bound, reference modification, `OCCURS DEPENDING` count | one past the table or field, from the finding where it names the size, or 0 | only under SSRANGE |
+| record key, record update | the key of a test record set up for another test user | yes, on test data |
+| variable program, transfer, file, SYSID | `CWVRFY01`, after checking nothing by that name is defined | yes: PGMIDERR, S806, file status 35, SYSIDERR |
+| web response, screen, log | `CWVRFY01` (`CWVRFY01<>` for a web response) | yes: the marker as sent |
+| command, SQL, job, system resource, connection, host, outbound data, queue name, XML, header, storage length | `CWVRFY01`, or a length for storage | no |
+
+A response code is not entered: the plan says to provoke the failure, such as a key that matches no
+test record, and read the code on its way back. A protected field is changed under CEDF in the data
+the `RECEIVE MAP` returns, not with a modified client. `test/verify.test.mjs` holds every path rule to
+a plan and every value to one no interpreter would run.

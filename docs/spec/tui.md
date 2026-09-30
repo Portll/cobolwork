@@ -33,7 +33,7 @@ evidence, severity, coverage, estate. This adds:
 | **PF key** | A function key bound to an action. The legend on the last row says which |
 | **keymap** | Which keys mean which actions. Two ship: `ispf` and `modern`. Every action is in both |
 | **banner** | The coverage lines above any count. It says what was not read before anything says what was found |
-| **fix packet** | One finding with the source lines of its trace, the declarations of the items on it, and the credited check. The only cobolwork output that carries source |
+| **fix packet** | One finding with the source lines of its trace, the declarations of the items on it, the credited check, and a verification plan for a path finding (reach.md §9.7). The only cobolwork output that carries source |
 
 ## 3. Ports and adapters
 

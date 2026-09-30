@@ -1,6 +1,6 @@
 {
   "name": "@portll/cobolwork",
-  "version": "0.2.152",
+  "version": "0.2.153",
   "description": "COBOL, JCL and CICS security analysis with zero runtime dependencies: reference-format parser, cross-program data flow, mainframe credential rules. Plugs into commitwork.",
   "license": "AGPL-3.0-or-later",
   "author": "Portll <john@portll.net>",
@@ -14,7 +14,7 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "bin": {
     "cobolwork": "bin/cobolwork.mjs"

@@ -10,7 +10,7 @@ from pathlib import Path
 def main() -> None:
     node = shutil.which("node")
     if node is None:
-        sys.exit("cobolwork needs Node.js 18 or later on PATH: https://nodejs.org")
+        sys.exit("cobolwork needs Node.js 22 or later on PATH: https://nodejs.org")
     entry = Path(__file__).resolve().parent / "node" / "bin" / "cobolwork.mjs"
     argv = [node, str(entry), *sys.argv[1:]]
     if os.name == "nt":

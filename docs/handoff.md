@@ -193,8 +193,8 @@ findings against 22 from outside input.
 
 In order. Each item says what it is worth and what it costs.
 
-1. **Read CI after each push.** `.github/workflows/ci.yml` runs the suite on ubuntu with Node 18
-   and 24 and on windows with Node 18, and scans the benchmark on ubuntu. `npm test` is parallel
+1. **Read CI after each push.** `.github/workflows/ci.yml` runs the suite on ubuntu with Node 22
+   and 24 and on windows with Node 22, and scans the benchmark on ubuntu. `npm test` is parallel
    there; the serial run is still the one to trust locally.
 
 2. **Label the corpus.** `diag/label-sheet.mjs` writes a blind worksheet and a sealed answer key;

@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 18 is the floor the package declares, 24 is current. Windows is not incidental: paths in
+        # 22 is the floor the package declares, 24 is current. Windows is not incidental: paths in
         # a report are POSIX-shaped on every platform, the diff command has to defeat the
         # line-ending conversion git does there by default, and the one CI failure this project
         # has had was a glob that only Windows left unexpanded. Every platform-specific bug so far
@@ -25,9 +25,9 @@ jobs:
         # Three jobs, not a twelve-job grid: macOS was green in every run and no code here behaves
         # differently on it.
         include:
-          - { os: ubuntu-latest, node: '18' }
+          - { os: ubuntu-latest, node: '22' }
           - { os: ubuntu-latest, node: '24' }
-          - { os: windows-latest, node: '18' }
+          - { os: windows-latest, node: '22' }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

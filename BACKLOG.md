@@ -496,7 +496,7 @@ only one of the five that does.
 ## Build and release
 
 - **CI runs on Linux and Windows.** `.github/workflows/ci.yml` runs `npm test` on ubuntu with Node
-  18 and 24 and on windows with Node 18, and scans the benchmark on ubuntu. Every platform-specific
+  22 and 24 and on windows with Node 22, and scans the benchmark on ubuntu. Every platform-specific
   failure so far has been a Windows one, which is why one Windows job stays in the matrix.
 
 - **The test suite is not reproducible across machines.** `npm test` runs `node --test`, which is

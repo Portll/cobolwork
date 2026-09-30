@@ -34,7 +34,7 @@ follows. To run from a checkout instead:
 
     git clone https://github.com/Portll/cobolwork && cd cobolwork && npm link
 
-Node 18 or later. No dependencies, runtime or development. `npm link` puts `cobolwork` on your PATH;
+Node 22 or later. No dependencies, runtime or development. `npm link` puts `cobolwork` on your PATH;
 adding `bin/` to PATH does the same thing. GnuCOBOL is needed only to regrade the parser or validate
 benchmark cases. In a GitHub workflow, `uses: Portll/cobolwork@main` runs the build gate on a pull
 request and writes SARIF for code scanning: [docs/github-action.md](docs/github-action.md).

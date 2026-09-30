@@ -290,6 +290,51 @@ synthetic cases is not the same evidence. Three things it surfaced:
   name, via and file:line - pairing the parser's `copies` positionally reports false moves, because
   one changed resolution shifts every later index. The GnuCOBOL re-grade is still owed.
 
+- **Seeded false alarms, and planted labels: 2026-09-30.** Each `bench/seed.mjs` operator now
+  plants near-misses beside its flaws, into the same host: the flaw's change with the property that
+  makes it a flaw taken away. Every planted program is a label record (`labels` in `--out`, source
+  `planted`) for per-rule precision from machine labels. Over the 500-repository corpus, 25 hosts
+  per operator, `--skip volume`: 225 labels, 125 flaws and 100 near-misses.
+
+  | Operator | Variant | Label | Reported |
+  |---|---|---|---|
+  | command line to `CALL 'SYSTEM'` | the command read from the command line | flaw | 25 of 25 |
+  | | an EVALUATE lets two commands through (bench 062) | near-miss | 0 of 25 |
+  | | the command line read, a literal command run (bench 002) | near-miss | 0 of 25 |
+  | command line to the first literal `CALL` | the target read from the command line | flaw | 25 of 25 |
+  | | read, and `GOBACK` unless it names the program the call made | near-miss | 13 of 25 |
+  | | the call through a field holding that program's name | near-miss | 0 of 25 |
+  | `EIBCALEN` check removed | every test of it gone | flaw | 17 of 25 |
+  | | gone, and `EIBCALEN` copied to a field nothing tests | flaw | 0 of 25 |
+  | | gone, and a return on entry unless the whole area was passed | near-miss | 0 of 25 |
+
+  Three rule gaps, none fixed here:
+  - `cics-commarea-without-length-check` exempts a program that points `DFHCOMMAREA` at its own
+    storage by finding `ADDRESS OF DFHCOMMAREA` anywhere in a `SET` (`pointsItself`,
+    `lib/sets/cics.mjs`), so `SET WS-ADDR-DFHCOMMAREA TO ADDRESS OF DFHCOMMAREA`, which takes the
+    caller's area's address, exempts it too. All 8 misses are GenApp's `LGACDB01`, `LGACDB02` and
+    `LGACUS01` in five forks; with that one statement commented out the rule reports each.
+  - The same rule takes any mention of `EIBCALEN` for a test of it (`checksLength`), so a copy that
+    nothing tests hides the flaw in every host.
+  - `argv-or-env-to-dynamic-program-load` reports 13 of 25 programs whose command-line value is
+    tested against the one name the call may take, with `GOBACK` on any other, before the call.
+    Bench 062's `EVALUATE` form is honoured. What separates the 13 from the 12 is not yet read.
+
+  Harness faults found on the way, each of which made a plant something other than its label:
+  - The rule reports a communication area where it is declared, and a finding in a copybook of the
+    host did not count (`GAM0VII`, reported at `GAM0BCA.cpy`). Every staged file is the host or its
+    copybook, so any finding in the staging directory now counts.
+  - Staging did not follow `EXEC SQL INCLUDE`, and an area declared through one had size 0, which
+    the rule skips (`LGACDB01`).
+  - A program's first literal `CALL` could sit in a second program in the same file, which cannot
+    see the planted field (`Tlgicdb0`). A file holding more than one program is no longer a host.
+  - A program whose `EIBCALEN` is named where no plant reaches - a translated program's
+    `DFHEIBLK`, an area that `OCCURS DEPENDING ON` it, a copybook it includes - may still check the
+    length after the plant, and is no longer a host for the length check.
+  - A skipped host's staging directory could be reused by a later host from the same repository.
+
+  The 25 of 25 above for the removed check was over a host set these filters change.
+
 - **The source budget is cumulative across a repository rather than per file**, so a repository
   stops being read partway through and which files survive depends on sort order. At the 64 MB
   default this hid 29% of real programs; at 256 MB, 9%; with the generated repositories out, 715

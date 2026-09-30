@@ -305,6 +305,6 @@ Decided on 2026-09-24, and recorded so they are not reopened by accident:
 `node diag/measure-rules.mjs <corpus> --skip volume --exclude-paths
 tests/,test/,/fixtures/,conformance/,/nist/,/samples/,/examples/ --max-source-bytes 268435456`
 reproduces the per-rule counts, `node bench/seed.mjs <corpus> --per-operator 25 --skip volume` the
-seeded recall, and `node bench/run.mjs` the bench. `--baseline` and `--list` on the first do what
+seeded recall, false alarms and planted labels, and `node bench/run.mjs` the bench. `--baseline` and `--list` on the first do what
 the scratch scripts behind the older A/B comparisons did. If a number here disagrees with the tree,
 the tree is right.

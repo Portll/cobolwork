@@ -127,7 +127,7 @@ test('--baseline leaves out a repository the two runs listed differently, and to
   assert.match(r.stdout, /files listed: 9 then, 8 now - the runs did not see the same corpus/);
 }));
 
-test('a directory the walk cannot list leaves the repository read in part by every set', () => inCorpus((corpus, dir) => {
+test('a directory the walk cannot list leaves the repository read in part by every set', { skip: process.platform === 'win32' && 'mode bits do not stop a listing on Windows' }, () => inCorpus((corpus, dir) => {
   const locked = join(corpus, 'copyB', 'sub');
   mkdirSync(locked);
   chmodSync(locked, 0o000);

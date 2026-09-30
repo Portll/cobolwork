@@ -25,7 +25,7 @@ const flaky = (failing, code, times = Infinity) => {
     return readdirSync(d, o);
   };
 };
-const files = (idx) => [...idx.index.values()].map((p) => p.split('/').slice(-2).join('/')).sort();
+const files = (idx) => [...idx.index.values()].map((p) => p.split(/[\\/]/).slice(-2).join('/')).sort();
 
 test('a listing that fails for a moment is tried again and read whole', () => tree((root) => {
   const pauses = [];

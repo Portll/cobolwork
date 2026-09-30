@@ -279,7 +279,9 @@ evidence.
    `base..head`: an author, committer or `Co-authored-by`/`Generated-by` trailer naming a code
    assistant or bot makes the change machine-authored; commits that cannot be read leave the check
    undecided. A statement with `coverage: null`, as ironwork writes until E9 lands, is inconclusive
-   under this check.
+   under this check. A program whose bytes are unchanged but whose copybooks the change edits counts
+   as edited, and its statement's `closure.head` must hold each edited copybook's digest, so the
+   statement shows the head run read the new copybook.
 7. **Translations.** For COBOL translated to Java, `ironwork run` of the original produces the
    expected outputs and a statement over them; the translation's own run is compared with
    `ironwork compare --expected`.
@@ -557,6 +559,10 @@ It is advisory: a change that drops a run-time check the policy requires already
 
 #### V10.3 An equivalent, signed statement satisfies requireEquivalence always
     Then  the build passes on that check
+
+#### V10.4 A change to a copybook alone needs a statement for each program that copies it
+    Given requireEquivalence always and a change that edits only a copybook
+    Then  the build fails on equivalence, naming the program and the copybook
 
 ## 15. Out of scope, deliberately
 

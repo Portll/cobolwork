@@ -840,6 +840,23 @@ test('V10.3 An equivalent, signed statement satisfies requireEquivalence always'
   assert.equal(unsigned.checks.equivalence, false, 'an unsigned statement does not satisfy a build that names signers');
 });
 
+test('V10.4 A change to a copybook alone needs a statement for each program that copies it', GIT, (t) => {
+  const d = tmp(t);
+  const repo = join(d, 'repo');
+  const git = gitRepo(repo);
+  writeFileSync(join(repo, 'cobolwork.policy.json'), JSON.stringify({ policyVersion: 1, requireEquivalence: 'always' }));
+  writeFileSync(join(repo, 'RATES.cpy'), '       01 WS-RATE PIC 9V999 VALUE 1.035.\n');
+  writeFileSync(join(repo, 'PAY.cbl'), ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. PAY.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.', '       COPY RATES.', '       PROCEDURE DIVISION.', '           GOBACK.', ''].join('\n'));
+  git('add', '.');
+  git('commit', '-q', '-m', 'base');
+  writeFileSync(join(repo, 'RATES.cpy'), '       01 WS-RATE PIC 9V999 VALUE 1.045.\n');
+  git('commit', '-q', '-am', 'the rate changes and no program does');
+  const { doc } = buildChange(repo, []);
+  assert.equal(doc.checks.equivalence, false);
+  assert.deepEqual(doc.equivalence.programs.map((p) => [p.path, p.via]), [['PAY.cbl', ['RATES.cpy']]]);
+  assert.match(doc.equivalence.programs[0].because, /copybook RATES\.cpy the change edits/);
+});
+
 test('V8.8 An unpinned npx launch is reported', (t) => {
   assert.deepEqual(rules(zoweTree(t, { 'claude_desktop_config.json': { mcpServers: { zowe: { command: 'npx', args: ['@zowe/mcp-server'] } } } })), ['zowe-mcp-unpinned']);
   assert.deepEqual(rules(zoweTree(t, { 'claude_desktop_config.json': { mcpServers: { zowe: { command: 'npx', args: ['@zowe/mcp-server@0.9.0'] } } } })), []);

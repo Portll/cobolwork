@@ -101,8 +101,11 @@ here can be checked.
 }
 ```
 
-`crossProgram` marks a path that left the file it started in. Findings carry no source text, so a
-report can be stored and passed on without carrying the code with it.
+`crossProgram` marks a path that left the file it started in. A value a CALL writes back through a
+parameter returns only to the call it came in through: in another caller's CALL the parameter is
+that caller's storage. A value the subprogram keeps in its own storage can reach any later caller.
+Findings carry no source text, so a report can be stored and passed on without carrying the code
+with it.
 
 `fingerprint` is what the finding is, rather than where it is printed today: the rule, the program
 and the paragraph or section it sits in (the job, step and DD for JCL), and the flagged statement's
@@ -113,7 +116,7 @@ that only their position tells apart share one, and `summary.identity.shared` co
 ### Findings and Claim Severity
 
 Severity says how urgent a finding is. `evidence` says what the tool actually established, which
-decides who acts on it. Every rule declares one of eight finding types:
+decides who acts on it. Every rule declares one of nine finding types:
 
 | `evidence` | What the finding claims | Who acts |
 |---|---|---|
@@ -123,6 +126,7 @@ decides who acts on it. Every rule declares one of eight finding types:
 | `advisory` | a pinned compiler or runtime matches a published advisory | whoever owns the build |
 | `exposure` | information about the estate is written into source | the owner |
 | `change` | a change moves an interface or adds a call target (`diff` only) | the reviewer of that change |
+| `execution` | a run of the program on a recorded input ended this way, and the run's verified journal is the record | the program's owner |
 | `coverage` | the analysis stopped following here | nobody's code; read more, or accept the limit |
 | `context` | describes the estate (an entry point, a product in use) | nobody; it asserts no defect |
 

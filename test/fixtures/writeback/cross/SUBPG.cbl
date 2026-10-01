@@ -1,0 +1,8 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. SUBPG.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-A               PIC X(40).
+       PROCEDURE DIVISION USING LK-A.
+           INSPECT LK-A CONVERTING 'a' TO 'A'
+           GOBACK.

@@ -3,7 +3,8 @@
 An execution plan for reading the four mainframe languages cobolwork does not read, and the one
 database definition language it half-reads through COBOL.
 
-Status: decided, 2026-10-01: all four languages are to be built, in a release not yet chosen.
+Status: decided, 2026-10-01: all four languages are to be built, each shipping in the first release
+it is ready for and in 0.8.0 at the latest.
 Written 2026-09-20 for an engineer coming to it cold: it assumes the codebase, not the discussion
 that produced it.
 

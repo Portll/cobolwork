@@ -67,11 +67,10 @@ test('parses %DECLARE with multiple names', () => {
   assert.equal(res.node.names[1], 'B');
 });
 
-test('parses %name = expression', () => {
+test('a preprocessor assignment is ASSIGN, naming the variable and its value', () => {
   const res = parse(' %X = 1;');
   assert.equal(res.status, 'parsed');
-  assert.equal(res.node.directive, 'X');
-  assert.ok(res.node.toks);
+  assert.deepEqual([res.node.directive, res.node.names, res.node.value.toks.map((t) => t.v)], ['ASSIGN', ['X'], ['1']]);
 });
 
 test('parses %IF with %THEN and a unit', () => {

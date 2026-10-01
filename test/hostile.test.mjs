@@ -116,7 +116,8 @@ test('a long crafted code line is scanned, and a long EXEC SQL line precompiled,
   assert.ok(Date.now() - t < 5000, `precompile took ${Date.now() - t} ms`);
   const comments = '*>'.repeat(n / 2);
   for (const directive of ['       $SET SOURCEFORMAT' + ' '.repeat(n) + 'Z', '       >>IF A-=' + ' '.repeat(n) + "'", '       $IF A=' + ' '.repeat(n) + '"',
-    '       >>IF A DEFINED ' + comments + '\rx', '       >>DEFINE A 1 ' + comments + 'x', '       COPY X ' + comments + '\rx']) {
+    '       >>IF A DEFINED ' + comments + '\rx', '       >>DEFINE A 1 ' + comments + '\u2028x', '       COPY X ' + comments + '\rx',
+    '       >>DEFINE - ' + ' '.repeat(n) + 'y\rx']) {
     t = Date.now();
     parseSource(['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. D.', directive, '       PROCEDURE DIVISION.', '           GOBACK.', ''].join('\n'), 'D.cbl', { format: 'fixed' });
     assert.ok(Date.now() - t < 2000, `${directive.trim().slice(0, 16)} took ${Date.now() - t} ms`);

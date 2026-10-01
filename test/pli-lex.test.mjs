@@ -47,8 +47,7 @@ test('no reserved words: a statement reading as references then = is an assignme
   assert.deepEqual(kinds, ['ASSIGNMENT', 'IF', 'DO', 'ASSIGNMENT', 'ASSIGNMENT', 'CALL']);
 });
 
-test('a kind with no parser yet is unbuilt, and text no kind fits is unknown', () => {
-  const [a, b] = readPli(' CALL P; FROB X;').statements.map(parseStatement);
-  assert.equal(a.status, 'unbuilt');
+test('text no statement kind fits is unknown', () => {
+  const [b] = readPli(' FROB X;').statements.map(parseStatement);
   assert.equal(b.status, 'unknown');
 });

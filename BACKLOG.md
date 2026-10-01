@@ -162,8 +162,20 @@ to build next:
   `argv-or-env` 114, GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT, which ironwork refuses
   as not Enterprise COBOL; 12 `cics-protected-field`, which a terminal cannot type into.
 - 323 in programs ironwork does not compile; 86 BMS maps not in the repository.
-- 109 operations that ran without the marker in the operand, and 42 `cics-terminal-to-arithmetic`
-  that ran through without a data exception, not yet read.
+- 109 operations that ran without the marker in the operand, 42 `cics-terminal-to-arithmetic`
+  that ran through without a data exception and 6 subscripts that ran without a range abend,
+  read as 19 distinct sites:
+  - 134 are one APPC program family (bhbandam's WB* programs, copied through the research
+    dataset). Each logs its input only when RECEIVE returns EOC, so from ironwork's 3270 script it
+    takes the error path. That is a limit of the harness, not of the finding.
+  - CardDemo's CSUTLDPY (12): the year is tested numeric in its own paragraph, which sets a flag
+    the caller reads before the DIVIDE. This is item 3's open case, a check through a flag, here
+    with a REDEFINES between the tested item and the one divided.
+  - CardDemo's COMEN01C subscript (6) is likely a true defect the run did not reach. After
+    rejecting an out-of-range option the program goes on to `CDEMO-MENU-OPT-USRTYPE(WS-OPTION)`
+    when the signed-on user is a regular user. The run started the menu with no COMMAREA, so the
+    user type was never set. A harness that starts from sign-on would reach it.
+  - GenApp's LGSTSQ queue name (5) is set from the input only when it begins `Q=`.
 
 Found on the way: `lib/sets/flow.mjs`'s `scan()` given a relative root returns no findings and
 reports its coverage complete (the CLI resolves roots, bench tools must); cobolwork reads no

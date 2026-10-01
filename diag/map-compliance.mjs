@@ -92,6 +92,8 @@ const FRAMEWORKS = {
       compile: '8(2)',
       // A result that depends on the generated code, or loses digits, is data corrupted by a flaw.
       semantics: '9(3)(b)',
+      // An input that stops the run, or drives an index out of range, is a flaw in validating it.
+      abend: '9(3)(b)',
     },
     exfil: '9(3)(a)',
     frame: {
@@ -159,6 +161,7 @@ const FRAMEWORKS = {
       web: 'DA&M V', priv: 'IS II.C.7', log: 'IS II.C.19', zowe: 'IS II.C.19',
       compile: 'DA&M IV',
       semantics: 'DA&M V',
+      abend: 'DA&M V',
     },
     exfil: 'IS II.C.19',
     frame: {
@@ -235,6 +238,7 @@ const FRAMEWORKS = {
       web: 'SC-23', priv: 'AC-6', log: 'SI-11', zowe: 'IA-5',
       compile: 'CM-8',
       semantics: 'SI-2',
+      abend: 'SI-10',
     },
     exfil: 'SC-7',
     frame: {

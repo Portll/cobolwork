@@ -13,8 +13,8 @@ At this file's last commit, **977 of 1,007 tests pass run serially (30 are todo,
 all 102 bench cases score as declared** - but read the first trap before you believe a failure or
 a pass.
 
-Fifteen rule sets - the nine below, plus `web`, `compile`, `priv`, `log`, `semantics` and `zowe` -
-and 192 rules in the registry. The 203 rows of the compliance files also count the gitleaks
+Sixteen rule sets - the nine below, plus `web`, `compile`, `priv`, `log`, `semantics`, `zowe` and
+`abend` - and 196 rules in the registry. The 207 rows of the compliance files also count the gitleaks
 credential rules and `diff`'s.
 
 ### What September 24 added

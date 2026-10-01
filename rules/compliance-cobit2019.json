@@ -1524,6 +1524,54 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "input-causes-abend",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An input the program accepts ends its run with an abend. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c4",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An input the program accepts ends its run with a protection exception (S0C4). That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c7",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An input the program accepts ends its run with a data exception (S0C7). That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-subscript-range",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An input the program accepts drives a subscript or reference modification out of range, and the run abends. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "intermediate-result-loses-high-order-digits",
    "framework": "cobit-2019",
    "clause": "DSS06.02",

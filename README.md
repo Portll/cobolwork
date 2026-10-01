@@ -192,6 +192,11 @@ tests. A finding inside a paragraph they cover carries `executed`, the paragraph
 runs entered it, and `summary.byExecution` counts the findings in paragraphs entered and never
 entered ([docs/spec/evidence.md](docs/spec/evidence.md) §13.5).
 
+`COBOLWORK_ABENDS` names fuzz runs ironwork's harness wrote. Each abend an input caused becomes a
+finding at the line it happened, with the input and the run's journal, once that journal verifies:
+`input-causes-abend-s0c7`, `-s0c4`, `-subscript-range`, or `input-causes-abend` for any other code
+([docs/spec/evidence.md](docs/spec/evidence.md) §13.6).
+
 ### What each finding lets someone do, and the fix
 
 A defect finding carries two more facts, the same for every finding of its rule: what someone can do
@@ -349,10 +354,10 @@ and to a COBIT 2019 practice by identifier alone:
 
 | File | Instrument | Rules mapped |
 |---|---|---|
-| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 203 |
-| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 201, and 2 recorded as unmapped |
-| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 201, and 2 recorded as unmapped |
-| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 201, and 2 recorded as unmapped |
+| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 207 |
+| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 205, and 2 recorded as unmapped |
+| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 205, and 2 recorded as unmapped |
+| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 205, and 2 recorded as unmapped |
 
 A COBIT 2019 row names the objective or practice and gives this project's own rationale; no ISACA
 text is reproduced, so reading what a practice says needs a copy of the framework. The practice is

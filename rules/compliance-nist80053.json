@@ -1651,6 +1651,58 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "input-causes-abend",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts ends its run with an abend. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c4",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts ends its run with a protection exception (S0C4). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c7",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts ends its run with a data exception (S0C7). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-subscript-range",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts drives a subscript or reference modification out of range, and the run abends. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "intermediate-result-loses-high-order-digits",
    "framework": "nist-800-53r5",
    "clause": "SI-2",

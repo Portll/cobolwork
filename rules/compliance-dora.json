@@ -1642,6 +1642,58 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "input-causes-abend",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts ends its run with an abend. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c4",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts ends its run with a protection exception (S0C4). That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c7",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts ends its run with a data exception (S0C7). That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-subscript-range",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts drives a subscript or reference modification out of range, and the run abends. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "intermediate-result-loses-high-order-digits",
    "framework": "dora",
    "clause": "Article 9(3)(b)",

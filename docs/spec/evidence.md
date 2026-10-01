@@ -380,6 +380,31 @@ program no report covers, has no `executed`. The program a finding is in is the 
 or before its line. It annotates and does not re-rank: a paragraph the tests never enter is code
 nobody has seen run, and one they enter is code whose behaviour a change to it would show.
 
+### 13.6 Abends from fuzzing
+
+`COBOLWORK_ABENDS` names fuzz runs ironwork's harness wrote (several, separated as `PATH` is). A run
+is a directory: `manifest.json` (`tool: "ironwork-fuzz"`) names the program by its path in the scanned
+tree, the inputs, and each run that ended in an abend with `{ code, file, line, message }` and the
+journal that recorded it; `evidence/` holds those journals and their ledger. The `abend` set reports
+one finding per rule, file and line, with the smallest input that produced it, and only where the
+evidence directory verifies (§9) and the run's own journal records the abend code the manifest gives.
+Where the journal also records the abend's file and line, the finding is placed there, and a manifest
+that places it elsewhere is not believed.
+Its rules are `execution` evidence: a run of the program on that input ended this way.
+
+| Rule | Severity | When |
+|---|---|---|
+| `input-causes-abend-s0c7` | med | the abend is S0C7, a data exception |
+| `input-causes-abend-s0c4` | high | the abend is S0C4, a protection exception |
+| `input-causes-abend-subscript-range` | high | the message starts with IGZ0006S, IGZ0072S, IGZ0073S or IGZ0074S: a subscript, index or reference modification SSRANGE caught out of range |
+| `input-causes-abend` | med | any other abend |
+
+An abend with code `IRONWORK` is something ironwork does not run, counted as `notModelled` and never a
+finding. A manifest that cannot be read, evidence that does not verify, or a journal that does not
+record the claimed abend is in `abendRunProblems` and leaves the set incomplete. A program outside
+the scanned tree is refused, and a finding in a file the scanned tree does not hold is listed in
+`abendRunsElsewhere` instead of reported.
+
 ## 14. Specification (BDD)
 
 ### V1 - Records and journals

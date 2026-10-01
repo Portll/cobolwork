@@ -1651,6 +1651,58 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "input-causes-abend",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: An input the program accepts ends its run with an abend. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c4",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: An input the program accepts ends its run with a protection exception (S0C4). That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c7",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: An input the program accepts ends its run with a data exception (S0C7). That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-subscript-range",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: An input the program accepts drives a subscript or reference modification out of range, and the run abends. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "intermediate-result-loses-high-order-digits",
    "framework": "ffiec",
    "clause": "DA&M V",

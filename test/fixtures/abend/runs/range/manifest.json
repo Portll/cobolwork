@@ -1,0 +1,16 @@
+{
+ "tool": "ironwork-fuzz",
+ "version": "0.1.2",
+ "seed": 1,
+ "strategy": "fixture",
+ "clock": "2026-10-01T00:00:00",
+ "program": { "file": "RANGE1.cbl", "id": "RANGE1" },
+ "entry": "run",
+ "inputs": [
+  { "id": "i1", "kind": "sysin", "name": "SYSIN", "bytes": "MDA0Mgo=", "minimized": true }
+ ],
+ "counts": { "runs": 3, "clean": 2, "abend": 1, "timeout": 0, "refused": 0 },
+ "runs": [
+  { "input": ["i1"], "outcome": "abend", "abend": { "code": "U4038", "file": "RANGE1.cbl", "line": 13, "message": "IGZ0006S subscript 42 of WS-E is out of range 1 to 10 (SSRANGE)" }, "journal": "20261001T014206Z-4d90deef64d6a169" }
+ ]
+}

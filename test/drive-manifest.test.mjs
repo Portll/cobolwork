@@ -40,7 +40,7 @@ test('counts the files the manifest lists under the corpus root against what is 
   assert.equal(agreed.first, undefined);
 }));
 
-test('a directory the walk cannot list is counted, and its files are missing', () => onVolume(({ volume, manifest }) => {
+test('a directory the walk cannot list is counted, and its files are missing', { skip: process.platform === 'win32' && 'mode bits do not stop a listing on Windows' }, () => onVolume(({ volume, manifest }) => {
   const locked = join(volume, 'corpus', 'other');
   chmodSync(locked, 0o000);
   try {

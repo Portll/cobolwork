@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readdirSync, copyFileSync, readFileSync, writeFileSync, statSync, rmSync, chmodSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, dirname } from 'node:path';
+import { join, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import './pin-machine.mjs';
 
@@ -154,7 +154,7 @@ test('--baseline refuses, before scanning, a file that records no findings', () 
 // The temporary directory stands in for the drive, and the manifest lists the corpus as it was made.
 function manifestOf(corpus, dir) {
   const lines = readdirSync(corpus, { recursive: true, withFileTypes: true }).filter((d) => d.isFile())
-    .map((d) => { const p = join(d.parentPath, d.name); return `F\t${p.slice(dir.length + 1)}\t${statSync(p).size}\t0`; });
+    .map((d) => { const p = join(d.parentPath, d.name); return `F\t${p.slice(dir.length + 1).split(sep).join('/')}\t${statSync(p).size}\t0`; });
   const file = join(dir, 'manifest.tsv');
   writeFileSync(file, `${lines.join('\n')}\n`);
   return ['--manifest', file, '--manifest-root', dir];

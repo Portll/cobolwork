@@ -19,7 +19,7 @@ const html = bytes.toString('utf8');
 
 const tables = html.match(/<table[^>]*class="defaultstyle"[^>]*>[\s\S]*?<\/table>/g) || [];
 if (tables.length !== 1) throw new Error(`expected one defaultstyle table, found ${tables.length}`);
-const text = (cell) => cell.replace(/<[^>]+>/g, '')
+const text = (cell) => cell.split(/<[^>]+>/).join('')
   .replace(/&nbsp;|&#160;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
   .replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
 const rows = (tables[0].match(/<tr[\s\S]*?<\/tr>/g) || []).map((tr) => [...tr.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/g)].map((m) => text(m[1])));

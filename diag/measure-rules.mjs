@@ -3,6 +3,7 @@
 //   node diag/measure-rules.mjs <corpus-root> [--out file] [--generated <substring>] [--packs a,b]
 //                                [--skip a,b] [--exclude-paths a,b] [--max-source-bytes n]
 //                                [--only a,b] [--list <rule>] [--baseline <an earlier --out file>]
+//                                [--manifest file] [--manifest-root dir] [--require-manifest]
 //
 // --packs force-loads vendor packs for measurement, bypassing the validation gate: measuring is
 // how a pack becomes validated, so refusing to measure an unvalidated one would be circular. The
@@ -14,6 +15,9 @@
 // what the walk listed in each, and every finding by its fingerprint. --baseline compares this run
 // with an earlier --out file, rule by rule, over the repositories both runs read completely and
 // listed alike. --list prints every finding of one rule with its trace, once per file content.
+//
+// Before reading, a corpus on the drive a manifest was taken of is checked against it by path and
+// size (diag/drive-manifest.mjs). A difference is warned of; --require-manifest refuses the run.
 import { readdirSync, readFileSync, existsSync, openSync, readSync, writeSync, closeSync, renameSync, mkdtempSync, rmSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
@@ -25,6 +29,7 @@ import { byText } from '../lib/kernel/findings.mjs';
 import { stampFingerprints, FINGERPRINT_VERSION } from '../lib/kernel/identity.mjs';
 import { stoppedBecause } from '../lib/kernel/memory.mjs';
 import { FLOW_MODEL, TOOL_VERSION } from '../lib/version.mjs';
+import { checkManifest, manifestLine } from './drive-manifest.mjs';
 
 const fail = (why) => { process.stderr.write(`measure-rules: ${why}\n`); process.exit(2); };
 
@@ -101,7 +106,7 @@ function eachRecorded(path, fn) {
 }
 
 const args = process.argv.slice(2);
-const VALUED = ['--out', '--generated', '--packs', '--skip', '--exclude-paths', '--max-source-bytes', '--only', '--list', '--baseline'];
+const VALUED = ['--out', '--generated', '--packs', '--skip', '--exclude-paths', '--max-source-bytes', '--only', '--list', '--baseline', '--manifest', '--manifest-root'];
 const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : null);
 const optList = (name) => (opt(name) || '').split(',').map(x => x.trim()).filter(Boolean);
 const ROOT = args.find((a, i) => !a.startsWith('--') && !VALUED.includes(args[i - 1]));
@@ -147,6 +152,9 @@ const BASELINE = opt('--baseline');
 // Both checked before the scan, so a wrong path costs nothing rather than a corpus run.
 if (OUT && !existsSync(dirname(resolve(OUT)))) fail(`--out: ${dirname(resolve(OUT))} does not exist`);
 const earlier = BASELINE ? readHeader(BASELINE) : null;
+const manifest = checkManifest(ROOT, { manifest: opt('--manifest'), volume: opt('--manifest-root') });
+if (args.includes('--require-manifest') && !manifest.agrees) fail(`--require-manifest: ${manifestLine(manifest)}`);
+if (!manifest.skipped && !manifest.agrees) process.stderr.write(`measure-rules: warning: ${manifestLine(manifest)}\n`);
 
 const flowOpts = { maxSourceBytes: MAX_SRC };
 // The corpus root's device, read before and after the run. A drive that drops and comes back is
@@ -432,6 +440,7 @@ const out = {
   engine: { toolVersion: TOOL_VERSION, flowModel: FLOW_MODEL, fingerprint: FINGERPRINT_VERSION },
   repos: readRepos,
   device,
+  manifest,
   ...(comparison ? { baseline: comparison } : {}),
   strata: {},
 };
@@ -455,6 +464,7 @@ for (const [k, s] of Object.entries(strata)) {
   };
 }
 if (OUT) writeRun(OUT, out, FOUND);
+console.log(manifestLine(manifest));
 for (const [k, s] of Object.entries(out.strata)) {
   console.log(`\n${k}: ${s.repos} repositories, ${s.filesScanned} files read, ${s.secs}s`);
   if (s.reposWithJcl !== null) console.log(`  (${s.reposWithJcl} of ${s.repos} repositories contain any JCL at all)`);

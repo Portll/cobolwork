@@ -46,11 +46,19 @@ export const TRACED = {
   'cics-sysid': ['cics-sysid'],
 };
 
-// Sinks whose witness is how the run ends rather than a marker: a byte whose low half is not a
-// digit ends zoned arithmetic with a data exception at the operation (S0C7 in batch, ASRA in a CICS
-// task). The marker cannot: each of its letters reads as a digit.
-export const ABENDS = { arithmetic: ['S0C7', 'ASRA'] };
-const NOT_A_DIGIT = '*';
+// Sinks whose witness is how the run ends rather than a marker, with the input that provokes it
+// and a control that should not. A byte whose low half is not a digit ends zoned arithmetic with a
+// data exception (S0C7, ASRA in a CICS task), which the marker cannot: each of its letters reads as
+// a digit. Nines put a subscript, start, length or count past the table or field, which under
+// SSRANGE ends the run with U4038; ones keep it inside most.
+const BEYOND = { codes: ['U4038'], value: '9', named: 'nines', control: '1', controlNamed: 'ones', ssrange: true };
+export const ABENDS = {
+  arithmetic: { codes: ['S0C7', 'ASRA'], value: '*', named: 'asterisks', control: '0', controlNamed: 'digits' },
+  subscript: BEYOND,
+  'reference-modification': BEYOND,
+  'occurs-depending-count': BEYOND,
+  'loop-bound': BEYOND,
+};
 
 const RECORD = 1024;
 const RECORDS = 3;
@@ -67,9 +75,10 @@ function ddNames(assign) {
   return [...new Set([name, bare])].filter((n) => /^[A-Z0-9@#$-]{1,8}$/.test(n));
 }
 
-// The inputs to try: the marker at each of the eight shifts, or for an abend's witness asterisks.
-const fills = (byAbend) => (byAbend ? [{ name: 'asterisks', text: (n) => NOT_A_DIGIT.repeat(n) }]
+// The inputs to try: the marker at each of the eight shifts, or the input an abend's witness needs.
+const fills = (byAbend) => (byAbend ? [{ name: byAbend.named, text: (n) => byAbend.value.repeat(n) }]
   : [...Array(MARKER.length).keys()].map((shift) => ({ name: `shifted ${shift}`, text: (n) => shifted(shift).slice(0, n) })));
+const controlOf = (byAbend) => byAbend?.control ?? '0';
 
 // Every DD the program assigns, and SYSIN, holding each fill.
 function fileRecordVariants(program, byAbend) {
@@ -80,7 +89,7 @@ function fileRecordVariants(program, byAbend) {
     writeFileSync(path, `${Array(RECORDS).fill(record).join('\n')}\n`);
     return ['--dd', `${dd}=${path}:text`];
   })];
-  const control = { name: 'records of digits', args: holding('0'.repeat(RECORD)) };
+  const control = { name: 'records of the control', args: holding(controlOf(byAbend).repeat(RECORD)) };
   return fills(byAbend).map((fill) => ({ name: `records ${fill.name}`, args: holding(fill.text(RECORD)), control }));
 }
 
@@ -103,7 +112,7 @@ function screenScript(map, digits, fill = (n) => MARKER.repeat(Math.ceil(n / MAR
   for (const field of map.fields) {
     const attributes = field.effective || new Set();
     if (!field.pos || !field.length || !attributes.has('UNPROT')) continue;
-    const text = digits === 'all' || (digits && attributes.has('NUM')) ? '0'.repeat(field.length) : fill(field.length);
+    const text = digits && attributes.has('NUM') ? '0'.repeat(field.length) : fill(field.length);
     // POS is the attribute byte; the field's data starts one column after it.
     turns.push(`type ${origin.line + field.pos.line - 1} ${origin.column + field.pos.column} ${text}`);
   }
@@ -126,16 +135,16 @@ function terminalVariants(program, receivedAt, maps, byAbend) {
   // transaction's name, which the program cuts at an offset of its own.
   if (!named) {
     const line = (text) => `type 1 1 ${transid} ${text}\nENTER\n`;
-    const control = { name: 'digits after the transaction', args: typing(line('0'.repeat(70))) };
+    const control = { name: 'the control after the transaction', args: typing(line(controlOf(byAbend).repeat(70))) };
     return { variants: fills(byAbend).map((fill) => ({ name: `typed after the transaction, ${fill.name}`, args: typing(line(fill.text(70))), control })) };
   }
   const mapset = (/\bMAPSET\s*\(\s*'([^']+)'/i.exec(statement)?.[1] || named).toUpperCase();
   const map = maps.get(mapset)?.maps.find((m) => m.name?.toUpperCase() === named);
   if (!map) return { why: `the repository holds no BMS source for map ${named} of mapset ${mapset}` };
-  const control = { name: 'digits in every unprotected field', args: typing(screenScript(map, 'all')) };
+  const control = { name: 'the control in every unprotected field', args: typing(screenScript(map, false, (n) => controlOf(byAbend).repeat(n))) };
   const variants = [];
-  const fill = byAbend ? (n) => NOT_A_DIGIT.repeat(n) : undefined;
-  const what = byAbend ? 'asterisks' : 'the marker';
+  const fill = byAbend ? (n) => byAbend.value.repeat(n) : undefined;
+  const what = byAbend ? byAbend.named : 'the marker';
   for (const [name, digits] of [[`${what} in every unprotected field`, false], ['digits in numeric fields', true]]) {
     const script = screenScript(map, digits, fill);
     if (!script || variants.some((v) => v.script === script)) continue;
@@ -149,6 +158,19 @@ function journalOf(evidence) {
   const run = JSON.parse(ledger[ledger.length - 1]).run;
   const records = readFileSync(join(evidence, 'runs', `${run}.jsonl`), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
   return { run, records };
+}
+
+// A copy of the program with an SSRANGE card before its first line, in the run's own directory, so
+// a range check ends the run; the program's directory stays a copy library.
+function underSsrange(program, variant) {
+  const args = (dir) => {
+    const [command, , ...rest] = variant.args(dir);
+    const staged = join(dir, 'ssrange', basename(program));
+    mkdirSync(dirname(staged), { recursive: true });
+    writeFileSync(staged, `       CBL SSRANGE\n${readSource(program).text}`);
+    return [command, staged, '-I', dirname(program), ...rest];
+  };
+  return { ...variant, args, lineOffset: 1, control: variant.control && underSsrange(program, variant.control) };
 }
 
 const libraries = (ctx) => [...ctx.copyDirs.flatMap((d) => ['-I', d]), ...ctx.programDirs.flatMap((d) => ['-L', d])];
@@ -178,14 +200,16 @@ function runVariant(f, ctx, variant) {
     ctx.runs = journal.run;
     const at = journal.records.filter((x) => x.kind === 'sink' && (TRACED[ctx.sink] || []).includes(x.sink) && x.line === f.line && basename(x.file) === basename(f.path));
     const abend = journal.records.find((x) => x.kind === 'abend');
-    // An abend in the program itself carries no file; one in a COPY member or a called program does.
-    const atOperation = !!abend && abend.line === f.line && basename(abend.file || ctx.program) === basename(f.path);
+    // An abend in the program itself names the program; one in a COPY member or a called program
+    // names that, and only the program's own lines moved for a staged card.
+    const inProgram = !abend?.file || basename(abend.file) === basename(ctx.program);
+    const atOperation = !!abend && abend.line - (inProgram ? variant.lineOffset || 0 : 0) === f.line && basename(abend.file || ctx.program) === basename(f.path);
     return {
       run: journal.run,
       reached: at.some((x) => x.reached),
       atSink: at.length > 0,
       ran: true,
-      abend: abend ? `${abend.code}${abend.file ? ` at ${abend.file}:${abend.line}` : ` at line ${abend.line}`}` : null,
+      abend: abend ? `${abend.code}${abend.line ? ` at ${abend.file || basename(ctx.program)}:${abend.line - (inProgram ? variant.lineOffset || 0 : 0)}` : ''}` : null,
       abendAtOperation: atOperation ? abend.code : null,
     };
   } finally {
@@ -215,6 +239,7 @@ export function labelFinding(f, root, opts) {
       variants = planned.variants;
     }
   } catch { return unknown('the program does not parse'); }
+  if (byAbend?.ssrange) variants = variants.map((v) => underSsrange(program, v));
   const refused = refusal(ctx);
   if (refused) return unknown(refused);
   try { ctx.runs = journalOf(ctx.evidence).run; } catch { /* no run yet */ }
@@ -224,15 +249,15 @@ export function labelFinding(f, root, opts) {
     if (!r.ran) return { ...unknown(r.outcome), variant: variant.name };
     seen.push(r);
     if (!byAbend && r.reached) return { ...base, label: 'confirmed', run: r.run, variant: variant.name };
-    if (byAbend && byAbend.includes(r.abendAtOperation)) {
-      // The same run with digits where the letters went must get past the operation, or the abend
-      // is not the input's doing.
+    if (byAbend && byAbend.codes.includes(r.abendAtOperation)) {
+      // The same run with the control input must get past the operation, or the abend is not the
+      // input's doing.
       const c = runVariant(f, ctx, variant.control);
       if (c.ran && !c.abendAtOperation) return { ...base, label: 'confirmed', run: r.run, variant: variant.name, control: c.run };
       r.controlAbended = true;
     }
   }
-  const why = byAbend ? (seen.some((r) => r.controlAbended) ? 'the run with digits abended at the operation too'
+  const why = byAbend ? (seen.some((r) => r.controlAbended) ? `the run with ${byAbend.controlNamed} abended at the operation too`
     : seen.find((r) => r.abend) ? `the run did not end at the operation: ABEND ${seen.find((r) => r.abend).abend}`
       : 'the run did not abend at the operation')
     : seen.some((r) => r.atSink) ? 'the operation ran without the marker in its operand'

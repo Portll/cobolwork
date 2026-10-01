@@ -272,8 +272,12 @@ verification plan (§9.7) in ironwork. The marker goes in at the finding's sourc
 - a RECEIVE without a map: typed on a cleared screen after the transaction's name.
 
 ironwork runs with `--trace-marker`. The finding is confirmed where the run's sealed journal has a
-`sink` record at its line with the marker in the operand. An arithmetic finding is confirmed by a
-data exception at its line, where asterisks went in, that the same run with digits gets past.
+`sink` record at its line with the marker in the operand. Two kinds of finding are confirmed by
+how the run ends at their line instead, provided the same run with a control input gets past it.
+An arithmetic finding needs a data exception where asterisks went in, with digits as the control.
+A subscript, reference modification, loop bound or `OCCURS DEPENDING` count needs ironwork's
+range abend, U4038, where nines went in, with ones as the control. That run is of a copy with a
+`CBL SSRANGE` card before its first line.
 Anything else is unknown, with its reason. A run that did not carry the marker to the operation
 shows only that these inputs did not, so refuting a finding needs every route to its sink covered.
 `bench/seed.mjs` adds planted labels: a flaw or a near-miss put into a real program, labelled by

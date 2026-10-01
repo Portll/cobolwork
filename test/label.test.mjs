@@ -54,3 +54,14 @@ test('raw terminal input names the program LINK runs, and asterisks in a quantit
   assert.ok(by['QTYPGM.cbl'].control, 'the run with digits is kept as the control');
   assert.equal(verifyEvidence(evidence).verified, true);
 });
+
+test('nines past a table or field end the run under SSRANGE at the operation, and ones pass it', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
+  const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
+  t.after(() => rmSync(evidence, { recursive: true, force: true }));
+  const out = label(join(import.meta.dirname, 'fixtures', 'label', 'storage'), { ironwork: IRONWORK, evidence });
+  assert.deepEqual(out.labels.map((l) => [l.rule, l.path, l.line, l.label, l.variant, !!l.control]).sort(), [
+    ['cics-terminal-to-reference-modification', 'CUTPGM.cbl', 16, 'confirmed', 'typed after the transaction, nines', true],
+    ['cics-terminal-to-subscript', 'ROWPGM.cbl', 16, 'confirmed', 'typed after the transaction, nines', true],
+  ]);
+  assert.equal(verifyEvidence(evidence).verified, true);
+});

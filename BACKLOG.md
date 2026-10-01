@@ -150,10 +150,14 @@ guard), 3,591 path findings in 42 repositories, 2,889 of them in the research da
 confirmed, every one `cics-terminal-to-log` and two programs underneath (GenApp's LGSTSQ and the
 health-API sample's HCAZERRS, in 8 repositories' copies). The rest are unknown, and why is what
 to build next:
-- 2,606 sinks ironwork has no trace for: `dynamic-file-path` 2,369 (ASSIGN to a data item, which
-  ironwork does not run), then the storage sinks (`occurs-depending-count` 76,
-  `reference-modification` 66, `subscript` 52, `loop-bound` 23), which wait on ironwork giving an
-  SSRANGE violation its own abend code (ironwork-roadmap 5.8); `message-queue` 11 (no MQ).
+- 2,369 `dynamic-file-path` (ASSIGN to a data item, which ironwork does not run) and 11
+  `message-queue` (no MQ in ironwork): sinks it has no trace for.
+- The storage sinks (`occurs-depending-count` 76, `reference-modification` 66, `subscript` 52,
+  `loop-bound` 23) are labelled by ironwork's SSRANGE abend, U4038, since ironwork 68f83d7. Of the
+  21 whose source the labeller feeds, none is confirmed yet. CardDemo's COMEN01C (5 copies) checks
+  the option against its menu size before the subscript, so nines never reach it. BankDemo's
+  SBANK10P (6) ends at its own ABEND 0001 first. The rest end on a construct ironwork does not run,
+  or their BMS is not in the repository. Of the other 196, 189 come from `argv-or-env`.
 - 384 sources not fed: `jcl-instream` 250, all in one repository, through `ironwork job`;
   `argv-or-env` 114, GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT, which ironwork refuses
   as not Enterprise COBOL; 12 `cics-protected-field`, which a terminal cannot type into.

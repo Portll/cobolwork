@@ -1,0 +1,17 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ROWPGM.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-IN.
+          05 FILLER PIC X(8).
+          05 WS-IX PIC 9(2).
+          05 FILLER PIC X(70).
+       01 WS-LEN PIC S9(4) COMP VALUE 80.
+       01 WS-TAB.
+          05 WS-ROW PIC X(4) OCCURS 20.
+       01 WS-OUT PIC X(4).
+       PROCEDURE DIVISION.
+           EXEC CICS RECEIVE INTO(WS-IN) LENGTH(WS-LEN)
+           END-EXEC
+           MOVE WS-ROW(WS-IX) TO WS-OUT
+           EXEC CICS RETURN END-EXEC.

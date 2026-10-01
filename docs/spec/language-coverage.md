@@ -3,8 +3,9 @@
 An execution plan for reading the four mainframe languages cobolwork does not read, and the one
 database definition language it half-reads through COBOL.
 
-Status: proposed, 2026-09-20. Written for an engineer coming to it cold: it assumes the codebase,
-not the discussion that produced it.
+Status: decided, 2026-10-01: all four languages are to be built, in a release not yet chosen.
+Written 2026-09-20 for an engineer coming to it cold: it assumes the codebase, not the discussion
+that produced it.
 
 Measured against the working tree at that date: 9 rule sets, 79 rules, 206 tests, 48 benchmark
 cases, and a 125-repository public COBOL corpus whose manifest records how it was selected;

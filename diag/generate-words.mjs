@@ -52,7 +52,7 @@ const sourceLines = Object.entries(prov.sources)
   .map(([id, s]) => {
     const docs = (s.documents || []).map((d) => d.topic).filter(Boolean);
     const topics = docs.length ? ` - ${[...new Set(docs)].join('; ')}` : '';
-    return `//   ${s.title || id}${topics}`;
+    return wrap(`${s.title || id}${topics}`.split(/\s+/), 94).split('\n').map((l, i) => `//${i ? '     ' : '   '}${l}`).join('\n');
   });
 
 // The header test requires this as the first line of every shipped source file.

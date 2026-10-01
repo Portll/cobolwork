@@ -255,6 +255,14 @@ lacking an outcome, who, when or where is refused and named under `summary.witne
 
 `summary.byWitness` counts the two outcomes. Nothing in it changes what a build blocks.
 
+A result may cite the ironwork run that reproduced it, `"evidence": { "dir", "run" }`, the directory
+relative to the feed. The directory must verify (§9 of evidence.md) and its ledger must record the run;
+otherwise the result is refused and named. The run's journal must show the marker reaching an
+operation, or the run ending with an abend, at the finding's file and line, or the result confirms
+nothing and the finding is listed under `summary.witnessUnmatched`. Where it does, `because` names
+the run and the record. `bench/witness.mjs` writes such a feed from `bench/label.mjs`'s confirmed
+labels, so the confirmation an ironwork run gives is checked again by every scan that uses it.
+
 Over `--repos`, each repository is judged with its own `cobolwork.site.json`. The summary adds the
 reach, effect, verdict and witness counts up, gives each repository's verdicts under `perRepo`, and
 names in `reachNote` and `effectNote` the repositories that declare nothing. A feed is refused

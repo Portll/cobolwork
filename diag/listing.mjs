@@ -18,7 +18,7 @@ export function parseListing(text) {
   let prog = '';
   let last = null;
   for (const raw of text.split('\n')) {
-    const line = raw.replace(/\f/g, '').replace(/\s+$/, '');
+    const line = raw.replace(/\f/g, '').trimEnd();
     if (!line.trim()) continue;
     if (/^GnuCOBOL \d/.test(line)) continue;
     if (/^LINE\s+PG\/LN/.test(line)) { mode = 'src'; continue; }
@@ -79,7 +79,7 @@ export function looksDegenerate(listing, src) {
   if (regex01 > 0 && witness01 < 0.5 * regex01) return true;
   // A comment-entry read as running to the end of the file hides the procedure division, and the
   // program still compiles, its entry point placed after the last line of the source.
-  const lines = src.replace(/\s+$/, '').split(/\r?\n/);
+  const lines = src.trimEnd().split(/\r?\n/);
   const code = (l) => l.trim() && !/^.{6}[*/]/.test(l) && !/^\s*\*>/.test(l);
   const proc = lines.findIndex(l => code(l) && /\bPROCEDURE\s+DIVISION\b/i.test(l));
   if (proc < 0 || !lines.slice(proc + 1).some(code)) return false;

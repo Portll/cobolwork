@@ -11,6 +11,7 @@ import { classesOf, classesOfRule, kindsOf } from '../lib/consequence.mjs';
 import { ALL_RULES } from '../lib/kernel/registry.mjs';
 import { SINK_KINDS } from '../lib/dataflow.mjs';
 import { KEV } from '../lib/kev.mjs';
+import { compilerTasks } from '../lib/options.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -556,6 +557,13 @@ test('B5.23 A task\'s command line is read command by command, with its argument
   assert.equal(doc.checks.options, false);
   assert.ok(doc.reasons.some((r) => /^\.vscode\/tasks\.json:6: subscript needs/.test(r)), doc.reasons.join('\n'));
   assert.ok(doc.reasons.some((r) => /^\.vscode\/tasks\.json:8: subscript needs/.test(r)), doc.reasons.join('\n'));
+});
+
+test('A task\'s argument keeps its backslashes, quotes and backquotes in the dialect its shell reads', () => {
+  const task = (variant) => JSON.stringify({ version: '2.0.0', tasks: [{ label: 'B', type: 'shell', ...variant }] });
+  const args = (variant) => compilerTasks(task(variant)).map((c) => c.args);
+  assert.deepEqual(args({ command: 'cobc', args: ['-o', 'out dir\\\\', '-DNAME=a \\"b\\"', 'p.cbl'] }), [['-o', 'out dir\\\\', '-DNAME=a \\"b\\"', 'p.cbl']]);
+  assert.deepEqual(args({ windows: { command: 'cobc' }, args: ['-o', 'my `dir "x"', 'p.cbl'] }), [['-o', 'my `dir "x"', 'p.cbl']]);
 });
 
 test('B5.24 A Makefile\'s compiler and options reach the command through the variables it assigns', { skip }, () => {

@@ -16,6 +16,7 @@ import { loadPacks } from '../lib/packs.mjs';
 import { diffTrees } from '../lib/diff.mjs';
 import { stampFingerprints } from '../lib/kernel/identity.mjs';
 import { parseJcl } from '../lib/jcl.mjs';
+import { precompile } from '../lib/precompile.mjs';
 import './pin-machine.mjs';
 
 // What a tree someone else wrote cannot do to a scan, or make its report carry.
@@ -56,6 +57,14 @@ test('REPLACING that doubles at every level of a nest does not compound: an oute
   assert.equal(inv.summary.coverageIncomplete, false);
 });
 
+test('a word REPLACING puts inside parentheses is written as given, dollar signs and all', () => {
+  const files = { 'P.cbl': PROGRAM(['       COPY C REPLACING ==NAME== BY ==A$$B==.']), 'C.cpy': '       01 W-A PIC X(NAME).\n' };
+  const root = tree(files);
+  const idx = buildFileIndex(root);
+  const r = parseSource(files['P.cbl'], join(root, 'P.cbl'), { format: 'fixed', fileIndex: idx.index, includeDirs: idx.copyDirs, mainDir: root });
+  assert.equal(r.programs[0].items.find((it) => it.name === 'W-A').picture, 'X(A$$B)');
+});
+
 test('REPLACING that multiplies every word of a copybook stops at a cap, and the coverage says so', () => {
   const tens = `           ${Array(10).fill('ZZ').join(' ')}`;
   const root = tree({
@@ -89,6 +98,29 @@ test('a long crafted comment or in-stream line is read in linear time', () => {
   const t = Date.now();
   scanAll(root, { only: ['hidden', 'jcl'] });
   assert.ok(Date.now() - t < 5000, `took ${Date.now() - t} ms`);
+});
+
+test('a long crafted code line is scanned, and a long EXEC SQL line precompiled, in linear time', () => {
+  const n = 100000;
+  const root = tree({
+    'P.cbl': ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. P.', '       PROCEDURE DIVISION.', '           MOVE 1 TO X' + ' '.repeat(n) + 'x', '           GOBACK.', ''].join('\n'),
+    'S.cbl': ['      $SET SOURCEFORMAT' + ' '.repeat(n) + 'Z', '       IDENTIFICATION DIVISION.', '       PROGRAM-ID. S.', '       PROCEDURE DIVISION.', '           GOBACK.', ''].join('\n'),
+  });
+  let t = Date.now();
+  scanAll(root);
+  assert.ok(Date.now() - t < 5000, `scan took ${Date.now() - t} ms`);
+  const sql = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. Q.', '       PROCEDURE DIVISION.', '           EXEC SQL', '             SELECT A INTO :B FROM T' + ' '.repeat(n) + 'x',
+    '           END-EXEC.', '           EXEC SQL COMMIT' + ' '.repeat(n) + 'x', '           END-EXEC.', '           GOBACK.', ''].join('\n');
+  t = Date.now();
+  precompile(sql, { format: 'fixed' });
+  assert.ok(Date.now() - t < 5000, `precompile took ${Date.now() - t} ms`);
+  const comments = '*>'.repeat(n / 2);
+  for (const directive of ['       $SET SOURCEFORMAT' + ' '.repeat(n) + 'Z', '       >>IF A-=' + ' '.repeat(n) + "'", '       $IF A=' + ' '.repeat(n) + '"',
+    '       >>IF A DEFINED ' + comments + '\rx', '       >>DEFINE A 1 ' + comments + 'x', '       COPY X ' + comments + '\rx']) {
+    t = Date.now();
+    parseSource(['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. D.', directive, '       PROCEDURE DIVISION.', '           GOBACK.', ''].join('\n'), 'D.cbl', { format: 'fixed' });
+    assert.ok(Date.now() - t < 2000, `${directive.trim().slice(0, 16)} took ${Date.now() - t} ms`);
+  }
 });
 
 // The JCL cousin of the COPY above: each SET doubles the symbol before it.
@@ -267,5 +299,8 @@ test('a SARIF location is a URI reference, and a message cannot write a link', (
   const res = toSarif(r).runs[0].results[0];
   assert.equal(res.locations[0].physicalLocation.artifactLocation.uri, 'dir%20%231/50%25.jcl');
   assert.equal(res.message.text, 'see \\[here\\](https://example.com)');
+  const escaped = (detail) => toSarif({ summary: {}, findings: [{ rule: 'jcl-instream-credential', path: 'a.jcl', line: 1, detail, sev: 'high' }] }).runs[0].results[0].message.text;
+  assert.equal(escaped('see \\[here\\](https://example.com)'), 'see \\\\\\[here\\\\\\](https://example.com)');
+  assert.equal(escaped('C:\\dir\\\\x'), 'C:\\dir\\\\\\x', 'a backslash before neither a bracket nor a backslash is left as written');
 });
 

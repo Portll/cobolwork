@@ -26,7 +26,7 @@ function walk(dir, acc) {
 
 // The format the scanner would read the program in, so the grade compares like with like.
 function detectFormat(src) {
-  if (/>>\s*SOURCE\s+(FORMAT\s+)?(IS\s+)?FREE/i.test(src) || /\$SET\s+SOURCEFORMAT\s*\(?\s*"?FREE/i.test(src)) return 'free';
+  if (/>>\s*SOURCE\s+(FORMAT\s+)?(IS\s+)?FREE/i.test(src) || /\$SET\s+SOURCEFORMAT\s*(?:\(\s*)?"?FREE/i.test(src)) return 'free';
   return parserFormat(src) === 'free' ? 'free' : 'fixed';
 }
 

@@ -59,6 +59,7 @@ mkdirSync(DEST, { recursive: true });
 const manifestPath = join(DEST, 'manifest.json');
 const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, 'utf8')) : { documents: {} };
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
+const ENTITY = { nbsp: ' ', amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'", rsquo: "'", '#8217': "'" };
 const have = (h) => h && existsSync(join(DEST, 'by-sha256')) && readdirSync(join(DEST, 'by-sha256')).find((f) => f.startsWith(h));
 
 function extOf(url, buf) {
@@ -96,7 +97,7 @@ function textOf(file) {
   if (/\.html?$/.test(file)) {
     const html = readFileSync(file, 'utf8');
     const text = html.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ').replace(/<br\s*\/?>|<\/(p|div|li|tr|h\d)>/gi, '\n').replace(/<[^>]+>/g, ' ')
-      .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&rsquo;|&#8217;/g, "'")
+      .replace(/&(nbsp|amp|lt|gt|quot|#39|rsquo|#8217);/g, (_, e) => ENTITY[e])
       .replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n\n');
     writeFileSync(`${file}.txt`, text);
     return `${file}.txt`;
@@ -222,4 +223,4 @@ for (const m of MIRRORS) {
   copyFileSync(manifestPath, join(m, 'manifest.json'));
   console.log(`mirrored to ${m}: ${copied} file(s) copied`);
 }
-console.log(`\n${todo.length} document(s):`, Object.entries(tally).map(([k, v]) => `${v} ${k}`).join(', '));
+console.log(`\n${todo.length} document(s): ${Object.entries(tally).map(([k, v]) => `${v} ${k}`).join(', ')}`);

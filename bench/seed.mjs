@@ -25,6 +25,7 @@ import { join, basename, extname, dirname } from 'node:path';
 import { REGISTRY } from '../lib/kernel/registry.mjs';
 import { directoryTree } from '../lib/kernel/source-tree.mjs';
 import { detectFormat } from '../lib/parser.mjs';
+import { buildControl } from '../lib/control.mjs';
 import { inScope, isProgram, readSource } from '../lib/sources.mjs';
 
 const SET = Object.fromEntries(REGISTRY.map((s) => [s.name, s.scan]));
@@ -92,7 +93,25 @@ function dynamicCall(src) {
   const rewritten = code(lines[k]).replace(CALL, 'CALL WS-SEED-PGM').trimEnd();
   if (rewritten.length > 65) return { skip: 'the rewritten CALL would pass column 72' };
   lines[k] = lines[k].slice(0, 7) + rewritten;
-  return { lines, target, pic: `PIC X(${Math.max(8, target.length)})` };
+  return { lines, line: k + 1, target, pic: `PIC X(${Math.max(8, target.length)})` };
+}
+
+// Whether the flow analysis, run to completion, holds no facts at the CALL on `line`, so credits no
+// check before it. Facts rather than `reached` decide it: `reached` lets an EXIT PROGRAM carry on.
+function callHoldsNoFacts(host, line) {
+  for (const p of host.parse().programs) {
+    const call = p.calls.find((c) => c.file === host.file && c.line === line);
+    if (!call) continue;
+    const byName = new Map();
+    for (const it of p.items) if (!byName.has(it.name)) byName.set(it.name, it);
+    const indexNames = new Set(p.items.flatMap((it) => it.indexNames || []));
+    const resolve = (tok) => (tok ? p.resolved.get(tok) || (tok.t === 'word' ? byName.get(tok.u) || (indexNames.has(tok.u) ? { index: tok.u } : null) : null) : null);
+    let ctl;
+    try { ctl = buildControl(p, resolve); } catch { return false; }
+    const at = ctl && ctl.nodeOf.get(p.statements[call.stmtIndex]);
+    return !!ctl && !ctl.partial && at != null && !ctl.facts.has(at);
+  }
+  return false;
 }
 
 // A CICS program that tests EIBCALEN in its procedure division and reads the caller's
@@ -164,10 +183,15 @@ export const OPERATORS = {
     },
   },
   // The program's own first literal CALL, wherever it sits, made to take its target from the
-  // command line. The flaw is at a real call site rather than beside the header.
+  // command line. The flaw is at a real call site rather than beside the header, at one a route
+  // from the program's entries reaches.
   'argv-to-dynamic-call': {
     set: 'flow', rule: 'argv-or-env-to-dynamic-program-load',
-    host: (src) => dynamicCall(src).skip ?? null,
+    host(src, host) {
+      const call = dynamicCall(src);
+      if (call.skip) return call.skip;
+      return callHoldsNoFacts(host, call.line) ? 'no route from its entries reaches its first literal CALL' : null;
+    },
     variants: {
       'call-target-from-argv': {
         label: FLAW,
@@ -323,7 +347,7 @@ export function seed(root, opts = {}) {
           const digest = createHash('sha1').update(src).digest('hex');
           if (used.has(digest)) { skip('a copy of a host already used'); continue; }
           const copybooks = includes(byName, file);
-          const host = { parse: () => tree.parse(file, src), copybooks };
+          const host = { file, parse: () => tree.parse(file, src), copybooks };
           let planted;
           try {
             const refused = spec.host(src, host);

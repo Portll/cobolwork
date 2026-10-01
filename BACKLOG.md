@@ -317,7 +317,8 @@ synthetic cases is not the same evidence. Three things it surfaced:
   makes it a flaw taken away. Every planted program is a label record (`labels` in `--out`, source
   `planted`) for per-rule precision from machine labels. Over the 500-repository corpus, 25 hosts
   per operator, `--skip volume`: 225 labels, 100 flaws and 125 near-misses. The first run found 67
-  flaws and reported 13 near-misses; with the three gaps below fixed, 100 and 1.
+  flaws and reported 13 near-misses; with the three gaps below fixed, 100 and 1; with hosts whose
+  call the analysis holds no facts at skipped (below), 100 and 0.
 
   | Operator | Variant | Label | First run | Fixed |
   |---|---|---|---|---|
@@ -325,7 +326,7 @@ synthetic cases is not the same evidence. Three things it surfaced:
   | | an EVALUATE lets two commands through (bench 062) | near-miss | 0 of 25 | 0 of 25 |
   | | the command line read, a literal command run (bench 002) | near-miss | 0 of 25 | 0 of 25 |
   | command line to the first literal `CALL` | the target read from the command line | flaw | 25 of 25 | 25 of 25 |
-  | | read, and `GOBACK` unless it names the program the call made | near-miss | 13 of 25 | 1 of 25 |
+  | | read, and `GOBACK` unless it names the program the call made | near-miss | 13 of 25 | 0 of 25 |
   | | the call through a field holding that program's name | near-miss | 0 of 25 | 0 of 25 |
   | `EIBCALEN` check removed | every test of it gone | flaw | 17 of 25 | 25 of 25 |
   | | gone, and `EIBCALEN` copied to a field nothing tests | flaw | 0 of 25 | 25 of 25 |
@@ -356,9 +357,15 @@ synthetic cases is not the same evidence. Three things it surfaced:
     what goes `BY CONTENT` or `BY VALUE`, is no longer written by a call unless it is `EXTERNAL`.
     Over the corpus: 2 findings fewer, both `file-record-to-dynamic-program-load` in
     `pingleware_apac-accounting-code`'s `JOB001`, whose program number is forced into five values
-    before a loop calls it. The one near-miss still reported calls from a paragraph nothing
-    performs (`CGS100`, `S7200-LINK-IG`); the analysis holds no facts where it cannot say the code
-    runs.
+    before a loop calls it.
+
+  The last near-miss reported was `CGS100`'s, whose first literal `CALL` sits in `S7200-LINK-IG`.
+  Nothing performs that paragraph; the program's main line ends by performing a paragraph that ends
+  in `EXIT PROGRAM`. `reached` (`lib/control.mjs`) lets `EXIT PROGRAM` carry on, so it counts the
+  paragraph reached, but the flow analysis's facts end at that `PERFORM` and hold none at the call,
+  so no check before it gets credit. The seeder now skips a host whose first literal `CALL` holds no
+  facts in an analysis that ran to completion (`CGS100` and `CALLDEMO.CBL`, which does `GOBACK`
+  first); `shoryataneja_DevOps-Bonus/token.cob` took `CGS100`'s place, and no near-miss is reported.
 
   Harness faults found on the way, each of which made a plant something other than its label:
   - The rule reports a communication area where it is declared, and a finding in a copybook of the

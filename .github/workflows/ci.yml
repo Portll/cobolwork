@@ -40,6 +40,7 @@ jobs:
       - name: Refuse any dependency
         shell: bash
         run: |
+          # shellcheck disable=SC2016 # the ${} are JavaScript template literals
           node -e '
             const p = require("./package.json");
             const d = Object.keys({ ...p.dependencies, ...p.devDependencies, ...p.peerDependencies, ...p.optionalDependencies });
@@ -73,6 +74,7 @@ jobs:
         shell: bash
         run: |
           node bin/cobolwork.mjs scan bench/cases --quiet --out scan.json
+          # shellcheck disable=SC2016 # the ${} are JavaScript template literals
           node -e '
             const s = require("./scan.json").summary;
             if (s.coverageIncomplete) { console.error("coverage incomplete over the benchmark"); process.exit(1); }

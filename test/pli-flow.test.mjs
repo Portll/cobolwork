@@ -37,11 +37,13 @@ const NEGATIVE = ` CUSTINQ: PROCEDURE OPTIONS(MAIN);
  END CUSTINQ;
 `;
 
-function scanOne(text, opts) {
+function scanOne(text, opts, members = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'pli-flow-'));
   try {
     mkdirSync(join(dir, 'src'));
+    mkdirSync(join(dir, 'copy'));
     writeFileSync(join(dir, 'src', 'CUSTINQ.pli'), text);
+    for (const [name, body] of Object.entries(members)) writeFileSync(join(dir, 'copy', name), body);
     return scan(dir, opts);
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -73,4 +75,13 @@ test('the same input passed as a parameter marker is not a finding', () => {
 test('PL/I is read only when asked for', () => {
   const r = scanOne(POSITIVE, { pli: false });
   assert.deepEqual(r.findings.filter((x) => x.rule === 'cics-terminal-to-dynamic-sql'), []);
+});
+
+test('a structure whose members come from an %INCLUDE inside its DECLARE carries the path', () => {
+  const src = POSITIVE.replace('   DCL 1 INAREA,\n         2 CUST_NAME CHAR(30),\n         2 FILLER    CHAR(10);\n', '   DCL 1 INAREA,\n   %INCLUDE INFLDS;\n');
+  assert.ok(src.includes('%INCLUDE INFLDS'));
+  const r = scanOne(src, { pli: true }, { 'INFLDS.inc': '         2 CUST_NAME CHAR(30),\n         2 FILLER    CHAR(10);\n' });
+  const f = r.findings.filter((x) => x.rule === 'cics-terminal-to-dynamic-sql');
+  assert.equal(f.length, 1);
+  assert.ok(f[0].trace.some((t) => t.item === 'CUST_NAME'));
 });

@@ -31,10 +31,11 @@ function files(dir) {
 
 const blank = () => ({ files: 0, statements: 0, parsed: 0, unbuilt: 0, unparsed: 0, unknown: 0, crashes: 0, lexErrors: 0 });
 
-export function measure(root, { synthetic = [], perKind = 40 } = {}) {
+export function measure(root, { synthetic = [], perKind = 40, statusMap = null } = {}) {
   const byKind = {};
   const byRepo = {};
   const samples = {};
+  const sampled = {};
   const reasons = {};
   const seen = new Set();
   let duplicates = 0;
@@ -56,12 +57,19 @@ export function measure(root, { synthetic = [], perKind = 40 } = {}) {
       const k = (byKind[res.kind] ||= { statements: 0, parsed: 0, unbuilt: 0, unparsed: 0, unknown: 0, crashes: 0 });
       k.statements++; k[res.status]++; r.statements++; r[res.status]++;
       if (res.crash) { k.crashes++; r.crashes++; }
-      if (res.status === 'unparsed' || res.status === 'unknown') {
-        const why = `${res.kind}: ${String(res.reason).replace(/'[^']*'/g, "'…'")}`;
-        reasons[why] = (reasons[why] || 0) + 1;
+      if (statusMap) statusMap[`${rel}:${st.line}`] = res.status;
+      if (res.status !== 'parsed') {
+        if (res.status !== 'unbuilt') {
+          const why = `${res.kind}: ${String(res.reason).replace(/'[^']*'/g, "'…'")}`;
+          reasons[why] = (reasons[why] || 0) + 1;
+        }
         const list = (samples[res.kind] ||= []);
-        if (list.length < perKind && !synthetic.includes(repo)) {
-          list.push({ file: rel, line: st.line, reason: res.reason, text: lines.slice(st.line - 1, Math.min(st.endLine, st.line + 7)).join('\n') });
+        const text = lines.slice(st.line - 1, Math.min(st.endLine, st.line + 7)).join('\n');
+        const shape = text.trim().replace(/\s+/g, ' ').slice(0, 24).toUpperCase();
+        const shapes = (sampled[res.kind] ||= new Set());
+        if (list.length < perKind && !synthetic.includes(repo) && !shapes.has(shape)) {
+          shapes.add(shape);
+          list.push({ file: rel, line: st.line, status: res.status, reason: res.reason || null, text });
         }
       }
     }

@@ -1,0 +1,7 @@
+{
+ "id": "terminal-input-into-dynamic-sql-negative",
+ "title": "CICS terminal input passed as host variable to prepared SQL",
+ "cwe": "CWE-89",
+ "expect": [],
+ "negativeFor": ["cics-terminal-to-dynamic-sql"]
+}

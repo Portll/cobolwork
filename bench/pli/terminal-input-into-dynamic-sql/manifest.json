@@ -1,0 +1,11 @@
+{
+ "id": "terminal-input-into-dynamic-sql",
+ "title": "CICS terminal input concatenated into dynamic SQL",
+ "cwe": "CWE-89",
+ "expect": [
+  {
+   "rule": "cics-terminal-to-dynamic-sql",
+   "file": "S1.pli"
+  }
+ ]
+}

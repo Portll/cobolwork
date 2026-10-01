@@ -1,0 +1,11 @@
+{
+ "id": "subscript-from-input",
+ "title": "CICS terminal input used directly as an array subscript with range checking disabled",
+ "cwe": "CWE-129",
+ "expect": [
+  {
+   "rule": "cics-terminal-to-subscript",
+   "file": "RATES.pli"
+  }
+ ]
+}

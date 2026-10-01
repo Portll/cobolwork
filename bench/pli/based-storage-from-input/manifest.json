@@ -1,0 +1,6 @@
+{
+ "id": "based-storage-from-input",
+ "title": "A BASED structure addressed through a pointer computed from an offset the input record carries",
+ "cwe": "CWE-822",
+ "expect": [{ "rule": "pli-based-storage-addressing", "file": "MAIN.pli" }]
+}

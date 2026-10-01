@@ -1,0 +1,7 @@
+{
+ "id": "based-storage-from-input-negative",
+ "title": "The same fields read from a declared structure, with no BASED storage",
+ "cwe": "CWE-822",
+ "expect": [],
+ "negativeFor": ["pli-based-storage-addressing"]
+}

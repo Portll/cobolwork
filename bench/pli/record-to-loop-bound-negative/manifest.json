@@ -1,0 +1,9 @@
+{
+  "id": "record-to-loop-bound-negative",
+  "title": "A record count field bounds a loop over a fixed array with a range check.",
+  "cwe": "CWE-606",
+  "expect": [],
+  "negativeFor": [
+    "file-record-to-loop-bound"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+ "id": "fetch-name-from-input",
+ "title": "Module name from PARM input used in FETCH of an ENTRY",
+ "cwe": "CWE-494",
+ "expect": [
+  {
+   "rule": "argv-or-env-to-dynamic-program-load",
+   "file": "MAIN.pli"
+  }
+ ]
+}

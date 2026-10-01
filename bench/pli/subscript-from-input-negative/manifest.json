@@ -1,0 +1,10 @@
+{
+ "id": "subscript-from-input-negative",
+ "title": "CICS terminal input validated against array bounds before use as subscript",
+ "cwe": "CWE-129",
+ "expect": [],
+ "negativeFor": [
+  "cics-terminal-to-subscript"
+ ],
+ "open": "The PL/I reader feeds the engine no control model, so the bound check lowers the finding (high to med, naming the check) but cannot clear it."
+}

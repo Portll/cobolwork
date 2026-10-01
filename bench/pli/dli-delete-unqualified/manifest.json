@@ -1,0 +1,11 @@
+{
+ "id": "dli-delete-unqualified",
+ "title": "IMS DLET issued without a segment search argument after a GHN loop",
+ "cwe": "CWE-284",
+ "expect": [
+  {
+   "rule": "ims-unqualified-destructive-call",
+   "file": "S1.pli"
+  }
+ ]
+}

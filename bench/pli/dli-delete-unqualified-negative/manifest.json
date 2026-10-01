@@ -1,0 +1,9 @@
+{
+ "id": "dli-delete-unqualified-negative",
+ "title": "IMS DLET issued with a fully qualified segment search argument after a GHN loop",
+ "cwe": "CWE-284",
+ "expect": [],
+ "negativeFor": [
+  "ims-unqualified-destructive-call"
+ ]
+}

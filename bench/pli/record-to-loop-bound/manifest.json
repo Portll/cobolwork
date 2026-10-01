@@ -1,0 +1,11 @@
+{
+  "id": "record-to-loop-bound",
+  "title": "A record count field bounds a loop over a fixed array without a range check.",
+  "cwe": "CWE-606",
+  "expect": [
+    {
+      "rule": "file-record-to-loop-bound",
+      "file": "main.pli"
+    }
+  ]
+}

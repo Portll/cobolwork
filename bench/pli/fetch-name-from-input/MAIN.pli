@@ -1,0 +1,16 @@
+ MAIN: PROCEDURE (PARM) OPTIONS(MAIN);
+
+ DCL PARM CHAR(100) VARYING;
+ DCL MODNAME CHAR(30) VARYING;
+ DCL MOD ENTRY EXTERNAL;
+
+ /* Take the module name from the first 30 characters of the PARM input */
+ MODNAME = SUBSTR(PARM, 1, 30);
+
+ /* Fetch the module using the variable name */
+ FETCH MOD TITLE(MODNAME);
+
+ /* Call the fetched module */
+ CALL MOD;
+
+ END MAIN;

@@ -1,0 +1,7 @@
+{
+ "id": "fetch-name-from-input-negative",
+ "title": "Module name is a literal constant in FETCH, not from input",
+ "cwe": "CWE-494",
+ "expect": [],
+ "negativeFor": ["argv-or-env-to-dynamic-program-load"]
+}

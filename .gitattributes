@@ -1,0 +1,2 @@
+# Evidence journals are hashed byte for byte, so a checkout must not change their line endings.
+test/fixtures/abend/** -text

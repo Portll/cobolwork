@@ -270,6 +270,7 @@ export function labelSheet(root, opts = {}) {
     const codeOf = (file, n, operands) => {
       if (!lines.has(file)) { try { lines.set(file, readSource(join(base, file)).text.split(/\r?\n/)); } catch { lines.set(file, []); } }
       const all = lines.get(file);
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp -- the item name is escaped
       const names = operands.map((o) => new RegExp(`(^|[^A-Z0-9-])${o.item.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^A-Z0-9-]|$)`, 'i'));
       let end = n;
       for (let k = n; k < n + 6 && k <= all.length; k++) if (names.some((re) => re.test(all[k - 1]))) { end = k; break; }

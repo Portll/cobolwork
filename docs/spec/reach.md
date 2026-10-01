@@ -276,8 +276,19 @@ ironwork runs with `--trace-marker`. The finding is confirmed where the run's se
 data exception at its line, where asterisks went in, that the same run with digits gets past.
 Anything else is unknown, with its reason. A run that did not carry the marker to the operation
 shows only that these inputs did not, so refuting a finding needs every route to its sink covered.
-`bench/seed.mjs` adds planted labels. The sealed answer key `diag/label-sheet.mjs` writes and
-`diag/score-corpus.mjs` score each verdict against a label set. No rate is published yet.
+`bench/seed.mjs` adds planted labels: a flaw or a near-miss put into a real program, labelled by
+construction, and whether the scan reported it.
+
+`bench/precision.mjs` turns the labels into precision per rule, and per verdict where `--corpus`
+names the repositories the execution labels came from: each such label is joined by fingerprint to
+its finding in a fresh scan, and one that matches no finding is counted as unjoined. Every number
+names its label source. A confirmed finding or a reported flaw is right, a refuted finding or a
+reported near-miss is wrong, and an unknown is neither: precision is the range from every unknown
+being wrong to every unknown being right, one number only where nothing is unknown. Recall comes
+from planted labels alone, the only ones where every flaw is known. The table is published with each
+release.
+`diag/label-sheet.mjs` and `diag/score-corpus.mjs` score each verdict against a label sheet a person
+fills in, sealed against its answer key.
 
 ### 9.7 The verification plan
 

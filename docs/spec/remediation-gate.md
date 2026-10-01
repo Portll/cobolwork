@@ -29,6 +29,8 @@ flagged statement itself - `CALL 'SYSTEM' USING WS-CMD` reworded, the route left
 - the patch removed the site-file fact a rule needs, so the rule did not run;
 - the patch added a baseline entry that suppresses the target;
 - the patch deleted the program;
+- the patch deleted the flagged statement, or the statement the input comes from, so the program no
+  longer does what it did;
 - the patch routed the value through something the flow engine does not follow, so the route is
   still there and the engine no longer sees it.
 
@@ -109,10 +111,15 @@ Tried in this order; the first that holds is the outcome.
 | `lowered-by-check` | the head holds it, paired, at a lower severity, with a `guard` at an inserted line | `null` |
 | `program-removed` | the target's file is not in the head, or its program is not | `false` |
 | `cleared-by-check` | the head's `checked` list holds the target's route, paired, with a guard that stops it | `true` |
-| `statement-removed` | for `path` evidence, the target's line is a deleted line, and no sink of the target's kind in its program stands at an inserted line (§5a) | `true` |
-| `source-removed` | for `path` evidence, the line of the source the target's trace starts at is a deleted line, and no source of that kind in the program stands at an inserted line | `true` |
+| `statement-removed` | for `path` evidence, the target's line is a deleted line, and no sink of the target's kind in its program stands at an inserted line (§5a) | `false` |
+| `source-removed` | for `path` evidence, the line of the source the target's trace starts at is a deleted line, and no source of that kind in the program stands at an inserted line | `false` |
 | `no-longer-fires` | for any other evidence, the patch changed the target's file and the rule no longer fires there | `true` |
 | `gone-unexplained` | none of the above | `null` |
+
+`statement-removed` and `source-removed` fail. A fix keeps the program's statements and stops the
+route, because deleting the statement removes what the program did along with the flaw: a printing
+program that no longer prints still reports that it printed. Both outcomes are still named, so the
+reason says what the patch did.
 
 `lowered-by-check` is undecided rather than a pass: a check that lowers without stopping may not
 turn away everything it should, which is why the engine lowered rather than cleared. A finding held
@@ -131,8 +138,8 @@ A changed line is a text fact: it says the patch touched the statement, not that
 no longer what the rule looked for. A sink reworded into a form one recogniser misses would read as
 removed. The flow engine already lists every sink its graph holds, reached or not
 (`analyze(..., { listSinks: true })`), and lists sources the same way when asked; `statement-removed`
-and `source-removed` rest on those listings, as `cleared-by-check` rests on `checked`. All three
-outcomes that pass are then facts the engine states, not inferences from the text.
+and `source-removed` rest on those listings, as `cleared-by-check` rests on `checked`, so each
+outcome is a fact the engine states, not an inference from the text.
 
 The question the listing answers is whether the patch wrote the statement back, so it looks only
 at inserted lines. A program with a second sink of the same kind that the patch did not touch
@@ -257,17 +264,17 @@ applies the patch to the working tree or a second commit.
     When  the patch adds a numeric test that sets a flag the call is made under
     Then  the outcome is lowered-by-check and the verdict is undecided
 
-#### G1.3 Removing the flagged statement passes
+#### G1.3 Removing the flagged statement fails
     When  the patch deletes the CALL 'SYSTEM'
-    Then  the outcome is statement-removed and the verdict is pass
+    Then  the outcome is statement-removed, target is false and the verdict is fail
 
 #### G1.4 Rewording the flagged statement is not a fix
     When  the patch changes the CALL's line and the route still reaches it
     Then  the outcome is still-reported, and no finding is reported as added for it
 
-#### G1.5 Removing the source passes
-    When  the patch replaces the ACCEPT with a MOVE of a literal
-    Then  the outcome is source-removed or cleared-by-check, and the verdict is pass
+#### G1.5 Removing the source fails
+    When  the patch deletes the ACCEPT
+    Then  the outcome is source-removed, target is false and the verdict is fail
 
 #### G1.6 Deleting the program fails
     When  the patch deletes the program's file

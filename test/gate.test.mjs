@@ -80,9 +80,11 @@ function gated(files, edits, pick = osCommandIn('P.cbl'), opts = {}) {
   return { root, fp, doc: gate(root, fp, opts) };
 }
 
+const ALLOW = ['EVALUATE WS-IN', "   WHEN 'DAILY'", "   WHEN 'MONTHLY'", '      CONTINUE', '   WHEN OTHER', '      GOBACK', 'END-EVALUATE'];
+const FIXED = () => program('P', [ACCEPT, ...ALLOW, MOVE, CALL, 'GOBACK.']);
+
 test('G1.1 A check the patch adds that stops the route passes', { skip }, () => {
-  const allow = ['EVALUATE WS-IN', "   WHEN 'DAILY'", "   WHEN 'MONTHLY'", '      CONTINUE', '   WHEN OTHER', '      GOBACK', 'END-EVALUATE'];
-  const { doc } = gated({ 'P.cbl': BASE }, { 'P.cbl': program('P', [ACCEPT, ...allow, MOVE, CALL, 'GOBACK.']) });
+  const { doc } = gated({ 'P.cbl': BASE }, { 'P.cbl': FIXED() });
   assert.equal(doc.outcome, 'cleared-by-check');
   assert.equal(doc.verdict, 'pass');
   assert.deepEqual(doc.reasons, []);
@@ -96,10 +98,12 @@ test('G1.2 A check the patch adds that only lowers the finding is undecided', { 
   assert.equal(doc.verdict, 'undecided');
 });
 
-test('G1.3 Removing the flagged statement passes', { skip }, () => {
+test('G1.3 Removing the flagged statement fails', { skip }, () => {
   const { doc } = gated({ 'P.cbl': BASE }, { 'P.cbl': program('P', [ACCEPT, MOVE, 'GOBACK.']) });
   assert.equal(doc.outcome, 'statement-removed');
-  assert.equal(doc.verdict, 'pass');
+  assert.equal(doc.checks.target, false);
+  assert.equal(doc.verdict, 'fail');
+  assert.ok(doc.reasons.some((r) => /deletes the target's statement at P\.cbl:\d+; a fix keeps the statement/.test(r)), doc.reasons.join('\n'));
 });
 
 test('G1.4 Rewording the flagged statement is not a fix', { skip }, () => {
@@ -110,10 +114,12 @@ test('G1.4 Rewording the flagged statement is not a fix', { skip }, () => {
   assert.equal(doc.verdict, 'fail');
 });
 
-test('G1.5 Removing the source passes', { skip }, () => {
-  const { doc } = gated({ 'P.cbl': BASE }, { 'P.cbl': program('P', ["MOVE 'DAILY' TO WS-IN", MOVE, CALL, 'GOBACK.']) });
-  assert.ok(['source-removed', 'cleared-by-check'].includes(doc.outcome), doc.outcome);
-  assert.equal(doc.verdict, 'pass');
+test('G1.5 Removing the source fails', { skip }, () => {
+  const { doc } = gated({ 'P.cbl': BASE }, { 'P.cbl': program('P', [MOVE, CALL, 'GOBACK.']) });
+  assert.equal(doc.outcome, 'source-removed');
+  assert.equal(doc.checks.target, false);
+  assert.equal(doc.verdict, 'fail');
+  assert.ok(doc.reasons.some((r) => /deletes the statement the target's input comes from/.test(r)), doc.reasons.join('\n'));
 });
 
 test('G1.6 Deleting the program fails', { skip }, () => {
@@ -170,7 +176,7 @@ test('G2.1 A finding the patch adds fails, and is named by rule and place', { sk
 test('G2.2 An edited line of another finding is not a finding added', { skip }, () => {
   const other = program('Q', [ACCEPT, MOVE, CALL, 'GOBACK.']);
   const { doc } = gated({ 'P.cbl': BASE, 'Q.cbl': other },
-    { 'P.cbl': program('P', [ACCEPT, MOVE, 'GOBACK.']), 'Q.cbl': program('Q', [ACCEPT, MOVE, 'CALL "SYSTEM" USING WS-CMD', 'GOBACK.']) });
+    { 'P.cbl': FIXED(), 'Q.cbl': program('Q', [ACCEPT, MOVE, 'CALL "SYSTEM" USING WS-CMD', 'GOBACK.']) });
   assert.equal(doc.checks.added, true);
   assert.equal(doc.verdict, 'pass');
 });
@@ -239,7 +245,7 @@ test('G2.8 A statement written back elsewhere is not removed', { skip }, () => {
 
 test('G2.9 --target-only answers for the target and coverage alone', { skip }, () => {
   const files = { 'P.cbl': BASE, 'Q.cbl': program('Q', ['GOBACK.']) };
-  const edits = { 'P.cbl': program('P', [ACCEPT, MOVE, 'GOBACK.']), 'Q.cbl': program('Q', [ACCEPT, MOVE, CALL, 'GOBACK.']) };
+  const edits = { 'P.cbl': FIXED(), 'Q.cbl': program('Q', [ACCEPT, MOVE, CALL, 'GOBACK.']) };
   const { root, fp, doc } = gated(files, edits);
   assert.equal(doc.verdict, 'fail');
   const only = gate(root, fp, { targetOnly: true });
@@ -270,8 +276,8 @@ test('G3.2 The compiler is not taken from the reviewed tree', () => {
 test('G3.3 A program that stopped compiling fails; one that never compiled does not', { skip }, () => {
   const root = repo({ 'P.cbl': BASE });
   const fp = fingerprintOf(root, osCommandIn('P.cbl'));
-  patch(root, { 'P.cbl': program('P', [ACCEPT, MOVE, 'GOBACK.']) });
-  const headFails = { run: (file) => !readFileSync(file, 'latin1').includes('GOBACK.') || readFileSync(file, 'latin1').includes(CALL) };
+  patch(root, { 'P.cbl': FIXED() });
+  const headFails = { run: (file) => !readFileSync(file, 'latin1').includes('EVALUATE WS-IN') };
   const regressed = gate(root, fp, { compiler: headFails });
   assert.equal(regressed.checks.compile, false);
   assert.equal(regressed.verdict, 'fail');

@@ -89,6 +89,7 @@ test('the abend code and IBM message id choose the rule', () => {
   assert.equal(abendRule({ code: 'U4038', message: 'IGZ0072S A reference modification start position was out of range' }), 'input-causes-abend-subscript-range');
   assert.equal(abendRule({ code: 'U4038', message: 'IGZ0073S A reference modification length value of 0 was out of range' }), 'input-causes-abend-subscript-range');
   assert.equal(abendRule({ code: 'U4038', message: 'IGZ0074S A reference modification start position value of 9 and length value of 4 was out of range' }), 'input-causes-abend-subscript-range');
+  assert.equal(abendRule({ code: 'U4038', message: 'IGZ0007S The length of group WS-T exceeded its maximum' }), 'input-causes-abend-subscript-range');
   assert.equal(abendRule({ code: 'U4038', message: 'subscript out of range (SSRANGE)' }), 'input-causes-abend');
   assert.equal(abendRule({ code: 'S0CB' }), 'input-causes-abend');
 });

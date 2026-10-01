@@ -396,7 +396,7 @@ Its rules are `execution` evidence: a run of the program on that input ended thi
 |---|---|---|
 | `input-causes-abend-s0c7` | med | the abend is S0C7, a data exception |
 | `input-causes-abend-s0c4` | high | the abend is S0C4, a protection exception |
-| `input-causes-abend-subscript-range` | high | the message starts with IGZ0006S, IGZ0072S, IGZ0073S or IGZ0074S: a subscript, index or reference modification SSRANGE caught out of range |
+| `input-causes-abend-subscript-range` | high | the message starts with IGZ0006S, IGZ0007S, IGZ0072S, IGZ0073S or IGZ0074S: a subscript, index, OCCURS DEPENDING ON object or reference modification SSRANGE caught out of range |
 | `input-causes-abend` | med | any other abend |
 
 An abend with code `IRONWORK` is something ironwork does not run, counted as `notModelled` and never a

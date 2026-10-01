@@ -46,6 +46,7 @@ const KINDS = {
   recon(row, problems) {
     if (!['hlq', 'lpar', 'vtam-applid', 'hostname', 'ip', 'volser'].includes(row.class)) problems.push('class: unknown');
     if (!str(row.pattern)) problems.push('pattern: missing');
+    // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp -- a feed row's pattern is a regular expression by design; this checks it compiles
     else { try { new RegExp(row.pattern); } catch (e) { problems.push('pattern: not a regular expression (' + e.message + ')'); } }
     if (!Array.isArray(row.matches) || row.matches.length < 2) problems.push('matches: need at least two examples that match');
     if (!Array.isArray(row.nonMatches) || row.nonMatches.length < 2) problems.push('nonMatches: need at least two near misses that must not match');

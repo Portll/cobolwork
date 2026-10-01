@@ -565,20 +565,15 @@ only one of the five that does.
 
 ## Integration
 
-- **The remediation gate has a caller: commitwork's `cobolwork-remediate`** (commitwork 43217458,
-  `lib/cobolwork-remediation.mjs`). `cobolwork gate` passes a drafted patch only where the engine
-  says why its target left: a check that stops the route, or the statement or source gone and not
-  written back. It fails a patch that adds a finding, moves a layout another program reads, adds a
-  call target or edits the site file or baseline, and leaves a route cut mid-trace, or a scan the
-  memory guard stopped, to a person ([`docs/spec/remediation-gate.md`](docs/spec/remediation-gate.md)).
-  The caller builds each draft through a private index and gates `--head <sha>`, fences `reasons`
-  as untrusted text before a model sees them, stops at three attempts or a repeated draft, and
-  resweeps with `--target-only`. On 2026-09-30 the gate met a real compiler (GnuCOBOL 3.2.0 on
-  PATH): a batch fix that tests the value first passed with `compile` true, the same fix with a
-  misspelt scope terminator failed with `compile` false, and `--target-only` passed the fix on a
-  later revision where someone else had added a finding the full gate fails. No draft has run end to
-  end: commitwork's remediation policy is in report mode until an operator sets `hitl-item`, and its
-  drafter sends Qwen 3.8 no reasoning setting.
+- **The gate cannot judge a sound fix to a command sink.** The reviewed fix to
+  `file-record-to-os-command` in manuelmrtz_Cobol-Exercises' CH7ASG02 runs a literal command that
+  reads the printer name from a quoted environment variable, and tests the name with a user-defined
+  `CLASS` before setting it. `cobolwork gate` leaves it undecided (`gone-unexplained`): the engine
+  follows the value into the environment and no further, and credits only a list of literals,
+  digits or a bound as a check on a command. Two changes would let it pass: a parameterised command
+  (a literal command reading a quoted variable set from a checked field) as a cut route, and a
+  class test over the field's full length as a restricting check. The fix and its HAZOP are in
+  commitwork-sidecar `evaluations/hazop_2026-10-01_ch7asg02-printer-command.md`.
 - The mainframe credential rules are ready to offer upstream to gitleaks. The pull request is not
   drafted, and cobolwork itself only prints their path.
 - **A gcobol patch is ready to send to GCC, and has not been sent.** In gcobol 16, FUNCTION

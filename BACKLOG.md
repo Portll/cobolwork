@@ -178,9 +178,7 @@ to build next:
   - GenApp's LGSTSQ queue name (5) is set from the input only when it begins `Q=`.
 
 Found on the way: `lib/sets/flow.mjs`'s `scan()` given a relative root returns no findings and
-reports its coverage complete (the CLI resolves roots, bench tools must); cobolwork reads no
-symbolic map from a `.bms` where ironwork builds one, so a program that copies a mapset with only
-its BMS source compiles in ironwork and has no terminal source in the scan.
+reports its coverage complete (the CLI resolves roots, bench tools must).
 
 **The 500-repository run, 2026-09-26.** Every set over all 500 held-out repositories, with
 `COBOLWORK_FREE_MEMORY_MB=12288`; without it the same run read 156,184 of 274,087 files, because the

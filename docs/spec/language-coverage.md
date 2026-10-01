@@ -616,9 +616,16 @@ them will be wrong in a way the tests will not catch.
    interface, not the BMS map-definition macros; IMS has no emulation at all. HLASM keeps its
    oracle; BMS and IMS do not. One open sub-question remains worth an hour: does anything in
    zCICS or the public-domain MVS 3.8 library resolve `DFHMSD`/`DFHMDI`/`DFHMDF`? Assume not.
-2. Should the BMS symbolic map be generated as a synthetic copybook and fed through the existing
-   `COPY` resolver, or represented natively? The former is less code and reuses a graded path; the
-   latter is cleaner. Recommend the former and record the decision.
+2. ~~Should the BMS symbolic map be generated as a synthetic copybook and fed through the existing
+   `COPY` resolver, or represented natively?~~ **ANSWERED (2026-10-01): a synthetic copybook.** A
+   `COPY` that resolves no member, where the tree holds a COBOL mapset of that name in `NAME.bms`,
+   reads the symbolic map `symbolicMapCopybook` writes (`lib/parser.mjs` `includeCopy`). Its
+   items are placed at the BMS statements they come from, a record at its DFHMDI and a field's
+   items at its DFHMDF. A member in the tree still wins. Mapsets with GRPNAME or OCCURS fields are
+   not generated yet. Over the 500-repository corpus, 498 of them read completely both times, the
+   flow set gains 14 findings and loses none: 13 `cics-terminal-to-arithmetic` (IBM's
+   MortgageApplication in five repositories, and one calculator) and one
+   `cics-terminal-to-subscript` (CardDemo's COMEN01C in a repository without the map's copybook).
 3. Is PL/I a cobolwork feature or a separate product? It shares the engine but not the name, and
    the answer changes how it is packaged and licensed.
 4. `.asm` in the corpus is 36% IMS. Should IMS DBD/PSB detection be content-based, like the

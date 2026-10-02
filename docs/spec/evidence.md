@@ -403,7 +403,9 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
 
 ### 13.6 Abends from fuzzing
 
-`COBOLWORK_ABENDS` names fuzz runs ironwork's harness wrote (several, separated as `PATH` is). A run
+`COBOLWORK_ABENDS` names fuzz runs ironwork's harness wrote (several, separated as `PATH` is), of a
+batch program, a job or a CICS task (`ironwork fuzz --cics`, whose inputs are a COMMAREA and a
+terminal's screen script). A run
 is a directory: `manifest.json` (`tool: "ironwork-fuzz"`) names the program by its path in the scanned
 tree, the inputs, and each run that ended in an abend with `{ code, file, line, message }` and the
 journal that recorded it; `evidence/` holds those journals and their ledger. The `abend` set reports
@@ -422,8 +424,8 @@ Its rules are `execution` evidence: a run of the program on that input ended thi
 
 | Rule | Severity | When |
 |---|---|---|
-| `input-causes-abend-s0c7` | med | the abend is S0C7, a data exception |
-| `input-causes-abend-s0c4` | high | the abend is S0C4, a protection exception |
+| `input-causes-abend-s0c7` | med | the abend is S0C7, a data exception, or ASRA in a CICS task whose message ends `(S0C7, which CICS reports as ASRA)` |
+| `input-causes-abend-s0c4` | high | the abend is S0C4, a protection exception, or ASRA whose message ends `(S0C4, which CICS reports as ASRA)` |
 | `input-causes-abend-subscript-range` | high | the message starts with IGZ0006S, IGZ0007S, IGZ0072S, IGZ0073S or IGZ0074S: a subscript, index, OCCURS DEPENDING ON object or reference modification SSRANGE caught out of range |
 | `input-causes-abend` | med | any other abend |
 

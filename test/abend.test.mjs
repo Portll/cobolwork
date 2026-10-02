@@ -108,7 +108,25 @@ test('an abend in a member read from a library outside the tree is a problem, no
   assert.equal(r.summary.setIncomplete, true);
 });
 
+test('a data exception in a CICS task, reported as ASRA, is an S0C7 finding with the COMMAREA or screen script that gave it', () => {
+  const r = scan('cics');
+  assert.equal(r.findings.length, 2, JSON.stringify(r.summary.abendRunProblems));
+  for (const f of r.findings) {
+    assert.equal(f.rule, 'input-causes-abend-s0c7');
+    assert.equal(f.path, 'cics/ORDCICS.cbl');
+    assert.equal(f.abend.code, 'ASRA');
+  }
+  const at = (line) => r.findings.find((f) => f.line === line).input;
+  assert.deepEqual(at(23), [{ kind: 'commarea', name: 'DFHCOMMAREA', bytes: 'QFxcXA==', minimized: true }]);
+  assert.deepEqual(at(27), [{ kind: 'terminal', name: 'TERM', bytes: Buffer.from('home\ntab\nstring 85+\nENTER\n').toString('base64'), minimized: true }]);
+});
+
 test('the abend code and IBM message id choose the rule', () => {
+  assert.equal(abendRule({ code: 'ASRA', message: 'Data exception (S0C7, which CICS reports as ASRA)' }), 'input-causes-abend-s0c7');
+  assert.equal(abendRule({ code: 'ASRA', message: 'Protection exception (S0C4, which CICS reports as ASRA)' }), 'input-causes-abend-s0c4');
+  assert.equal(abendRule({ code: 'ASRA', message: '(S0C7, which CICS reports as ASRA) typed by the operator' }), 'input-causes-abend');
+  assert.equal(abendRule({ code: 'ASRA', message: 'Data exception (S0C7)' }), 'input-causes-abend');
+  assert.equal(abendRule({ code: 'AEIM', message: 'NOTFND (S0C7, which CICS reports as ASRA)' }), 'input-causes-abend');
   assert.equal(abendRule({ code: 'S0C7' }), 'input-causes-abend-s0c7');
   assert.equal(abendRule({ code: 'S0C4' }), 'input-causes-abend-s0c4');
   assert.equal(abendRule({ code: 'U4038', message: 'IGZ0006S The reference to table WS-E by verb number 01 was out of range' }), 'input-causes-abend-subscript-range');

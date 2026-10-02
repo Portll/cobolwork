@@ -92,6 +92,15 @@ test('an abend in a library member is placed in that library, found through the 
   assert.equal(r.summary.abendRunsElsewhere, undefined);
 });
 
+test('an abend in a CALLed program is placed in its source, found under the root that holds it with the digest its call record gives', () => {
+  const r = scan('called');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.equal(f.rule, 'input-causes-abend-s0c7');
+  assert.equal(f.path, 'lib/SUBADD.cbl');
+  assert.equal(f.line, 9);
+});
+
 test('an abend in a member read from a library outside the tree is a problem, not a finding beside the program', () => {
   const r = scan('library-outside');
   assert.deepEqual(r.findings, []);

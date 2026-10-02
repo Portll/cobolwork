@@ -395,9 +395,11 @@ Where the journal also records the abend's file and line, the finding is placed 
 that places it elsewhere is not believed. The file is named relative to the directory the run read
 it from. Where the manifest lists those directories (`roots`: the program's directory, then each
 library, by path in the scanned tree, numbered as the journal's `input` records number them), the
-finding goes under the one the journal's `input` record for that file names; without `roots` or
-such a record, under the program's directory. A file the journal read from two of them, or from
-one outside the scanned tree, is in `abendRunProblems`.
+finding goes under the one the journal's `input` record for that file names. A CALLed program's
+source has a `call` record instead, naming it by path and digest without its root: the finding goes
+under the root where the scanned tree holds that file with that digest, or the one root holding it
+at all. Without `roots` or either record, it goes under the program's directory. A file whose root
+cannot be told, or lies outside the scanned tree, is in `abendRunProblems`.
 Its rules are `execution` evidence: a run of the program on that input ended this way.
 
 | Rule | Severity | When |

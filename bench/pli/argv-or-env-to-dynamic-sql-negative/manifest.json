@@ -1,0 +1,9 @@
+{
+  "id": "argv-or-env-to-dynamic-sql-negative",
+  "title": "The PARM is passed to the prepared statement through a parameter marker",
+  "cwe": "CWE-89",
+  "expect": [],
+  "negativeFor": [
+    "argv-or-env-to-dynamic-sql"
+  ]
+}

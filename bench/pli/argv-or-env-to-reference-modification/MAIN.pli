@@ -1,0 +1,18 @@
+ MAIN: PROCEDURE (PARM) OPTIONS(MAIN);
+  DCL PARM CHAR(100) VARYING;
+  DCL BUFFER CHAR(256) INIT('DEFAULT_BUFFER_CONTENT_FOR_PROCESSING');
+  DCL START FIXED BIN(31);
+  DCL RESULT CHAR(10) VARYING;
+
+  /* Read the start position from the command line parameter */
+  START = SUBSTR(PARM, 1, MIN(LENGTH(PARM), 10));
+
+  /* Perform the reference modification using the untrusted start
+     position */
+  RESULT = SUBSTR(BUFFER, START, 10);
+
+  PUT SKIP LIST('Extracted:', RESULT);
+
+
+  RETURN;
+ END MAIN;

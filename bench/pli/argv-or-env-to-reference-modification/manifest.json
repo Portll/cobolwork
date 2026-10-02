@@ -1,0 +1,11 @@
+{
+  "id": "argv-or-env-to-reference-modification",
+  "title": "Command-line parameter controls the start position of a SUBSTR reference modification",
+  "cwe": "CWE-1285",
+  "expect": [
+    {
+      "rule": "argv-or-env-to-reference-modification",
+      "file": "MAIN.pli"
+    }
+  ]
+}

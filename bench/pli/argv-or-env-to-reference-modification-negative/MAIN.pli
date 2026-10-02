@@ -1,0 +1,18 @@
+ MAIN: PROCEDURE (PARM) OPTIONS(MAIN);
+  DCL PARM CHAR(100) VARYING;
+  DCL BUFFER CHAR(256) INIT('DEFAULT_BUFFER_CONTENT_FOR_PROCESSING');
+  DCL START FIXED BIN(31) INIT(1);
+  DCL RESULT CHAR(10) VARYING;
+
+  /* Read the parameter but use it for output only, not for
+     reference modification */
+  PUT SKIP LIST('Parameter received:', PARM);
+
+  /* Use a literal start position, not the untrusted input */
+  RESULT = SUBSTR(BUFFER, 1, 10);
+
+  PUT SKIP LIST('Extracted:', RESULT);
+
+
+  RETURN;
+ END MAIN;

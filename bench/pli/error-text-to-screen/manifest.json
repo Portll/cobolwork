@@ -1,0 +1,11 @@
+{
+  "id": "error-text-to-screen",
+  "title": "Db2's message text in the PL/I SQLCA's SQLERRM is sent to the terminal by CICS SEND TEXT",
+  "cwe": "CWE-209",
+  "expect": [
+    {
+      "rule": "system-response-to-screen",
+      "file": "main.pli"
+    }
+  ]
+}

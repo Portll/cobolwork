@@ -1,0 +1,9 @@
+{
+  "id": "error-text-to-screen-negative",
+  "title": "A fixed message chosen by SQLCODE is sent to the terminal, not Db2's text",
+  "cwe": "CWE-209",
+  "expect": [],
+  "negativeFor": [
+    "system-response-to-screen"
+  ]
+}

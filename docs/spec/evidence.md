@@ -392,7 +392,12 @@ journal that recorded it; `evidence/` holds those journals and their ledger. The
 one finding per rule, file and line, with the smallest input that produced it, and only where the
 evidence directory verifies (§9) and the run's own journal records the abend code the manifest gives.
 Where the journal also records the abend's file and line, the finding is placed there, and a manifest
-that places it elsewhere is not believed.
+that places it elsewhere is not believed. The file is named relative to the directory the run read
+it from. Where the manifest lists those directories (`roots`: the program's directory, then each
+library, by path in the scanned tree, numbered as the journal's `input` records number them), the
+finding goes under the one the journal's `input` record for that file names; without `roots` or
+such a record, under the program's directory. A file the journal read from two of them, or from
+one outside the scanned tree, is in `abendRunProblems`.
 Its rules are `execution` evidence: a run of the program on that input ended this way.
 
 | Rule | Severity | When |

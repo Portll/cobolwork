@@ -113,6 +113,15 @@ that caller's storage. A value the subprogram keeps in its own storage can reach
 Findings carry no source text, so a report can be stored and passed on without carrying the code
 with it.
 
+`trace` is one route, the shortest, and sources that reach one sink are merged into one finding,
+counted in `sources`. With `--all-routes`, `scan` and `flow` give each path finding `routes`: every
+source, and every statement on any route from one of them to the sink, by verb, file and line.
+`complete` is false where the walk stopped at its budget or a step has no statement the engine can
+place. It leaves out no statement on a route the engine follows, and may name one no route takes:
+what a reader needs before saying a run covered every route (`docs/spec/reach.md` §9.8). Routes
+through what the engine does not read, such as an unparsed program or a caller written in another
+language, are not in it.
+
 `fingerprint` is what the finding is, rather than where it is printed today: the rule, the program
 and the paragraph or section it sits in (the job, step and DD for JCL), and the flagged statement's
 own text. No line number goes into it, so code added above a finding does not change it. `diff`

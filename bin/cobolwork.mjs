@@ -80,6 +80,7 @@ Options
   --rules-path gitleaks print the path of the mainframe credential rules and exit
   --quiet               summary only
   --full-trace          list every hop of a data flow path, not its two ends
+  --all-routes          give each data flow finding every statement on any route from its sources (scan, flow)
   --base <ref>          diff: the git revision to compare against
   --head <ref>          diff: the revision under review (default: the working tree)
   --baseline <file>     judgements to apply; without it, ${BASELINE_FILE} in the scanned tree
@@ -145,6 +146,7 @@ function parseArgs(argv) {
     else if (a === '--rules-path') opts.rulesPath = argv[++i] || 'gitleaks';
     else if (a === '--quiet') opts.quiet = true;
     else if (a === '--full-trace') opts.fullTrace = true;
+    else if (a === '--all-routes') opts.allRoutes = true;
     else if (a === '--base') opts.base = value();
     else if (a === '--head') opts.head = value();
     else if (a === '--baseline') opts.baseline = value();
@@ -250,6 +252,10 @@ if (opts.fullTrace && opts._.length && !TRACE_COMMANDS.includes(opts._[0])) {
 `);
   process.exit(2);
 }
+if (opts.allRoutes && opts._.length && !['scan', 'flow'].includes(opts._[0])) {
+  process.stderr.write(`cobolwork: --all-routes is for scan and flow\n`);
+  process.exit(2);
+}
 const ADVISORY_COMMANDS = ['scan', 'baseline', 'tui', 'explain', 'build'];
 if (opts.advisoryFeeds && opts._.length && !ADVISORY_COMMANDS.includes(opts._[0])) {
   process.stderr.write(`cobolwork: ${opts._[0]} reads no advisories; ${ADVISORY_COMMANDS.join(', ')} do\n`);
@@ -340,7 +346,7 @@ try {
   } else if (command === 'evidence') {
     process.exitCode = evidenceCommand(target, opts, { toolVersion: VERSION, write: (s) => process.stdout.write(s) });
   } else if (command === 'scan' || command === 'flow') {
-    const flowOpts = { repos, fullTrace: opts.fullTrace === true, systemDirs };
+    const flowOpts = { repos, fullTrace: opts.fullTrace === true, allRoutes: opts.allRoutes === true, systemDirs };
     // The site file sits beside the members and is not one of them, so it is named rather than found.
     const site = resolve(root, SITE_FILE);
     const pds = opts.pdsExport ? pdsExportTree(root, { systemDirs }) : null;

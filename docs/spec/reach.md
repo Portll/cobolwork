@@ -352,9 +352,12 @@ A finding is refuted by coverage only where runs show that no value from its sou
 operation. No such label is made yet: every coverage label is `unknown`, because four facts are
 missing.
 
-1. **Every route.** A finding names one route. The flow engine keeps the shortest route from each
-   source and merges the sources that reach one sink into one finding, counted in `sources`.
-   Refuting needs every route from every source, which the report does not carry.
+1. **Every route.** A finding's `trace` names one route. The flow engine keeps the shortest route
+   from each source and merges the sources that reach one sink into one finding, counted in
+   `sources`. `--all-routes` adds `routes`: every source, and every statement on any route from one
+   of them to the sink, with `complete` false where the walk stopped at its budget or a step has no
+   statement to place. The list may name a statement no route takes, and leaves out none on a
+   route the engine follows; a route through code it does not read is not in it.
 2. **Statements, in order.** `ironwork run --coverage` reports the paragraphs a run entered. An
    entered paragraph does not show that the statement on the route ran, and statements run in
    separate runs are not the route run end to end. Refuting needs one run that executed each route's
@@ -370,6 +373,6 @@ Where all four hold, the finding is refuted with source `coverage` and the run t
 `bench/precision.mjs` counts it wrong, as it counts any refuted label. Fuzzed runs carry no marker:
 they show which paragraphs ran, never that a value failed to arrive.
 
-The facts need two additions. The flow engine would export every route of a finding. ironwork would
-record the statements a run executes, in order, and track which bytes came from the input through
-each step, so that absence at the operation means no input byte arrived whatever the steps did.
+Fact 1 is `routes`. Facts 2 and 3 need ironwork to record the statements a run executes, in order,
+and which bytes came from the input through each step, so that absence at the operation means no
+input byte arrived whatever the steps did.

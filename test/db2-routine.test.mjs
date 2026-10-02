@@ -390,6 +390,49 @@ test('MySQL, Transact-SQL, Oracle and Db2 for i routines are refused at the dial
   refused('CREATE OR REPLACE PROCEDURE TEHMSDTA/RSQAVAIL (IN P_CAT CHAR(6)) LANGUAGE SQL BEGIN END;', /Db2 for i system naming/);
 });
 
+test('DYNAMIC RESULT SET is a synonym for DYNAMIC RESULT SETS, as the ALTER PROCEDURE pages list it', () => {
+  assert.equal(node('CREATE PROCEDURE P () DYNAMIC RESULT SET 2 LANGUAGE SQL BEGIN END;').options.dynamicResultSets, 2);
+  assert.equal(node('CREATE PROCEDURE P () DYNAMIC RESULT SET 1 LANGUAGE COBOL EXTERNAL;').options.dynamicResultSets, 1);
+});
+
+test('AS LOCATOR is refused on SQL procedures, per "AS LOCATOR cannot be specified for SQL procedures" in the CREATE PROCEDURE overview', () => {
+  refused('CREATE PROCEDURE P (IN X BLOB(1M) AS LOCATOR) LANGUAGE SQL BEGIN END;', /AS LOCATOR is not allowed on a parameter of a native SQL procedure/);
+  refused('CREATE PROCEDURE P (IN X BLOB(1M) AS LOCATOR) LANGUAGE SQL FENCED BEGIN END;', /AS LOCATOR is not allowed/);
+  assert.equal(node('CREATE PROCEDURE P (IN T TABLE LIKE EMP AS LOCATOR) LANGUAGE SQL BEGIN END;').parameters[0].locator, true);
+});
+
+test('KEEP DYNAMIC is two words, as the native procedure syntax diagrams spell it', () => {
+  refused('CREATE PROCEDURE P () LANGUAGE SQL WITH KEEPDYNAMIC BEGIN END;');
+});
+
+test('an external function runs in WLM ENVIRONMENT name or (name,*), as ALTER FUNCTION draws it', () => {
+  const ext = "CREATE FUNCTION F (INT) RETURNS INT LANGUAGE C EXTERNAL NAME FMOD PARAMETER STYLE SQL WLM ENVIRONMENT";
+  assert.deepEqual(node(`${ext} (WLMF,*);`).wlmEnvironment, { name: 'WLMF', callerEnvironment: true });
+  refused(`${ext} (WLMF);`, /expected ','/);
+});
+
+test('SQLCODE -449: NAME defaults to a routine name of at most eight characters, Java names its method in strings concatenated together', () => {
+  assert.deepEqual(node('CREATE PROCEDURE S.PAYROLL8 () LANGUAGE COBOL EXTERNAL;').external, { name: 'PAYROLL8', implicit: true });
+  refused('CREATE PROCEDURE S.PAYROLL_9 () LANGUAGE COBOL EXTERNAL;', /longer than eight characters/);
+  refused('CREATE PROCEDURE UPDATESALARY () LANGUAGE SQL FENCED BEGIN END;', /longer than eight characters/);
+  refused('CREATE PROCEDURE P () LANGUAGE JAVA EXTERNAL PARAMETER STYLE JAVA;', /a Java routine names its method in a string/);
+  refused('CREATE PROCEDURE P () LANGUAGE JAVA EXTERNAL NAME PMETHOD PARAMETER STYLE JAVA;', /a Java routine names its method in a string/);
+  assert.equal(node("CREATE PROCEDURE P () LANGUAGE JAVA EXTERNAL NAME 'MYJAR:pkg.' 'Cls.m' PARAMETER STYLE JAVA;").external.name, 'MYJAR:pkg.Cls.m');
+});
+
+test('an external SQL procedure takes TIMESTAMP without a precision or time zone, as its built-in-type diagram draws it', () => {
+  assert.equal(node('CREATE PROCEDURE P (IN T TIMESTAMP) LANGUAGE SQL FENCED BEGIN END;').parameters[0].type.name, 'TIMESTAMP');
+  refused('CREATE PROCEDURE P (IN T TIMESTAMP(12)) LANGUAGE SQL FENCED BEGIN END;', /TIMESTAMP is not a type/);
+  refused('CREATE PROCEDURE P (IN T TIMESTAMP WITH TIME ZONE) LANGUAGE SQL FENCED BEGIN END;', /TIMESTAMP is not a type/);
+});
+
+test('an SQL function whose RETURNS is not first must be inlined: a RETURN body and only inlined clauses', () => {
+  assert.equal(node('CREATE FUNCTION F (X INT) LANGUAGE SQL DETERMINISTIC RETURNS INT NO EXTERNAL ACTION RETURN X;').body, 'RETURN X');
+  refused('CREATE FUNCTION F (X INT) LANGUAGE SQL RETURNS INT QUALIFIER Q RETURN X;', /not QUALIFIER/);
+  refused('CREATE FUNCTION F (X INT) MODIFIES SQL DATA RETURNS INT RETURN X;', /not MODIFIES SQL DATA/);
+  assert.equal(node('CREATE FUNCTION F (X INT) RETURNS INT LANGUAGE SQL QUALIFIER Q RETURN X;').options.qualifier, 'Q');
+});
+
 test('Db2 for LUW clauses are refused', () => {
   refused('CREATE PROCEDURE P (IN X INT) LANGUAGE SQL NOT FENCED THREADSAFE BEGIN END;', /Db2 for LUW clause/);
   refused('CREATE PROCEDURE P () LANGUAGE SQL NEW SAVEPOINT LEVEL BEGIN END;', /Db2 for LUW clause/);

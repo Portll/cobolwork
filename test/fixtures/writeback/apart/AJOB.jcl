@@ -1,0 +1,2 @@
+//AJOB     JOB (ACCT),'A',CLASS=A
+//STEP1    EXEC PGM=APROG

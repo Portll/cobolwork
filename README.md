@@ -103,9 +103,10 @@ here can be checked.
 
 `crossProgram` marks a path that left the file it started in. A value a CALL writes back through a
 parameter returns only to the call it came in through: in another caller's CALL the parameter is
-that caller's storage. A value the subprogram keeps in its own storage can reach any later caller.
-Findings carry no source text, so a report can be stored and passed on without carrying the code
-with it.
+that caller's storage. A value the subprogram keeps in its own storage can reach a later caller in
+the same run unit, the job step or CICS task that started the program it came from. Where the tree
+does not show what starts that program, any later caller. Findings carry no source text, so a
+report can be stored and passed on without carrying the code with it.
 
 `fingerprint` is what the finding is, rather than where it is printed today: the rule, the program
 and the paragraph or section it sits in (the job, step and DD for JCL), and the flagged statement's

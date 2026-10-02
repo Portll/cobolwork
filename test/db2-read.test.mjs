@@ -36,3 +36,17 @@ test('a data statement is recognised without parsing; a definition with no parse
   const [ins, trig] = readDb2("INSERT INTO T VALUES (1); CREATE TRIGGER TR AFTER INSERT ON T FOR EACH ROW MODE DB2SQL VALUES (1);").statements.map(parseDb2Statement);
   assert.deepEqual([ins.status, ins.node.data, trig.kind, trig.status], ['parsed', true, 'CREATE TRIGGER', 'unbuilt']);
 });
+
+test('a CASE expression or statement inside a routine body does not end the routine at its END', () => {
+  const sql = `CREATE PROCEDURE P1 (IN A INT, OUT X INT)
+  LANGUAGE SQL
+  BEGIN
+    SET X = CASE WHEN A = 1 THEN 10 ELSE 20 END;
+    CASE A WHEN 2 THEN SET X = 30; ELSE SET X = 40; END CASE;
+    IF A = 3 THEN SET X = 50; END IF;
+  END;
+  GRANT EXECUTE ON PROCEDURE P1 TO PUBLIC;`;
+  const { statements } = readDb2(sql);
+  assert.deepEqual(statements.map(classify), ['CREATE PROCEDURE', 'GRANT']);
+  assert.equal(parseDb2Statement(statements[0]).status, 'parsed');
+});

@@ -1,0 +1,11 @@
+{
+  "id": "argv-or-env-to-subscript",
+  "title": "A batch job's PARM is used, unchecked, as a table subscript",
+  "cwe": "CWE-129",
+  "expect": [
+    {
+      "rule": "argv-or-env-to-subscript",
+      "file": "MAIN.pli"
+    }
+  ]
+}

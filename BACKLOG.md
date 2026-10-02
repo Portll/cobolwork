@@ -421,6 +421,50 @@ synthetic cases is not the same evidence. Three things it surfaced:
 
   The earlier 25 of 25 for the removed check was over a host set these filters change.
 
+- **Seeded labels for four more sinks: 2026-10-02.** `bench/seed.mjs` has four more operators,
+  each planting into the host's own code where it can: a command-line number used as a subscript
+  of the host's first fixed-size table, and as the start or length of a reference modification of
+  its first alphanumeric field; SQL text from the command line run by `EXECUTE IMMEDIATE` or
+  `PREPARE` in a program that already uses `EXEC SQL`; and terminal input naming the program of
+  the host's own first literal `XCTL` or `LINK`. The command-line operators skip CICS programs,
+  which may not `ACCEPT`, and the transfer operator's source is a terminal `RECEIVE` for the same
+  reason, so it measures `cics-terminal-to-cics-dynamic-transfer`. A transfer the analysis holds
+  no facts at is skipped, as a `CALL` is. Over the 500-repository corpus, 25 hosts per operator,
+  `--skip volume`: 375 new labels, 175 flaws and 200 near-misses. All seven operators together
+  give 600 labels, and with the gap below fixed 275 of 275 flaws and 0 of 325 near-misses are
+  reported.
+
+  | Operator | Variant | Label | First run | Fixed |
+  |---|---|---|---|---|
+  | command line to a subscript | the index read from the command line | flaw | 25 of 25 | 25 of 25 |
+  | | checked against the table's size only, so 0 passes | flaw | 25 of 25 | 25 of 25 |
+  | | checked against 1 and the table's size | near-miss | 0 of 25 | 0 of 25 |
+  | | the command line read, a literal index used | near-miss | 0 of 25 | 0 of 25 |
+  | command line to a reference modification | the start read from the command line | flaw | 25 of 25 | 25 of 25 |
+  | | the length read from the command line | flaw | 25 of 25 | 25 of 25 |
+  | | the start checked against 1 and the field's size | near-miss | 0 of 25 | 0 of 25 |
+  | | the command line read, a literal start used | near-miss | 0 of 25 | 0 of 25 |
+  | command line to dynamic SQL | the text run by `EXECUTE IMMEDIATE` | flaw | 25 of 25 | 25 of 25 |
+  | | the text prepared, then executed | flaw | 25 of 25 | 25 of 25 |
+  | | an `EVALUATE` lets `COMMIT` and `ROLLBACK` through | near-miss | 0 of 25 | 0 of 25 |
+  | | the input a host variable of a static `DELETE` | near-miss | 0 of 25 | 0 of 25 |
+  | terminal to the first literal `XCTL` or `LINK` | the program named by the terminal | flaw | 25 of 25 | 25 of 25 |
+  | | `GOBACK` unless it names the program the transfer named | near-miss | 2 of 25 | 0 of 25 |
+  | | the transfer through a field holding that program's name | near-miss | 0 of 25 | 0 of 25 |
+
+  One rule gap, fixed: the control analysis took every option of an `EXEC CICS` command but `FROM`
+  for a field the command may fill (`writtenBy`, `lib/control.mjs`), so `EXEC CICS LINK
+  PROGRAM(WS-PGM)` wrote the name it was given. Wherever a path through the analysis's graph comes
+  back to the `LINK`, as a loop does, that write removed the check made before it. The two false
+  alarms were Bank of Z's `BNK1CAC` and a copy of GenApp's `lgacdb01.cbl` whose file name starts
+  with a space; over those two repositories
+  alone, all eight `BNK1*` hosts reported the near-miss. The arguments the CICS API documents as
+  data-values - `PROGRAM` of `LINK`, `XCTL`, `LOAD` and `RELEASE`, `TRANSID` of `LINK`, `START`
+  and `RETURN`, `SYSID` of `LINK` and `START` - are no longer taken as written. A name inside the
+  `COMMAREA` the callee may change still is (`test/fixtures/guards/LINKAREA.cbl`). Over the corpus
+  with `COBOLWORK_FREE_MEMORY_MB=12288`, every repository read completely, the flow set gives the
+  same 3,003 findings and checked routes, at the same levels, before and after.
+
 - **The source budget is cumulative across a repository rather than per file**, so a repository
   stops being read partway through and which files survive depends on sort order. At the 64 MB
   default this hid 29% of real programs; at 256 MB, 9%; with the generated repositories out, 715

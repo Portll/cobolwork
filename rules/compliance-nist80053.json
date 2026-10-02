@@ -2236,6 +2236,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-racf-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: jcl racf new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "job-loads-from-an-authorised-library",
    "framework": "nist-800-53r5",
    "clause": "AC-6",

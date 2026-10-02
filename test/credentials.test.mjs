@@ -27,11 +27,13 @@ function run(dir) {
 test('planted mainframe credentials are all found', { skip: have ? false : 'gitleaks is not installed' }, () => {
   const found = run(POSITIVE).map(f => `${basename(f.File)}:${f.StartLine}:${f.RuleID}`).sort();
   assert.deepEqual(found, [
-    'auth.cpy:1:cobol-value-credential', 'login.cbl:10:cics-signon-password', 'login.cbl:12:embedded-sql-connect-password',
+    'auth.cpy:1:cobol-value-credential', 'auth.cpy:2:cobol-value-credential',
+    'login.cbl:10:cics-signon-password', 'login.cbl:12:embedded-sql-connect-password',
     'login.cbl:5:cobol-value-credential', 'login.cbl:6:cobol-value-credential',
     'login.cbl:8:embedded-sql-connect-password', 'login.cbl:9:cics-signon-password',
     'payroll.jcl:1:jcl-racf-password', 'payroll.jcl:4:tso-logon-password',
     'payroll.jcl:5:racf-command-password', 'payroll.jcl:7:jcl-racf-password',
+    'payroll.jcl:8:jcl-racf-new-password', 'payroll.jcl:8:jcl-racf-password',
   ]);
 });
 
@@ -42,7 +44,7 @@ test('placeholders, symbolic parameters, comments and host variables are not cre
 
 test('the rules file declares every rule the tests expect', () => {
   const toml = readFileSync(CONFIG, 'utf8');
-  for (const id of ['jcl-racf-password', 'tso-logon-password', 'racf-command-password', 'cobol-value-credential', 'embedded-sql-connect-password', 'cics-signon-password']) {
+  for (const id of ['jcl-racf-password', 'jcl-racf-new-password', 'tso-logon-password', 'racf-command-password', 'cobol-value-credential', 'embedded-sql-connect-password', 'cics-signon-password']) {
     assert.ok(toml.includes(`id = "${id}"`), `${id} missing from the rules file`);
   }
   assert.ok(!/\(\?[=!]/.test(toml), 'gitleaks uses Go RE2, which has no lookahead');

@@ -2064,6 +2064,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-racf-new-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: jcl racf new password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "job-loads-from-an-authorised-library",
    "framework": "cobit-2019",
    "clause": "DSS05.04",

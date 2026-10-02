@@ -16,6 +16,15 @@ keywords = ["password="]
 regexes = ['''(?i)^(?:x+|\*+|y+|n+|pass|passw(?:or)?d?|pwd|secret|dummy|changeme|password|newpass(?:word)?|oldpass(?:word)?)$''']
 
 [[rules]]
+id = "jcl-racf-new-password"
+description = "New RACF password in a JCL PASSWORD=(old,new)"
+regex = '''(?im)^//[^*\n][^\n]*?\bPASSWORD=\([A-Z0-9@#$]{1,8},([A-Z0-9@#$]{1,8})\)'''
+secretGroup = 1
+keywords = ["password="]
+[rules.allowlist]
+regexes = ['''(?i)^(?:x+|\*+|y+|n+|pass|passw(?:or)?d?|pwd|secret|dummy|changeme|password|newpass(?:word)?|oldpass(?:word)?)$''']
+
+[[rules]]
 id = "tso-logon-password"
 description = "TSO LOGON with an inline password"
 regex = '''(?im)^\s*LOGON\s+[A-Z@#$][A-Z0-9@#$]{0,7}/([A-Z0-9@#$]{1,8})\b'''
@@ -36,12 +45,12 @@ regexes = ['''(?i)^(?:x+|\*+|y+|n+|pass|passw(?:or)?d?|pwd|secret|dummy|changeme
 [[rules]]
 id = "cobol-value-credential"
 description = "COBOL data item named for a credential with a literal VALUE"
-regex = '''(?im)^[^*\n]{0,7}\s*\b(?:0?[1-9]|[1-4][0-9]|77)\s+[A-Z0-9-]*(?:PASSWORD|PASSWD|PASSWRD|PSWD|PWD|SECRET|APIKEY|API-KEY|ACCESS-KEY|(?:API|ACCESS|AUTH|BEARER|OAUTH|REFRESH)-?TOKEN)[A-Z0-9-]*\b[^\n.]*?\bVALUES?\s+(?:IS\s+|ARE\s+)?(?:'([^'\n]{1,})'|"([^"\n]{1,})")'''
+regex = '''(?im)^[^*\n]{0,7}\s*\b(?:0?[1-9]|[1-4][0-9]|77)\s+[A-Z0-9-]*(?:PASSWORD|PASSWD|PASSWRD|PSWD|PWD|SECRET|APIKEY|API-KEY|ACCESS-KEY|(?:API|ACCESS|AUTH|BEARER|OAUTH|REFRESH)-?TOKEN)[A-Z0-9-]*\b[^.]*?\bVALUES?\s+(?:IS\s+|ARE\s+)?(?:'([^'\n]{1,})'|"([^"\n]{1,})")'''
 keywords = ["password", "passwd", "passwrd", "pswd", "pwd", "secret", "apikey", "api-key", "access-key", "token"]
 path = '''(?i)\.(?:cbl|cob|cobol|cpy|copy|sqb|pco|ccp)$'''
 [rules.allowlist]
 regexTarget = "match"
-regexes = ['''(?i)VALUE\s+(?:IS\s+)?['"](?:x+|\*+|\s+|y|n|yes|no|true|false|on|off|[01]|pass(?:word)?|secret|dummy|changeme|password:?|enter[^'"]*|invalid[^'"]*|wrong[^'"]*)['"]''']
+regexes = ['''(?i)VALUE\s+(?:IS\s+)?['"](?:x+|\*+|\s+|y|n|yes|no|true|false|on|off|[01]|pass(?:word)?|secret|dummy|changeme|password:?|enter[^'"]*|invalid[^'"]*|wrong[^'"]*|[^'"]*\S\s+\S[^'"]*)['"]''']
 
 [[rules]]
 id = "embedded-sql-connect-password"

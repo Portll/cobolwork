@@ -2236,6 +2236,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-racf-new-password",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: Credential pattern: jcl racf new password. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "job-loads-from-an-authorised-library",
    "framework": "ffiec",
    "clause": "IS II.C.7",

@@ -28,7 +28,6 @@ import { printable } from '../lib/kernel/printable.mjs';
 import { startEvidence, recordInputs, recordHashed, recordFindings, recordOutput, recordVerdict, recordBaselineWrite, finishEvidence } from '../lib/evidence/run.mjs';
 import { evidenceCommand } from '../lib/evidence/cli.mjs';
 import { slsaStatement } from '../lib/evidence/slsa.mjs';
-import { parseAllowedSigners } from '../lib/evidence/sshsig.mjs';
 
 const STARTED = new Date().toISOString();
 
@@ -108,18 +107,29 @@ Options
                         the SLSA Provenance v1 predicate (unsigned; the pipeline signs it)
   --artifact <path>[,<path>]  build: what the compiler produced, named as subjects of the SLSA statement
   --equivalence <file>[,<file>]  build --base: ironwork equivalence statements for the programs the
-                        change edits; with --allowed-signers each must be signed by one. The policy's
-                        requireEquivalence (never, machineAuthored, always) says when one is required
+                        change edits, each signed by one of --allowed-signers. The policy's
+                        requireEquivalence (never, machineAuthored, always) says when one is required;
+                        where one may be, a build with no --allowed-signers fails the check
   --ironwork <path>     build: after a pass, run ironwork check on every program, for an estate that
                         compiles with IBM Enterprise COBOL; a program ironwork rejects exits 4, one it
                         does not model yet leaves the build undecided
   --evidence <dir>      scan, flow, diff, gate, build, baseline, inventory: record this run in a
                         hash-chained journal and ledger there (or COBOLWORK_EVIDENCE); never inside
                         the tree being read
-  --allowed-signers <file>  evidence verify: OpenSSH allowed_signers for namespace cobolwork-evidence
+  --allowed-signers <file>  evidence verify and build: OpenSSH allowed_signers for namespace
+                        cobolwork-evidence; build refuses one inside the repository
   --anchor-git <repo>, --ref <ref>, --push, --max-unsealed <n>
                         evidence: the git witness, the ref that counts (default @{upstream}), whether
                         anchor pushes, and how many ledger records may follow the newest seal
+  --anchor-pin <commit>  evidence verify: the witness commit an earlier verify reported as
+                        witnessCommit; the witness must still hold every seal it held
+  --tsq <file>, --tsr <file>, --tsa-ca <file>
+                        evidence anchor writes an RFC 3161 request (and keeps it beside the seal);
+                        verify reads the response, checking imprint and nonce, and has OpenSSL check
+                        the authority's signature against the CA certificate
+  --cosign-bundle <file> with --cosign-key <file> or --certificate-identity <id> and
+  --certificate-oidc-issuer <url>, [--trusted-root <file>] [--insecure-ignore-tlog]
+                        evidence verify: a transparency-log bundle over a seal, checked by cosign
 
 Exit codes: 0 the command ran, 2 it could not run. A run that examined nothing says so in
 summary.filesScanned and summary.nosrc rather than reporting a clean zero.
@@ -182,6 +192,15 @@ function parseArgs(argv) {
     else if (a === '--push') opts.push = true;
     else if (a === '--max-unsealed') opts.maxUnsealed = value();
     else if (a === '--tsq') opts.tsq = value();
+    else if (a === '--anchor-pin') opts.anchorPin = value();
+    else if (a === '--tsr') opts.tsr = value();
+    else if (a === '--tsa-ca') opts.tsaCa = value();
+    else if (a === '--cosign-bundle') opts.cosignBundle = value();
+    else if (a === '--certificate-identity') opts.certificateIdentity = value();
+    else if (a === '--certificate-oidc-issuer') opts.certificateOidcIssuer = value();
+    else if (a === '--cosign-key') opts.cosignKey = value();
+    else if (a === '--trusted-root') opts.trustedRoot = value();
+    else if (a === '--insecure-ignore-tlog') opts.insecureIgnoreTlog = true;
     else if (a === '--expect-key') opts.expectKey = value();
     else if (a === '--help' || a === '-h') opts.help = true;
     else if (a === '--version' || a === '-v') opts.version = true;
@@ -297,7 +316,7 @@ if (opts.evidence !== undefined && opts._.length && ![...JOURNALED, 'evidence'].
   process.stderr.write(`cobolwork: ${opts._[0]} records no evidence; ${JOURNALED.join(', ')} and evidence do\n`);
   process.exit(2);
 }
-const evidenceFlag = ['sshKey', 'signer', 'allowedSigners', 'anchorGit', 'ref', 'push', 'maxUnsealed', 'tsq', 'expectKey'].find((k) => opts[k] !== undefined);
+const evidenceFlag = ['sshKey', 'signer', 'allowedSigners', 'anchorGit', 'ref', 'push', 'maxUnsealed', 'tsq', 'expectKey', 'anchorPin', 'tsr', 'tsaCa', 'cosignBundle', 'certificateIdentity', 'certificateOidcIssuer', 'cosignKey', 'trustedRoot', 'insecureIgnoreTlog'].find((k) => opts[k] !== undefined);
 if (opts.equivalence && !opts.base) { process.stderr.write('cobolwork: --equivalence judges a change; it needs --base\n'); process.exit(2); }
 if (evidenceFlag && opts._.length && opts._[0] !== 'evidence' && !(evidenceFlag === 'allowedSigners' && opts._[0] === 'build')) {
   process.stderr.write(`cobolwork: --${evidenceFlag.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)} is for evidence only\n`);
@@ -393,7 +412,7 @@ try {
     if (opts.only || opts.repos) { process.stderr.write('cobolwork: build judges one repository with every rule set; --only and --repos do not apply\n'); process.exit(2); }
     if (opts.baseline) { process.stderr.write('cobolwork: build reads the baseline the change was written against; --baseline does not apply, --no-baseline does\n'); process.exit(2); }
     if (opts.head && !opts.base) { process.stderr.write('cobolwork: build --head needs --base\n'); process.exit(2); }
-    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs, equivalence: opts.equivalence || [], allowed: opts.allowedSigners ? parseAllowedSigners(readFileSync(resolve(opts.allowedSigners), 'utf8')) : null });
+    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs, equivalence: opts.equivalence || [], allowedSigners: opts.allowedSigners || null });
     stampRevisions(result.doc.summary, opts.head || null);
     Object.assign(result.report.summary, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });
     Object.assign(result.provenance, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });

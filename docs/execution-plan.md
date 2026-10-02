@@ -147,7 +147,6 @@ matters most.
 | 4.1 | Attributing a dataset flow to the program that moved it | The utility knowledge base (4.2) — they are the same missing table |
 | 4.2 | Utility knowledge base: `feed/worklists/utility.json` holds 34 targets, no rows generated, `feed/generate.mjs` never run against a real model | Running the generator |
 | 4.3 | The recon production-name rule's false-positive rate | A real estate. A public corpus has no site file, so only the address rule can fire, and no public measurement will substitute |
-| 4.4 | PCI DSS and COBIT mappings | A question to the PCI Council about non-commercial permitted use; ISACA's terms unverified |
 
 4.3 is worth stating plainly in any precision claim rather than waiting for: the number cannot be
 obtained from public source, and saying so is more honest than an unqualified figure.

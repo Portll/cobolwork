@@ -24,10 +24,10 @@ digest, would have left both questions open.
 A COBOL estate has the same questions and fewer answers. Nothing records which copybook a program
 was built with, by digest; a copy library is searched by name and the first member found wins. A
 baseline suppression is a line in a file anyone with commit access can add. cobolwork's own reports
-are written and forgotten. PCI DSS v4.0.1 Requirement 10.3.4 asks for change detection on audit
-logs "to ensure that existing log data cannot be changed without generating alerts", and
-Delegated Regulation (EU) 2024/1774 Article 12 for "measures to protect logging systems and log
-information against tampering, deletion, and unauthorised access".
+are written and forgotten. NIST SP 800-53 AU-9 asks that audit information be protected from
+unauthorised modification and deletion, and Delegated Regulation (EU) 2024/1774 Article 12 for
+"measures to protect logging systems and log information against tampering, deletion, and
+unauthorised access".
 
 **cobolwork runs no model and opens no network connection here either.** Sealing, signing and
 anchoring use tools the operator already trusts (OpenSSH, cosign, OpenSSL, git), run as separate
@@ -57,7 +57,8 @@ cryptography.
   its own `ledger.jsonl` must not be able to supply the history its review is judged against.
 - **Refused through a symbolic link** at the directory or at any file cobolwork writes in it, as
   `baseline` refuses one today. Files are created with mode `0600`, the directory `0700`.
-- Layout: `ledger.jsonl`, `runs/<runId>.jsonl`, `seals/<seq>.dsse.json`, `ledger.lock` while held.
+- Layout: `ledger.jsonl`, `runs/<runId>.jsonl`, `seals/<seq>.dsse.json`, `seals/<seq>.tsq` (the RFC 3161
+  request last written for that seal), `ledger.lock` while held.
 - `runId` is `<UTC yyyymmddThhmmssZ>-<16 hex random>`; the random half comes from
   `crypto.randomBytes`, never from time or pid.
 
@@ -119,15 +120,17 @@ never as broken and never as complete.
 
 One record per closed run: `{"v":1,"chain":<ledger chain>,"seq":n,"at":...,"kind":"run","run":"<runId>","runChain":"<chain>","runLength":n,"runTip":"<hash>","prev":...,"hash":...}`.
 
-- Appended under `ledger.lock`, taken with `open(O_CREAT|O_EXCL)`. A lock older than 60 seconds
-  whose holder pid is not alive is stale and is broken, and the break is itself a ledger record
-  (`kind: lock-broken`, the holder's pid and age). The wait is bounded at 5 seconds.
+- Appended under `ledger.lock`, taken with `open(O_CREAT|O_EXCL)`, then given the holder's pid and
+  time. A lock older than 60 seconds whose holder pid is not alive is stale and is broken, and the
+  break is itself a ledger record (`kind: lock-broken`, the holder's pid and age). A lock whose pid
+  or time cannot be read was left by a writer that died before writing them: it is aged from its
+  modification time, and broken with a `holderPid` of null. The wait is bounded at 5 seconds.
 - If the lock cannot be had, the run journal stays where it is, its `close` record says
   `ledger: "unrecorded"`, the command's exit status is unchanged, and standard error says so. A
   lost ledger line is reported by `verify` as `unrecorded`; losing the run's own record would not be.
-- The ledger's first record is `kind: genesis` with its `chain` and `createdAt`. Rotation, when a
-  ledger passes 100,000 records, starts a new file whose genesis carries `rotatedFrom` (the old
-  file's name and tip); `verify` walks the rotation.
+- The ledger's first record is `kind: genesis` with its `chain` and `createdAt`. A ledger is one
+  file for its whole life: `verify` reads every record and every run journal a record names, so
+  splitting the file would not shorten a verification.
 
 ## 7. Seals
 
@@ -166,16 +169,23 @@ seal chain, not an absence.
 
 ## 8. Witnesses
 
-cobolwork writes what a witness needs and reads what a witness returns. It does not transport.
+cobolwork writes what a witness needs and reads what a witness returns. Its one transport is the
+git push `evidence anchor --anchor-git <repo> --push` makes when the operator asks for it; an RFC
+3161 request and a transparency-log entry travel by the operator's own tools.
 
 | Witness | Writing | Reading, in `verify` |
 |---|---|---|
-| git | `evidence anchor --git <repo>` copies the envelope to `<repo>/<ledger chain>/<seq>.dsse.json` and commits it there with `git` plumbing (argv, bounded). `--push` pushes the current branch and reports "committed, not pushed" on failure or timeout. | `--anchor-git <repo> [--ref <ref>]` reads `git show <ref>:<path>` for every seal; default ref `@{upstream}`, so a seal nobody pushed does not count. |
-| RFC 3161 | `evidence anchor --tsq <file>` writes a DER `TimeStampReq` over SHA-256 of the envelope, with a random nonce and `certReq` true. The operator posts it (`curl --data-binary @req.tsq -H 'Content-Type: application/timestamp-query' <tsa>`). | `--tsr <file>`: cobolwork checks the `messageImprint` and nonce itself, and the signature with `openssl ts -verify -in <tsr> -data <envelope> -CAfile <ca>`. No OpenSSL on `PATH`: `sealed` is `null` with that reason. |
-| Transparency log | The pipeline runs `cosign attest-blob` or `sign-blob --bundle` on the statement. | `--cosign-bundle <file>` with `--certificate-identity` and `--certificate-oidc-issuer`: `cosign verify-blob`. Keyless verification is never reimplemented here. |
+| git | `evidence anchor --anchor-git <repo>` copies the envelope to `<repo>/<ledger chain>/<seq>.dsse.json` and commits it there with `git` plumbing (argv, bounded). `--push` pushes the current branch and reports "committed, not pushed" on failure or timeout. | `--anchor-git <repo> [--ref <ref>] [--anchor-pin <commit>]` reads `git show <ref>:<path>` for every seal; default ref `@{upstream}`, so a seal nobody pushed does not count. `--anchor-pin` names the commit an earlier verification accepted (`witnessCommit`, kept by the pipeline outside the evidence directory): it must be in the ref's history, and every seal it held must be at the ref unchanged, or `sealed` is false. |
+| RFC 3161 | `evidence anchor --tsq <file>` writes a DER `TimeStampReq` over SHA-256 of the envelope, with a random nonce and `certReq` true, and keeps a copy as `seals/<seq>.tsq`. The operator posts it (`curl --data-binary @req.tsq -H 'Content-Type: application/timestamp-query' <tsa>`). | `--tsr <file> --tsa-ca <file>`: cobolwork reads the response itself, finds the seal its `messageImprint` names and checks the nonce against the kept request, then has OpenSSL check the authority's signature: `openssl ts -verify -in <tsr> -data <envelope> -CAfile <ca>`. An imprint that names no seal, another nonce or a signature OpenSSL refuses is `false`; no `--tsa-ca`, no kept request, or no OpenSSL on `PATH` is `null` with that reason. |
+| Transparency log | The pipeline runs `cosign sign-blob --bundle` on the seal envelope (`seal --out`). | `--cosign-bundle <file>` with `--certificate-identity` and `--certificate-oidc-issuer`, or `--cosign-key <file>` for a key-signed bundle: `cosign verify-blob` against each seal, newest first; `--trusted-root <file>` keeps cosign from fetching Sigstore's root, and `--insecure-ignore-tlog` accepts a bundle with no log entry, which the verdict reports. A bundle that verifies against no seal is `false`. Keyless verification is never reimplemented here. |
 
 Only the digest of an envelope leaves the evidence directory for an RFC 3161 authority or a
 transparency log; the envelope itself names a ledger chain and a length, nothing about the estate.
+
+A git witness is only as fixed as its branch. The anchor repository's branch must refuse force
+pushes and deletion (branch protection on the host), or whoever can push can rewrite it to match a
+cut ledger. A later commit that deletes seals needs no force push, so a pipeline also keeps
+`witnessCommit` from each verification and passes it back as `--anchor-pin`.
 
 ## 9. Verify
 
@@ -190,8 +200,10 @@ The verdict reports these separately and never merges them:
 | `unrecorded` | Run journals in `runs/` no ledger record names. |
 | `open` | Run journals with no `close`. |
 | `anchored` | The newest seal in `seals/` names the ledger at a length and tip the ledger has. `null` with no seal. |
-| `sealed` | `true`: a seal read from a witness names a ledger state this ledger contains, and its signature verifies against `--allowed-signers`. `false`: a witness contradicts the ledger. `null`: undetermined, with the reason. `null` never counts as a pass. |
+| `sealed` | `true`: a seal read from a witness names a ledger state this ledger contains, and its signature verifies against `--allowed-signers`. `false`: a witness contradicts the ledger. `null`: undetermined, with the reason. `null` never counts as a pass. With several witnesses, one that contradicts makes it `false`; otherwise one that confirms makes it `true`, and the newest seal any of them confirms sets `unsealedTail`. |
 | `unsealedTail` | Ledger records after the newest witnessed seal. |
+| `witnessCommit` | The commit the git witness's ref resolved to, for the next verification's `--anchor-pin`. |
+| `timeStamp`, `transparencyLog` | The seal an RFC 3161 response or a cosign bundle names, with the response's `genTime`, or whether the log entry was checked. |
 | `signatures` | Per seal: `keyid`, principal matched in allowed signers, `valid`. |
 
 SSHSIG verification (`ssh-ed25519`, `ecdsa-sha2-nistp256`) is done here with `node:crypto`
@@ -294,14 +306,20 @@ evidence.
    a program the change edits by the digests of its `base:` and `head:` subjects; a statement that
    matches no edited program fails the build. A program's statement satisfies the check when its
    verdict is `equivalent` or `equivalent-as-declared`, its coverage was measured and reached every
-   changed paragraph, and, with `--allowed-signers`, it is signed by one (`cobolwork evidence sign
-   <statement> --ssh-key <file>` wraps a statement in a DSSE envelope as seals are signed). The policy
+   changed paragraph, and it is signed by one of `--allowed-signers` (`cobolwork evidence sign
+   <statement> --ssh-key <file>` wraps a statement in a DSSE envelope as seals are signed). Where
+   equivalence may be required, a build with no `--allowed-signers` fails the check, since a
+   statement nobody signed could have been written by anyone who can commit; and the signers file,
+   like the policy floor, is refused inside the repository. The policy
    key `requireEquivalence` (`never`, `machineAuthored`, `always`; the stricter of floor and
    repository wins) says when every edited program needs one. `machineAuthored` reads the commits in
    `base..head`: an author, committer or `Co-authored-by`/`Generated-by` trailer naming a code
    assistant or bot makes the change machine-authored; commits that cannot be read leave the check
    undecided. A statement with `coverage: null` (the head did not run), or whose `coverage.unreached`
-   is not a list of paragraph names, is inconclusive under this check. A program whose bytes are
+   is not a list of paragraph names, is inconclusive under this check. cobolwork reads the base and
+   head itself for paragraphs whose own statements changed, positions left out as ironwork leaves
+   them out, and each must be in the statement's `coverage.changed`: a statement that leaves an
+   edited paragraph out of its scope has not held it to coverage. A program whose bytes are
    unchanged but whose copybooks the change edits counts as edited, and its statement's
    `closure.head` must hold each edited copybook's digest, so the statement shows the head run read
    the new copybook. A program the change deletes fails where equivalence is required: no statement
@@ -471,6 +489,10 @@ the scanned tree is refused, and a finding in a file the scanned tree does not h
     Given ledger.jsonl whose last line lacks a chain, or whose hash does not hold
     Then  the run is unrecorded and the ledger is unchanged
 
+#### V2.5 An empty lock is aged from its modification time
+    Given ledger.lock empty and last modified more than 60 seconds ago
+    Then  the run is recorded after a lock-broken record whose holderPid is null, and a fresh empty lock is waited for
+
 ### V3 - Verify
 
 #### V3.1 An untouched evidence directory verifies
@@ -543,6 +565,22 @@ the scanned tree is refused, and a finding in a file the scanned tree does not h
 
 #### V5.4 A time-stamp response for another digest does not seal
     Then  sealed is false and the reason names the message imprint
+
+#### V5.7 A time-stamp response for the seal and the nonce of its kept request seals
+    Given anchor --tsq, the authority's reply, and its CA certificate
+    Then  sealed is true and timeStamp names the seal; without --tsa-ca it is null, and with another CA false
+
+#### V5.8 A cosign bundle over a seal seals
+    Given a key-signed bundle over the seal envelope
+    Then  sealed is true and transparencyLog names the seal; a bundle over other bytes leaves sealed false
+
+#### V5.5 A witness rewritten past its pinned commit does not seal
+    Given two witnessed seals, the witness reset to drop the newer, and the ledger cut to the older
+    Then  sealed is true without --anchor-pin, and false with the commit that held both
+
+#### V5.6 A seal deleted from the witness after its pinned commit does not seal
+    Given a commit on top of the pinned one that removes the newer seal
+    Then  sealed is false and the reason names the seal
 
 ### V6 - Provenance
 
@@ -682,6 +720,18 @@ the scanned tree is refused, and a finding in a file the scanned tree does not h
     Given two statements for one change, one equivalent and one diverged, in either order
     Then  the build fails on equivalence, naming the diverged verdict
 
+#### V10.9 Without allowed signers a required statement does not pass
+    Given requireEquivalence always and an equivalent, measured statement, and no --allowed-signers
+    Then  the build fails on equivalence, saying nothing shows who wrote the statement
+
+#### V10.10 An allowed-signers file inside the repository is refused
+    When  --allowed-signers names a file in the repository being built
+    Then  the build exits 2
+
+#### V10.11 A statement whose coverage leaves out an edited paragraph does not pass
+    Given a change to the statements of paragraph CALC and a statement whose coverage.changed lists only REPORT
+    Then  the build fails on equivalence, naming CALC; listing CALC passes
+
 ### V11 - Execution coverage
 
 #### V11.1 A finding in a paragraph the runs entered says so
@@ -697,7 +747,8 @@ the scanned tree is refused, and a finding in a file the scanned tree does not h
 
 ## 15. Out of scope, deliberately
 
-- Transporting anything to a witness. cobolwork writes requests and reads responses.
+- Transporting to an RFC 3161 authority or a transparency log. cobolwork writes requests and reads
+  responses; the git push of `anchor --push` is the one transport it makes, and only when asked.
 - Keyless (Fulcio, Rekor) verification in-process. `cosign verify-blob` does it and is named.
 - Encrypting the evidence directory. Its records hold digests, fingerprints and paths; the reports
   it digests are the pipeline's to protect, as they are today.

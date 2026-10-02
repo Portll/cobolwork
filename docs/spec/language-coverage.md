@@ -425,7 +425,12 @@ read as HLASM, 106 are macro definitions and 546 were assembled with each reposi
 the macro and copy library. z390 assembled 276 (return code 0 or 4) in 105 repositories; every one
 reads with no card error, and the 96 files the reader reports card errors in are all among the 270
 z390 refused. Of the other 174 it refused, 134 need macros or copy members the repository does not
-hold (CICS, a site's own), and 40 have errors a card reader does not check.
+hold (CICS, a site's own), and 40 have errors a card reader does not check. Over the three random
+corpora on the drive (`--repo-depth 4`), z390 assembled 45 of 117 in 15 repositories, every one
+again with no card error, and the 14 the reader reports card errors in are again all refused.
+`SPKA`, `MODESET` and the authorized operands of the storage, attach and load macros (`KEY=`, `SP=`,
+`GLOBAL=`) appear in none of the four corpora, so the table lists them and no rule reports them
+until an estate supplies one to measure against.
 
 ### Scope, stated honestly
 

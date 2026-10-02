@@ -3,7 +3,9 @@
 // macro library and its repository's members (staged as NAME.MAC and NAME.CPY, the names z390
 // looks for). The count says how much of what the reader reads is real HLASM by an assembler's
 // account, and why the rest is not.
-//   Z390=/path/to/z390 node diag/hlasm-z390.mjs <file-list> [--jobs N] [--json]
+//   Z390=/path/to/z390 node diag/hlasm-z390.mjs <file-list> [--repo-depth N] [--jobs N] [--json]
+// --repo-depth is how many directories from / a repository's root is: 5 for
+// /Users/portll/Repositories/3185RecentCobolRepos/<repo>, the default.
 import { readFileSync, mkdirSync, mkdtempSync, copyFileSync, readdirSync, statSync, rmSync, existsSync } from 'node:fs';
 import { join, basename, extname } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -16,9 +18,11 @@ const Z390 = process.env.Z390;
 if (!Z390 || !existsSync(join(Z390, 'z390.jar'))) { console.error('set Z390 to an unpacked z390 release'); process.exit(2); }
 const jobs = args.includes('--jobs') ? Number(args[args.indexOf('--jobs') + 1]) : 4;
 const files = readFileSync(args[0], 'utf8').split('\n').filter(Boolean);
-const repoOf = (f) => f.split('/').slice(0, 6).join('/');
+const depth = args.includes('--repo-depth') ? Number(args[args.indexOf('--repo-depth') + 1]) : 5;
+const repoOf = (f) => f.split('/').slice(0, depth + 1).join('/');
 
 function walk(dir, out = []) {
+  if (!statSync(dir).isDirectory()) return out;
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (e.name === '.git') continue;
     const p = join(dir, e.name);

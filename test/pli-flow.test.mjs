@@ -85,3 +85,28 @@ test('a structure whose members come from an %INCLUDE inside its DECLARE carries
   assert.equal(f.length, 1);
   assert.ok(f[0].trace.some((t) => t.item === 'CUST_NAME'));
 });
+
+test('a job step\'s PARM and in-stream data reach the PL/I program it runs', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'pli-jcl-'));
+  try {
+    writeFileSync(join(dir, 'CUSTLD.pli'), [
+      ' CUSTLD: PROCEDURE (PARM) OPTIONS(MAIN);',
+      '   DCL PARM CHAR(100) VARYING;',
+      '   DCL SYSIN FILE RECORD INPUT;',
+      '   DCL 1 REC, 2 NAME CHAR(30), 2 FILLER CHAR(50);',
+      '   DCL (SQLTXT, CMD) CHAR(200) VARYING;',
+      '   READ FILE(SYSIN) INTO(REC);',
+      "   SQLTXT = 'DELETE FROM T WHERE NAME = ''' || NAME || '''';",
+      '   EXEC SQL EXECUTE IMMEDIATE :SQLTXT;',
+      '   CMD = SUBSTR(PARM, 1, 8);',
+      '   EXEC SQL PREPARE S2 FROM :CMD;',
+      ' END CUSTLD;',
+    ].join('\n'));
+    writeFileSync(join(dir, 'RUN.jcl'), "//PLIJOB  JOB (ACCT),'TEST'\n//STEP1   EXEC PGM=CUSTLD,PARM='ABC'\n//SYSIN   DD *\nSMITH\n/*\n");
+    const rules = new Set(scan(dir, { pli: true }).findings.map((f) => f.rule));
+    assert.ok(rules.has('jcl-instream-to-dynamic-sql'));
+    assert.ok(rules.has('jcl-parm-to-dynamic-sql'));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

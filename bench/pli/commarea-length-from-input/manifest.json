@@ -1,0 +1,11 @@
+{
+ "id": "commarea-length-from-input",
+ "title": "CICS program uses terminal-received length directly for GETMAIN and LINK COMMAREA",
+ "cwe": "CWE-130",
+ "expect": [
+  {
+   "rule": "cics-terminal-to-storage-length",
+   "file": "MAIN.pli"
+  }
+ ]
+}

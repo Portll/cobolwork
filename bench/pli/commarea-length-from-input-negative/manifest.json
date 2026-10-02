@@ -1,0 +1,7 @@
+{
+ "id": "commarea-length-from-input-negative",
+ "title": "CICS program compares terminal length against a constant and uses the constant for storage",
+ "cwe": "CWE-130",
+ "expect": [],
+ "negativeFor": ["cics-terminal-to-storage-length"]
+}

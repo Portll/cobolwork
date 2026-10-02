@@ -1,0 +1,11 @@
+{
+ "id": "entry-variable-call",
+ "title": "A call through an entry variable chosen from input",
+ "cwe": "CWE-470",
+ "expect": [
+  {
+   "rule": "pli-entry-variable-call",
+   "file": "S1.pli"
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+{
+ "id": "entry-variable-call-negative",
+ "title": "Direct calls to entry constants with no entry variable",
+ "cwe": "CWE-470",
+ "expect": [],
+ "negativeFor": ["pli-entry-variable-call"]
+}

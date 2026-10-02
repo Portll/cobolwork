@@ -1,0 +1,8 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DISP.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01 LK-NAME            PIC X(8).
+       PROCEDURE DIVISION USING LK-NAME.
+           CALL LK-NAME
+           GOBACK.

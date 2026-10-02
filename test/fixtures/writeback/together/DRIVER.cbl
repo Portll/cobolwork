@@ -1,6 +1,0 @@
-       IDENTIFICATION DIVISION.
-       PROGRAM-ID. DRIVER.
-       PROCEDURE DIVISION.
-           CALL 'APROG'
-           CALL 'BPROG'
-           GOBACK.

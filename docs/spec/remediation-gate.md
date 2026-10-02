@@ -119,7 +119,9 @@ Tried in this order; the first that holds is the outcome.
 `statement-removed` and `source-removed` fail. A fix keeps the program's statements and stops the
 route, because deleting the statement removes what the program did along with the flaw: a printing
 program that no longer prints still reports that it printed. Both outcomes are still named, so the
-reason says what the patch did.
+reason says what the patch did. Run under ironwork with DD PRINTER, its virtual printer, such a
+patch also diverges in `ironwork compare` ([evidence.md](evidence.md) §12), so the build's
+equivalence check sees the lost print by running the program.
 
 `lowered-by-check` is undecided rather than a pass: a check that lowers without stopping may not
 turn away everything it should, which is why the engine lowered rather than cleared. A finding held

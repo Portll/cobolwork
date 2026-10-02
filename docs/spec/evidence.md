@@ -279,6 +279,9 @@ evidence.
    every output byte, the RETURN-CODE, the abend, and the SQL each issued. Its result is an in-toto
    statement, `predicateType ...ironwork/docs/evidence.md#equivalence-v1`, whose subjects are the
    base and head sources by digest, and whose verdict is `equivalent`, `diverged` or `inconclusive`.
+   A program that prints through CALL 'SYSTEM' with lp or lpr is compared with `--dd PRINTER=<file>`:
+   ironwork's virtual printer takes the print in place of the host, so a change that stops the
+   program printing diverges, and one that keeps the print is compared past it.
 3. **Coverage decides inconclusive.** A comparison whose inputs never reached a changed paragraph
    proves nothing about it; ironwork's coverage (E9) names the changed paragraphs the runs reached,
    and one left unreached makes the verdict `inconclusive`, never `equivalent`.

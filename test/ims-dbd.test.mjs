@@ -238,12 +238,12 @@ test('parses DBDGEN with no operands', () => {
   assert.equal(result.node.kind, 'DBDGEN');
 });
 
-test('assembler instructions parse, an IMS macro with no parser is unbuilt, anything else is unknown', () => {
+test('assembler instructions and IMS macros parse, anything else is unknown', () => {
   const src = `       TITLE
        SENSEG  NAME=TEST
        FOO     BAR`;
   const results = readIms(src).statements.map(parseImsStatement);
-  assert.deepEqual(results.map(r => r.status), ['parsed', 'unbuilt', 'unknown']);
+  assert.deepEqual(results.map(r => r.status), ['parsed', 'parsed', 'unknown']);
 });
 
 test('an operand the macro does not take is refused, so a statement counts as read only when every operand was', () => {

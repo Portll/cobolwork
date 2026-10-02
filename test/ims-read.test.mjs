@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readIms, parseImsStatement } from '../lib/ims/read.mjs';
+import './pin-machine.mjs';
 
 const DBD = [
   '         DBD   NAME=DMDDBD,ACCESS=(HDAM,OSAM),                         X',

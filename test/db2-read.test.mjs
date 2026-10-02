@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readDb2, classify, parseDb2Statement } from '../lib/db2/read.mjs';
+import './pin-machine.mjs';
 
 const kinds = (sql) => readDb2(sql).statements.map(classify);
 
@@ -32,6 +33,6 @@ test('leading words give the kind, whatever qualifies the object', () => {
 });
 
 test('a data statement is recognised without parsing; a definition with no parser yet is unbuilt', () => {
-  const [ins, tab] = readDb2("INSERT INTO T VALUES (1); CREATE TABLE T (C INT);").statements.map(parseDb2Statement);
-  assert.deepEqual([ins.status, ins.node.data, tab.status], ['parsed', true, 'unbuilt']);
+  const [ins, trig] = readDb2("INSERT INTO T VALUES (1); CREATE TRIGGER TR AFTER INSERT ON T FOR EACH ROW MODE DB2SQL VALUES (1);").statements.map(parseDb2Statement);
+  assert.deepEqual([ins.status, ins.node.data, trig.kind, trig.status], ['parsed', true, 'CREATE TRIGGER', 'unbuilt']);
 });

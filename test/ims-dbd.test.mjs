@@ -3,6 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readIms, parseImsStatement } from '../lib/ims/read.mjs';
+import './pin-machine.mjs';
 
 const parse = (src) => parseImsStatement(readIms(src).statements[0]);
 

@@ -3,6 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readDb2, parseDb2Statement } from '../lib/db2/read.mjs';
+import './pin-machine.mjs';
 
 const parse = (sql) => parseDb2Statement(readDb2(sql).statements[0]);
 

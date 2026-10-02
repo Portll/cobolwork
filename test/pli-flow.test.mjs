@@ -110,3 +110,22 @@ test('a job step\'s PARM and in-stream data reach the PL/I program it runs', () 
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('EXEC SQL INCLUDE SQLCA declares IBM\'s PL/I SQLCA, and its SQLERRM text reaching the screen is found', () => {
+  const src = (assign) => ` CUSTINQ: PROCEDURE OPTIONS(MAIN);
+   DCL MSG CHAR(80);
+   EXEC SQL INCLUDE SQLCA;
+   EXEC SQL OPEN C1;
+   IF SQLCODE ^= 0 THEN DO;
+     ${assign}
+     EXEC CICS SEND TEXT FROM(MSG) ERASE;
+   END;
+ END CUSTINQ;
+`;
+  const p = pliProgram(src('MSG = SQLERRM;'), 'CUSTINQ.pli');
+  const errm = p.items.find((i) => i.name === 'SQLERRM');
+  assert.deepEqual([errm.parent.name, errm.offset, errm.line], ['SQLCA', 16, 3]);
+  const rule = (text) => scanOne(text, { pli: true }).findings.filter((x) => x.rule === 'system-response-to-screen').length;
+  assert.equal(rule(src('MSG = SQLERRM;')), 1);
+  assert.equal(rule(src("MSG = 'DATABASE ERROR';")), 0);
+});

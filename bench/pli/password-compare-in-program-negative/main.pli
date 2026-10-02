@@ -1,4 +1,5 @@
- /* The sign-on screen's password goes to the security manager through CICS VERIFY. */
+ /* The sign-on screen's password goes to the security manager
+    through CICS VERIFY. */
  SIGNON: PROCEDURE OPTIONS(MAIN);
    DCL 1 SCREEN,
        2 USERID CHAR(8),

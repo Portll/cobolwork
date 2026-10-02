@@ -1,4 +1,5 @@
- /* The terminal gets a fixed message chosen by SQLCODE, never Db2's own text. */
+ /* The terminal gets a fixed message chosen by SQLCODE, never Db2's
+    own text. */
  MAIN: PROCEDURE OPTIONS(MAIN);
    DCL MSG_LINE CHAR(80);
    EXEC SQL INCLUDE SQLCA;

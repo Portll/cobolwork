@@ -1,4 +1,5 @@
- /* A sign-on screen's password is compared with the copy kept in a Db2 table. */
+ /* A sign-on screen's password is compared with the copy kept in a
+    Db2 table. */
  SIGNON: PROCEDURE OPTIONS(MAIN);
    DCL 1 SCREEN,
        2 USERID CHAR(8),

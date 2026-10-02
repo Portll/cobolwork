@@ -13,7 +13,8 @@
    OPEN FILE(INF) INPUT;
    READ FILE(INF) INTO(REC);
    DO WHILE (¬EOF);
-     /* The record says where its entry starts; nothing checks it lies inside PAYLOAD. */
+     /* The record says where its entry starts; nothing checks it
+        lies inside PAYLOAD. */
      P = POINTERADD(ADDR(PAYLOAD), ENTRY_OFFSET);
      TOTAL = TOTAL + AMOUNT;
      READ FILE(INF) INTO(REC);

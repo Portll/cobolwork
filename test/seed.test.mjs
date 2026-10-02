@@ -76,3 +76,26 @@ test('a host whose first literal CALL no route reaches is skipped; one whose CAL
     rmSync(corpus, { recursive: true, force: true });
   }
 });
+
+test('a host whose communication area a copied 01 leaves empty is refused for the length check', () => {
+  const corpus = mkdtempSync(join(tmpdir(), 'cobolwork-seed-corpus-'));
+  try {
+    mkdirSync(join(corpus, 'emptyarea'));
+    writeFileSync(join(corpus, 'emptyarea', 'ZKCONST.cpy'), [
+      `${A}01 WS-CONSTANTS.`, `${B}03 K-ONE PIC X(4) VALUE 'ONE'.`, `${B}03 CA-REQUEST PIC X(10).`, '',
+    ].join('\n'));
+    writeFileSync(join(corpus, 'emptyarea', 'EMPTYCA.cbl'), [
+      `${A}IDENTIFICATION DIVISION.`, `${A}PROGRAM-ID. EMPTYCA.`, `${A}DATA DIVISION.`, `${A}WORKING-STORAGE SECTION.`,
+      `${A}01 WS-X PIC X(10).`, `${A}LINKAGE SECTION.`, `${A}01 DFHCOMMAREA.`, `${B}COPY ZKCONST.`, `${A}PROCEDURE DIVISION.`,
+      `${A}MAIN-PARA.`, `${B}IF EIBCALEN = 0`, `${B}   EXEC CICS RETURN END-EXEC`, `${B}END-IF.`,
+      `${B}MOVE CA-REQUEST TO WS-X.`,
+      `${B}EXEC CICS LINK PROGRAM('SUBPGM') COMMAREA(DFHCOMMAREA) END-EXEC.`,
+      `${B}EXEC CICS RETURN END-EXEC.`, '',
+    ].join('\n'));
+    const r = seed(corpus, { perOperator: 1 }).operators['drop-length-check'];
+    assert.deepEqual(r.hosts, []);
+    assert.deepEqual(r.skipped, { 'its communication area holds no storage': 1 });
+  } finally {
+    rmSync(corpus, { recursive: true, force: true });
+  }
+});

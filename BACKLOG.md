@@ -143,26 +143,28 @@ reasons.
 
 ## Precision and coverage, measured
 
-**Execution labels, 2026-10-01 (roadmap 2.1, `bench/label.mjs`).** Over the 500 held-out
-repositories with `COBOLWORK_FREE_MEMORY_MB=12288` (without it five repositories stop on the memory
-guard), 3,591 path findings in 42 repositories, 2,889 of them in the research dataset: 34
-confirmed, every one `cics-terminal-to-log` and two programs underneath (GenApp's LGSTSQ and the
-health-API sample's HCAZERRS, in 8 repositories' copies). The rest are unknown, and why is what
-to build next:
-- 2,369 `dynamic-file-path` (ASSIGN to a data item, which ironwork does not run) and 11
-  `message-queue` (no MQ in ironwork): sinks it has no trace for.
-- The storage sinks (`occurs-depending-count` 76, `reference-modification` 66, `subscript` 52,
+**Execution labels, 2026-10-02 (roadmap 2.1, `bench/label.mjs`).** Cobolwork a874c0f, ironwork
+de2ee42, over the 500 held-out repositories with `COBOLWORK_FREE_MEMORY_MB=12288` (without it
+repositories stop on the memory guard): 1,896 path findings in 48 repositories, 1,265 of them in
+the research dataset, none incomplete. 34 confirmed, every one `cics-terminal-to-log` and two
+programs underneath (GenApp's LGSTSQ and the health-API sample's HCAZERRS, in 8 repositories'
+copies). The rest are unknown, and why is what to build next:
+- 709 sinks ironwork has no trace for: `dynamic-file-path` 689 (ASSIGN to a data item, which
+  ironwork does not run), `message-queue` 11 (no MQ in ironwork), `connection-target` 5,
+  `dynamic-sql` 4.
+- The storage sinks (`occurs-depending-count` 76, `reference-modification` 66, `subscript` 53,
   `loop-bound` 23) are labelled by ironwork's SSRANGE abend, U4038, since ironwork 68f83d7. Of the
-  21 whose source the labeller feeds, none is confirmed yet. CardDemo's COMEN01C (5 copies) checks
+  22 whose source the labeller feeds, none is confirmed yet. CardDemo's COMEN01C (7 copies) checks
   the option against its menu size before the subscript, so nines never reach it. BankDemo's
   SBANK10P (6) ends at its own ABEND 0001 first. The rest end on a construct ironwork does not run,
   or their BMS is not in the repository. Of the other 196, 189 come from `argv-or-env`.
-- 384 sources not fed: `jcl-instream` 250, all in one repository, through `ironwork job`;
-  `argv-or-env` 114, GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT, which ironwork refuses
-  as not Enterprise COBOL; 12 `cics-protected-field`, which a terminal cannot type into.
-- 323 in programs ironwork does not compile; 86 BMS maps not in the repository.
+- 551 sources not fed: `argv-or-env` 303, GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT,
+  which ironwork refuses as not Enterprise COBOL; `jcl-instream` 222, all in one repository,
+  through `ironwork job`; 12 `cics-protected-field`, which a terminal cannot type into;
+  `jcl-parm` 5, `database` 5, `cics-web` 4.
+- 326 in programs ironwork does not compile; 91 BMS maps not in the repository.
 - 109 operations that ran without the marker in the operand, 42 `cics-terminal-to-arithmetic`
-  that ran through without a data exception and 6 subscripts that ran without a range abend,
+  that ran through without a data exception and 7 subscripts that ran without a range abend,
   read as 19 distinct sites:
   - 134 are one APPC program family (bhbandam's WB* programs, copied through the research
     dataset). Each logs its input only when RECEIVE returns EOC, so from ironwork's 3270 script it
@@ -170,7 +172,7 @@ to build next:
   - CardDemo's CSUTLDPY (12): the year is tested numeric in its own paragraph, which sets a flag
     the caller reads before the DIVIDE. This is item 3's open case, a check through a flag, here
     with a REDEFINES between the tested item and the one divided.
-  - CardDemo's COMEN01C subscript (6) is likely a true defect the run did not reach. After
+  - CardDemo's COMEN01C subscript (7) is likely a true defect the run did not reach. After
     rejecting an out-of-range option the program goes on to `CDEMO-MENU-OPT-USRTYPE(WS-OPTION)`
     when the signed-on user is a regular user. The run started the menu with no COMMAREA, so the
     user type was never set. A harness that starts from sign-on would reach it.
@@ -178,6 +180,17 @@ to build next:
 
 Found on the way: `lib/sets/flow.mjs`'s `scan()` given a relative root returns no findings and
 reports its coverage complete (the CLI resolves roots, bench tools must).
+
+**Precision from the labels, 2026-10-02 (roadmap 2.2, `bench/precision.mjs`).** The execution
+labels above and 225 planted ones (`bench/seed.mjs --per-operator 25 --skip volume`), every
+execution label joined to its finding's verdict by a fresh scan:
+- Execution: `cics-terminal-to-log` 12.6% to 100% (34 right, 236 unknown). Every other rule is 0%
+  to 100%: nothing it reported was confirmed or refuted.
+- By verdict: `attacker-driven` 2.3% to 100% (34 right of 1,507); `upstream` 328, `mitigated` 55
+  and `refuted` 6, all unknown.
+- Planted: `argv-or-env-to-os-command`, `argv-or-env-to-dynamic-program-load` and
+  `cics-commarea-without-length-check` 100% precision and 100% seeded recall, 100 flaws of 100
+  reported and 0 near-misses of 125.
 
 **The 500-repository run, 2026-09-26.** Every set over all 500 held-out repositories, with
 `COBOLWORK_FREE_MEMORY_MB=12288`; without it the same run read 156,184 of 274,087 files, because the
@@ -331,7 +344,10 @@ synthetic cases is not the same evidence. Three things it surfaced:
   `planted`) for per-rule precision from machine labels. Over the 500-repository corpus, 25 hosts
   per operator, `--skip volume`: 225 labels, 100 flaws and 125 near-misses. The first run found 67
   flaws and reported 13 near-misses; with the three gaps below fixed, 100 and 1; with hosts whose
-  call the analysis holds no facts at skipped (below), 100 and 0.
+  call the analysis holds no facts at skipped (below), 100 and 0. A host whose `DFHCOMMAREA` a
+  copied 01 leaves with no storage is refused for the length check, since the rule rightly passes
+  over such an area; without `--skip volume`, three of volume-10k's generated ZAG programs were
+  taken and their six flaws counted as missed.
 
   | Operator | Variant | Label | First run | Fixed |
   |---|---|---|---|---|

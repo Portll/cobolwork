@@ -129,11 +129,10 @@ function readsCommareaAndTestsLength(src, host) {
   if (namesLength(lines.slice(0, at.proc).join('\n'))) return 'names EIBCALEN in a declaration';
   if (host.copybooks.some((p) => namesLength(readSource(p).text))) return 'a copybook it includes names EIBCALEN';
   if (/\bSET\s+ADDRESS\s+OF\s+DFHCOMMAREA\s+TO\b/i.test(procedure)) return 'points DFHCOMMAREA at its own storage';
-  const reads = host.parse().programs.some((p) => {
-    const area = p.items.find((i) => i.name === 'DFHCOMMAREA' && i.section === 'LINKAGE');
-    return area && subtreeRead(area);
-  });
-  return reads ? null : 'does not read a communication area';
+  const areas = host.parse().programs.map((p) => p.items.find((i) => i.name === 'DFHCOMMAREA' && i.section === 'LINKAGE')).filter(Boolean);
+  if (!areas.some(subtreeRead)) return 'does not read a communication area';
+  // A copied 01 under DFHCOMMAREA ends the group with no storage, which the rule rightly passes over.
+  return areas.some((a) => a.size > 0) ? null : 'its communication area holds no storage';
 }
 
 const subtreeRead = (x) => x.directRefs > 0 || x.children.some(subtreeRead);

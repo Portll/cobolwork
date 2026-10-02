@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import './pin-machine.mjs';
 
@@ -25,10 +25,13 @@ function run(dir) {
 }
 
 test('planted mainframe credentials are all found', { skip: have ? false : 'gitleaks is not installed' }, () => {
-  const rules = run(POSITIVE).map(f => f.RuleID).sort();
-  assert.deepEqual([...new Set(rules)].sort(), [
-    'cics-signon-password', 'cobol-value-credential', 'embedded-sql-connect-password',
-    'jcl-racf-password', 'racf-command-password', 'tso-logon-password',
+  const found = run(POSITIVE).map(f => `${basename(f.File)}:${f.StartLine}:${f.RuleID}`).sort();
+  assert.deepEqual(found, [
+    'auth.cpy:1:cobol-value-credential', 'login.cbl:10:cics-signon-password', 'login.cbl:12:embedded-sql-connect-password',
+    'login.cbl:5:cobol-value-credential', 'login.cbl:6:cobol-value-credential',
+    'login.cbl:8:embedded-sql-connect-password', 'login.cbl:9:cics-signon-password',
+    'payroll.jcl:1:jcl-racf-password', 'payroll.jcl:4:tso-logon-password',
+    'payroll.jcl:5:racf-command-password', 'payroll.jcl:7:jcl-racf-password',
   ]);
 });
 

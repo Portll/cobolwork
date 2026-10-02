@@ -158,8 +158,8 @@ obtained from public source, and saying so is more honest than an unqualified fi
 
 - `cobolwork diff` reviews a change rather than a snapshot, so it belongs where pull requests are
   reviewed.
-- The mainframe credential rules are ready to offer upstream to gitleaks; the pull request is not
-  drafted.
+- The mainframe credential rules are drafted as a gitleaks contribution (issue, pull request and
+  patch in `.upstream/gitleaks/`), and have not been sent.
 
 ---
 

@@ -4,5 +4,7 @@
 //STEP1    EXEC PGM=IKJEFT01
 //SYSTSIN  DD *
   LOGON PAYADM
+  LOGON userid/password
   ALU PAYADM PASSWORD NOEXPIRED
+  ALU userid PASSWORD(password)
 /*

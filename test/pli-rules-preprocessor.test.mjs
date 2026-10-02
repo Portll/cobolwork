@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { programOf } from '../lib/pli/rules/index.mjs';
 import { RULES, check } from '../lib/pli/rules/preprocessor.mjs';
+import './pin-machine.mjs';
 
 test('every RULES entry has sev, evidence, cwe and text', () => {
   for (const [id, r] of Object.entries(RULES)) {

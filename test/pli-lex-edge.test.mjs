@@ -5,6 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { tokenize, readPli, marginsOf } from '../lib/pli/lex.mjs';
 import { classify, parseStatement } from '../lib/pli/statements.mjs';
+import './pin-machine.mjs';
 
 const ops = (s) => tokenize(s, { margins: { left: 1, right: Infinity } }).tokens.filter((t) => t.t === 'op').map((t) => t.v);
 const lits = (s) => tokenize(s, { margins: { left: 1, right: Infinity } }).tokens.filter((t) => t.t === 'lit').map((t) => [t.v, t.suffix]);

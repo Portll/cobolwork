@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { programOf } from '../lib/pli/rules/index.mjs';
 import * as based from '../lib/pli/rules/based.mjs';
+import './pin-machine.mjs';
 
 test('RULES entry has sev, evidence, cwe, and text', () => {
   const rule = based.RULES['pli-based-storage-addressing'];

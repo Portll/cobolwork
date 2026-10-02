@@ -5,6 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readPli } from '../lib/pli/lex.mjs';
 import { parseStatement } from '../lib/pli/statements.mjs';
+import './pin-machine.mjs';
 
 const parse = (src) => parseStatement(readPli(src).statements[0]);
 

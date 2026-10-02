@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readPli } from '../lib/pli/lex.mjs';
 import { parseStatement } from '../lib/pli/statements.mjs';
+import './pin-machine.mjs';
 
 const SOURCES = [
   " DCL 1 S BASED(P), 2 A(0:9) FIXED BIN(31) INIT((10)0), 2 B CHAR(8) VAR, 2 C PIC 'S(4)9V99';",

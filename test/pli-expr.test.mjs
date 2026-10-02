@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { tokenize } from '../lib/pli/lex.mjs';
 import { cursor, PliSyntax } from '../lib/pli/cursor.mjs';
 import { parseExpression, parseReference } from '../lib/pli/expr.mjs';
+import './pin-machine.mjs';
 
 const cur = (s) => cursor(tokenize(s, { margins: { left: 1, right: Infinity } }).tokens);
 const shape = (n) => {

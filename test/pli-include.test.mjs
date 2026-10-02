@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readPliExpanded, membersOf, chooseMember } from '../lib/pli/include.mjs';
 import { parseStatement } from '../lib/pli/statements.mjs';
+import './pin-machine.mjs';
 
 const tree = (files) => {
   const members = membersOf(Object.keys(files));

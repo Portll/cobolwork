@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { marginsOf, tokenize, readPli } from '../lib/pli/lex.mjs';
 import { classify, parseStatement } from '../lib/pli/statements.mjs';
+import './pin-machine.mjs';
 
 const seq = (s, n) => s.padEnd(72) + String(n).padStart(8, '0');
 

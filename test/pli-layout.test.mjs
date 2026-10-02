@@ -4,6 +4,7 @@ import { readPli } from '../lib/pli/lex.mjs';
 import { parseStatement } from '../lib/pli/statements.mjs';
 import { layout, structuresOf } from '../lib/pli/layout.mjs';
 import { storageOf, pictureBytes } from '../lib/pli/storage.mjs';
+import './pin-machine.mjs';
 
 const items = (src) => parseStatement(readPli(src).statements[0]).node.items;
 const offsets = (src) => {

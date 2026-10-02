@@ -77,10 +77,10 @@ as `COBOLWORK_WITNESS`, make a verdict `confirmed`. `explain` carries a verifica
 (reach.md §9.7): the entry, the map and field, a harmless value, and what to watch for; for a sink
 that acts it reads a marker at the operation and ends the task before it runs. What is left:
 
-1. **A measured rate per verdict.** `diag/score-corpus.mjs` gives one from the sealed key, which now
-   records each site's verdict, over the route half a public corpus can witness. The labels are
-   what is missing: the hand-labelled corpus below is not started, and until it is a verdict is a
-   claim over reading and records with no independent precision.
+1. **A narrower rate per verdict.** `bench/precision.mjs` measures precision per verdict from
+   execution labels (under precision, below): `attacker-driven` is 2.3% to 100% over the 500
+   held-out repositories, and every other verdict 0% to 100%. The ranges narrow as fewer findings
+   stay unknown: negatives from coverage (reach.md §9.8), then labels two models agree on.
 
 ## Vulnerability classes, in the order they can be measured
 
@@ -93,9 +93,10 @@ new rule declares an evidence kind and a compliance mapping, or an unmapped entr
 
 All five planned items landed on 2026-09-21. What they left open:
 
-1. **A hand-labelled flow corpus**, as below under precision - still the only thing that would
-   make any of these rules' precision a number with an independent witness. Seeded recall
-   (`bench/seed.mjs`) measures the other direction, against the planter's idea of the bug.
+1. **Precision on real code, narrowed.** These rules' precision comes from machine labels, under
+   precision below: execution labels from ironwork runs, and planted flaws and near-misses from
+   `bench/seed.mjs`, which also give seeded recall against the planter's idea of the bug. Most of
+   the rules are 0% to 100% until fewer of their findings stay unknown.
 
 2. **Bounds from data at rest - measured, and kept out.** Letting file records and database values
    into the bounds sinks produces at least 1,439 subscript findings and 75 reference-modification
@@ -449,9 +450,12 @@ synthetic cases is not the same evidence. Three things it surfaced:
   they read the direction from `DISP`, so a step writing a member it opened `SHR` counts as a read.
   The utility table knows better for the utilities it covers, and the rules do not consult it yet.
 
-- **Hand-labelled flow corpus.** Flow precision is measured on benchmark cases this project wrote.
-  Fifty real programs from the 300-repository set, with reachability marked per sink by hand, would
-  make it a number with an independent witness. Not started. It gates any public precision claim.
+- **Machine labels for what stays unknown.** Precision comes from machine labels, not hand labels:
+  execution, negatives from coverage, planted, then two models. Execution and planted labels are in,
+  and each release publishes the table (under precision, above). Refuting a finding by coverage
+  needs a run that records the statements it executes and which operand bytes came from the input
+  (reach.md §9.8). Labels from two models wait on their accuracy, measured against the execution
+  labels.
 
 - **Outbound channels: what is read, and what is not followed.** "feat: data at rest leaving through
   an extrapartition queue or a service call is followed" added the queues the CSD sends to a DD and

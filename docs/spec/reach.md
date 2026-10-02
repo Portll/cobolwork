@@ -151,7 +151,7 @@ that gap, in the tool's proper lane:
   live system or crafts a payload. That boundary is the same one `SECURITY.md` and the exploitability
   answer already hold. `explain` carries the plan (§9.7).
 
-And the aggregate answer: the hand-labelled corpus (§7.3) measures how often a theoretical claim is
+And the aggregate answer: precision from machine labels (§9.6) measures how often a theoretical claim is
 real per rule, so a single unverified finding can carry a *measured* confidence even before anyone
 reproduces it. §9 is how the tool states the theoretical claim; `confirmed` is kept for the witness.
 

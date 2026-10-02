@@ -1,0 +1,9 @@
+{
+  "id": "cics-web-to-dynamic-program-load-negative",
+  "title": "The request body only ends the transaction; the module is an entry constant",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": [
+    "cics-web-to-dynamic-program-load"
+  ]
+}

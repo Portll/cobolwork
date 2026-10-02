@@ -1,0 +1,11 @@
+{
+  "id": "cics-web-to-dynamic-program-load",
+  "title": "A web request's body names the module the program fetches and calls",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "cics-web-to-dynamic-program-load",
+      "file": "MAIN.pli"
+    }
+  ]
+}

@@ -300,3 +300,9 @@ test('LOOP, FOREVER and UNTIL followed by = are control variables', () => {
     assert.deepEqual([r.node.form, r.node.control.name], ['iterative', name]);
   }
 });
+
+test('a statement starting IF with a THEN at depth 0 is the IF statement, though IF (X) = 0 could assign', () => {
+  const read = (src) => readPli(src).statements.map((s) => parseStatement(s));
+  const [r1, r2] = read(' IF (INCHECK()) = 0 THEN RETURN;\n IF(I) = 3;');
+  assert.deepEqual([r1.kind, r1.status, r2.kind, r2.status], ['IF', 'parsed', 'ASSIGNMENT', 'parsed']);
+});

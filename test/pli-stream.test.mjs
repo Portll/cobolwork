@@ -157,3 +157,12 @@ test('a data list item may be a repetitive specification, and a comma separates 
 test("a P format item takes its picture literal", () => {
   assert.equal(parse(" PUT EDIT (X) (P'ZZ9V99', X(2));").status, 'parsed');
 });
+
+test('PUT and GET EDIT take any number of data list and format list pairs', () => {
+  const put = parse(" PUT FILE (REPORT) SKIP EDIT ('A', N) (COL(15), A, P'Z9') ('B') (A);");
+  assert.equal(put.status, 'parsed', put.reason);
+  assert.equal(put.node.formats.length, 2);
+  assert.equal(put.node.data.length, 3);
+  const get = parse(' GET EDIT (A, B) (A(5), F(3)) (C) (A(2));');
+  assert.deepEqual([get.status, get.node.formats.length, get.node.data.length], ['parsed', 2, 3]);
+});

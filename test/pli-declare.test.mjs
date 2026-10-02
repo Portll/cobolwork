@@ -136,3 +136,15 @@ test('PICTURE takes the literal after it, and a dimension list gives one entry p
   assert.equal(r.node.items[0].attributes[0].picture, '(4)9V99');
   assert.equal(r.node.items[0].dims.length, 2);
 });
+
+test('a %INCLUDE where an item belongs records the member that supplies the rest, read unexpanded', () => {
+  const [r] = readPli(' DCL 01 BNKACC_REC, %INCLUDE CBANKVAC;').statements.map((s) => parseStatement(s));
+  assert.deepEqual([r.kind, r.status, r.node.items.map((i) => i.name), r.node.includes], ['DECLARE', 'parsed', ['BNKACC_REC'], ['CBANKVAC']]);
+});
+
+test('a member holding the middle of a structure may end at the comma its includer continues from', () => {
+  const [r] = readPli(' 05 CD51_DATA,\n   10 CD51I_DATA,\n     15 CD51I_PID CHAR(5),').statements.map((s) => parseStatement(s));
+  assert.deepEqual([r.kind, r.status, r.node.items.length], ['DECLARE_FRAGMENT', 'parsed', 3]);
+  const [d] = readPli(' DCL 1 A CHAR(5),;').statements.map((s) => parseStatement(s));
+  assert.equal(d.status, 'unparsed');
+});

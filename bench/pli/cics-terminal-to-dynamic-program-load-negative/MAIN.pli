@@ -1,0 +1,17 @@
+ /* Terminal input only ends the transaction; the module is named in
+    the FETCH itself. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL 1 INAREA,
+       2 MODNAME CHAR(8),
+       2 FILLER CHAR(2);
+   DCL INLEN FIXED BIN(15) INIT(10);
+   DCL FIXEDMOD ENTRY;
+
+   EXEC CICS RECEIVE INTO(INAREA) LENGTH(INLEN);
+   IF INAREA.MODNAME = 'END' THEN DO;
+     EXEC CICS RETURN;
+   END;
+   FETCH FIXEDMOD;
+   CALL FIXEDMOD;
+   EXEC CICS RETURN;
+ END MAIN;

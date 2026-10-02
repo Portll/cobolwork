@@ -1,0 +1,9 @@
+{
+  "id": "cics-terminal-to-dynamic-program-load-negative",
+  "title": "Terminal input only ends the transaction; the module fetched is a constant",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": [
+    "cics-terminal-to-dynamic-program-load"
+  ]
+}

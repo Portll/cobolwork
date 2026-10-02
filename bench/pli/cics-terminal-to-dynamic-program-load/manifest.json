@@ -1,0 +1,11 @@
+{
+  "id": "cics-terminal-to-dynamic-program-load",
+  "title": "Terminal input decides which program is called via dynamic FETCH and CALL",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "cics-terminal-to-dynamic-program-load",
+      "file": "MAIN.pli"
+    }
+  ]
+}

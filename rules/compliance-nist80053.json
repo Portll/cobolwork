@@ -2561,6 +2561,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "web-client-opens-cleartext",
+   "framework": "nist-800-53r5",
+   "clause": "SC-8",
+   "title": "Transmission Confidentiality and Integrity",
+   "rationale": "The rule reports: A program opens an outbound HTTP connection without TLS. That is information crossing a network with nothing protecting it, which this control requires be protected in transit.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Protect the {{ insert: param, sc-08_odp }} of transmitted information."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "web-cookie-without-secure-attributes",
    "framework": "nist-800-53r5",
    "clause": "SC-23",
@@ -2583,6 +2596,19 @@
     "doc": "nist80053",
     "retrieved": "2026-09-20",
     "quote": "Protect the authenticity of communications sessions."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-receive-length-exceeds-area",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A web receive lets CICS write more bytes than the area it writes into. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
    }
   },
   {

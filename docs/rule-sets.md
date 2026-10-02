@@ -159,6 +159,17 @@ field is `web-request-changes-state-without-a-token` (CWE-352, medium). A token 
 in the finding. A temporary-storage queue is where a web program keeps its own conversation and is
 not counted as a change.
 
+**CICS as an HTTP client.** `WEB OPEN` that asks for HTTP rather than HTTPS - the `HTTP` option,
+`SCHEME(HTTP)`, or a client `URIMAP` the tree's CSD defines with `SCHEME(HTTP)` and no
+`ATTLS(AWARE)` - is `web-client-opens-cleartext` (CWE-319, medium): what the program sends and reads
+crosses the network in the clear unless an AT-TLS policy outside the program encrypts it. A scheme
+held in a field, or a `URIMAP` the tree does not define, is counted as undecided. A `WEB RECEIVE`
+or `WEB CONVERSE` whose `MAXLENGTH` is longer than its `INTO` area is
+`web-receive-length-exceeds-area` (CWE-805, high): CICS copies up to `MAXLENGTH` bytes of a body the
+other end chooses into the area. `MAXLENGTH` is judged as a literal or `LENGTH OF` an item, since a
+field's value can change before the command. With `INTO`, CICS refuses a receive that gives no
+`MAXLENGTH` (`INVREQ`, RESP2 16), so an absent one is not an overflow.
+
 **CALL interfaces.** The same size check for `CALL ... USING`: a called program that declares a
 parameter longer than its caller's argument reaches past it on every call. Past the caller's whole
 record is high; inside it, into the fields beside the argument, is low, because that is sometimes

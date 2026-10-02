@@ -2578,6 +2578,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "web-client-opens-cleartext",
+   "framework": "dora",
+   "clause": "Article 9(3)(a)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program opens an outbound HTTP connection without TLS. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "web-cookie-without-secure-attributes",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -2596,6 +2609,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A program writes a link that opens a new window with a handle back to this one. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-receive-length-exceeds-area",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A web receive lets CICS write more bytes than the area it writes into. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

@@ -1,0 +1,11 @@
+{
+ "id": "106-a-client-connection-opened-without-tls",
+ "title": "A program opens an outbound connection asking for HTTP, so the message it sends crosses the network in the clear",
+ "cwe": "CWE-319",
+ "expect": [
+  {
+   "rule": "web-client-opens-cleartext",
+   "file": "SMSOUT.cbl"
+  }
+ ]
+}

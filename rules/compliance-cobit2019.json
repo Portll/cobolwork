@@ -2364,6 +2364,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "web-client-opens-cleartext",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A program opens an outbound HTTP connection without TLS. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "web-cookie-without-secure-attributes",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
@@ -2380,6 +2392,18 @@
    "framework": "cobit-2019",
    "clause": "DSS06.02",
    "rationale": "The rule reports: A program writes a link that opens a new window with a handle back to this one. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-receive-length-exceeds-area",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A web receive lets CICS write more bytes than the area it writes into. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",

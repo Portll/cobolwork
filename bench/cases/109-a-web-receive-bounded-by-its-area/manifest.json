@@ -1,0 +1,9 @@
+{
+ "id": "109-a-web-receive-bounded-by-its-area",
+ "title": "The same receive bounded by LENGTH OF its area",
+ "cwe": "CWE-805",
+ "expect": [],
+ "negativeFor": [
+  "web-receive-length-exceeds-area"
+ ]
+}

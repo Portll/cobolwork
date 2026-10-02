@@ -69,6 +69,7 @@ const FRAMEWORKS = {
       'jcl-parm-is-an-entry-point': '8(2)',
       'jcl-exec-pgm-unresolved': '8(6)',
       'jcl-ftp-cleartext': '9(3)(a)',
+      'web-client-opens-cleartext': '9(3)(a)',
       'jcl-ftp-sends-production-dataset': '9(3)(a)',
       // The name rule maps an interdependency; these two are the job acting on production data.
       'recon-nonproduction-job-writes-production-dataset': '9(3)(c)',
@@ -146,6 +147,7 @@ const FRAMEWORKS = {
       'jcl-parm-is-an-entry-point': 'DA&M V',
       'jcl-exec-pgm-unresolved': 'DA&M IV',
       'jcl-ftp-cleartext': 'IS II.C.19',
+      'web-client-opens-cleartext': 'IS II.C.19',
       'jcl-ftp-sends-production-dataset': 'IS II.C.19',
       // Unlike the name rule, these are not about disclosure: the booklets do cover a test job
       // reaching production data, and authority exercised beyond the job's necessity.
@@ -227,6 +229,8 @@ const FRAMEWORKS = {
       'jcl-ftp-cleartext': 'IA-5(1)',
       'jcl-ftp-sends-production-dataset': 'SC-7',
       'cics-listener-accepts-cleartext': 'SC-8',
+      'web-client-opens-cleartext': 'SC-8',
+      'web-receive-length-exceeds-area': 'SI-10',
       'recon-nonproduction-job-writes-production-dataset': 'AC-6',
       'recon-nonproduction-job-reads-production-dataset': 'SA-3(2)',
       'zowe-config-tls-verify-off': 'SC-8',

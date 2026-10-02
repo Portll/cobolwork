@@ -2561,6 +2561,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "web-client-opens-cleartext",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A program opens an outbound HTTP connection without TLS. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "web-cookie-without-secure-attributes",
    "framework": "ffiec",
    "clause": "DA&M V",
@@ -2579,6 +2592,19 @@
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A program writes a link that opens a new window with a handle back to this one. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-receive-length-exceeds-area",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A web receive lets CICS write more bytes than the area it writes into. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",

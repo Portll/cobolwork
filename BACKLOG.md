@@ -34,15 +34,20 @@ came from, and what finishing it would show. Items leave this file when they lan
    (input reaching `XML PARSE`, low, since whether a DTD is honoured is the `XMLPARSE` option's and
    that is not read), `*-to-connection-target` (a Db2 location or MQ queue manager from input; one
    CGI program in the 500-repository corpus), and the CSRF rule now counting SQL changes and started
-   transactions. The handoff's `N4`, `N6`, `N8` and `N9` landed with them. Open: the `WEB RECEIVE`
-   half of `N-RECVLIMIT`, which nothing in the corpus reads; `TRANSFORM XMLTODATA`; and the rest of
-   `N-IDENTITY` and `N-CRYPTO`, ordered in section 6 of the design.
+   transactions. The handoff's `N4`, `N6`, `N8` and `N9` landed with them. The `WEB RECEIVE` half of
+   `N-RECVLIMIT` landed as `web-receive-length-exceeds-area`, and `N-CRYPTO`'s client side as
+   `web-client-opens-cleartext`, both measured over the 14 repositories in the 3,185-repository and
+   drive corpora that use `EXEC CICS WEB`. Open: `TRANSFORM XMLTODATA`, and the rest of `N-IDENTITY`
+   and `N-CRYPTO` (the ICSF rule array has its first witness, IBM's own sample in two GenApp forks).
 
-   Its section 5a is the constraint on all of them: no repository in the 127-repository corpus uses
-   `EXEC CICS WEB` at all, against 42 that use `EXEC CICS` and 34 that send BMS maps, so every rule
-   over the CICS web API - `N-COOKIE`, `N-HEADERS`, `N-CSRF` and `N-XXE` - has a benchmark case and
-   no false-positive rate. That is the same gap already recorded for `BPXWDYN` and `DISPLAY UPON
-   CONSOLE` below, and it wants a practitioner's estate, not more public repositories. `N-BMS` is
+   Its section 5a is the constraint on the rest: no repository in the 127-repository corpus uses
+   `EXEC CICS WEB` at all, against 42 that use `EXEC CICS` and 34 that send BMS maps, so the rules
+   over the CICS web API - `N-COOKIE`, `N-HEADERS`, `N-CSRF` and `N-XXE` - had a benchmark case and
+   no false-positive rate. The 14 repositories that use it now give one: over them the web set
+   reports 21 `web-request-changes-state-without-a-token` in 9 repositories, 4
+   `web-uri-carries-a-credential` in 3, and 4 `cics-listener-accepts-cleartext` in 2, each to be read
+   for precision. Most of the 14 are demonstrations and modernisation projects, so a practitioner's
+   estate is still the better measure, as it is for `BPXWDYN` and `DISPLAY UPON CONSOLE` below. `N-BMS` is
    the opposite case and the best-witnessed rule of the twelve: 31 repositories commit BMS map
    source, 25,701 `DFHMDF` definitions in all, and 34 send maps from COBOL, so its join was measured
    before it was written. In CardDemo, of 362 named fields in the maps its programs receive, 204 are

@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. SMSOUT.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-TOK      PIC X(8).
+       01  WS-HOST     PIC X(15) VALUE '10.20.0.138'.
+       01  WS-PORT     PIC S9(8) BINARY VALUE 50408.
+       PROCEDURE DIVISION.
+           EXEC CICS WEB OPEN
+               HOST(WS-HOST)
+               PORTNUMBER(WS-PORT)
+               HTTP
+               SESSTOKEN(WS-TOK)
+           END-EXEC
+           EXEC CICS RETURN END-EXEC.

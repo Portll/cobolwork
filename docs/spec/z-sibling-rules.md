@@ -232,6 +232,15 @@ from.
 Still wanted, if an estate ever supplies the artefact: the ICSF rule array, where the computed case
 is a `coverage` finding rather than a silent pass.
 
+**`WEB OPEN`, measured where the web API is used.** In the 14 repositories that use `EXEC CICS WEB`
+there are 47 `WEB OPEN` statements: 13 ask for HTTPS, 2 ask for HTTP, and 32 take the scheme from
+a field (23, filled by `WEB PARSE` of a URL) or from a `URIMAP` the repository does not define (9).
+The two are the same program in two repositories, `SENDSMS`, which sends a text message's number
+and body to a provider at a private address over HTTP. `web-client-opens-cleartext` reports them.
+An HTTP scheme can still be encrypted by an AT-TLS policy outside the program, which no repository
+holds, and the finding says so; a client `URIMAP` with `ATTLS(AWARE)` is the form that makes it
+visible, and is not reported.
+
 ### N-LOG - 9 defects
 
 **A field the credential pack recognises, or unescaped input, reaches a log, trace or error response.**
@@ -283,6 +292,15 @@ What is left is `GETMAIN` with a length from outside, which is two repositories 
 sink rather than a construct - it belongs in the `*-to-*` family the flow engine owns, not here.
 Built so on 2026-09-30: `*-to-storage-length`, on `GETMAIN FLENGTH` or `LENGTH` and the size
 `CEEGTST` is given, cleared by an upper bound tested first.
+
+**The web half, measured where the web API is used.** The 3,185-repository corpus and the three
+random corpora on the drive hold 14 repositories that use `EXEC CICS WEB`. Their `WEB RECEIVE` and
+`WEB CONVERSE` statements with an `INTO` area all pass a `MAXLENGTH`, and every one that resolves (a
+literal, a `VALUE`, or `LENGTH OF`) equals its area. A receive with no bound is not a shape CICS
+allows: with `INTO`, `MAXLENGTH` is required, and its absence fails the command with `INVREQ`, RESP2
+16 (CICS TS 6.x, WEB RECEIVE (Server) and (Client)). What can overrun is a `MAXLENGTH` longer than
+the area, and `web-receive-length-exceeds-area` reports that where it is a literal or `LENGTH OF`.
+No statement in the corpus has it.
 
 ### N-XXE - 7 defects
 

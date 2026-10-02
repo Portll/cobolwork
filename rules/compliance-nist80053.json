@@ -1079,6 +1079,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "credential-in-source",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: A credential is written into the source. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "csd-defines-diagnostic-transaction",
    "framework": "nist-800-53r5",
    "clause": "AC-6",

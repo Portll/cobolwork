@@ -1070,6 +1070,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "credential-in-source",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A credential is written into the source. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "csd-defines-diagnostic-transaction",
    "framework": "dora",
    "clause": "Article 9(4)(c)",
@@ -2253,11 +2266,11 @@
   },
   {
    "kind": "compliance",
-   "ruleId": "jcl-racf-password",
+   "ruleId": "jcl-racf-new-password",
    "framework": "dora",
    "clause": "Article 9(4)(d)",
    "title": "Protection and prevention",
-   "rationale": "The rule reports: Credential pattern: jcl racf password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "rationale": "The rule reports: Credential pattern: jcl racf new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -2266,11 +2279,11 @@
   },
   {
    "kind": "compliance",
-   "ruleId": "jcl-racf-new-password",
+   "ruleId": "jcl-racf-password",
    "framework": "dora",
    "clause": "Article 9(4)(d)",
    "title": "Protection and prevention",
-   "rationale": "The rule reports: Credential pattern: jcl racf new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "rationale": "The rule reports: Credential pattern: jcl racf password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

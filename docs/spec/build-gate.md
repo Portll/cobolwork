@@ -552,11 +552,11 @@ caller controls: `argv-or-env`, `cics-terminal`, `cics-web`, `jcl-parm`, `jcl-in
 
 ### 11c. Credentials in the source
 
-`credential-in-source`, in a new `secrets` set, high, CWE-798: the three COBOL shapes
-`rules/gitleaks-mainframe.toml` already gives gitleaks (a credential in a `VALUE` clause, a password
-in `EXEC SQL CONNECT`, a password in `EXEC CICS SIGNON`). Today a scan reports none of them, and the
-build gate cannot depend on gitleaks being installed. One list of shapes serves both, and a test holds
-the TOML file to it.
+`credential-in-source`, in the `secrets` set, high, CWE-798: the three COBOL shapes
+`rules/gitleaks-mainframe.toml` gives gitleaks (a credential in a `VALUE` clause, a password in
+`EXEC SQL CONNECT`, a password in `EXEC CICS SIGNON`). The build gate cannot depend on gitleaks being
+installed, so the set reads the shapes from the TOML file itself: one list serves both, and
+`test/secrets.test.mjs` holds the set's findings on the credential fixtures to gitleaks'.
 
 ### 11d. Not proposed
 

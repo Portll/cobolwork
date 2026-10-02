@@ -323,6 +323,14 @@ in a COBOL `VALUE` clause, `EXEC SQL CONNECT`, and `EXEC CICS SIGNON`.
 
 gitleaks detect --no-git --source . --config "$(cobolwork --rules-path gitleaks)"
 
+The `secrets` set reports the three COBOL shapes without gitleaks, reading them from the same file:
+a literal `VALUE` on an item named for a credential, a literal password in `EXEC SQL CONNECT`, and
+one in `EXEC CICS SIGNON`, `VERIFY` or `CHANGE`. Each is `credential-in-source` (CWE-798, high),
+naming the item or statement and the shape, never the value. A program or copybook the tree
+classifies is read whatever its name, where gitleaks reads only the extensions the file lists.
+The rule's firing rate over the corpus is not yet recorded, so the build gate treats it as a warning
+unless the policy's `rules` names it `block` (build-gate.md §11d).
+
 ## Assembler
 
 **What a stub does that COBOL cannot.** HLASM source (`.asm`, `.mac`, `.mlc`, `.hlasm`,

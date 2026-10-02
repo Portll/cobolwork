@@ -89,7 +89,7 @@ const FRAMEWORKS = {
     },
     perSet: {
       flow: '9(3)(b)', cics: '9(3)(b)', hidden: '9(3)(b)', copybook: '8(4)', diff: '8(3)',
-      build: '8(2)', credential: '9(4)(d)', recon: '8(4)', vendor: '9(4)(c)', opaque: '8(4)',
+      build: '8(2)', credential: '9(4)(d)', secrets: '9(4)(d)', recon: '8(4)', vendor: '9(4)(c)', opaque: '8(4)',
       web: '9(3)(b)', priv: '9(4)(c)', log: '9(3)(c)', zowe: '9(4)(d)',
       // 8(6) would be the inventory, but its frame speaks of a job; source nobody can build is a
       // risk found by reading the source, which is 8(2)'s.
@@ -167,7 +167,7 @@ const FRAMEWORKS = {
     },
     perSet: {
       flow: 'DA&M V', cics: 'DA&M V', hidden: 'DA&M V', copybook: 'DA&M IV',
-      diff: 'DA&M VII.B.3', build: 'AIO VI.C.3', credential: 'IS II.C.19', vendor: 'IS II.C.7', opaque: 'DA&M IV',
+      diff: 'DA&M VII.B.3', build: 'AIO VI.C.3', credential: 'IS II.C.19', secrets: 'IS II.C.19', vendor: 'IS II.C.7', opaque: 'DA&M IV',
       web: 'DA&M V', priv: 'IS II.C.7', log: 'IS II.C.19', zowe: 'IS II.C.19',
       compile: 'DA&M IV',
       semantics: 'DA&M V',
@@ -252,7 +252,7 @@ const FRAMEWORKS = {
     },
     perSet: {
       flow: 'SI-10', cics: 'SI-10', hidden: 'SI-10', copybook: 'CM-8', diff: 'CM-3',
-      build: 'SI-2', credential: 'IA-5', vendor: 'AC-6', opaque: 'CM-8',
+      build: 'SI-2', credential: 'IA-5', secrets: 'IA-5', vendor: 'AC-6', opaque: 'CM-8',
       web: 'SC-23', priv: 'AC-6', log: 'SI-11', zowe: 'IA-5',
       compile: 'CM-8',
       semantics: 'SI-2',

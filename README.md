@@ -65,6 +65,7 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | The estate | production names outside production jobs, routable addresses, compiler and runtime versions with published advisories |
 | Assembler | a switch to key zero or supervisor state, an instruction run through `EX`, cross-memory calls, the security product called directly, and the CSECT or ENTRY a COBOL `CALL` or a job step reaches |
 | Cryptography | a single-length DES key, an MD5 or SHA-1 hash, or a fixed initialization vector asked of ICSF, read from IBM's parameter lists; an outbound CICS connection asking for HTTP |
+| Secrets | a credential written into a program or copybook: a literal `VALUE` on an item named for one, or a literal password in `EXEC SQL CONNECT` or `EXEC CICS SIGNON` |
 
 HLASM is read, not assembled: its statements are read from the cards and its operations looked up
 in a table that cites the IBM manual for each (`rules/hlasm-operations.json`). Macros are not

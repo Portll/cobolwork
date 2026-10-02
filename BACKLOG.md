@@ -590,15 +590,17 @@ only one of the five that does.
   (a literal command reading a quoted variable set from a checked field) as a cut route, and a
   class test over the field's full length as a restricting check. The fix and its HAZOP are in
   commitwork-sidecar `evaluations/hazop_2026-10-01_ch7asg02-printer-command.md`.
-- **The mainframe credential rules are ready to go to gitleaks, and have not been sent.** The six
-  rules sit in gitleaks' generator layout (`cmd/generate/config/rules/mainframe.go`, with its
-  true- and false-positive cases), and gitleaks' generated config finds what
-  `rules/gitleaks-mainframe.toml` finds on the fixtures. Over the 500 held-out repositories
-  (gitleaks 8.30.1) they report 22 findings in 8 repositories, all literal passwords: 21 COBOL
-  `VALUE` clauses (three distinct values) and one `CONNECT ... USING`. Gitleaks asks for an issue
-  before the pull request. The issue and PR drafts and the patch are in `.upstream/gitleaks/`,
-  excluded by `.git/info/exclude`; sending them is the operator's call. cobolwork itself only
-  prints the rules' path.
+- **Three of the mainframe credential rules are ready to go to Betterleaks, and have not been
+  sent.** gitleaks merges no new rules; its author's successor, Betterleaks, does.
+  `jcl-racf-password`, `cobol-value-credential` and `embedded-sql-connect-password` are ported to
+  its v2 rule format and find on the fixtures what `rules/gitleaks-mainframe.toml` finds. Over
+  the 500 held-out repositories they report 22 findings in 8 repositories, all literal passwords:
+  21 COBOL `VALUE` clauses (three distinct values) and one `CONNECT ... USING`. None overlaps
+  Betterleaks' `generic-password`, which on COBOL files reports field names as values. The TSO,
+  RACF and CICS rules stay out of the first pull request: the corpus holds no instance of them.
+  Betterleaks asks for an issue before the pull request. The drafts and the patch are in
+  `.upstream/betterleaks/`, excluded by `.git/info/exclude`; sending them is the operator's
+  call. cobolwork itself only prints the rules' path.
 - **A gcobol patch is ready to send to GCC, and has not been sent.** In gcobol 16, FUNCTION
   DISPLAY-OF crashes the compiler, and FUNCTION NATIONAL-OF compiles but does not link, because
   libgcobol has no `__gg__national_of`. The patch reports both as unimplemented and accepts

@@ -18,7 +18,7 @@ regexes = ['''(?i)^(?:x+|\*+|y+|n+|pass|passw(?:or)?d?|pwd|secret|dummy|changeme
 [[rules]]
 id = "tso-logon-password"
 description = "TSO LOGON with an inline password"
-regex = '''(?im)^\s*(?://\*\s*)?LOGON\s+[A-Z@#$][A-Z0-9@#$]{0,7}/([A-Z0-9@#$]{1,8})\b'''
+regex = '''(?im)^\s*LOGON\s+[A-Z@#$][A-Z0-9@#$]{0,7}/([A-Z0-9@#$]{1,8})\b'''
 secretGroup = 1
 keywords = ["logon"]
 [rules.allowlist]
@@ -55,7 +55,7 @@ regexes = ['''(?i)(?:USING|IDENTIFIED\s+BY)\s+['"](?:x+|\*+|pass(?:word)?|pwd|se
 [[rules]]
 id = "cics-signon-password"
 description = "EXEC CICS SIGNON, VERIFY PASSWORD or CHANGE PASSWORD with a literal password"
-regex = '''(?is)EXEC\s+CICS\s+(?:SIGNON|VERIFY|CHANGE)\b.{0,300}?\bPASSWORD\(\s*'([^'\n]{1,8})'\s*\)'''
+regex = '''(?i)EXEC\s+CICS\s+(?:SIGNON|VERIFY|CHANGE)\b[^.]{0,300}?\bPASSWORD\(\s*'([^'\n]{1,8})'\s*\)'''
 secretGroup = 1
 keywords = ["password("]
 [rules.allowlist]

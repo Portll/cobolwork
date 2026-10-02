@@ -1651,6 +1651,71 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "hlasm-calls-security-product",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: Assembler source calls the security product directly. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-cross-memory-service",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: Assembler source uses a cross-memory instruction, reaching another address space or another authority. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-executes-built-instruction",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: Assembler source runs an instruction whose length or mask comes from a register at run time. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-provides-called-module",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: An assembler CSECT or ENTRY is a module a COBOL program in this tree CALLs. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-supervisor-state-change",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend",
    "framework": "ffiec",
    "clause": "DA&M V",

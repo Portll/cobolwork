@@ -1524,6 +1524,66 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "hlasm-calls-security-product",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: Assembler source calls the security product directly. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-cross-memory-service",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Assembler source uses a cross-memory instruction, reaching another address space or another authority. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-executes-built-instruction",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Assembler source runs an instruction whose length or mask comes from a register at run time. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-provides-called-module",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: An assembler CSECT or ENTRY is a module a COBOL program in this tree CALLs. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-supervisor-state-change",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend",
    "framework": "cobit-2019",
    "clause": "DSS06.02",

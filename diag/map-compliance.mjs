@@ -82,6 +82,9 @@ const FRAMEWORKS = {
       'control-cards-from-dataset': '8(3)',
       'sort-exit-named': '8(4)',
       'tso-batch-runs-program': '8(6)',
+      'hlasm-executes-built-instruction': '9(3)(b)',
+      'hlasm-calls-security-product': '8(4)',
+      'hlasm-provides-called-module': '8(4)',
     },
     perSet: {
       flow: '9(3)(b)', cics: '9(3)(b)', hidden: '9(3)(b)', copybook: '8(4)', diff: '8(3)',
@@ -94,6 +97,7 @@ const FRAMEWORKS = {
       semantics: '9(3)(b)',
       // An input that stops the run, or drives an index out of range, is a flaw in validating it.
       abend: '9(3)(b)',
+      hlasm: '9(4)(c)',
     },
     exfil: '9(3)(a)',
     frame: {
@@ -154,6 +158,9 @@ const FRAMEWORKS = {
       'control-cards-from-dataset': 'DA&M VII.B.3',
       'sort-exit-named': 'DA&M IV',
       'tso-batch-runs-program': 'DA&M IV',
+      'hlasm-executes-built-instruction': 'DA&M V',
+      'hlasm-calls-security-product': 'DA&M IV',
+      'hlasm-provides-called-module': 'DA&M IV',
     },
     perSet: {
       flow: 'DA&M V', cics: 'DA&M V', hidden: 'DA&M V', copybook: 'DA&M IV',
@@ -162,6 +169,7 @@ const FRAMEWORKS = {
       compile: 'DA&M IV',
       semantics: 'DA&M V',
       abend: 'DA&M V',
+      hlasm: 'IS II.C.7',
     },
     exfil: 'IS II.C.19',
     frame: {
@@ -231,6 +239,9 @@ const FRAMEWORKS = {
       'control-cards-from-dataset': 'CM-3',
       'sort-exit-named': 'CM-8',
       'tso-batch-runs-program': 'CM-8',
+      'hlasm-executes-built-instruction': 'SI-10',
+      'hlasm-calls-security-product': 'CM-8',
+      'hlasm-provides-called-module': 'CM-8',
     },
     perSet: {
       flow: 'SI-10', cics: 'SI-10', hidden: 'SI-10', copybook: 'CM-8', diff: 'CM-3',
@@ -239,6 +250,7 @@ const FRAMEWORKS = {
       compile: 'CM-8',
       semantics: 'SI-2',
       abend: 'SI-10',
+      hlasm: 'AC-6',
     },
     exfil: 'SC-7',
     frame: {

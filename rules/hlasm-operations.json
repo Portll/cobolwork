@@ -1,0 +1,451 @@
+{
+ "_comment": "The operations lib/hlasm.mjs reports, each with the IBM document that defines it, fetched and its title seen on the retrieved date. Summaries and operand notes are this project's words, not IBM's. The Principles of Operation is published on IBM Docs only as a PDF, so its entries give the instruction's heading and the PDF.",
+ "schemaVersion": 1,
+ "retrieved": "2026-10-02",
+ "operations": [
+  {
+   "name": "SVC",
+   "kind": "instruction",
+   "class": "supervisor-call",
+   "privilege": "general",
+   "summary": "Raises a supervisor-call interruption whose interruption code carries the instruction's one-byte immediate value, handing control to the operating system's SVC handler.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "SUPERVISOR CALL",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "PC",
+   "kind": "instruction",
+   "class": "cross-memory",
+   "privilege": "semiprivileged",
+   "summary": "Looks up an entry-table entry from a program-call number and branches to the routine it describes, optionally switching the primary address space and stacking state, with problem-state use gated by the PSW-key mask against the entry's authorization key mask.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "PROGRAM CALL",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "PR",
+   "kind": "instruction",
+   "class": "cross-memory",
+   "privilege": "semiprivileged",
+   "summary": "Unstacks the newest linkage-stack state entry, restoring the saved PSW and registers 2-14 and, for a program-call entry, the primary and secondary ASNs, PSW-key mask and extended authorization index.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "PROGRAM RETURN",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "PT",
+   "kind": "instruction",
+   "class": "cross-memory",
+   "privilege": "semiprivileged",
+   "summary": "Branches to an address taken from a register while loading a new PSW-key mask, secondary ASN, possibly a new primary ASN, and the problem-state bit, refusing a problem-state attempt to enter supervisor state.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "PROGRAM TRANSFER",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "SSAR",
+   "kind": "instruction",
+   "class": "cross-memory",
+   "privilege": "semiprivileged",
+   "summary": "Makes the address space named by an ASN in a general register the secondary address space, loading its address-space-control element after ASN translation and, when it differs from the primary, a secondary-authority check.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "SET SECONDARY ASN",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "LASP",
+   "kind": "instruction",
+   "class": "cross-memory",
+   "privilege": "privileged",
+   "summary": "Loads primary and secondary ASNs, the PSW-key mask and the authorization index from a storage operand into the control registers after ASN translation and authorization, reporting a failed step in the condition code instead of changing anything.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "LOAD ADDRESS SPACE PARAMETERS",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "MVCL",
+   "kind": "instruction",
+   "class": "long-move",
+   "privilege": "general",
+   "summary": "Copies a source area to a destination area, padding any remaining destination bytes with a fill byte, where both addresses and 24-bit lengths sit in even-odd register pairs so the extent is invisible in the instruction text.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "MOVE LONG",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "MVCLE",
+   "kind": "instruction",
+   "class": "long-move",
+   "privilege": "general",
+   "summary": "Moves all or part of a register-described source to a register-described destination with padding, stopping after a CPU-chosen amount and signalling through the condition code so the program repeats it until the move is complete.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "MOVE LONG EXTENDED",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "MVCP",
+   "kind": "instruction",
+   "class": "cross-key-move",
+   "privilege": "semiprivileged",
+   "summary": "Copies up to 256 bytes from the secondary address space into the primary one, fetching the source under an access key taken from a register, which a problem-state program may name only if its PSW-key-mask bit is set.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "MOVE TO PRIMARY",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "MVCS",
+   "kind": "instruction",
+   "class": "cross-key-move",
+   "privilege": "semiprivileged",
+   "summary": "Copies up to 256 bytes from the primary address space into the secondary one, storing the destination under an access key taken from a register, which a problem-state program may name only if its PSW-key-mask bit is set.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "MOVE TO SECONDARY",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "MVCK",
+   "kind": "instruction",
+   "class": "cross-key-move",
+   "privilege": "semiprivileged",
+   "summary": "Copies up to 256 bytes within the current address space, fetching the source under an access key held in a register rather than the PSW key, subject to the PSW-key mask in problem state.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "MOVE WITH KEY",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "EX",
+   "kind": "instruction",
+   "class": "built-instruction",
+   "privilege": "general",
+   "summary": "Runs the single instruction found at its base-displacement operand address after ORing the low byte of a general register into that instruction's second byte, so a length, mask or register field is fixed only at run time.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "EXECUTE",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "EXRL",
+   "kind": "instruction",
+   "class": "built-instruction",
+   "privilege": "general",
+   "summary": "Does the same as EXECUTE but locates the target instruction by a relative-long offset from the current instruction address.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "EXECUTE RELATIVE LONG",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "SPKA",
+   "kind": "instruction",
+   "class": "supervisor-state-change",
+   "privilege": "semiprivileged",
+   "summary": "Replaces the four-bit PSW key with bits 56-59 of its computed second-operand address, which is never used to access storage.",
+   "operands": "The new key is bits 56-59 of the effective address formed from the base register and displacement, so a register base hides the key value from static reading. In problem state the instruction succeeds only if the bit for the new key is one in the PSW-key mask (control register 3, bits 32-47, one bit per key 0-15); otherwise a privileged-operation exception occurs. In supervisor state any key may be set.",
+   "source": {
+    "doc": "z/Architecture Principles of Operation",
+    "number": "SA22-7832-14",
+    "topic": "SET PSW KEY FROM ADDRESS",
+    "url": "https://www.ibm.com/docs/en/module_1678991624569/pdf/SA22-7832-14.pdf"
+   }
+  },
+  {
+   "name": "MODESET",
+   "kind": "macro",
+   "class": "supervisor-state-change",
+   "privilege": "authorized",
+   "summary": "Changes the caller's PSW key, PSW-key mask or problem-state bit, either through inline code built on SPKA or through a generated SVC.",
+   "operands": "SVC form: KEY=ZERO sets PSW key 0 and KEY=NZERO sets the key recorded in the caller's TCB; MODE=SUP clears the problem-state bit (enter supervisor state) and MODE=PROB sets it (return to problem state). KEY=ZERO and MODE=SUP are the escalating values. This form requires supervisor state, PSW key 0-7, or APF authorization (module in an APF-authorized library, link-edited with AC=1). Inline form: EXTKEY=ZERO|TCB|RBT1|RBT234|KEY2|KEY3|KEY4|KEY7, KEYREG= or KEYADDR= expands to SPKA and changes only the PSW key; it needs supervisor state or a problem-state PSW-key mask that permits the requested key.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Authorized Assembler Services Reference, Volume 3 (LLACOPY-SDUMPX)",
+    "number": "SA23-1374-60",
+    "topic": "MODESET — Change system status: Description",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=status-description"
+   }
+  },
+  {
+   "name": "STORAGE",
+   "kind": "macro",
+   "class": "storage",
+   "privilege": null,
+   "summary": "Obtains or releases virtual storage in the primary address space; unauthorized callers are limited to subpools 0-127 in keys 8-15, and subpools 131 and 132 need a PSW-key mask that permits the storage key.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 2 (IARR2V-XCTLX)",
+    "number": "SA23-1370-60",
+    "topic": "STORAGE — Obtain and release storage",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=xct-storage-obtain-release-storage"
+   }
+  },
+  {
+   "name": "GETMAIN",
+   "kind": "macro",
+   "class": "storage",
+   "privilege": null,
+   "summary": "Allocates one or more areas of virtual storage from a subpool, with the same unauthorized subpool and key limits as STORAGE.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 1 (ABEND-HSPSERV)",
+    "number": "SA23-1369-60",
+    "topic": "GETMAIN — Allocate virtual storage",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=hsp-getmain-allocate-virtual-storage"
+   }
+  },
+  {
+   "name": "FREEMAIN",
+   "kind": "macro",
+   "class": "storage",
+   "privilege": null,
+   "summary": "Releases virtual storage areas, or a whole subpool owned by the issuing task, that were obtained with GETMAIN or STORAGE.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 1 (ABEND-HSPSERV)",
+    "number": "SA23-1369-60",
+    "topic": "FREEMAIN — Free virtual storage",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=hsp-freemain-free-virtual-storage"
+   }
+  },
+  {
+   "name": "LINK",
+   "kind": "macro",
+   "class": "module-load",
+   "privilege": null,
+   "summary": "Fetches the load module holding a named entry point if no usable copy is in storage and calls it, with control returning to the issuer when the called program ends.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 2 (IARR2V-XCTLX)",
+    "number": "SA23-1370-60",
+    "topic": "LINK and LINKX — Pass control to a program in another load module",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=zmpasrix-link-linkx-pass-control-program-in-another-load-module"
+   }
+  },
+  {
+   "name": "LINKX",
+   "kind": "macro",
+   "class": "module-load",
+   "privilege": null,
+   "summary": "Variant of LINK for callers in access-register ASC mode, also usable in primary mode, that accepts every LINK parameter.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 2 (IARR2V-XCTLX)",
+    "number": "SA23-1370-60",
+    "topic": "LINKX — Pass control to a program in another load module",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=llpcpialm-linkx-pass-control-program-in-another-load-module"
+   }
+  },
+  {
+   "name": "LOAD",
+   "kind": "macro",
+   "class": "module-load",
+   "privilege": null,
+   "summary": "Brings a load module into virtual storage if no usable copy exists and returns its entry-point address in register 0 without calling it, raising its responsibility count until DELETE or task end.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 2 (IARR2V-XCTLX)",
+    "number": "SA23-1370-60",
+    "topic": "LOAD — Bring a load module into virtual storage",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=xct-load-bring-load-module-into-virtual-storage"
+   }
+  },
+  {
+   "name": "XCTL",
+   "kind": "macro",
+   "class": "module-load",
+   "privilege": null,
+   "summary": "Transfers control to an entry point in another load module, fetching it if needed, without returning to the issuer; control later goes back to whoever invoked the issuer, and the issuer's module may be deleted.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 2 (IARR2V-XCTLX)",
+    "number": "SA23-1370-60",
+    "topic": "XCTL and XCTLX - Pass control to a program in another load module",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=zmpasrix-xctl-xctlx-pass-control-program-in-another-load-module"
+   }
+  },
+  {
+   "name": "XCTLX",
+   "kind": "macro",
+   "class": "module-load",
+   "privilege": null,
+   "summary": "Variant of XCTL meant for callers in access-register ASC mode, also usable from primary mode.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 2 (IARR2V-XCTLX)",
+    "number": "SA23-1370-60",
+    "topic": "XCTLX - Pass control to a program in another load module",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=xxpcpialm-xctlx-pass-control-program-in-another-load-module"
+   }
+  },
+  {
+   "name": "ATTACH",
+   "kind": "macro",
+   "class": "module-load",
+   "privilege": null,
+   "summary": "Creates a new subtask of the issuing task that starts running at a named entry point, which must be a library member or alias or an IDENTIFY name.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 1 (ABEND-HSPSERV)",
+    "number": "SA23-1369-60",
+    "topic": "ATTACH and ATTACHX — Create a new task",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=hsp-attach-attachx-create-new-task"
+   }
+  },
+  {
+   "name": "ATTACHX",
+   "kind": "macro",
+   "class": "module-load",
+   "privilege": null,
+   "summary": "Variant of ATTACH, preferred by IBM over ATTACH, that also serves access-register-mode callers and gives the new task the issuer's ASC mode.",
+   "source": {
+    "doc": "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 1 (ABEND-HSPSERV)",
+    "number": "SA23-1369-60",
+    "topic": "ATTACHX—Create a new task",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=task-attachxcreate-new"
+   }
+  },
+  {
+   "name": "RACROUTE",
+   "kind": "macro",
+   "class": "security-product",
+   "privilege": null,
+   "summary": "Single entry through which resource managers send security requests chosen by REQUEST= (user verification, access checks, resource definition and so on) to the system authorization facility, which routes them to RACF or another external security manager.",
+   "source": {
+    "doc": "z/OS 3.1 Security Server RACROUTE Macro Reference",
+    "number": "SA23-2294-60",
+    "topic": "RACROUTE: Router interface",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=macros-racroute-router-interface"
+   }
+  },
+  {
+   "name": "RACHECK",
+   "kind": "macro",
+   "class": "security-product",
+   "privilege": null,
+   "summary": "Older standalone RACF macro, limited to 24-bit callers and superseded by RACROUTE REQUEST=AUTH, that checks a user's access to a RACF-protected resource, with some operands reserved for APF-authorized, key 0-7 or supervisor-state callers.",
+   "source": {
+    "doc": "z/OS 3.1 Security Server RACROUTE Macro Reference",
+    "number": "SA23-2294-60",
+    "topic": "RACHECK: Check RACF authorization",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=macros-racheck-check-racf-authorization"
+   }
+  },
+  {
+   "name": "RACINIT",
+   "kind": "macro",
+   "class": "security-product",
+   "privilege": "authorized",
+   "summary": "Older standalone RACF macro, limited to 24-bit callers and superseded by RACROUTE REQUEST=VERIFY, that identifies a user and validates the password or operator ID card, requiring an APF-authorized, key 0-7 or supervisor-state caller or else an entry in RACF's authorized-caller table.",
+   "source": {
+    "doc": "z/OS 3.1 Security Server RACROUTE Macro Reference",
+    "number": "SA23-2294-60",
+    "topic": "RACINIT: Identify a RACF-defined user",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=macros-racinit-identify-racf-defined-user"
+   }
+  },
+  {
+   "name": "CSECT",
+   "kind": "assembler",
+   "class": "section",
+   "privilege": null,
+   "summary": "Starts a new executable control section or resumes an earlier one of the same name, or the unnamed section when no name is given.",
+   "source": {
+    "doc": "High Level Assembler for z/OS & z/VM & z/VSE 1.6 Language Reference",
+    "number": "SC26-4940-09",
+    "topic": "CSECT instruction",
+    "url": "https://www.ibm.com/docs/en/hla-and-tf/1.6.0?topic=statements-csect-instruction"
+   }
+  },
+  {
+   "name": "DSECT",
+   "kind": "assembler",
+   "class": "section",
+   "privilege": null,
+   "summary": "Starts or resumes a dummy section, a storage layout whose location counter begins at zero and whose statements produce no object code, mapped onto real storage through a USING base register.",
+   "source": {
+    "doc": "High Level Assembler for z/OS & z/VM & z/VSE 1.6 Language Reference",
+    "number": "SC26-4940-09",
+    "topic": "DSECT instruction",
+    "url": "https://www.ibm.com/docs/en/hla-and-tf/1.6.0?topic=statements-dsect-instruction"
+   }
+  },
+  {
+   "name": "RSECT",
+   "kind": "assembler",
+   "class": "section",
+   "privilege": null,
+   "summary": "Starts or resumes a read-only executable control section and makes the assembler warn about reentrancy violations in it whatever the RENT option says.",
+   "source": {
+    "doc": "High Level Assembler for z/OS & z/VM & z/VSE 1.6 Language Reference",
+    "number": "SC26-4940-09",
+    "topic": "RSECT instruction",
+    "url": "https://www.ibm.com/docs/en/hla-and-tf/1.6.0?topic=statements-rsect-instruction"
+   }
+  },
+  {
+   "name": "ENTRY",
+   "kind": "assembler",
+   "class": "linkage",
+   "privilege": null,
+   "summary": "Publishes symbols defined in this module's executable sections as entry symbols in the external symbol dictionary so other modules can refer to them.",
+   "source": {
+    "doc": "High Level Assembler for z/OS & z/VM & z/VSE 1.6 Language Reference",
+    "number": "SC26-4940-09",
+    "topic": "ENTRY instruction",
+    "url": "https://www.ibm.com/docs/en/hla-and-tf/1.6.0?topic=statements-entry-instruction"
+   }
+  },
+  {
+   "name": "EXTRN",
+   "kind": "assembler",
+   "class": "linkage",
+   "privilege": null,
+   "summary": "Declares symbols this module uses but another module defines, leaving the linker to resolve them and, under automatic library call, to search libraries for them.",
+   "source": {
+    "doc": "High Level Assembler for z/OS & z/VM & z/VSE 1.6 Language Reference",
+    "number": "SC26-4940-09",
+    "topic": "EXTRN instruction",
+    "url": "https://www.ibm.com/docs/en/hla-and-tf/1.6.0?topic=statements-extrn-instruction"
+   }
+  },
+  {
+   "name": "WXTRN",
+   "kind": "assembler",
+   "class": "linkage",
+   "privilege": null,
+   "summary": "Declares weak external references that the linker resolves only when the defining module is already part of the link, without triggering an automatic library search.",
+   "source": {
+    "doc": "High Level Assembler for z/OS & z/VM & z/VSE 1.6 Language Reference",
+    "number": "SC26-4940-09",
+    "topic": "WXTRN instruction",
+    "url": "https://www.ibm.com/docs/en/hla-and-tf/1.6.0?topic=statements-wxtrn-instruction"
+   }
+  }
+ ]
+}

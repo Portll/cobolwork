@@ -299,6 +299,28 @@ in a COBOL `VALUE` clause, `EXEC SQL CONNECT`, and `EXEC CICS SIGNON`.
 
 gitleaks detect --no-git --source . --config "$(cobolwork --rules-path gitleaks)"
 
+## Assembler
+
+**What a stub does that COBOL cannot.** HLASM source (`.asm`, `.mac`, `.mlc`, `.hlasm`,
+`.assemble`, or no extension and a section or macro definition with storage) is read as cards by
+`lib/hlasm.mjs`, and each operation is looked up in `rules/hlasm-operations.json`, which cites the
+IBM manual defining it. A `MODESET` that switches to key zero or supervisor state
+(`KEY=ZERO`, `MODE=SUP` or `EXTKEY=ZERO`) is critical; one that returns to the caller's key
+and problem state is not reported. `EX` and `EXRL` run their target with its second byte from a
+register, which for a move is its length, and the cross-memory instructions (`PC`, `PR`, `PT`,
+`SSAR`, `LASP`) reach another address space; both are high. `RACROUTE`, `RACHECK` and `RACINIT`
+called directly are listed as context. A BMS map or an IMS DBD or PSB in a `.asm` file is counted
+as what it is, and a file with no HLASM operation the reader recognises (x86, 6502 or a copy member
+of `EQU`s) is counted as unrecognised.
+
+**The module a CALL reaches.** A COBOL `CALL 'NAME'` that no COBOL program declares may be an
+assembler module. A `CSECT` or `ENTRY` of that name is reported as the module the call reaches, and
+the JCL rules count it as a defined program, so a step that runs it is not unresolved.
+
+It reads; it does not assemble. Macros are not expanded and conditional assembly is not evaluated,
+so an operation a site macro issues is seen in the macro's definition, not where the macro is used,
+and an operation in a branch `AIF` jumps over is reported as much as any other.
+
 ## Change review
 
 **Change review.** `cobolwork diff` compares two revisions the way the compiler sees them. A

@@ -1,0 +1,11 @@
+{
+ "id": "104-an-assembler-stub-switches-to-key-zero",
+ "title": "An assembler stub switches to PSW key zero to copy storage, then returns to its caller's key",
+ "cwe": "CWE-250",
+ "expect": [
+  {
+   "rule": "hlasm-supervisor-state-change",
+   "file": "SETKEY0.asm"
+  }
+ ]
+}

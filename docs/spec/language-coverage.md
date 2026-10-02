@@ -416,6 +416,12 @@ that no COBOL rule set would ever find. Treat them as first-class.
 
 ## 5. Phase 4 — HLASM
 
+**Built:** the reader (`lib/hlasm.mjs`, over `lib/bms.mjs`'s card folding), the cited table
+(`rules/hlasm-operations.json`) and the five rules below (`lib/sets/hlasm.mjs`); a job step running
+an assembler CSECT or ENTRY is a defined program. Definition of done 1, 3, 4 and 5 are met
+(`diag/hlasm-measure.mjs` names each file with card errors; bench cases 103 to 105). Item 2, z390
+assembling the corpus, is open.
+
 ### Scope, stated honestly
 
 114 genuine HLASM files across the corpus. Assembler matters because assembler stubs are where

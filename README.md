@@ -63,6 +63,12 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | JCL | credentials and security commands in in-stream data, destructive statements, `DLM=` tricks, FTP in cleartext or sending production data, production data touched by a test job |
 | The source | names nothing declares (code that cannot compile), shadowed copybooks, payloads hidden in columns 73-80 or aimed at AI readers |
 | The estate | production names outside production jobs, routable addresses, compiler and runtime versions with published advisories |
+| Assembler | a switch to key zero or supervisor state, an instruction run through `EX`, cross-memory calls, the security product called directly, and the CSECT or ENTRY a COBOL `CALL` or a job step reaches |
+
+HLASM is read, not assembled: its statements are read from the cards and its operations looked up
+in a table that cites the IBM manual for each (`rules/hlasm-operations.json`). Macros are not
+expanded and conditional assembly is not evaluated, so an operation a site macro issues is seen
+where the macro is defined, and not where it is used.
 
 [docs/rule-sets.md](docs/rule-sets.md) describes each in full, with what it deliberately leaves out.
 Vendor packs for CA ACF2 and Top Secret, Control-M and Connect:Direct load only for estates that

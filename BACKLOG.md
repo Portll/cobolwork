@@ -510,11 +510,21 @@ that declares it rather than to whoever merged the findings. What that specifica
   `pdsExportTree` (roadmap 3.2). `diff`, `build` and the other commands do not take it yet, and
   XMIT and IEBCOPY unload files are not read.
 
-- **Scan time on very large programs.** A 1.6 GB repository of 17 MB programs
-  (joe-tingsanchali-sonarsource_cnafbadboy) does not finish a scan in 900 s and reaches 3.9 GB
-  resident, read from disk or from git. One of its programs parses in 1.25 s; there are 156 of them,
-  and more than one rule set parses each. Before this change `diff` refused it outright, because
-  `git cat-file` overflowed a 256 MB buffer.
+- **Scan time on very large repositories.** Two repositories of the 3185 corpus take far longer than
+  any other, measured at `8a19f3f` on a machine other jobs shared:
+  - `joe-tingsanchali-sonarsource_cnafbadboy`, 156 programs of up to 17 MB: 1,751 s and 8.9 GB
+    resident, 1,449 s of it in the flow set. Its 26 `Batch` programs alone take about 120 s there.
+    The graph they leave, 1.0 million nodes and 2.2 million edges with no source among them, stays
+    in the heap until every program is read, and collecting over it grows faster than the program
+    count: 52 programs take 2.4 times as long as 26.
+  - `FabioBonazza_test_unieuro_new`, 3,263 SQL programs: 5,445 s and 15.3 GB. The flow set stops
+    at the memory reserve after 2,626 programs, at 3,770 s. On one program in ten it takes 97 s,
+    against 49 s without arithmetic intervals (`5d76dbd`): those repeat the whole fact analysis
+    until no interval changes, up to 12 times, and the sample's 328 programs ran it 1,318 times, 48
+    of them to the cap.
+
+  Two ways on, neither started: fewer rounds on a large program, which is a precision decision, and
+  a smaller graph per program, which may leave out only what no run can reach.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

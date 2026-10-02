@@ -43,3 +43,19 @@ test('tables with no exit routine, temporary and auxiliary tables raise nothing'
 test('every rule has a severity, evidence, CWE and text', () => {
   for (const [id, r] of Object.entries(DB2_RULES)) assert.ok(r.sev && r.evidence && /^CWE-\d+$/.test(r.cwe) && r.text, id);
 });
+
+test('an external procedure names its load module, SECURITY and WLM environment', () => {
+  assert.deepEqual(check('CREATE PROCEDURE S.P1 (IN A INT) LANGUAGE COBOL EXTERNAL NAME PGM1 PARAMETER STYLE GENERAL SECURITY USER WLM ENVIRONMENT WLMENV1;'), [
+    { rule: 'db2-external-routine', line: 1, sev: 'info', detail: 'S.P1 runs COBOL load module PGM1 with SECURITY USER in WLM environment WLMENV1' },
+  ]);
+});
+
+test('an external function with EXTERNAL alone runs the module its own name gives, under SECURITY DB2 by default', () => {
+  assert.deepEqual(check('CREATE FUNCTION CENTER (FLOAT, FLOAT) RETURNS FLOAT EXTERNAL LANGUAGE C PARAMETER STYLE SQL NO SQL;').map((f) => f.detail), [
+    'CENTER runs C load module CENTER (named by the routine) with SECURITY DB2',
+  ]);
+});
+
+test('a native SQL procedure runs no load module and raises nothing', () => {
+  assert.deepEqual(check('CREATE PROCEDURE P2 (IN A INT) LANGUAGE SQL BEGIN DECLARE X INT; SET X = A; END;'), []);
+});

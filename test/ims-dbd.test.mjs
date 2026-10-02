@@ -251,3 +251,9 @@ test('an operand the macro does not take is refused, so a statement counts as re
   assert.equal(r.status, 'unparsed');
   assert.match(r.reason, /COLOUR/);
 });
+
+test('DBD operands that end in a comma, a continuation with no column-72 mark, are refused', () => {
+  const text = ' DBD   NAME=CUSTDB,ACCESS=HIDAM,\n SEGM  NAME=CUST,PARENT=0,BYTES=100\n';
+  const statuses = readIms(text).statements.map((st) => parseImsStatement(st).status);
+  assert.deepEqual(statuses.slice(0, 2), ['unparsed', 'parsed']);
+});

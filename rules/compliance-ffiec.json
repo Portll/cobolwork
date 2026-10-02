@@ -1716,6 +1716,45 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "icsf-fixed-initialization-vector",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A program enciphers through ICSF with an initialization vector that never changes. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-single-length-des-key",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A program generates a single-length DES key through ICSF. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-weak-hash",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A program hashes with MD5 or SHA-1 through ICSF. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend",
    "framework": "ffiec",
    "clause": "DA&M V",

@@ -1584,6 +1584,42 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "icsf-fixed-initialization-vector",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program enciphers through ICSF with an initialization vector that never changes. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-single-length-des-key",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program generates a single-length DES key through ICSF. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-weak-hash",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program hashes with MD5 or SHA-1 through ICSF. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend",
    "framework": "cobit-2019",
    "clause": "DSS06.02",

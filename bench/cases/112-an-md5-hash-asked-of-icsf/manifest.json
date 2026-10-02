@@ -1,0 +1,11 @@
+{
+ "id": "112-an-md5-hash-asked-of-icsf",
+ "title": "A program hashes with MD5 through ICSF One-Way Hash Generate",
+ "cwe": "CWE-328",
+ "expect": [
+  {
+   "rule": "icsf-weak-hash",
+   "file": "HASHMD5.cbl"
+  }
+ ]
+}

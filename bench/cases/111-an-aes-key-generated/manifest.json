@@ -1,0 +1,9 @@
+{
+ "id": "111-an-aes-key-generated",
+ "title": "The same call generating a 256-bit AES key",
+ "cwe": "CWE-327",
+ "expect": [],
+ "negativeFor": [
+  "icsf-single-length-des-key"
+ ]
+}

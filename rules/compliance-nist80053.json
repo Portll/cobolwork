@@ -1716,6 +1716,45 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "icsf-fixed-initialization-vector",
+   "framework": "nist-800-53r5",
+   "clause": "SC-13",
+   "title": "Cryptographic Protection",
+   "rationale": "The rule reports: A program enciphers through ICSF with an initialization vector that never changes. That is cryptography too weak for the use it is put to, which this control requires be chosen for each use and implemented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Implement the following types of cryptography required for each specified cryptographic use"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-single-length-des-key",
+   "framework": "nist-800-53r5",
+   "clause": "SC-13",
+   "title": "Cryptographic Protection",
+   "rationale": "The rule reports: A program generates a single-length DES key through ICSF. That is cryptography too weak for the use it is put to, which this control requires be chosen for each use and implemented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Implement the following types of cryptography required for each specified cryptographic use"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-weak-hash",
+   "framework": "nist-800-53r5",
+   "clause": "SC-13",
+   "title": "Cryptographic Protection",
+   "rationale": "The rule reports: A program hashes with MD5 or SHA-1 through ICSF. That is cryptography too weak for the use it is put to, which this control requires be chosen for each use and implemented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Implement the following types of cryptography required for each specified cryptographic use"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend",
    "framework": "nist-800-53r5",
    "clause": "SI-10",

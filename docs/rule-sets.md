@@ -170,6 +170,19 @@ other end chooses into the area. `MAXLENGTH` is judged as a literal or `LENGTH O
 field's value can change before the command. With `INTO`, CICS refuses a receive that gives no
 `MAXLENGTH` (`INVREQ`, RESP2 16), so an absent one is not an overflow.
 
+**What a program asks ICSF for.** A COBOL program reaches z/OS cryptography by calling an ICSF
+callable service, and the strength it gets is in the arguments. `rules/icsf-services.json` holds
+each service's parameters in order, from IBM's ICSF Application Programmer's Guide (SC14-7508-60),
+and each argument is judged by the literals that can reach it: its `VALUE`, a `MOVE` or `STRING`
+into it, a hop back through a field those name. A key generated as `SINGLE`, `KEYLN8` or `SINGLE-R`
+(`CSNBKGN`) is `icsf-single-length-des-key` (CWE-327, high): 56 bits, and every encipher with it
+runs single DES. A rule array naming `MD5` or `SHA-1` for `CSNBOWH` is `icsf-weak-hash` (CWE-328,
+medium). An initialization vector nothing but a constant is ever put in, for `CSNBENC`, `CSNBSYE`
+or `CSNBSAE`, is `icsf-fixed-initialization-vector` (CWE-1204, medium); `ECB` and `CONTINUE`, which
+use no vector of the call's, are not judged. Every name a service answers to counts (`CSNB`, `CSNE`,
+`CSF` and the data-space forms). An argument a computation, a read or another program fills is
+counted as undecided, not passed.
+
 **CALL interfaces.** The same size check for `CALL ... USING`: a called program that declares a
 parameter longer than its caller's argument reaches past it on every call. Past the caller's whole
 record is high; inside it, into the fields beside the argument, is low, because that is sometimes

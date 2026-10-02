@@ -1707,6 +1707,45 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "icsf-fixed-initialization-vector",
+   "framework": "dora",
+   "clause": "Article 9(3)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program enciphers through ICSF with an initialization vector that never changes. That risks the loss of data and the impairment of its integrity, which this clause requires be prevented.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "prevent the lack of availability, the impairment of the authenticity and integrity, the breaches of confidentiality and the loss of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-single-length-des-key",
+   "framework": "dora",
+   "clause": "Article 9(3)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program generates a single-length DES key through ICSF. That risks the loss of data and the impairment of its integrity, which this clause requires be prevented.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "prevent the lack of availability, the impairment of the authenticity and integrity, the breaches of confidentiality and the loss of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-weak-hash",
+   "framework": "dora",
+   "clause": "Article 9(3)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program hashes with MD5 or SHA-1 through ICSF. That risks the loss of data and the impairment of its integrity, which this clause requires be prevented.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "prevent the lack of availability, the impairment of the authenticity and integrity, the breaches of confidentiality and the loss of data"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend",
    "framework": "dora",
    "clause": "Article 9(3)(b)",

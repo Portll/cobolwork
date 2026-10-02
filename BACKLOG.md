@@ -37,8 +37,10 @@ came from, and what finishing it would show. Items leave this file when they lan
    transactions. The handoff's `N4`, `N6`, `N8` and `N9` landed with them. The `WEB RECEIVE` half of
    `N-RECVLIMIT` landed as `web-receive-length-exceeds-area`, and `N-CRYPTO`'s client side as
    `web-client-opens-cleartext`, both measured over the 14 repositories in the 3,185-repository and
-   drive corpora that use `EXEC CICS WEB`. Open: `TRANSFORM XMLTODATA`, and the rest of `N-IDENTITY`
-   and `N-CRYPTO` (the ICSF rule array has its first witness, IBM's own sample in two GenApp forks).
+   drive corpora that use `EXEC CICS WEB`. `N-CRYPTO`'s cipher half landed as the crypto set, read
+   from IBM's ICSF parameter lists, over its first witnesses: IBM's own sample in two GenApp forks
+   and an MD5 hash. `TRANSFORM XMLTODATA` and the rest of `N-IDENTITY` were measured and not built:
+   the design's section on each says why.
 
    Its section 5a is the constraint on the rest: no repository in the 127-repository corpus uses
    `EXEC CICS WEB` at all, against 42 that use `EXEC CICS` and 34 that send BMS maps, so the rules

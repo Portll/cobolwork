@@ -99,6 +99,7 @@ const FRAMEWORKS = {
       // An input that stops the run, or drives an index out of range, is a flaw in validating it.
       abend: '9(3)(b)',
       hlasm: '9(4)(c)',
+      crypto: '9(3)(c)',
     },
     exfil: '9(3)(a)',
     frame: {
@@ -172,6 +173,7 @@ const FRAMEWORKS = {
       semantics: 'DA&M V',
       abend: 'DA&M V',
       hlasm: 'IS II.C.7',
+      crypto: 'IS II.C.19',
     },
     exfil: 'IS II.C.19',
     frame: {
@@ -213,6 +215,7 @@ const FRAMEWORKS = {
       'SI-11': { title: 'Error Handling', quote: 'Generate error messages that provide information necessary for corrective actions without revealing information that could be exploited' },
       'SA-3(2)': { title: 'Use of Live or Operational Data', quote: 'Approve, document, and control the use of live data in preproduction environments for the system, system component, or system service' },
       'IA-5(1)': { title: 'Password-based Authentication', quote: 'Transmit passwords only over cryptographically-protected channels' },
+      'SC-13': { title: 'Cryptographic Protection', quote: 'Implement the following types of cryptography required for each specified cryptographic use' },
     },
     // SA-11(1) is the control this entire tool answers. Mapping it per rule would be padding.
     documentLevel: ['SA-11(1)'],
@@ -255,6 +258,7 @@ const FRAMEWORKS = {
       semantics: 'SI-2',
       abend: 'SI-10',
       hlasm: 'AC-6',
+      crypto: 'SC-13',
     },
     exfil: 'SC-7',
     frame: {
@@ -267,6 +271,7 @@ const FRAMEWORKS = {
       'AC-6': 'That is authority granted or exercised beyond what the task requires, which this control exists to prevent.',
       'SC-23': 'That is a session another origin can frame, keep a handle on or read off a cleartext hop, which is the authenticity of the session this control requires be protected.',
       'SC-8': 'That is information crossing a network with nothing protecting it, which this control requires be protected in transit.',
+      'SC-13': 'That is cryptography too weak for the use it is put to, which this control requires be chosen for each use and implemented.',
       'SI-11': 'That is the system emitting information that could be exploited, to a destination read by people the record was never for, which this control requires it not do.',
       'SA-3(2)': 'That is live data put to use outside production, which this control requires be approved, documented and controlled.',
       'IA-5(1)': 'That is a password sent over a channel with no cryptographic protection, which this control does not allow.',
@@ -291,7 +296,7 @@ const NIST_TO_COBIT = {
   'AC-6': 'DSS05.04', 'IA-5': 'DSS05.04',
   'IA-5(1)': 'DSS05.02', 'SC-7': 'DSS05.02', 'SC-8': 'DSS05.02',
   'SI-2': 'DSS05.07', 'CM-8': 'BAI09.01', 'CM-3': 'BAI06.01',
-  'SI-11': 'DSS06.06', 'SA-3(2)': 'BAI07.04',
+  'SI-11': 'DSS06.06', 'SA-3(2)': 'BAI07.04', 'SC-13': 'DSS06.06',
 };
 const toCobit = (table) => Object.fromEntries(Object.entries(table).map(([k, c]) => [k, NIST_TO_COBIT[c]]));
 FRAMEWORKS.cobit2019 = {

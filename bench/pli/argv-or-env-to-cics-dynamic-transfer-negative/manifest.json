@@ -1,0 +1,7 @@
+{
+  "id": "argv-or-env-to-cics-dynamic-transfer-negative",
+  "title": "Command-line parameter used for logging but fixed literal for CICS transfer",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": ["argv-or-env-to-cics-dynamic-transfer"]
+}

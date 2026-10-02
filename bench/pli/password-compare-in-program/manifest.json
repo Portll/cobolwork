@@ -1,0 +1,8 @@
+{
+  "id": "password-compare-in-program",
+  "title": "Program compares a user-supplied password against a stored copy retrieved from the database.",
+  "cwe": "CWE-256",
+  "expect": [
+    { "rule": "program-checks-stored-password", "file": "main.pli" }
+  ]
+}

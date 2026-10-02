@@ -1,0 +1,7 @@
+{
+  "id": "password-compare-in-program-negative",
+  "title": "Program delegates password verification to CICS VERIFY instead of comparing against a stored copy.",
+  "cwe": "CWE-256",
+  "expect": [],
+  "negativeFor": ["program-checks-stored-password"]
+}

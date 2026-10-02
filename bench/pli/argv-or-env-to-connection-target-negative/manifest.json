@@ -1,0 +1,7 @@
+{
+  "id": "argv-or-env-to-connection-target-negative",
+  "title": "Command-line argument is logged but does not specify the connection target",
+  "cwe": "CWE-99",
+  "expect": [],
+  "negativeFor": ["argv-or-env-to-connection-target"]
+}

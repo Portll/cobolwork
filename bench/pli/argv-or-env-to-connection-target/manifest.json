@@ -1,0 +1,11 @@
+{
+  "id": "argv-or-env-to-connection-target",
+  "title": "Command-line argument specifies the database connection target",
+  "cwe": "CWE-99",
+  "expect": [
+    {
+      "rule": "argv-or-env-to-connection-target",
+      "file": "MAIN.pli"
+    }
+  ]
+}

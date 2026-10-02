@@ -1,0 +1,11 @@
+{
+  "id": "argv-or-env-to-cics-dynamic-transfer",
+  "title": "Command-line parameter determines CICS dynamic transfer target",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "argv-or-env-to-cics-dynamic-transfer",
+      "file": "MAIN.pli"
+    }
+  ]
+}

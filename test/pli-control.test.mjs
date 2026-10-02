@@ -279,3 +279,23 @@ test('EXIT parses', () => {
   assert.equal(r.status, 'parsed');
   assert.equal(r.node.kind, 'EXIT');
 });
+
+test('DO LOOP with iterative specs parses', () => {
+  const r = parse(' DO LOOP = 100 TO 0 BY -1;');
+  assert.equal(r.status, 'parsed');
+  assert.equal(r.node.kind, 'DO');
+  assert.equal(r.node.form, 'iterative');
+  assert.equal(r.node.control.name, 'LOOP');
+  assert.equal(r.node.specs.length, 1);
+  assert.equal(r.node.specs[0].from.tree.t, 'num');
+  assert.equal(r.node.specs[0].to.tree.t, 'num');
+  assert.equal(r.node.specs[0].by.tree.op, 'prefix-');
+});
+
+test('LOOP, FOREVER and UNTIL followed by = are control variables', () => {
+  for (const name of ['LOOP', 'FOREVER', 'UNTIL']) {
+    const r = parse(` DO ${name} = 1 TO 10;`);
+    assert.equal(r.status, 'parsed', name);
+    assert.deepEqual([r.node.form, r.node.control.name], ['iterative', name]);
+  }
+});

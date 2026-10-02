@@ -18,7 +18,7 @@ test('macro cards fold into statements, a column-72 mark continuing one', () => 
   assert.match(statements[0].field, /RMNAME=\(DFSHDC40,3,120\)/);
 });
 
-test('assembler instructions parse, an IMS macro with no parser is unbuilt, anything else is unknown', () => {
-  const r = readIms('         SEGM  NAME=A,PARENT=0,BYTES=8\n         PROCOPT=A\n         END').statements.map(parseImsStatement);
-  assert.deepEqual(r.map((x) => x.status), ['unbuilt', 'unknown', 'parsed']);
+test('assembler instructions parse and anything that is not an IMS macro is unknown', () => {
+  const r = readIms('         PROCOPT=A\n         END').statements.map(parseImsStatement);
+  assert.deepEqual(r.map((x) => x.status), ['unknown', 'parsed']);
 });

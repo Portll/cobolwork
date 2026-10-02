@@ -293,7 +293,8 @@ A subscript, reference modification, loop bound or `OCCURS DEPENDING` count need
 range abend, U4038, where nines went in, with ones as the control. That run is of a copy with a
 `CBL SSRANGE` card before its first line.
 Anything else is unknown, with its reason. A run that did not carry the marker to the operation
-shows only that these inputs did not, so refuting a finding needs every route to its sink covered.
+shows only that these inputs did not, so refuting a finding needs every route to its sink covered
+(§9.8).
 `bench/seed.mjs` adds planted labels: a flaw or a near-miss put into a real program, labelled by
 construction, and whether the scan reported it.
 
@@ -344,3 +345,31 @@ A response code is not entered: the plan says to provoke the failure, such as a 
 test record, and read the code on its way back. A protected field is changed under CEDF in the data
 the `RECEIVE MAP` returns, not with a modified client. `test/verify.test.mjs` holds every path rule to
 a plan and every value to one no interpreter would run.
+
+### 9.8 Negatives from coverage
+
+A finding is refuted by coverage only where runs show that no value from its source reaches its
+operation. No such label is made yet: every coverage label is `unknown`, because four facts are
+missing.
+
+1. **Every route.** A finding names one route. The flow engine keeps the shortest route from each
+   source and merges the sources that reach one sink into one finding, counted in `sources`.
+   Refuting needs every route from every source, which the report does not carry.
+2. **Statements, in order.** `ironwork run --coverage` reports the paragraphs a run entered. An
+   entered paragraph does not show that the statement on the route ran, and statements run in
+   separate runs are not the route run end to end. Refuting needs one run that executed each route's
+   statements in order, with nothing writing the carried item between two of them.
+3. **Bytes carried unchanged.** The marker's absence at the operation means something only where
+   every step on the route copies bytes: a MOVE, a group, a REDEFINES, an argument passed or written
+   back. A step that converts, edits, inspects or computes changes the bytes, and the value that does
+   arrive no longer reads as the marker.
+4. **The marker everywhere the source writes.** As §9.6 feeds it: every DD and SYSIN through the
+   marker's eight alignments, and every unprotected field of a map.
+
+Where all four hold, the finding is refuted with source `coverage` and the run that showed it, and
+`bench/precision.mjs` counts it wrong, as it counts any refuted label. Fuzzed runs carry no marker:
+they show which paragraphs ran, never that a value failed to arrive.
+
+The facts need two additions. The flow engine would export every route of a finding. ironwork would
+record the statements a run executes, in order, and track which bytes came from the input through
+each step, so that absence at the operation means no input byte arrived whatever the steps did.

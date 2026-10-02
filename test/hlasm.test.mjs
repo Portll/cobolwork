@@ -60,6 +60,21 @@ test('a BMS map, an IMS definition and x86 source in a .asm file are told apart 
   assert.equal(readHlasm(asm(card('MAP1', 'DFHMSD', 'TYPE=MAP,LANG=COBOL'))).kind, 'bms');
   assert.equal(readHlasm(asm(card('', 'DBD', 'NAME=ACCT,ACCESS=HIDAM'), card('', 'SEGM', 'NAME=ROOT,BYTES=40'))).kind, 'ims');
   assert.equal(readHlasm('section .text\n    mov eax, 1\n    int 0x80\n').kind, 'unrecognised');
+  assert.equal(readHlasm('dnl  GMP for s390\nC\tUsing a multiplier held in r5\nPROLOGUE(mpn_mul_1)\n\tstm\t6,7,24(15)\n\tlm\t6,7,24(15)\n').kind, 'unrecognised',
+    'GNU assembler through m4, with s390 instructions and C comment lines, is not HLASM');
+});
+
+test('a length attribute opens no string, and a constant\'s quote still does', () => {
+  const r = readHlasm(asm(
+    card('LAB', 'CSECT'),
+    card('', 'MVC', "LINE+10(L'EMPNAME),EMPNAME"),
+    card('', 'EX', '1,MOVE'),
+    card('TAB1L3', 'DC', "A(100*L'TAB1)"),
+    card('NAME', 'DC', "CL8'L''X'"),
+    card('PI', 'DC', "D'3.14'"),
+  ));
+  assert.deepEqual(r.diags.filter((d) => d.sev === 'error'), []);
+  assert.deepEqual(r.operations.map((o) => [o.name, o.line]), [['EX', 3]]);
 });
 
 test('an operation in a macro definition is read as written, and its sections are not the file\'s', () => {

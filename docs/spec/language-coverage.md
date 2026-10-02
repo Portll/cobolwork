@@ -419,8 +419,13 @@ that no COBOL rule set would ever find. Treat them as first-class.
 **Built:** the reader (`lib/hlasm.mjs`, over `lib/bms.mjs`'s card folding), the cited table
 (`rules/hlasm-operations.json`) and the five rules below (`lib/sets/hlasm.mjs`); a job step running
 an assembler CSECT or ENTRY is a defined program. Definition of done 1, 3, 4 and 5 are met
-(`diag/hlasm-measure.mjs` names each file with card errors; bench cases 103 to 105). Item 2, z390
-assembling the corpus, is open.
+(`diag/hlasm-measure.mjs` names each file with card errors; bench cases 103 to 105). Item 2 is
+measured by `diag/hlasm-z390.mjs` with z390 1.8.4.4 over the 3,185-repository corpus: of 652 files
+read as HLASM, 106 are macro definitions and 546 were assembled with each repository's members as
+the macro and copy library. z390 assembled 276 (return code 0 or 4) in 105 repositories; every one
+reads with no card error, and the 96 files the reader reports card errors in are all among the 270
+z390 refused. Of the other 174 it refused, 134 need macros or copy members the repository does not
+hold (CICS, a site's own), and 40 have errors a card reader does not check.
 
 ### Scope, stated honestly
 

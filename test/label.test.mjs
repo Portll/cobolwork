@@ -46,6 +46,16 @@ test('a job\'s in-stream data is fed through its DD, and a program of more than 
   assert.equal(verifyEvidence(evidence).verified, true);
 });
 
+test('taint\'s answer at an operation the marker missed is recorded, and the finding stays unknown', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
+  const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
+  t.after(() => rmSync(evidence, { recursive: true, force: true }));
+  // The IF always overwrites WS-PGM in this program, which no run shows of every program like it.
+  const out = label(join(import.meta.dirname, 'fixtures', 'label', 'overwritten'), { ironwork: IRONWORK, evidence, traceInput: true });
+  assert.deepEqual(out.labels.map((l) => [l.rule, l.label, l.inputAtSink]), [['file-record-to-dynamic-program-load', 'unknown', false]]);
+  assert.deepEqual(out.inputAtSink, { true: 0, false: 1, null: 0 });
+  assert.equal(verifyEvidence(evidence).verified, true);
+});
+
 test('terminal input typed into a map reaches the log in the task the pseudo-conversation starts', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
   const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
   t.after(() => rmSync(evidence, { recursive: true, force: true }));

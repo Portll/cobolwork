@@ -370,7 +370,7 @@ what runs record today does not establish them.
    step that converts, edits, inspects or computes changes the bytes, and the value that does arrive
    no longer reads as the marker. `--trace-input` follows input bytes through such steps by taint: a
    sink record's `input` false says no input byte was in the operand in that run, and null says the
-   run did something taint does not follow, EXEC CICS among them (evidence.md §1.3).
+   run did something taint does not follow yet, which evidence.md §1.3 lists.
 4. **Input everywhere the source writes.** The marker reaches only where §9.6 feeds it: every DD and
    SYSIN through its eight alignments, and every unprotected field of a map. Taint counts every byte
    the source delivers.
@@ -390,10 +390,13 @@ these makes a sink false in one run only:
 - **An element a subscript chooses.** Where input steers a subscript's value through a condition,
   which taint does not follow, another input chooses the element that holds the value.
 
-Taint on each statement record would show the first two: the step after one that carried nothing,
-or after a source that delivered nothing, reads no input. It would show a write between two steps
-too, unless the later step reads input from another operand. A write between the last step and the
+Taint on each statement record would show the first two: the step after one that carried nothing, or
+after a source that delivered nothing, reads no input. It would show a write between two steps too,
+unless the later step reads input from another operand. A write between the last step and the
 operation, and an element chosen by a subscript, need an argument over every path, which no set of
-runs gives. Until that argument exists, no coverage label is `refuted`. If one were,
-`bench/precision.mjs` would count it wrong, as it counts any refuted label. Fuzzed runs carry no
-marker: they show which paragraphs ran, never that a value failed to arrive.
+runs gives. Until that argument exists, no coverage label is `refuted`. `bench/label.mjs
+--trace-input` records what taint found at an operation the marker missed, as `inputAtSink` on the
+unknown label and counted in the output's `inputAtSink`: the findings such an argument would have to
+settle. If one were refuted, `bench/precision.mjs` would count it wrong, as it counts any refuted
+label. Fuzzed runs carry no marker: they show which paragraphs ran, never that a value failed to
+arrive.

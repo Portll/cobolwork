@@ -6,7 +6,10 @@
 // that these inputs did not (docs/spec/reach.md §9.6; refuting needs coverage of every route).
 //
 //   node bench/label.mjs <repository | corpus-root> [--corpus] [--ironwork path] [--out file]
-//                        [--evidence dir] [--timeout ms]
+//                        [--evidence dir] [--timeout ms] [--trace-input]
+//
+// With --trace-input each run also follows input by taint, and an unknown label whose operation
+// ran says what taint found there in `inputAtSink`. No label is refuted on it (reach.md §9.8).
 //
 // ironwork only reads the repository: data sets and the journal go to temporary directories, and
 // the journals stay in --evidence (or a new temporary directory, named in the output), where
@@ -218,12 +221,16 @@ function compileOptions(ctx) {
   return out;
 }
 
+// What taint found over several answers: input where any found it, unknown where any could not
+// say, and none only where every one found none.
+const combined = (answers) => (answers.includes(true) ? true : answers.includes(null) ? null : false);
+
 // One run of one input variant, read back from its journal.
 function runVariant(f, ctx, variant) {
   const data = mkdtempSync(join(tmpdir(), 'cobolwork-label-run-'));
   try {
     const [command, program, ...rest] = variant.args(data);
-    const args = [command, program, ...libraries(ctx), ...rest, '--evidence', ctx.evidence, '--trace-marker', MARKER, '--clock', '2026-01-01T00:00:00'];
+    const args = [command, program, ...libraries(ctx), ...rest, '--evidence', ctx.evidence, '--trace-marker', MARKER, ...(ctx.traceInput ? ['--trace-input'] : []), '--clock', '2026-01-01T00:00:00'];
     const r = spawnSync(ctx.ironwork, args, { cwd: data, encoding: 'utf8', timeout: ctx.timeout, maxBuffer: 1 << 22, stdio: ['ignore', 'ignore', 'pipe'] });
     if (r.error) return { outcome: r.error.code === 'ETIMEDOUT' ? `no end in ${ctx.timeout / 1000}s` : r.error.message };
     let journal;
@@ -240,6 +247,7 @@ function runVariant(f, ctx, variant) {
       run: journal.run,
       reached: at.some((x) => x.reached),
       atSink: at.length > 0,
+      input: combined(at.map((x) => x.input ?? null)),
       ran: true,
       abend: abend ? `${abend.code}${abend.line ? ` at ${abend.file || basename(ctx.program)}:${lineOf(abend)}` : ''}` : null,
       abendAtOperation: atOperation ? abend.code : null,
@@ -297,7 +305,8 @@ export function labelFinding(f, root, opts) {
     : seen.some((r) => r.atSink) ? 'the operation ran without the marker in its operand'
     : seen.find((r) => r.abend) ? `the run ended before the operation: ABEND ${seen.find((r) => r.abend).abend}`
       : 'the run did not reach the operation';
-  return { ...unknown(why), runs: seen.map((r) => r.run) };
+  const atSink = seen.filter((r) => r.atSink);
+  return { ...unknown(why), runs: seen.map((r) => r.run), ...(opts.traceInput && atSink.length ? { inputAtSink: combined(atSink.map((r) => r.input)) } : {}) };
 }
 
 // The repository's BMS mapsets by name, and the directories that hold them, which ironwork reads
@@ -340,7 +349,7 @@ export function label(given, opts = {}) {
   const target = resolve(given);
   const evidence = opts.evidence || mkdtempSync(join(tmpdir(), 'cobolwork-label-evidence-'));
   mkdirSync(evidence, { recursive: true });
-  const run = { ironwork: opts.ironwork || 'ironwork', timeout: opts.timeout || 20000, evidence: resolve(evidence), checked: new Map() };
+  const run = { ironwork: opts.ironwork || 'ironwork', timeout: opts.timeout || 20000, evidence: resolve(evidence), checked: new Map(), traceInput: opts.traceInput === true };
   const repos = opts.corpus ? readdirSync(target, { withFileTypes: true }).filter((d) => d.isDirectory() && !d.name.startsWith('.')).map((d) => join(target, d.name)).sort() : [target];
   const labels = [];
   const incomplete = [];
@@ -354,7 +363,8 @@ export function label(given, opts = {}) {
     const r = (byRule[l.rule] ??= { confirmed: 0, unknown: 0 });
     r[l.label]++;
   }
-  return { tool: 'cobolwork-label', marker: MARKER, evidence: run.evidence, byRule, incomplete, labels };
+  const inputAtSink = run.traceInput ? Object.fromEntries([true, false, null].map((v) => [String(v), labels.filter((l) => l.inputAtSink === v).length])) : undefined;
+  return { tool: 'cobolwork-label', marker: MARKER, evidence: run.evidence, byRule, ...(inputAtSink ? { inputAtSink } : {}), incomplete, labels };
 }
 
 function main(argv) {
@@ -367,10 +377,11 @@ function main(argv) {
     else if (a === '--out') opts.out = argv[++i];
     else if (a === '--evidence') opts.evidence = argv[++i];
     else if (a === '--timeout') opts.timeout = Number(argv[++i]);
+    else if (a === '--trace-input') opts.traceInput = true;
     else target = a;
   }
   if (!target) {
-    process.stderr.write('usage: node bench/label.mjs <repository | corpus-root> [--corpus] [--ironwork path] [--out file] [--evidence dir] [--timeout ms]\n');
+    process.stderr.write('usage: node bench/label.mjs <repository | corpus-root> [--corpus] [--ironwork path] [--out file] [--evidence dir] [--timeout ms] [--trace-input]\n');
     return 2;
   }
   const out = label(target, opts);

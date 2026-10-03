@@ -90,6 +90,13 @@ test('a lone comma in the operand field of an assembler instruction is no operan
   assert.equal(parse('         EJECT 1').status, 'unparsed');
 });
 
+test('an EXEC statement keeps the words after EXEC, blanks and continuation cards included', () => {
+  const src = [`${'         EXEC SQL UPDATE DEPT SET MGRNO = :MGR WHERE'.padEnd(71)}X`, '               DEPTNO = :DEPT'].join('\n');
+  const [st] = readHlasmStatements(src).statements;
+  assert.equal(st.field, 'SQL UPDATE DEPT SET MGRNO = :MGR WHERE DEPTNO = :DEPT');
+  assert.equal(parseHlasmStatement(st).kind, 'EXEC SQL');
+});
+
 test('an operation that is no name is unknown, and any other macro call is split into its operands', () => {
   assert.equal(parse('         LENGTH(218)').status, 'unknown');
   const r = parse("         MYMAC  A,,KEY=(X,Y),MSG='HI'");

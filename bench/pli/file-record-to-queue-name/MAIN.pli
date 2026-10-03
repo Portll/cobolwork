@@ -1,0 +1,16 @@
+ /* A queue name read from a control file names the TS queue the
+    program writes to. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL 1 CTLREC,
+       2 CTLKEY CHAR(8),
+       2 QUEUENM CHAR(8),
+       2 FILLER CHAR(64);
+   DCL KEY CHAR(8) INIT('AUDIT');
+   DCL QNAME CHAR(8);
+   DCL MSG CHAR(80) INIT('ORDER ACCEPTED');
+
+   EXEC CICS READ FILE('CONTROL') INTO(CTLREC) RIDFLD(KEY);
+   QNAME = CTLREC.QUEUENM;
+   EXEC CICS WRITEQ TS QUEUE(QNAME) FROM(MSG);
+   EXEC CICS RETURN;
+ END MAIN;

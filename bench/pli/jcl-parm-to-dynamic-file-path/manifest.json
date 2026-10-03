@@ -1,0 +1,11 @@
+{
+  "id": "jcl-parm-to-dynamic-file-path",
+  "title": "A job step's PARM is the TITLE the report file is opened with",
+  "cwe": "CWE-73",
+  "expect": [
+    {
+      "rule": "jcl-parm-to-dynamic-file-path",
+      "file": "MAIN.pli"
+    }
+  ]
+}

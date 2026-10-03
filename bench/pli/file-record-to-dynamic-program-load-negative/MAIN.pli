@@ -1,0 +1,13 @@
+ /* The module fetched is the entry constant itself; the control record
+    is only passed to it. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL CTLIN FILE RECORD INPUT;
+   DCL CTLREC CHAR(80);
+   DCL USEREXIT ENTRY(CHAR(80));
+
+   OPEN FILE(CTLIN);
+   READ FILE(CTLIN) INTO(CTLREC);
+   CLOSE FILE(CTLIN);
+   FETCH USEREXIT;
+   CALL USEREXIT(CTLREC);
+ END MAIN;

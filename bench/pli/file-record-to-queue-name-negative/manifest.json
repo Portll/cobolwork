@@ -1,0 +1,9 @@
+{
+  "id": "file-record-to-queue-name-negative",
+  "title": "A control record only decides whether the entry is written; EXEC CICS WRITEQ names a literal TS queue",
+  "cwe": "CWE-99",
+  "expect": [],
+  "negativeFor": [
+    "file-record-to-queue-name"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "file-record-to-dynamic-file-path-negative",
+  "title": "The report file is opened under its declared name; the control record only supplies its heading",
+  "cwe": "CWE-73",
+  "expect": [],
+  "negativeFor": [
+    "file-record-to-dynamic-file-path"
+  ]
+}

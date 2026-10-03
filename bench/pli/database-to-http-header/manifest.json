@@ -1,0 +1,11 @@
+{
+  "id": "database-to-http-header",
+  "title": "A customer name read from Db2 is the value of a header EXEC CICS WEB WRITE HTTPHEADER adds to the response",
+  "cwe": "CWE-113",
+  "expect": [
+    {
+      "rule": "database-to-http-header",
+      "file": "MAIN.pli"
+    }
+  ]
+}

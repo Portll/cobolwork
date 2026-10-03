@@ -1,0 +1,9 @@
+{
+  "id": "jcl-instream-to-cics-dynamic-transfer-negative",
+  "title": "The EXCI link names a literal program; the in-stream SYSIN card is only passed in the COMMAREA",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": [
+    "jcl-instream-to-cics-dynamic-transfer"
+  ]
+}

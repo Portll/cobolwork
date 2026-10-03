@@ -1,0 +1,9 @@
+{
+  "id": "database-to-queue-name-negative",
+  "title": "The TS queue is named by a literal; the value read from Db2 is only the data written to it",
+  "cwe": "CWE-99",
+  "expect": [],
+  "negativeFor": [
+    "database-to-queue-name"
+  ]
+}

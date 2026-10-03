@@ -1,0 +1,9 @@
+{
+  "id": "file-record-to-http-header-negative",
+  "title": "A settings record only decides whether a header with a constant value is sent",
+  "cwe": "CWE-113",
+  "expect": [],
+  "negativeFor": [
+    "file-record-to-http-header"
+  ]
+}

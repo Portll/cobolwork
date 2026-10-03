@@ -1,0 +1,9 @@
+{
+  "id": "jcl-instream-to-dynamic-program-load-negative",
+  "title": "The module fetched is named by its entry constant; the in-stream SYSIN card is only an argument to it",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": [
+    "jcl-instream-to-dynamic-program-load"
+  ]
+}

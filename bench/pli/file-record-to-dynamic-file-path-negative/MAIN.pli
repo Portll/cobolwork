@@ -1,0 +1,18 @@
+ /* The report file is opened under its own name; the control record
+    only supplies the heading written to it. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL CTLIN FILE RECORD INPUT;
+   DCL REPORT FILE RECORD OUTPUT;
+   DCL 1 CTLREC,
+       2 HEADING CHAR(40),
+       2 FILLER CHAR(40);
+   DCL OUTLINE CHAR(80);
+
+   OPEN FILE(CTLIN);
+   READ FILE(CTLIN) INTO(CTLREC);
+   CLOSE FILE(CTLIN);
+   OUTLINE = CTLREC.HEADING;
+   OPEN FILE(REPORT);
+   WRITE FILE(REPORT) FROM(OUTLINE);
+   CLOSE FILE(REPORT);
+ END MAIN;

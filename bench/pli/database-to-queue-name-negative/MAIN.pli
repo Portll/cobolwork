@@ -1,0 +1,15 @@
+ /* The TS queue is named by a constant; the value read from Db2 is
+    only what is written to it. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL DEPT CHAR(4) INIT('D100');
+   DCL MSG CHAR(80);
+   EXEC SQL INCLUDE SQLCA;
+
+   EXEC SQL SELECT ORDER_NOTE INTO :MSG
+            FROM DEPARTMENTS WHERE DEPT_ID = :DEPT;
+   IF SQLCODE ^= 0 THEN DO;
+     EXEC CICS RETURN;
+   END;
+   EXEC CICS WRITEQ TS QUEUE('ORDERQ') FROM(MSG);
+   EXEC CICS RETURN;
+ END MAIN;

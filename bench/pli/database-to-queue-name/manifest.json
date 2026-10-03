@@ -1,0 +1,11 @@
+{
+  "id": "database-to-queue-name",
+  "title": "A queue name read from Db2 names the TS queue EXEC CICS WRITEQ writes to",
+  "cwe": "CWE-99",
+  "expect": [
+    {
+      "rule": "database-to-queue-name",
+      "file": "MAIN.pli"
+    }
+  ]
+}

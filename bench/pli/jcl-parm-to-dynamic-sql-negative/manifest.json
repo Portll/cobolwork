@@ -1,0 +1,9 @@
+{
+  "id": "jcl-parm-to-dynamic-sql-negative",
+  "title": "The parameter a job's DSN RUN passes is given to the prepared statement through a parameter marker",
+  "cwe": "CWE-89",
+  "expect": [],
+  "negativeFor": [
+    "jcl-parm-to-dynamic-sql"
+  ]
+}

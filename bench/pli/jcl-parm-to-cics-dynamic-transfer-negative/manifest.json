@@ -1,0 +1,9 @@
+{
+  "id": "jcl-parm-to-cics-dynamic-transfer-negative",
+  "title": "A job step's PARM only switches tracing; the EXCI link names a literal program",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": [
+    "jcl-parm-to-cics-dynamic-transfer"
+  ]
+}

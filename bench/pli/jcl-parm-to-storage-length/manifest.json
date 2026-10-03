@@ -1,0 +1,11 @@
+{
+  "id": "jcl-parm-to-storage-length",
+  "title": "A job step's PARM is the size of the heap storage CALL CEEGTST acquires",
+  "cwe": "CWE-770",
+  "expect": [
+    {
+      "rule": "jcl-parm-to-storage-length",
+      "file": "MAIN.pli"
+    }
+  ]
+}

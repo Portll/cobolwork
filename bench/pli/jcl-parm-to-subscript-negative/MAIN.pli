@@ -1,0 +1,14 @@
+ /* The job step's PARM only switches tracing; the rate table entry is
+    fixed. */
+ MAIN: PROCEDURE (PARM) OPTIONS(MAIN);
+   DCL PARM CHAR(100) VARYING;
+   DCL RATES(12) FIXED DEC(7,4) INIT(
+       1.25, 1.50, 1.75, 2.00, 2.25, 2.50,
+       2.75, 3.00, 3.25, 3.50, 3.75, 4.00);
+   DCL IX FIXED BIN(31) INIT(9);
+   DCL R FIXED DEC(7,4);
+
+   IF PARM = 'TRACE' THEN PUT SKIP LIST('TRACE ON');
+   R = RATES(IX);
+   PUT SKIP LIST('RATE', IX, R);
+ END MAIN;

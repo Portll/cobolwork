@@ -1,0 +1,11 @@
+{
+  "id": "file-record-to-dynamic-file-path",
+  "title": "A name read from a control record is the TITLE the report file is opened with",
+  "cwe": "CWE-73",
+  "expect": [
+    {
+      "rule": "file-record-to-dynamic-file-path",
+      "file": "MAIN.pli"
+    }
+  ]
+}

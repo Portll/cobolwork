@@ -1,0 +1,11 @@
+{
+  "id": "jcl-instream-to-dynamic-program-load",
+  "title": "A module name in a job's in-stream SYSIN decides which module FETCH TITLE loads and the program calls",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "jcl-instream-to-dynamic-program-load",
+      "file": "MAIN.pli"
+    }
+  ]
+}

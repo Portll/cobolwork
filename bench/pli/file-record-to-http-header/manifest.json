@@ -1,0 +1,11 @@
+{
+  "id": "file-record-to-http-header",
+  "title": "A value read from a VSAM settings file is the value of a header EXEC CICS WEB WRITE HTTPHEADER adds to the response",
+  "cwe": "CWE-113",
+  "expect": [
+    {
+      "rule": "file-record-to-http-header",
+      "file": "MAIN.pli"
+    }
+  ]
+}

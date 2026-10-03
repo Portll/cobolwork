@@ -1,0 +1,9 @@
+{
+  "id": "jcl-parm-to-subscript-negative",
+  "title": "A job step's PARM only switches tracing; the subscript is a constant",
+  "cwe": "CWE-129",
+  "expect": [],
+  "negativeFor": [
+    "jcl-parm-to-subscript"
+  ]
+}

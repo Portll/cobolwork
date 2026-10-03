@@ -1,0 +1,11 @@
+{
+  "id": "jcl-instream-to-reference-modification",
+  "title": "A start position in a job's in-stream SYSIN decides, unchecked, where a SUBSTR reference starts",
+  "cwe": "CWE-1285",
+  "expect": [
+    {
+      "rule": "jcl-instream-to-reference-modification",
+      "file": "MAIN.pli"
+    }
+  ]
+}

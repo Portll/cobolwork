@@ -1,0 +1,9 @@
+{
+  "id": "file-record-to-outbound-host-negative",
+  "title": "A partner record only decides whether the request is made; EXEC CICS WEB OPEN names a literal host",
+  "cwe": "CWE-918",
+  "expect": [],
+  "negativeFor": [
+    "file-record-to-outbound-host"
+  ]
+}

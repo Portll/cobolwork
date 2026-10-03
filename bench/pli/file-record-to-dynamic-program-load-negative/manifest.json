@@ -1,0 +1,9 @@
+{
+  "id": "file-record-to-dynamic-program-load-negative",
+  "title": "The module fetched is named by its entry constant; the control record is only an argument to it",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": [
+    "file-record-to-dynamic-program-load"
+  ]
+}

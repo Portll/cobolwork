@@ -1,0 +1,11 @@
+{
+  "id": "jcl-parm-to-subscript",
+  "title": "A job step's PARM is used, unchecked, as a table subscript",
+  "cwe": "CWE-129",
+  "expect": [
+    {
+      "rule": "jcl-parm-to-subscript",
+      "file": "MAIN.pli"
+    }
+  ]
+}

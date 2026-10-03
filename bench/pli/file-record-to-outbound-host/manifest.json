@@ -1,0 +1,11 @@
+{
+  "id": "file-record-to-outbound-host",
+  "title": "A host name read from a VSAM partner file is the host EXEC CICS WEB OPEN connects to",
+  "cwe": "CWE-918",
+  "expect": [
+    {
+      "rule": "file-record-to-outbound-host",
+      "file": "MAIN.pli"
+    }
+  ]
+}

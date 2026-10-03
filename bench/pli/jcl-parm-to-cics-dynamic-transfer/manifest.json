@@ -1,0 +1,11 @@
+{
+  "id": "jcl-parm-to-cics-dynamic-transfer",
+  "title": "A job step's PARM names the CICS program the batch step links to through EXCI",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "jcl-parm-to-cics-dynamic-transfer",
+      "file": "MAIN.pli"
+    }
+  ]
+}

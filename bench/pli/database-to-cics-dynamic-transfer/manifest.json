@@ -1,0 +1,11 @@
+{
+  "id": "database-to-cics-dynamic-transfer",
+  "title": "A program name read from a Db2 table is the program EXEC CICS LINK transfers to",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "database-to-cics-dynamic-transfer",
+      "file": "MAIN.pli"
+    }
+  ]
+}

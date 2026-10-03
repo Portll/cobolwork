@@ -1,0 +1,9 @@
+{
+  "id": "jcl-parm-to-dynamic-file-path-negative",
+  "title": "A job step's PARM only switches tracing; the report file is opened under its declared name",
+  "cwe": "CWE-73",
+  "expect": [],
+  "negativeFor": [
+    "jcl-parm-to-dynamic-file-path"
+  ]
+}

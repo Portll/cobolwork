@@ -1,0 +1,16 @@
+ /* The control record only decides whether the audit entry is
+    written; the TS queue is named by a constant. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL 1 CTLREC,
+       2 CTLKEY CHAR(8),
+       2 AUDITON CHAR(1),
+       2 FILLER CHAR(71);
+   DCL KEY CHAR(8) INIT('AUDIT');
+   DCL MSG CHAR(80) INIT('ORDER ACCEPTED');
+
+   EXEC CICS READ FILE('CONTROL') INTO(CTLREC) RIDFLD(KEY);
+   IF CTLREC.AUDITON = 'Y' THEN DO;
+     EXEC CICS WRITEQ TS QUEUE('AUDITQ') FROM(MSG);
+   END;
+   EXEC CICS RETURN;
+ END MAIN;

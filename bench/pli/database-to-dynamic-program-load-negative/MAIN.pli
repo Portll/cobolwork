@@ -1,0 +1,14 @@
+ /* The module fetched is the entry constant itself; the Db2 value is
+    only passed to it. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL REGION CHAR(4) INIT('EAST');
+   DCL RATECODE CHAR(8);
+   DCL RATECALC ENTRY(CHAR(8));
+   EXEC SQL INCLUDE SQLCA;
+
+   EXEC SQL SELECT RATE_CODE INTO :RATECODE
+            FROM REGIONS WHERE REGION_ID = :REGION;
+   IF SQLCODE ^= 0 THEN RETURN;
+   FETCH RATECALC;
+   CALL RATECALC(RATECODE);
+ END MAIN;

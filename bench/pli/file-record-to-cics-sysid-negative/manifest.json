@@ -1,0 +1,9 @@
+{
+  "id": "file-record-to-cics-sysid-negative",
+  "title": "The LINK names a literal SYSID; the routing record is only passed in the COMMAREA",
+  "cwe": "CWE-15",
+  "expect": [],
+  "negativeFor": [
+    "file-record-to-cics-sysid"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "database-to-dynamic-program-load",
+  "title": "A module name read from a Db2 table decides which module FETCH TITLE loads and the program calls",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "database-to-dynamic-program-load",
+      "file": "MAIN.pli"
+    }
+  ]
+}

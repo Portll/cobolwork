@@ -1,0 +1,11 @@
+{
+  "id": "jcl-instream-to-dynamic-sql",
+  "title": "An account number in a job's in-stream SYSIN is concatenated into a statement that is prepared and executed",
+  "cwe": "CWE-89",
+  "expect": [
+    {
+      "rule": "jcl-instream-to-dynamic-sql",
+      "file": "MAIN.pli"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "database-to-http-header-negative",
+  "title": "The response header carries a constant; the name read from Db2 is sent only in the plain-text body",
+  "cwe": "CWE-113",
+  "expect": [],
+  "negativeFor": [
+    "database-to-http-header"
+  ]
+}

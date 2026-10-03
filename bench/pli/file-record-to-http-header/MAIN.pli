@@ -1,0 +1,20 @@
+ /* A value read from a settings file is written into a header of the
+    web response. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL 1 SETREC,
+       2 SETKEY CHAR(8),
+       2 SETVAL CHAR(64),
+       2 FILLER CHAR(8);
+   DCL KEY CHAR(8) INIT('CORSORIG');
+   DCL HDRNAME CHAR(27) INIT('Access-Control-Allow-Origin');
+   DCL HDRVAL CHAR(64);
+   DCL BODY CHAR(2) INIT('OK');
+
+   EXEC CICS READ FILE('SETTINGS') INTO(SETREC) RIDFLD(KEY);
+   HDRVAL = SETREC.SETVAL;
+   EXEC CICS WEB WRITE HTTPHEADER(HDRNAME) NAMELENGTH(27)
+             VALUE(HDRVAL) VALUELENGTH(64);
+   EXEC CICS WEB SEND FROM(BODY) FROMLENGTH(2)
+             MEDIATYPE('text/plain');
+   EXEC CICS RETURN;
+ END MAIN;

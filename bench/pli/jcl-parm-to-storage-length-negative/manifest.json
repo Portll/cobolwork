@@ -1,0 +1,9 @@
+{
+  "id": "jcl-parm-to-storage-length-negative",
+  "title": "A job step's PARM only switches tracing; CEEGTST is given a constant size",
+  "cwe": "CWE-770",
+  "expect": [],
+  "negativeFor": [
+    "jcl-parm-to-storage-length"
+  ]
+}

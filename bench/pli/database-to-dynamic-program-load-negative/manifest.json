@@ -1,0 +1,9 @@
+{
+  "id": "database-to-dynamic-program-load-negative",
+  "title": "The module fetched is named by its entry constant; the Db2 value is only an argument to it",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": [
+    "database-to-dynamic-program-load"
+  ]
+}

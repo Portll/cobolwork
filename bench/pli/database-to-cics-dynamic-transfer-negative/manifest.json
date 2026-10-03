@@ -1,0 +1,9 @@
+{
+  "id": "database-to-cics-dynamic-transfer-negative",
+  "title": "A code read from Db2 chooses between two program names the program holds as constants",
+  "cwe": "CWE-470",
+  "expect": [],
+  "negativeFor": [
+    "database-to-cics-dynamic-transfer"
+  ]
+}

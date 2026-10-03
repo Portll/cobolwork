@@ -1,0 +1,9 @@
+{
+  "id": "jcl-instream-to-connection-target-negative",
+  "title": "The in-stream SYSIN card only switches tracing; the Db2 location is a constant",
+  "cwe": "CWE-99",
+  "expect": [],
+  "negativeFor": [
+    "jcl-instream-to-connection-target"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "jcl-instream-to-dynamic-sql-negative",
+  "title": "The in-stream account number is passed to the prepared statement through a parameter marker",
+  "cwe": "CWE-89",
+  "expect": [],
+  "negativeFor": [
+    "jcl-instream-to-dynamic-sql"
+  ]
+}

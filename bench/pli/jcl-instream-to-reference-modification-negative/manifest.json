@@ -1,0 +1,9 @@
+{
+  "id": "jcl-instream-to-reference-modification-negative",
+  "title": "The in-stream SYSIN card only switches tracing; the SUBSTR start position is a constant",
+  "cwe": "CWE-1285",
+  "expect": [],
+  "negativeFor": [
+    "jcl-instream-to-reference-modification"
+  ]
+}

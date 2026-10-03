@@ -1,0 +1,21 @@
+ /* The settings record only decides whether the header is sent; its
+    value is a constant. */
+ MAIN: PROCEDURE OPTIONS(MAIN);
+   DCL 1 SETREC,
+       2 SETKEY CHAR(8),
+       2 ENABLED CHAR(1),
+       2 FILLER CHAR(71);
+   DCL KEY CHAR(8) INIT('NOCACHE');
+   DCL HDRNAME CHAR(13) INIT('Cache-Control');
+   DCL HDRVAL CHAR(8) INIT('no-store');
+   DCL BODY CHAR(2) INIT('OK');
+
+   EXEC CICS READ FILE('SETTINGS') INTO(SETREC) RIDFLD(KEY);
+   IF SETREC.ENABLED = 'Y' THEN DO;
+     EXEC CICS WEB WRITE HTTPHEADER(HDRNAME) NAMELENGTH(13)
+               VALUE(HDRVAL) VALUELENGTH(8);
+   END;
+   EXEC CICS WEB SEND FROM(BODY) FROMLENGTH(2)
+             MEDIATYPE('text/plain');
+   EXEC CICS RETURN;
+ END MAIN;

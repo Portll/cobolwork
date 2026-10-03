@@ -1,0 +1,11 @@
+{
+  "id": "file-record-to-dynamic-program-load",
+  "title": "A module name read from a control record decides which module FETCH TITLE loads and the program calls",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "file-record-to-dynamic-program-load",
+      "file": "MAIN.pli"
+    }
+  ]
+}

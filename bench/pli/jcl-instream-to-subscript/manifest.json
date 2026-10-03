@@ -1,0 +1,11 @@
+{
+  "id": "jcl-instream-to-subscript",
+  "title": "A month number in a job's in-stream SYSIN is used, unchecked, as a table subscript",
+  "cwe": "CWE-129",
+  "expect": [
+    {
+      "rule": "jcl-instream-to-subscript",
+      "file": "MAIN.pli"
+    }
+  ]
+}

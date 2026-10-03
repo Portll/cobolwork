@@ -1,0 +1,11 @@
+{
+  "id": "file-record-to-cics-sysid",
+  "title": "A region id read from a VSAM routing file is the SYSID an EXEC CICS LINK is shipped to",
+  "cwe": "CWE-15",
+  "expect": [
+    {
+      "rule": "file-record-to-cics-sysid",
+      "file": "MAIN.pli"
+    }
+  ]
+}

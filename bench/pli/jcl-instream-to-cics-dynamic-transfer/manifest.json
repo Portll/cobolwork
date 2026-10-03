@@ -1,0 +1,11 @@
+{
+  "id": "jcl-instream-to-cics-dynamic-transfer",
+  "title": "A program name in a job's in-stream SYSIN is the CICS program the batch step links to through EXCI",
+  "cwe": "CWE-470",
+  "expect": [
+    {
+      "rule": "jcl-instream-to-cics-dynamic-transfer",
+      "file": "MAIN.pli"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ test/fixtures/credentials/positive/auth.cpy:cobol-value-credential:1
 test/fixtures/credentials/positive/auth.cpy:cobol-value-credential:2
 test/fixtures/credentials/positive/auth.cpy:cobol-value-credential:4
 test/fixtures/credentials/positive/auth.cpy:cobol-value-credential:5
+test/fixtures/credentials/positive/auth.cpy:cobol-value-credential:7
 test/fixtures/credentials/positive/login.cbl:cobol-value-credential:5
 test/fixtures/credentials/positive/login.cbl:cobol-value-credential:6
 test/fixtures/credentials/positive/login.cbl:embedded-sql-connect-password:8

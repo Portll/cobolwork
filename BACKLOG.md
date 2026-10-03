@@ -659,11 +659,13 @@ only one of the five that does.
   `VALUE` sits on the next line, and one `CONNECT ... USING`. Betterleaks' `generic-password` and
   `generic-api-key` report none of them; on COBOL files `generic-password` reports field names as
   values. The TSO, RACF and CICS rules are not in it: the corpus holds no instance of them.
-  `rules/gitleaks-mainframe.toml` also reports forms the pull request does not yet: a JCL password
-  in apostrophes, a password phrase, a new password in apostrophes, and a hexadecimal or continued
-  COBOL `VALUE`; it skips a COBOL line with `/` in column 7, a comment the pull request reads as
-  code. Each form is from IBM's manuals, not the corpus, which holds none of them: the extended
-  file reports the same 23. The session that owns the pull request has them to port.
+  Both the pull request (fb2ea8b) and `rules/gitleaks-mainframe.toml` read a JCL password in
+  apostrophes, a password phrase, a new password in apostrophes, a hexadecimal, national, DBCS,
+  null-terminated, UTF-8 or continued COBOL `VALUE`, and a debugging line (`D` in column 7); they
+  skip a line with `/` in column 7 and a hexadecimal value under four bytes. Each form is from
+  IBM's manuals, not the corpus, which holds none of them: the count stays 23 under both
+  Betterleaks and gitleaks. Betterleaks gives a multi-line `VALUE` the data name's line, gitleaks
+  the `VALUE` line.
 - **A gcobol patch is ready to send to GCC, and has not been sent.** In gcobol 16, FUNCTION
   DISPLAY-OF crashes the compiler, and FUNCTION NATIONAL-OF compiles but does not link, because
   libgcobol has no `__gg__national_of`. The patch reports both as unimplemented and accepts

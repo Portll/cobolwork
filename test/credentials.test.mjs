@@ -29,6 +29,7 @@ test('planted mainframe credentials are all found', { skip: have ? false : 'gitl
   assert.deepEqual(found, [
     'auth.cpy:1:cobol-value-credential', 'auth.cpy:2:cobol-value-credential',
     'auth.cpy:4:cobol-value-credential', 'auth.cpy:5:cobol-value-credential',
+    'auth.cpy:7:cobol-value-credential',
     'login.cbl:10:cics-new-password', 'login.cbl:10:cics-signon-password',
     'login.cbl:12:embedded-sql-connect-password',
     'login.cbl:5:cobol-value-credential', 'login.cbl:6:cobol-value-credential',

@@ -58,17 +58,19 @@ keywords = ["password(", "phrase("]
 [rules.allowlist]
 regexes = ['''(?i)^(?:x+|\*+|y+|n+|pass|passw(?:or)?d?|pwd|secret|dummy|changeme|password|newpass(?:word)?|oldpass(?:word)?|(?:your[-_ ]?)?pass(?:word)?[-_ ]?phrase)$''']
 
-# Column 7 holds the indicator: '*' and '/' make the line a comment. A literal that runs to the end
-# of its line is continued on the next, so the first part is enough to report it.
+# Column 7 holds the indicator: '*' and '/' make the line a comment, and 'D' a debugging line, which
+# is still source. A literal that runs to the end of its line is continued on the next, so the first
+# part is enough to report it. A hexadecimal value under four bytes is a flag, and one byte repeated
+# is a fill.
 [[rules]]
 id = "cobol-value-credential"
 description = "COBOL data item named for a credential with a literal VALUE"
-regex = '''(?im)^(?:[^*\n]{0,6}|[^*\n]{6}[^*/\n])\s*\b(?:0?[1-9]|[1-4][0-9]|77)\s+[A-Z0-9-]*(?:PASSWORD|PASSWD|PASSWRD|PSWD|PWD|SECRET|APIKEY|API-KEY|ACCESS-KEY|(?:API|ACCESS|AUTH|BEARER|OAUTH|REFRESH)-?TOKEN)[A-Z0-9-]*\b[^.]*?\bVALUES?\s+(?:IS\s+|ARE\s+)?(?:NX|UX|[XNGZU])?(?:'([^'\n]{1,})(?:'|$)|"([^"\n]{1,})(?:"|$))'''
+regex = '''(?im)^(?:(?:[^*\n]{0,6}|[^*\n]{6}[^*/\n])\s*\b|[^*\n]{6}[Dd])(?:0?[1-9]|[1-4][0-9]|77)\s+[A-Z0-9-]*(?:PASSWORD|PASSWD|PASSWRD|PSWD|PWD|SECRET|APIKEY|API-KEY|ACCESS-KEY|(?:API|ACCESS|AUTH|BEARER|OAUTH|REFRESH)-?TOKEN)[A-Z0-9-]*\b[^.]*?\bVALUES?\s+(?:IS\s+|ARE\s+)?(?:NX|UX|[XNGZU])?(?:'([^'\n]{1,})(?:'|$)|"([^"\n]{1,})(?:"|$))'''
 keywords = ["password", "passwd", "passwrd", "pswd", "pwd", "secret", "apikey", "api-key", "access-key", "token"]
 path = '''(?i)\.(?:cbl|cob|cobol|cpy|copy|sqb|pco|ccp)$'''
 [rules.allowlist]
 regexTarget = "match"
-regexes = ['''(?i)VALUES?\s+(?:IS\s+|ARE\s+)?(?:NX|UX|[XNGZU])?['"](?:x+|\*+|\s+|y|n|yes|no|true|false|on|off|[01]|pass(?:word)?|secret|dummy|changeme|password:?|enter[^'"]*|invalid[^'"]*|wrong[^'"]*|[^'"]*\S\s+\S[^'"]*)(?:['"]|$)''', '''(?i)VALUES?\s+(?:IS\s+|ARE\s+)?(?:NX|UX|X)['"](?:0+|(?:40)+|(?:20)+|F+|(?:F0)+)['"]''']
+regexes = ['''(?i)VALUES?\s+(?:IS\s+|ARE\s+)?(?:NX|UX|[XNGZU])?['"](?:x+|\*+|\s+|y|n|yes|no|true|false|on|off|[01]|pass(?:word)?|secret|dummy|changeme|password:?|enter[^'"]*|invalid[^'"]*|wrong[^'"]*|[^'"]*\S\s+\S[^'"]*)(?:['"]|$)''', '''(?i)VALUES?\s+(?:IS\s+|ARE\s+)?(?:NX|UX|X)['"](?:[0-9A-F]{1,7}|0+|(?:40)+|(?:20)+|F+|(?:F0)+)['"]''']
 
 [[rules]]
 id = "embedded-sql-connect-password"

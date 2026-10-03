@@ -7,11 +7,12 @@ title = "commitwork mainframe credential rules"
 useDefault = false
 
 # A rule with two capture groups and no secretGroup reports whichever group matched: a password
-# written plain, or one in apostrophes, which a password phrase or a special character needs.
+# written plain, or one in apostrophes, which a password phrase or a special character needs. A value
+# in apostrophes that reaches column 71 continues on the next statement, so its first part is reported.
 [[rules]]
 id = "jcl-racf-password"
 description = "RACF password or password phrase in a JCL statement (JOB card, EXEC PARM or DD)"
-regex = '''(?im)^//[^*\n][^\n]*?\bPASSWORD=\(?(?:([A-Z0-9@#$]{1,8})(?:[,)'\s]|$)|'((?:[^'\n]|'')+)')'''
+regex = '''(?im)^//[^*\n][^\n]*?\bPASSWORD=\(?(?:([A-Z0-9@#$]{1,8})(?:[,)'\s]|$)|'((?:[^'\n]|'')+)(?:'|$))'''
 keywords = ["password="]
 [rules.allowlist]
 regexes = ['''(?i)^(?:x+|\*+|y+|n+|pass|passw(?:or)?d?|pwd|secret|dummy|changeme|password|newpass(?:word)?|oldpass(?:word)?|&[A-Z0-9@#$]{1,8}\.?|(?:your[-_ ]?)?pass(?:word)?[-_ ]?phrase)$''']
@@ -19,7 +20,7 @@ regexes = ['''(?i)^(?:x+|\*+|y+|n+|pass|passw(?:or)?d?|pwd|secret|dummy|changeme
 [[rules]]
 id = "jcl-racf-new-password"
 description = "New RACF password or password phrase in a JCL PASSWORD=(old,new)"
-regex = '''(?im)^//[^*\n][^\n]*?\bPASSWORD=\((?:[A-Z0-9@#$]{1,8}|'(?:[^'\n]|'')*'),(?:([A-Z0-9@#$]{1,8})\)|'((?:[^'\n]|'')+)'\))'''
+regex = '''(?im)^//[^*\n][^\n]*?\bPASSWORD=\((?:[A-Z0-9@#$]{1,8}|'(?:[^'\n]|'')*'),(?:([A-Z0-9@#$]{1,8})\)|'((?:[^'\n]|'')+)(?:'\)|$))'''
 keywords = ["password="]
 [rules.allowlist]
 regexes = ['''(?i)^(?:x+|\*+|y+|n+|pass|passw(?:or)?d?|pwd|secret|dummy|changeme|password|newpass(?:word)?|oldpass(?:word)?|&[A-Z0-9@#$]{1,8}\.?|(?:your[-_ ]?)?pass(?:word)?[-_ ]?phrase)$''']

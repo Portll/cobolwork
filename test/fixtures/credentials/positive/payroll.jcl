@@ -18,3 +18,8 @@
   PASSWORD PASSWORD(M2N3B4V5 C6X7Z8L9)
   PHRASE PHRASE('Tide c0mes 1n' 'Tide g0es 0ut')
 /*
+//CJOB     JOB (ACCT),'RUN',USER=PAYUSR,
+//             PASSWORD='Blue Heron Rides Over Wide Rivers At Dawn Whil
+//             e Stars Fade 42'
+//NJOB     JOB (ACCT),USER=AUSER,PASSWORD=('Blue Heron 42','Grey Owl Fl
+//             ies Over Fields 17')

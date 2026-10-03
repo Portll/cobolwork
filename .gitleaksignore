@@ -28,6 +28,9 @@ test/fixtures/credentials/positive/payroll.jcl:racf-command-password:18
 test/fixtures/credentials/positive/payroll.jcl:racf-command-new-password:18
 test/fixtures/credentials/positive/payroll.jcl:racf-command-password:19
 test/fixtures/credentials/positive/payroll.jcl:racf-command-new-password:19
+test/fixtures/credentials/positive/payroll.jcl:jcl-racf-password:22
+test/fixtures/credentials/positive/payroll.jcl:jcl-racf-password:24
+test/fixtures/credentials/positive/payroll.jcl:jcl-racf-new-password:24
 bench/cases/114-a-database-password-in-a-value-clause/DBLOGIN.cbl:cobol-value-credential:6
 test/fixtures/password/FOLDPW.cbl:cobol-value-credential:10
 test/identity.test.mjs:racf-command-password:109

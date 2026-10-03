@@ -40,7 +40,10 @@ test('planted mainframe credentials are all found', { skip: have ? false : 'gitl
     'payroll.jcl:17:racf-command-password',
     'payroll.jcl:18:racf-command-new-password', 'payroll.jcl:18:racf-command-password',
     'payroll.jcl:19:racf-command-new-password', 'payroll.jcl:19:racf-command-password',
-    'payroll.jcl:1:jcl-racf-password', 'payroll.jcl:4:tso-logon-password',
+    'payroll.jcl:1:jcl-racf-password',
+    'payroll.jcl:22:jcl-racf-password',
+    'payroll.jcl:24:jcl-racf-new-password', 'payroll.jcl:24:jcl-racf-password',
+    'payroll.jcl:4:tso-logon-password',
     'payroll.jcl:5:racf-command-password', 'payroll.jcl:7:jcl-racf-password',
     'payroll.jcl:8:jcl-racf-new-password', 'payroll.jcl:8:jcl-racf-password',
   ]);
@@ -51,6 +54,8 @@ test('a password in apostrophes, a password phrase and a new password are each r
   assert.equal(secrets['payroll.jcl:10:jcl-racf-password'], 'p9[Kz');
   assert.equal(secrets['payroll.jcl:12:jcl-racf-password'], 'Blue Heron Rides 42');
   assert.equal(secrets['payroll.jcl:13:jcl-racf-new-password'], 'Sm1th#x');
+  assert.equal(secrets['payroll.jcl:22:jcl-racf-password'], 'Blue Heron Rides Over Wide Rivers At Dawn Whil');
+  assert.equal(secrets['payroll.jcl:24:jcl-racf-new-password'], 'Grey Owl Fl');
   assert.equal(secrets['payroll.jcl:19:racf-command-new-password'], 'Tide g0es 0ut');
   assert.equal(secrets['auth.cpy:4:cobol-value-credential'], 'D7C1E2E2E6D6D9C4');
   assert.equal(secrets['login.cbl:10:cics-new-password'], 'NEWPW002');

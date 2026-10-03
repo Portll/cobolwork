@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { locate } from '../lib/hlasm/locate.mjs';
@@ -10,8 +10,10 @@ import './pin-machine.mjs';
 // Each fixture's expected values are z390's, recorded by diag/hlasm-locate-expect.mjs.
 const dir = join(dirname(fileURLToPath(import.meta.url)), '..', 'bench', 'hlasm-locate');
 
+// A fixture drafted on a lane has no answers until diag/hlasm-locate-expect.mjs records them.
 for (const file of readdirSync(dir).filter((f) => f.endsWith('.asm'))) {
-  test(`the locator places ${file} as z390 assembles it`, () => {
+  const answers = existsSync(join(dir, file.replace(/\.asm$/, '.json')));
+  test(`the locator places ${file} as z390 assembles it`, { skip: !answers && 'z390 answers not recorded yet' }, () => {
     const text = readFileSync(join(dir, file), 'latin1');
     const want = JSON.parse(readFileSync(join(dir, file.replace(/\.asm$/, '.json')), 'utf8'));
     const got = Object.fromEntries(locate(text).symbols.map((y) => [y.name, y]));

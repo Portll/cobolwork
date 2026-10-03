@@ -8,7 +8,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scanAll } from '../lib/scan.mjs';
 import { toSarif } from '../lib/sarif.mjs';
-import { applyBaseline, loadBaseline, validateEntry, BASELINE_FILE } from '../lib/baseline.mjs';
+import { applyBaseline, loadBaseline, validateEntry, BASELINE_FILE, BASELINE_VERSION } from '../lib/baseline.mjs';
 import './pin-machine.mjs';
 
 const CLI = join(dirname(fileURLToPath(import.meta.url)), '..', 'bin', 'cobolwork.mjs');
@@ -128,6 +128,7 @@ test('cobolwork baseline writes dated judgements, keeps old ones, and a rescan t
   const wrote = cli('baseline', dir, '--reason', 'accepted for the migration', '--who', 'reviewer', '--expires', '2099-01-01', '--only', 'flow');
   assert.equal(wrote.status, 0, wrote.stderr);
   const file = JSON.parse(readFileSync(join(dir, BASELINE_FILE), 'utf8'));
+  assert.equal(file.version, BASELINE_VERSION);
   assert.ok(file.entries.length > 0);
   for (const e of file.entries) assert.deepEqual(validateEntry(e), [], JSON.stringify(e));
   const again = cli('baseline', dir, '--reason', 'different', '--who', 'someone-else', '--expires', '2099-06-01', '--only', 'flow');
@@ -139,4 +140,41 @@ test('cobolwork baseline writes dated judgements, keeps old ones, and a rescan t
   assert.equal(rescan.summary.baseline.suppressed, file.entries.length);
   const ignored = JSON.parse(cli('scan', dir, '--only', 'flow', '--no-baseline').stdout);
   assert.equal(ignored.summary.findings, file.entries.length);
+}));
+
+const ENTRY = { fingerprint: 'a'.repeat(32), rule: 'argv-or-env-to-os-command', action: 'accept', reason: 'r', who: 'w', at: '2026-01-01', expires: '2099-01-01' };
+
+test('a baseline with no version is read as version 0 and migrated to the current one', () => inTemp((dir) => {
+  const path = join(dir, 'b.json');
+  writeFileSync(path, JSON.stringify({ _comment: 'c', entries: [ENTRY] }));
+  const b = loadBaseline(dir, { explicit: path });
+  assert.deepEqual(b.problems, []);
+  assert.equal(b.version, BASELINE_VERSION);
+  assert.equal(b.entries.length, 1);
+}));
+
+test('a version 1 baseline round-trips through cobolwork baseline', () => inTemp((dir) => {
+  writeFileSync(join(dir, 'RUNCMD.cbl'), PROGRAM);
+  const path = join(dir, 'b.json');
+  const args = ['baseline', dir, '--out', path, '--reason', 'r', '--who', 'w', '--expires', '2099-01-01', '--only', 'flow'];
+  assert.equal(cli(...args).status, 0);
+  assert.equal(JSON.parse(readFileSync(path, 'utf8')).version, 1);
+  const b = loadBaseline(dir, { explicit: path });
+  assert.deepEqual(b.problems, []);
+  assert.equal(b.version, 1);
+  assert.ok(b.entries.length > 0);
+  assert.equal(JSON.parse(cli(...args).stdout).added, 0);
+}));
+
+test('a baseline from a newer version is refused with both numbers named', () => inTemp((dir) => {
+  const path = join(dir, 'b.json');
+  writeFileSync(path, JSON.stringify({ version: 2, entries: [ENTRY] }));
+  const b = loadBaseline(dir, { explicit: path });
+  assert.equal(b.entries.length, 0);
+  assert.match(b.problems[0], /version 2.*up to version 1/);
+  writeFileSync(join(dir, 'RUNCMD.cbl'), PROGRAM);
+  const r = cli('baseline', dir, '--out', path, '--reason', 'r', '--who', 'w', '--expires', '2099-01-01');
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /version 2/);
+  assert.equal(JSON.parse(readFileSync(path, 'utf8')).version, 2, 'the newer file is left as it was');
 }));

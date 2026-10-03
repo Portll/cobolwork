@@ -19,7 +19,7 @@ import { stampFingerprints } from '../lib/kernel/identity.mjs';
 import { pdsExportTree } from '../lib/kernel/source-tree.mjs';
 import { SITE_FILE } from '../lib/site.mjs';
 import { tally } from '../lib/kernel/findings.mjs';
-import { loadBaseline, applyBaseline, baselineEntries, BASELINE_FILE, SUPPRESSING } from '../lib/baseline.mjs';
+import { loadBaseline, applyBaseline, baselineEntries, BASELINE_FILE, BASELINE_VERSION, SUPPRESSING } from '../lib/baseline.mjs';
 import { readReport } from '../lib/tui/model.mjs';
 import { nodeTerminal } from '../lib/tui/terminal.mjs';
 import { runTui } from '../lib/tui/run.mjs';
@@ -455,7 +455,7 @@ try {
     if (held.problems.length) { process.stderr.write(`cobolwork: ${path} holds entries that do not validate, so it is left as it is:\n  ${held.problems.join('\n  ')}\n`); process.exit(2); }
     const report = scanAll(root, { repos, only: opts.only, advisoryFeeds: opts.advisoryFeeds, systemDirs });
     const { entries, added } = baselineEntries(report.findings, held.entries, { action, reason: opts.reason, who: opts.who, expires: expires.toISOString(), at, rules: opts.rule || null });
-    const written = JSON.stringify({ _comment: 'Judgements over cobolwork findings, matched by fingerprint. A suppression lapses at its expires date and the finding comes back.', entries }, null, 1) + '\n';
+    const written = JSON.stringify({ _comment: 'Judgements over cobolwork findings, matched by fingerprint. A suppression lapses at its expires date and the finding comes back.', version: BASELINE_VERSION, entries }, null, 1) + '\n';
     writeFileSync(path, written);
     recordInputs(journal, 0, root);
     recordFindings(journal, report);

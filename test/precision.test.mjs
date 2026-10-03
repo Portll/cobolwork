@@ -8,6 +8,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { precision, outcomeOf, measure, markdown } from '../bench/precision.mjs';
 import { scanAll } from '../lib/scan.mjs';
+import { scoreVerdicts, wilson, report } from '../diag/score-corpus.mjs';
 import './pin-machine.mjs';
 
 const CASES = join(dirname(fileURLToPath(import.meta.url)), '..', 'bench', 'cases');
@@ -71,4 +72,14 @@ test('execution labels are joined to their findings\' verdicts by fingerprint', 
     assert.equal(doc.byVerdict[f.exploitability.verdict].execution.right, 1);
     assert.equal(doc.unjoined, 1);
   });
+});
+
+test('a verdict is scored from its labels, with the range the unknowns allow and a Wilson interval over the decided', () => {
+  const rows = scoreVerdicts({ byVerdict: { upstream: { execution: measure({ labelled: 12, right: 8, wrong: 0, unknown: 4, missed: 0 }, 'execution') } } });
+  assert.equal(rows.length, 1);
+  assert.deepEqual(rows[0].precision, { low: 0.667, high: 1 });
+  assert.equal(rows[0].decided, 8);
+  assert.ok(rows[0].interval[0] > 0.6 && rows[0].interval[1] === 1);
+  assert.equal(wilson(0, 0), null);
+  assert.match(report({ labels: 12, sources: [{ file: 'l.json', sources: ['execution'] }] }, rows), /execution\s+12\s+8\s+0\s+4/);
 });

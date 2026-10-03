@@ -130,7 +130,6 @@ async function run() {
   const worklistPath = arg('worklist');
   if (!kind || !GENERABLE.includes(kind)) {
     console.error('--kind must be one of: ' + GENERABLE.join(', '));
-    console.error('(corpus rows are labelled by a person; the model may only rank what to read)');
     process.exit(2);
   }
   if (!worklistPath || !existsSync(worklistPath)) {

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
 import { verifyFile, jclProblems, versionRangeProblems, normalizeText } from '../feed/verify.mjs';
-import { validate, GENERABLE } from '../feed/schema.mjs';
+import { validate, GENERABLE, KIND_NAMES } from '../feed/schema.mjs';
 import { CATALOGUE } from '../feed/catalogue.mjs';
 import './pin-machine.mjs';
 
@@ -15,8 +15,8 @@ const run = () => verifyFile(join(FIXTURES, 'sample-rows.jsonl'), { sourcesDir: 
 // no gate, because the review it replaced is no longer happening either.
 test('the gate accepts the sound rows and refuses each planted failure', () => {
   const { accepted, rejected } = run();
-  assert.equal(accepted.length, 5);
-  assert.equal(rejected.length, 6);
+  assert.equal(accepted.length, 4);
+  assert.equal(rejected.length, 5);
 
   const why = (n) => rejected.find((r) => r.line === n).problems.join('; ');
   assert.match(why(2), /is not a rule this engine reports/);
@@ -24,7 +24,6 @@ test('the gate accepts the sound rows and refuses each planted failure', () => {
   assert.match(why(5), /operation 'EXECUTE' is not a JCL statement/);
   assert.match(why(7), /'SYSB' matches the pattern but must not/);
   assert.match(why(9), /is not a version range this rule can evaluate/);
-  assert.match(why(10), /a model-labelled row is not ground truth/);
 });
 
 test('a quote is compared with whitespace collapsed and punctuation folded', () => {
@@ -42,10 +41,10 @@ test('the catalogue holds every rule the engine can report', () => {
   assert.equal(CATALOGUE.get('display-echoes-a-credential').set, 'log');
 });
 
-test('a model may not author ground truth, structurally rather than by convention', () => {
+test('the feed holds no ground-truth kind, so a labelled row is refused whoever made it', () => {
+  assert.ok(!KIND_NAMES.includes('corpus'));
   assert.ok(!GENERABLE.includes('corpus'));
-  assert.deepEqual(validate({ kind: 'corpus', method: 'model' }).slice(0, 1),
-    ["method: must be 'human' - a model-labelled row is not ground truth"]);
+  for (const method of ['model', 'human']) assert.match(validate({ kind: 'corpus', method })[0], /kind: 'corpus' is not one of/);
 });
 
 test('the JCL gate refuses what a system would refuse', () => {

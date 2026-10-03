@@ -76,3 +76,10 @@ test('V-type constants and EXTRN names are the externals a module needs', () => 
   const r = locate(['PROG     CSECT', '         L     15,=V(SUBRTN)', "OTHER    DC    V(SUB2)", '         END'].join('\n'));
   assert.deepEqual(r.esd.externals.map((e) => e.name).sort(), ['SUB2', 'SUBRTN']);
 });
+
+test('a constant holding &SYSDATE or &SYSTIME is placed at its fixed length, and another variable stops placement', () => {
+  const y = bySymbol(locate(['PROG     CSECT', "         DC    C' &SYSDATE &SYSTIME '", 'AFTER    DS    F', '         END'].join('\n')));
+  assert.equal(y.AFTER.loc, 16);
+  const z = bySymbol(locate(['PROG     CSECT', "         DC    C'&NAME'", 'AFTER    DS    F', '         END'].join('\n')));
+  assert.equal(z.AFTER.loc, null);
+});

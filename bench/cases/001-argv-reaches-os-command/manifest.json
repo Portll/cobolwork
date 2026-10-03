@@ -1,5 +1,6 @@
 {
  "id": "001-argv-reaches-os-command",
+ "std": "default",
  "title": "Command-line input passed to a second program and run as a command",
  "cwe": "CWE-78",
  "expect": [

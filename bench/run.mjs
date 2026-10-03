@@ -80,7 +80,9 @@ for (const id of ids) {
       const prepared = manifest.precompile === false ? src : prepareForWitness(src, manifest.format || 'fixed');
       const target = join(tmp, file);
       writeFileSync(target, prepared, 'latin1');
-      const r = spawnSync('cobc', ['-fsyntax-only', '-frelax-syntax-checks', `-std=${manifest.std || 'default'}`, `-fformat=${manifest.format || 'fixed'}`, '-I', dir, target], { encoding: 'latin1' });
+      // IBM Enterprise COBOL, read strictly, unless the case names another standard: a GnuCOBOL
+      // program (ACCEPT FROM COMMAND-LINE, which IBM does not have) says "std": "default".
+      const r = spawnSync('cobc', ['-fsyntax-only', '-frelax-syntax-checks', `-std=${manifest.std || 'ibm-strict'}`, `-fformat=${manifest.format || 'fixed'}`, '-I', dir, target], { encoding: 'latin1' });
       if (r.status !== 0) compiles = `${file}: ${(r.stderr || '').split('\n').find(l => / error: /.test(l)) || 'refused'}`;
       rmSync(tmp, { recursive: true, force: true });
       if (compiles !== true) break;

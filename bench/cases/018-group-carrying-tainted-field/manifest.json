@@ -1,5 +1,6 @@
 {
  "id": "018-group-carrying-tainted-field",
+ "std": "default",
  "title": "Input lands in one field of a group, and the whole group is moved into a command",
  "cwe": "CWE-78",
  "expect": [

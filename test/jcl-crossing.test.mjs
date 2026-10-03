@@ -105,6 +105,17 @@ test('in-stream data reaches the record the program reads from that DD', () => {
   assert.ok(r.includes('file-record-to-os-command'));
 });
 
+
+test('in-stream data read INTO an item reaches what the item reaches, and adds no file-record source', () => {
+  const root = tree({
+    'src/RDSYSIN.cbl': READS_SYSIN.replace('           READ CTL-FILE\n           MOVE CTL-REC TO WS-CMD\n', '           READ CTL-FILE INTO WS-CMD\n'),
+    'jcl/RUN.jcl': ['//RUNJOB   JOB (ACCT)', '//STEP010  EXEC PGM=RDSYSIN', '//SYSIN    DD *', '  PAYLOAD', '/*'].join('\n'),
+  });
+  const findings = scan(root).findings;
+  assert.ok(findings.some((f) => f.rule === 'jcl-instream-to-os-command'));
+  assert.equal(findings.find((f) => f.rule === 'file-record-to-os-command').sources, 1);
+});
+
 test('a DD with no in-stream data makes no crossing, and the file record still stands', () => {
   const root = tree({
     'src/RDSYSIN.cbl': READS_SYSIN,

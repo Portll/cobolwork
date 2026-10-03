@@ -1,5 +1,6 @@
 {
  "id": "072-cics-and-sql-names-the-translators-supply",
+ "std": "ibm",
  "title": "A CICS and Db2 program using names the translator, the precompiler and the compiler supply: EIBCALEN, DFHRESP, SQLCODE, RETURN-CODE, an index name",
  "cwe": "CWE-1127",
  "expect": [],

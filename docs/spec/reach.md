@@ -279,8 +279,8 @@ unmatched only where no repository's finding carries it.
 
 Labels are made by machine, execution first. `bench/label.mjs` runs each path finding's
 verification plan (§9.7) in ironwork. The marker goes in at the finding's source:
-- a batch program: every DD it assigns, and SYSIN, with the records shifted through the marker's
-  eight alignments;
+- a batch program reading a file's records or a job's in-stream data: every DD it assigns, and
+  SYSIN, with the records shifted through the marker's eight alignments;
 - a RECEIVE MAP: typed into the map's unprotected fields, across the pseudo-conversation the
   program's RETURN TRANSID starts;
 - a RECEIVE without a map: typed on a cleared screen after the transaction's name.
@@ -291,7 +291,8 @@ how the run ends at their line instead, provided the same run with a control inp
 An arithmetic finding needs a data exception where asterisks went in, with digits as the control.
 A subscript, reference modification, loop bound or `OCCURS DEPENDING` count needs ironwork's
 range abend, U4038, where nines went in, with ones as the control. That run is of a copy with a
-`CBL SSRANGE` card before its first line.
+`CBL SSRANGE` card before its first line. A program ironwork refuses for a PICTURE of more than 18
+digits runs as a copy with `CBL ARITH(EXTEND)`, the only option it compiles under.
 Anything else is unknown, with its reason. A run that did not carry the marker to the operation
 shows only that these inputs did not, so refuting a finding needs every route to its sink covered
 (§9.8).
@@ -349,8 +350,8 @@ a plan and every value to one no interpreter would run.
 ### 9.8 Negatives from coverage
 
 A finding is refuted by coverage only where runs show that no value from its source reaches its
-operation. No such label is made yet: every coverage label is `unknown`, because four facts are
-missing.
+operation. No such label is made: every coverage label is `unknown`. Four facts are needed, and
+what runs record today does not establish them.
 
 1. **Every route.** A finding's `trace` names one route. The flow engine keeps the shortest route
    from each source and merges the sources that reach one sink into one finding, counted in
@@ -362,17 +363,40 @@ missing.
    entered paragraph does not show that the statement on the route ran, and statements run in
    separate runs are not the route run end to end. Refuting needs one run that executed each route's
    statements in order, with nothing writing the carried item between two of them.
-3. **Bytes carried unchanged.** The marker's absence at the operation means something only where
-   every step on the route copies bytes: a MOVE, a group, a REDEFINES, an argument passed or written
-   back. A step that converts, edits, inspects or computes changes the bytes, and the value that does
-   arrive no longer reads as the marker.
-4. **The marker everywhere the source writes.** As §9.6 feeds it: every DD and SYSIN through the
-   marker's eight alignments, and every unprotected field of a map.
+   `--trace-statements` records each start of a listed statement in run order (ironwork
+   `docs/evidence.md` §1.2).
+3. **Bytes carried.** The marker's absence at the operation means something only where every step
+   on the route copies bytes: a MOVE, a group, a REDEFINES, an argument passed or written back. A
+   step that converts, edits, inspects or computes changes the bytes, and the value that does arrive
+   no longer reads as the marker. `--trace-input` follows input bytes through such steps by taint: a
+   sink record's `input` false says no input byte was in the operand in that run, and null says the
+   run did something taint does not follow yet, which evidence.md §1.3 lists.
+4. **Input everywhere the source writes.** The marker reaches only where §9.6 feeds it: every DD and
+   SYSIN through its eight alignments, and every unprotected field of a map. Taint counts every byte
+   the source delivers.
 
-Where all four hold, the finding is refuted with source `coverage` and the run that showed it, and
-`bench/precision.mjs` counts it wrong, as it counts any refuted label. Fuzzed runs carry no marker:
-they show which paragraphs ran, never that a value failed to arrive.
+A run can satisfy all four as recorded and still miss a route another run takes, because each of
+these makes a sink false in one run only:
 
-Fact 1 is `routes`. Facts 2 and 3 need ironwork to record the statements a run executes, in order,
-and which bytes came from the input through each step, so that absence at the operation means no
-input byte arrived whatever the steps did.
+- **A step that ran without carrying the value.** A statement's start does not show that its step
+  moved the value, as an entered paragraph did not show that the statement ran. UNSTRING fills
+  receivers only as far as the delimiters reach, ON SIZE ERROR leaves the receiver as it was, READ
+  INTO moves nothing at end of file, and a callee may leave a BY REFERENCE argument alone.
+- **A source that delivered nothing.** A DD the labeller did not feed fails to open, and no byte is
+  input.
+- **A write between two steps.** `IF ... MOVE SPACES TO A` between two route statements clears the
+  value in a run that takes the branch. The records cover only the route's lines, so they cannot
+  show that no other statement wrote the carried item.
+- **An element a subscript chooses.** Where input steers a subscript's value through a condition,
+  which taint does not follow, another input chooses the element that holds the value.
+
+Taint on each statement record would show the first two: the step after one that carried nothing, or
+after a source that delivered nothing, reads no input. It would show a write between two steps too,
+unless the later step reads input from another operand. A write between the last step and the
+operation, and an element chosen by a subscript, need an argument over every path, which no set of
+runs gives. Until that argument exists, no coverage label is `refuted`. `bench/label.mjs
+--trace-input` records what taint found at an operation the marker missed, as `inputAtSink` on the
+unknown label and counted in the output's `inputAtSink`: the findings such an argument would have to
+settle. If one were refuted, `bench/precision.mjs` would count it wrong, as it counts any refuted
+label. Fuzzed runs carry no marker: they show which paragraphs ran, never that a value failed to
+arrive.

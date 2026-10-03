@@ -97,7 +97,7 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
 | `witness` | `fingerprint`, `outcome`, `who`, `when`, `system`, `sourceSha256` | once per witness entry applied |
 | `verdict` | `verdict`, `checks`, `relaxed`, `exit` | build and gate |
 | `output` | `name` (`report`, `sarif`, `provenance`, `sbom`, `baseline`), `sha256`, `bytes`, `path` or `stdout` | once per document written |
-| `close` | `exit`, `counts` (`input`, `finding`, `suppressed`, ...), `durationMs` | last |
+| `close` | `exit` (in an ironwork run journal, the program's RETURN-CODE, negative included), `counts` (`input`, `finding`, `suppressed`, ...), `durationMs` | last |
 
 ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence.rs`), with `tool`
 `ironwork` and kinds of its own, so `evidence verify` reads both tools' journals:
@@ -422,21 +422,34 @@ under the root where the scanned tree holds that file with that digest, or the o
 at all. Without `roots` or either record, it goes under the program's directory. A file whose root
 cannot be told, or lies outside the scanned tree, is in `abendRunProblems`.
 Its rules are `execution` evidence: a run of the program on that input ended this way.
+A manifest's abend may carry `optimized`, whether a run of the same input with the program compiled
+at OPTIMIZE(2) ended in the same abend at the same place (ironwork's docs/evidence.md §5). IBM's
+optimizer may compare an unsigned zoned item with zero by its bytes where OPTIMIZE(0), its default,
+reads it as a number and ends in a data exception, so an abend with `optimized` false holds at
+OPTIMIZE(0) only. The finding's `abend` carries it and its detail says so; its rule and severity do
+not change. That run keeps no journal, so `optimized` rests on the manifest's word.
 
 | Rule | Severity | When |
 |---|---|---|
 | `input-causes-abend-s0c7` | med | the abend is S0C7, a data exception, or ASRA in a CICS task whose message ends `(S0C7, which CICS reports as ASRA)` |
 | `input-causes-abend-s0c4` | high | the abend is S0C4, a protection exception, or ASRA whose message ends `(S0C4, which CICS reports as ASRA)` |
 | `input-causes-abend-subscript-range` | high | the message starts with IGZ0006S, IGZ0007S, IGZ0072S, IGZ0073S or IGZ0074S: a subscript, index, OCCURS DEPENDING ON object or reference modification SSRANGE caught out of range |
-| `input-causes-hang` | med | the abend is S322: fuzz ran a timed-out input again under a statement limit and the run reached it, which ironwork's fuzz keeps only when ACCEPT had not found SYSIN at its end |
+| `input-causes-hang` | med | the abend is S322: fuzz ran a timed-out input again under a statement limit and the run passed it, in a loop the empty input does not run and with ACCEPT not at the end of SYSIN. The run shows the loop passed the limit, not that it would never end, and the rule's CWE is 834 (excessive iteration) rather than 835 |
 | `input-selects-program` | high | the abend is S806, and the run's journal has a `sink` record of kind `dynamic-program-load` at the abend's file and line with `reached` true: the marker fuzz put in place of the called name reached the CALL. An S806 without that record is a problem, not a finding |
 | `input-causes-abend` | med | any other abend |
 
-An abend with code `IRONWORK` is something ironwork does not run, counted as `notModelled` and never a
-finding. A manifest that cannot be read, evidence that does not verify, or a journal that does not
-record the claimed abend is in `abendRunProblems` and leaves the set incomplete. A program outside
-the scanned tree is refused, and a finding in a file the scanned tree does not hold is listed in
-`abendRunsElsewhere` instead of reported.
+A manifest's `format` names its shape, apart from the ironwork `version` that wrote it; ironwork's
+docs/fuzz-manifest.schema.json describes it. The set reads `ironwork-fuzz/v1`, and a manifest with no
+`format` as that shape, since ironwork 0.3.0 and earlier wrote none. Keys it does not know are
+skipped, because a key added keeps the format. A manifest in any other format is in
+`abendRunProblems`: its keys may mean something else.
+
+An abend with code `IRONWORK`, `EXEC` (an EXEC statement with no database or region behind it) or
+`JAVA` is something ironwork does not run, counted as `notModelled` and never a finding. ironwork
+exits 244 for these. A manifest that cannot be read, evidence that does not verify, or a journal
+that does not record the claimed abend is in `abendRunProblems` and leaves the set incomplete. A
+program outside the scanned tree is refused, and a finding in a file the scanned tree does not hold
+is listed in `abendRunsElsewhere` instead of reported.
 
 ## 14. Specification (BDD)
 

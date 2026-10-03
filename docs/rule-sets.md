@@ -318,15 +318,27 @@ ignores, comments that instruct their reader to ignore instructions or fetch a s
 runs, and characters that reorder or hide text.
 
 **Mainframe credentials.** `rules/gitleaks-mainframe.toml` extends gitleaks with the shapes it has
-no rules for: a RACF password on a JCL statement, a TSO logon, `ADDUSER` and `ALTUSER`, a credential
-in a COBOL `VALUE` clause, `EXEC SQL CONNECT`, and `EXEC CICS SIGNON`.
+no rules for: a RACF password or password phrase on a JCL statement, plain, in apostrophes, or
+continued past column 71 onto the next statement, a TSO logon, `ADDUSER`, `ALTUSER` and the RACF
+`PASSWORD` and `PHRASE` commands, a credential in a COBOL `VALUE` clause, including hexadecimal,
+national, DBCS, null-terminated and UTF-8 literals, one continued onto the next line, and one on a
+debugging line, `EXEC SQL CONNECT`, and `EXEC CICS SIGNON`, `VERIFY` and `CHANGE`. A continued value
+is reported by its first part. Where a statement changes a password, the new one is a finding of its
+own. Each form is one IBM's manuals define: the z/OS JCL Reference, the RACF Command
+Language Reference, the TSO/E Command Reference, CICS TS 6.x and the Enterprise COBOL Language
+Reference. CICS's `PHRASE` and `NEWPHRASE` take a data area, which cannot be a literal.
 
 gitleaks detect --no-git --source . --config "$(cobolwork --rules-path gitleaks)"
 
-The `secrets` set reports the three COBOL shapes without gitleaks, reading them from the same file:
-a literal `VALUE` on an item named for a credential, a literal password in `EXEC SQL CONNECT`, and
-one in `EXEC CICS SIGNON`, `VERIFY` or `CHANGE`. Each is `credential-in-source` (CWE-798, high),
-naming the item or statement and the shape, never the value. A program or copybook the tree
+gitleaks reads a file in pieces of about 100 KB, ending each at a blank line within the next 25 KB
+if it finds one. Fixed-format COBOL seldom has blank lines, so in a large program a `VALUE` on the
+line after its data name can fall into the next piece and go unreported. The `secrets` set reads
+each file whole.
+
+The `secrets` set reports the COBOL shapes without gitleaks, reading them from the same file: a
+literal `VALUE` on an item named for a credential, a literal password in `EXEC SQL CONNECT`, and one
+in the `PASSWORD` or `NEWPASSWORD` of `EXEC CICS SIGNON`, `VERIFY` or `CHANGE`. Each is
+`credential-in-source` (CWE-798, high), naming the item or statement and the shape, never the value. A program or copybook the tree
 classifies is read whatever its name, where gitleaks reads only the extensions the file lists.
 The rule's firing rate over the corpus is not yet recorded, so the build gate treats it as a warning
 unless the policy's `rules` names it `block` (build-gate.md §11d).

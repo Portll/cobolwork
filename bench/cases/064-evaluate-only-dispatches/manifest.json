@@ -1,5 +1,6 @@
 {
  "id": "064-evaluate-only-dispatches",
+ "std": "default",
  "title": "An EVALUATE on the report name only chooses a message, and every name goes on to the command",
  "cwe": "CWE-78",
  "expect": [

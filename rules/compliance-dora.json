@@ -381,6 +381,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-new-password",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Credential pattern: cics new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-protected-field-to-record-key",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -1789,7 +1802,7 @@
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
-   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is a technical flaw that may hinder business activity, which this clause requires be minimised.",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is a technical flaw that may hinder business activity, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -2513,6 +2526,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "racf-command-new-password",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Credential pattern: racf command new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "racf-command-password",
    "framework": "dora",
    "clause": "Article 9(4)(d)",
@@ -2652,6 +2678,19 @@
     "doc": "dora",
     "retrieved": "2026-09-20",
     "quote": "maintain relevant inventories and update them periodically and every time any major change as referred to in paragraph 3 occurs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "tso-logon-new-password",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Credential pattern: tso logon new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
    }
   },
   {

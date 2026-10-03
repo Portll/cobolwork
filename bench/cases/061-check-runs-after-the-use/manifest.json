@@ -1,5 +1,6 @@
 {
  "id": "061-check-runs-after-the-use",
+ "std": "default",
  "title": "The input is checked in a paragraph performed after the one that runs it as a command",
  "cwe": "CWE-78",
  "expect": [

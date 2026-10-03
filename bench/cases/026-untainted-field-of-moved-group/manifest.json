@@ -1,5 +1,6 @@
 {
  "id": "026-untainted-field-of-moved-group",
+ "std": "default",
  "title": "The same move, but the field run as a command holds bytes the input never reached",
  "cwe": "CWE-78",
  "expect": [],

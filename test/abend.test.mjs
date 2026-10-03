@@ -2,6 +2,8 @@
 // real `ironwork run --evidence` of the fixture program on a record of asterisks.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { cpSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scanAbend, abendRule, ABEND_RULES } from '../lib/sets/abend.mjs';
@@ -73,6 +75,16 @@ test('an abend ironwork raises for what it does not run is counted, never a find
   assert.deepEqual(r.findings, []);
   assert.equal(r.summary.abendRuns[0].notModelled, 1);
   assert.equal(r.summary.setIncomplete, false);
+  for (const code of ['EXEC', 'JAVA']) {
+    const dir = join(mkdtempSync(join(tmpdir(), 'cw-abend-')), 'notmodelled');
+    cpSync(join(HERE, 'runs', 'notmodelled'), dir, { recursive: true });
+    const manifest = JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8'));
+    manifest.runs[0].abend.code = code;
+    writeFileSync(join(dir, 'manifest.json'), JSON.stringify(manifest));
+    const other = scanAbend(REPO, { abendRuns: [dir] });
+    assert.deepEqual(other.findings, [], code);
+    assert.equal(other.summary.abendRuns[0].notModelled, 1, code);
+  }
 });
 
 test('a program outside the tree is refused, and one the scanned tree does not hold is set aside', () => {
@@ -138,7 +150,57 @@ test('the abend code and IBM message id choose the rule', () => {
   assert.equal(abendRule({ code: 'S0CB' }), 'input-causes-abend');
 });
 
-test('an input-caused hang is an S322 finding at the statement the statement limit ran out on', () => {
+test('an abend says whether the same input gives it compiled with OPTIMIZE(2), and its rule stays', () => {
+  const r = scan('optimized');
+  assert.equal(r.findings.length, 2, JSON.stringify(r.summary.abendRunProblems));
+  const at = (line) => r.findings.find((f) => f.line === line);
+  assert.deepEqual([at(19).rule, at(19).sev, at(19).abend.optimized], ['input-causes-abend-s0c7', 'med', false]);
+  assert.match(at(19).detail, /holds at OPTIMIZE\(0\), IBM's default: compiled with OPTIMIZE\(2\) the same input does not end there$/);
+  assert.equal(at(22).abend.optimized, true);
+  assert.match(at(22).detail, /compiled with OPTIMIZE\(2\) it ends the same way$/);
+  assert.equal(at(19).path, 'opt/ZEROCMP.cbl');
+  const [old] = scan('s0c7').findings;
+  assert.equal('optimized' in old.abend, false);
+  assert.match(old.detail, /kept$/);
+});
+
+test('a manifest in format ironwork-fuzz/v1 is read, keys it does not know are skipped, and another format is refused', () => {
+  const [f, ...rest] = scan('format').findings;
+  assert.deepEqual(rest, []);
+  assert.deepEqual([f.rule, f.path, f.line], ['input-causes-abend-s0c7', 'ABEND7.cbl', 18]);
+  const rewritten = (change) => {
+    const dir = join(mkdtempSync(join(tmpdir(), 'cw-abend-format-')), 'run');
+    cpSync(join(HERE, 'runs', 'format'), dir, { recursive: true });
+    const file = join(dir, 'manifest.json');
+    const doc = JSON.parse(readFileSync(file, 'utf8'));
+    change(doc);
+    writeFileSync(file, JSON.stringify(doc));
+    return scanAbend(REPO, { abendRuns: [dir] });
+  };
+  const added = rewritten((doc) => { doc.later = 1; doc.runs[0].abend.later = true; });
+  assert.equal(added.findings.length, 1, JSON.stringify(added.summary.abendRunProblems));
+  const other = rewritten((doc) => { doc.format = 'ironwork-fuzz/v2'; });
+  assert.deepEqual(other.findings, []);
+  assert.equal(other.summary.setIncomplete, true);
+  assert.match(other.summary.abendRunProblems[0], /format "ironwork-fuzz\/v2", and this cobolwork reads ironwork-fuzz\/v1$/);
+});
+
+test('a fuzzed job places each abend in the COBOL step that gave it, with its data set, in-stream SYSIN and step PARM', () => {
+  const r = scan('job');
+  assert.equal(r.summary.setIncomplete, false, JSON.stringify(r.summary.abendRunProblems));
+  const places = r.findings.map((f) => `${f.rule} ${f.path}:${f.line}`).sort();
+  assert.deepEqual(places, [
+    'input-causes-abend-s0c7 job/src/CARDSUM.cbl:10',
+    'input-causes-abend-s0c7 job/src/PARMSUM.cbl:18',
+    'input-causes-abend-s0c7 job/src/QTYSUM.cbl:26',
+    'input-causes-abend-subscript-range job/src/PARMSUM.cbl:15',
+    'input-causes-abend-subscript-range job/src/PARMSUM.cbl:19',
+    'input-causes-abend-subscript-range job/src/QTYSUM.cbl:26',
+  ]);
+  assert.deepEqual(r.findings[0].input.map((i) => `${i.kind} ${i.name}`), ['dd MY.INPUT', 'sysin STEP3.SYSIN', 'parm STEP2']);
+});
+
+test('an input-caused hang is an S322 finding at the line the run names, reported as excessive iteration', () => {
   const r = scan('hang');
   assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
   const [f] = r.findings;
@@ -148,6 +210,9 @@ test('an input-caused hang is an S322 finding at the statement the statement lim
   assert.equal(f.abend.code, 'S322');
   assert.equal(f.input[0].kind, 'sysin');
   assert.equal(abendRule({ code: 'S322', message: '' }), 'input-causes-hang');
+  // The run shows the loop passed the limit, not that its exit is unreachable.
+  assert.equal(ABEND_RULES['input-causes-hang'].cwe, 'CWE-834');
+  assert.match(ABEND_RULES['input-causes-hang'].impact, /not that it would never end/);
 });
 
 test('an S806 is the input choosing the program only where its journal records the marker reaching the CALL', () => {

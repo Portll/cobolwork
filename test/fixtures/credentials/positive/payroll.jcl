@@ -6,3 +6,20 @@
 /*
 //STEP2    EXEC PGM=FTPXFER,PARM='USER=OPS,PASSWORD=M4INFR4M'
 //NIGHTLY  JOB (ACCT),USER=BATCH01,PASSWORD=(Q9W8E7R6,Z1X2C3V4)
+//QJOB     JOB (ACCT),'RUN',USER=AUSER,
+//         PASSWORD='p9[Kz'
+//PJOB     JOB (ACCT),'RUN',USER=PAYUSR,
+//         PASSWORD='Blue Heron Rides 42'
+//NJOB     JOB (ACCT),USER=AUSER,PASSWORD=(AUSER12,'Sm1th#x')
+//STEP3    EXEC PGM=IKJEFT01
+//SYSTSIN  DD *
+  LOGON PAYADM/Q2W3E4R5/R6T7Y8U9
+  ALU PAYADM PHRASE('g0ld f1sh sw1ms')
+  PASSWORD PASSWORD(M2N3B4V5 C6X7Z8L9)
+  PHRASE PHRASE('Tide c0mes 1n' 'Tide g0es 0ut')
+/*
+//CJOB     JOB (ACCT),'RUN',USER=PAYUSR,
+//             PASSWORD='Blue Heron Rides Over Wide Rivers At Dawn Whil
+//             e Stars Fade 42'
+//NJOB     JOB (ACCT),USER=AUSER,PASSWORD=('Blue Heron 42','Grey Owl Fl
+//             ies Over Fields 17')

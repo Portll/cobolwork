@@ -390,6 +390,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: cics new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-protected-field-to-record-key",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -1798,7 +1811,7 @@
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
-   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -2522,6 +2535,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "racf-command-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: racf command new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "racf-command-password",
    "framework": "nist-800-53r5",
    "clause": "IA-5",
@@ -2635,6 +2661,19 @@
     "doc": "nist80053",
     "retrieved": "2026-09-20",
     "quote": "Develop and document an inventory of system components"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "tso-logon-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: tso logon new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
    }
   },
   {

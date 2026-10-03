@@ -19,12 +19,21 @@
            05 WS-NAME         PIC X(8)  VALUE 'Tr0ub4do'.
        01 WS-PASSWORD-ERROR   PIC X(40)
                               VALUE "Password must be 8-12 characters".
+      / 01 WS-OLD-PASSWORD     PIC X(16) VALUE 'Tr0ub4dor3xQz9'.
+       01 WS-PASSWORD-INIT    PIC X(8)  VALUE X'4040404040404040'.
+       01 WS-SECRET-NULLS     PIC X(8)  VALUE X'0000000000000000'.
+       01 WS-PASSWORD-HELP    PIC X(80) VALUE 'Your password must be eig
+      -    'ht characters long and contain a digit'.
+       01 WS-PASSWORD-FLAG    PIC X     VALUE X'01'.
+       01 WS-PASSWORD-CHARS   PIC X(2)  VALUE X'C1C2'.
        PROCEDURE DIVISION.
            EXEC SQL CONNECT TO SAMPLE USER :WS-USER USING :WS-DB-PASSWORD END-EXEC.
            EXEC CICS SIGNON USERID(WS-USER) PASSWORD(WS-DB-PASSWORD) END-EXEC.
       * The test region took PASSWORD('TEMP0001') before RACF.
            EXEC CICS CHANGE TASK PRIORITY(100) END-EXEC.
            EXEC SQL CONNECT :WS-USER IDENTIFIED BY :WS-DB-PASSWORD END-EXEC.
+           EXEC CICS SIGNON USERID(WS-USER) PASSWORD(WS-OLD-PW)
+                NEWPASSWORD(WS-NEW-PW) END-EXEC.
            STOP RUN.
       * Example from documentation, not a real credential:
            EXEC SQL CONNECT TO 'database' USER 'user' USING 'password' END-EXEC.

@@ -171,8 +171,9 @@ jobs:
         run: |
           npm install -g npm@^11.5.1
           npm --version
+      # A path without ./ is read as a GitHub owner/repo shorthand and fetched with git.
       - name: Publish
-        run: npm publish "out/cobolwork-$VERSION.tgz" --access public
+        run: npm publish "./out/cobolwork-$VERSION.tgz" --access public
 
   pypi:
     name: publish to PyPI

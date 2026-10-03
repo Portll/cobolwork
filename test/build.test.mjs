@@ -12,6 +12,7 @@ import { ALL_RULES } from '../lib/kernel/registry.mjs';
 import { SINK_KINDS } from '../lib/dataflow.mjs';
 import { KEV } from '../lib/kev.mjs';
 import { compilerTasks } from '../lib/options.mjs';
+import { SHAPE_RULES } from '../lib/sets/secrets.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -824,7 +825,24 @@ test('B8.9 cics-signon-bypassed is unchanged by killable facts', RULE_NOT_BUILT,
 test('B8.10 A STRING of terminal input with no ON OVERFLOW is reported', RULE_NOT_BUILT, () => {});
 test('B8.11 A MOVE of input into fewer integer digits is reported', RULE_NOT_BUILT, () => {});
 test('B8.12 An EVALUATE of input with no WHEN OTHER is reported', RULE_NOT_BUILT, () => {});
-test('B8.13 A password in a VALUE clause is reported, and the gitleaks file holds the same shapes', RULE_NOT_BUILT, () => {});
+const DB_PASSWORD = program('L', ["01 WS-DB-PASSWORD PIC X(12) VALUE 'Zq7r2Lm9Vx4p'."], ["CALL 'DBLOGON' USING WS-DB-PASSWORD", 'GOBACK.']);
+test('B8.13 A password in a VALUE clause is reported, and the gitleaks file holds the same shapes', { skip }, () => {
+  const root = repo({ 'Q0.cbl': QUIET });
+  patch(root, { 'L.cbl': DB_PASSWORD });
+  const doc = ratchet(root);
+  const f = doc.findings.find((x) => x.rule === 'credential-in-source');
+  assert.equal(f.tier, 'high');
+  assert.equal(f.introduced, true);
+  assert.equal(f.blocking, false, 'unmeasured, so it warns under the default policy');
+  assert.equal(doc.verdict, 'pass');
+
+  const named = repo({ 'Q0.cbl': QUIET, 'cobolwork.policy.json': policy({ rules: { 'credential-in-source': 'block' } }) });
+  patch(named, { 'L.cbl': DB_PASSWORD });
+  assert.deepEqual(blockingRules(ratchet(named)), ['credential-in-source']);
+
+  const toml = readFileSync(join(HERE, '..', 'rules', 'gitleaks-mainframe.toml'), 'utf8');
+  for (const s of SHAPE_RULES) assert.ok(toml.includes(`id = "${s.id}"`), `${s.id} is not in the gitleaks file`);
+});
 
 // B9 - Tiers and consequences
 

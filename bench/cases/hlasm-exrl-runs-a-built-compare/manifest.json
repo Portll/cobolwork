@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-exrl-runs-a-built-compare",
+ "title": "EXRL runs a CLC whose length is a halfword the caller passes, reading past the key it compares",
+ "cwe": "CWE-119",
+ "expect": [
+  {
+   "rule": "hlasm-executes-built-instruction",
+   "file": "CLCLEN.asm"
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-sar-sets-an-access-register",
+ "title": "SAR sets an access register in the program's own space, which changes no address space",
+ "cwe": "CWE-668",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-cross-memory-service"
+ ]
+}

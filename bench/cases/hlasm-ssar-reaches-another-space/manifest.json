@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-ssar-reaches-another-space",
+ "title": "SSAR makes another address space secondary, using an address-space number the caller passes",
+ "cwe": "CWE-668",
+ "expect": [
+  {
+   "rule": "hlasm-cross-memory-service",
+   "file": "SSARSET.asm"
+  }
+ ]
+}

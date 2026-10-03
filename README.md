@@ -369,7 +369,7 @@ assembly, 96.4% parse on the dev corpus and 98.6% on the held-out one; the rest 
 kind. `bench/hlasm-locate/` holds small programs, one assembler feature each, with z390's answers
 recorded beside them, so the tests check the locator without z390.
 
-`bench/cases/` holds 127 CWE-labelled cases, each paired with a near-miss negative: the same shape
+`bench/cases/` holds 137 CWE-labelled cases, each paired with a near-miss negative: the same shape
 with the flaw removed. `node bench/run.mjs` scores any scanner's findings against them, by rule and
 file, never by line, and `npm test` fails if any case scores differently from its declaration.
 `--validate` compiles every COBOL case with GnuCOBOL, assembles every HLASM case with z390 when

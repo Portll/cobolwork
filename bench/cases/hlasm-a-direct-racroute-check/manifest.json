@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-a-direct-racroute-check",
+ "title": "An assembler module asks RACF directly whether its caller may read a resource",
+ "cwe": "-",
+ "expect": [
+  {
+   "rule": "hlasm-calls-security-product",
+   "file": "RACCHK.asm"
+  }
+ ]
+}

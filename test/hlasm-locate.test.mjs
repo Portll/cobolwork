@@ -85,3 +85,11 @@ test('a constant holding &SYSDATE or &SYSTIME is placed at its fixed length, and
   const z = bySymbol(locate(['PROG     CSECT', "         DC    C'&NAME'", 'AFTER    DS    F', '         END'].join('\n')));
   assert.equal(z.AFTER.loc, null);
 });
+
+test('a COPY member the reader is given is placed where it is copied, and one it is not given stops placement', () => {
+  const src = ['PROG     CSECT', 'A        DS    F', '         COPY  FIELDS', 'B        DS    H', '         END'].join('\n');
+  const member = ['F1       DS    CL3', 'F2       DS    F'].join('\n');
+  const y = bySymbol(locate(src, { copy: (name) => (name === 'FIELDS' ? member : null) }));
+  assert.deepEqual([y.F1.loc, y.F1.file, y.F2.loc, y.B.loc], [4, 'FIELDS', 8, 12]);
+  assert.equal(bySymbol(locate(src)).B.loc, null);
+});

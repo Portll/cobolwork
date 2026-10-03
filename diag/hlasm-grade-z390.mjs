@@ -16,6 +16,18 @@ import { readHlasmStatements, parseHlasmStatement } from '../lib/hlasm/read.mjs'
 import { HLASM_EXT } from '../lib/sources.mjs';
 
 const KINDS = ['LOC', 'LEN', 'TYPE', 'SLOC', 'ESD', 'ILEN'];
+
+// A repository's members by name, as z390 reads COPY from them: copy files first, then assembler.
+function membersOf(dir) {
+  if (!existsSync(dir)) return () => null;
+  const byName = new Map();
+  const rank = (f) => (/\.(cpy|copy|inc)$/i.test(f) ? 0 : 1);
+  for (const f of readdirSync(dir).sort((a, b) => rank(a) - rank(b))) {
+    const name = f.replace(/\.[^.]+$/, '').toUpperCase();
+    if (!byName.has(name)) byName.set(name, join(dir, f));
+  }
+  return (name) => (byName.has(name) ? readFileSync(byName.get(name), 'latin1') : null);
+}
 const blank = () => ({ statements: 0, parsed: 0, unbuilt: 0, unparsed: 0, unknown: 0, crashes: 0 });
 const sectionName = (n) => (n === '$PRIVATE' ? '' : n);
 
@@ -26,9 +38,9 @@ function files(dir) {
   return out;
 }
 
-function gradeFile(text, oracle, record, notGraded) {
+function gradeFile(text, oracle, record, notGraded, copy) {
   let loc;
-  try { loc = locate(text); } catch (e) { record('CRASH', 'file', 'unparsed', String(e && e.message), true); return; }
+  try { loc = locate(text, { copy }); } catch (e) { record('CRASH', 'file', 'unparsed', String(e && e.message), true); return; }
   const origin = new Map();
   for (const y of oracle.symbols) if (y.type === 'CST' || y.type === 'DST') origin.set(sectionName(y.name), y.type === 'DST' ? 0 : y.loc);
   if (!origin.has('')) origin.set('', 0);
@@ -50,7 +62,7 @@ function gradeFile(text, oracle, record, notGraded) {
     record('TYPE', where, m.type === y.type ? 'parsed' : 'unparsed', `z390 ${y.type}, locator ${m.type}`);
   }
 
-  const placed = new Map(loc.statements.map((s) => [s.line, s]));
+  const placed = new Map(loc.statements.filter((s) => !s.file).map((s) => [s.line, s]));
   const sectionOfLine = (line) => placed.get(line)?.section;
   for (const s of oracle.statements) {
     if (!s.stable) continue;
@@ -105,7 +117,7 @@ export function measure(root, { statusMap = null, perKind = 25, oracle = join(di
       if (crash) { k.crashes++; r.crashes++; }
       if (statusMap) statusMap[`${rel}:${kind}:${where}`] = status;
       if (status !== 'parsed' && (samples[kind] ||= []).length < perKind) samples[kind].push({ file: rel, line: Number(String(where).split(':')[0]) || 0, status, reason, text: where });
-    }, notGraded);
+    }, notGraded, membersOf(join(dirname(root), 'members', repo)));
   }
   const all = Object.values(byRepo).reduce((a, x) => { for (const k of Object.keys(a)) a[k] += x[k]; return a; }, blank());
   const rate = (t) => (t.statements ? +(t.parsed / t.statements).toFixed(4) : null);

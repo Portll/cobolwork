@@ -13,6 +13,7 @@ const dc = (text) => readDataOperand(text, 0, { nominalRequired: true }).operand
 test('operands split at commas outside quotes and parentheses, and an attribute reference is not a quote', () => {
   assert.deepEqual(splitOperands("R1,L'FIELD(R2)"), ['R1', "L'FIELD(R2)"]);
   assert.deepEqual(splitOperands("C'A,B',(X,Y)"), ["C'A,B'", '(X,Y)']);
+  assert.deepEqual(splitOperands("'TITLE - A, B'"), ["'TITLE - A, B'"]);
   assert.throws(() => splitOperands("C'ABC"), HlasmSyntax);
 });
 

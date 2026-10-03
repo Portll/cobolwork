@@ -1720,6 +1720,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "hlasm-runtime-module-name",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Assembler source loads or calls a module whose name it reads from storage at run time. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "icsf-fixed-initialization-vector",
    "framework": "dora",
    "clause": "Article 9(3)(c)",

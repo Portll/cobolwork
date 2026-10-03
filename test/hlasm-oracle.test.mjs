@@ -2,6 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseListing } from '../diag/hlasm-oracle.mjs';
+import './pin-machine.mjs';
 
 // z390 1.8.4.4 with `xref printall`, on a program written for this test: a SAVE macro call, a COPY
 // member, a continued DC, an addressing error and a DSECT.

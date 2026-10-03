@@ -1729,6 +1729,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "hlasm-runtime-module-name",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Assembler source loads or calls a module whose name it reads from storage at run time. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "icsf-fixed-initialization-vector",
    "framework": "nist-800-53r5",
    "clause": "SC-13",

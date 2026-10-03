@@ -1729,6 +1729,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "hlasm-runtime-module-name",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: Assembler source loads or calls a module whose name it reads from storage at run time. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "icsf-fixed-initialization-vector",
    "framework": "ffiec",
    "clause": "IS II.C.19",

@@ -359,8 +359,8 @@ z390's macros, or IBM's, expand. Measured 2026-10-03 over the files z390 assembl
 
 | Corpus | Files | Symbol locations | Statement locations | Instruction lengths | External names |
 |---|---|---|---|---|---|
-| 12 repositories, dev | 58 | 975 agree of 976, 0 differ | 2,519 of 2,600, 0 differ | 2,273 of 2,273 | 65 of 65 |
-| 17 repositories, held out | 76 | 591 agree of 602, 0 differ | 1,689 of 1,740, 0 differ | 1,710 of 1,710 | 90 of 92 |
+| 12 repositories, dev | 58 | 975 agree of 976, 0 differ | 2,555 of 2,600, 0 differ | 2,273 of 2,273 | 65 of 65 |
+| 17 repositories, held out | 76 | 591 agree of 602, 0 differ | 1,696 of 1,740, 0 differ | 1,710 of 1,710 | 90 of 92 |
 
 A value not agreeing was not placed, never placed differently: it follows a statement of unknown
 length. An EQU's length is not graded, because z390 gives it 1 where the Language Reference gives it

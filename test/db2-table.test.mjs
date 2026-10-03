@@ -99,3 +99,18 @@ test('forms Db2 for z/OS does not take are refused', () => {
     'CREATE TABLE T (A INT) AUDIT ALL AUDIT NONE;',
   ]) assert.equal(parse(sql).status, 'unparsed', sql);
 });
+
+test("IBM's DSNTEJ1 names a foreign key after FOREIGN KEY, as earlier releases did", () => {
+  const n = node('CREATE TABLE DSN8D13A.EMP (EMPNO CHAR(6) NOT NULL, WORKDEPT CHAR(3), PRIMARY KEY (EMPNO), FOREIGN KEY RED (WORKDEPT) REFERENCES DSN8D13A.DEPT ON DELETE SET NULL);');
+  assert.deepEqual(n.constraints[1], { type: 'FOREIGN KEY', name: 'RED', columns: ['WORKDEPT'], references: { table: 'DSN8D13A.DEPT', columns: null, onDelete: 'SET NULL' } });
+});
+
+test('a partition takes HASH SPACE with its unit before INCLUSIVE, and DSSIZE does not go with PARTITION BY SIZE EVERY', () => {
+  const n = node('CREATE TABLE T (A INT) PARTITION BY RANGE (A) (PARTITION 1 ENDING AT (100) HASH SPACE 64 M INCLUSIVE);');
+  assert.deepEqual(n.options.partitioning.partitions[0], { number: 1, limits: ['100'], hashSpace: '64M', inclusive: true });
+  for (const sql of [
+    'CREATE TABLE T (A INT) PARTITION BY RANGE (A) (PARTITION 1 ENDING AT (100) INCLUSIVE HASH SPACE 64 M);',
+    'CREATE TABLE T (A INT) PARTITION BY RANGE (A) (PARTITION 1 ENDING AT (100) HASH SPACE 64);',
+    'CREATE TABLE T (A INT) PARTITION BY SIZE EVERY 4 G DSSIZE 4 G;',
+  ]) assert.equal(parse(sql).status, 'unparsed', sql);
+});

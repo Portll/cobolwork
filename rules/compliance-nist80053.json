@@ -390,6 +390,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: cics new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-protected-field-to-record-key",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -2509,6 +2522,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "racf-command-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: racf command new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "racf-command-password",
    "framework": "nist-800-53r5",
    "clause": "IA-5",
@@ -2622,6 +2648,19 @@
     "doc": "nist80053",
     "retrieved": "2026-09-20",
     "quote": "Develop and document an inventory of system components"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "tso-logon-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: tso logon new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
    }
   },
   {

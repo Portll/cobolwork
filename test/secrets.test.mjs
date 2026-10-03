@@ -20,19 +20,21 @@ const shapeOf = (f) => /\(([a-z-]+)\)$/.exec(f.detail)[1];
 const found = (dir) => scanSecrets(dir).findings.map((f) => `${basename(f.path)}:${f.line}:${shapeOf(f)}`).sort();
 
 test('the COBOL shapes are read from the gitleaks rules file', () => {
-  assert.deepEqual(SHAPES, ['cobol-value-credential', 'embedded-sql-connect-password', 'cics-signon-password']);
+  assert.deepEqual(SHAPES, ['cobol-value-credential', 'embedded-sql-connect-password', 'cics-signon-password', 'cics-new-password']);
 });
 
 test('each planted credential in a program or copybook is found, at its line', () => {
   assert.deepEqual(found(POSITIVE), [
     'auth.cpy:1:cobol-value-credential', 'auth.cpy:2:cobol-value-credential',
-    'login.cbl:10:cics-signon-password', 'login.cbl:12:embedded-sql-connect-password',
+    'auth.cpy:4:cobol-value-credential', 'auth.cpy:5:cobol-value-credential',
+    'login.cbl:10:cics-new-password', 'login.cbl:10:cics-signon-password',
+    'login.cbl:12:embedded-sql-connect-password',
     'login.cbl:5:cobol-value-credential', 'login.cbl:6:cobol-value-credential',
     'login.cbl:8:embedded-sql-connect-password', 'login.cbl:9:cics-signon-password',
   ]);
 });
 
-test('placeholders, prompts, condition names, comments and host variables are not credentials', () => {
+test('placeholders, prompts, condition names, comments, fill values and host variables are not credentials', () => {
   assert.deepEqual(found(NEGATIVE), []);
 });
 
@@ -42,11 +44,13 @@ test('a finding names the item or statement and never the credential', () => {
   assert.equal(r.findings[0].sev, 'high');
   assert.equal(r.findings[0].cwe, 'CWE-798');
   const text = JSON.stringify(r.findings);
-  for (const secret of ['q8Lm2Zp7Rt4Vw9YsKx3N', 'pK7sQ2mZ9xL4vR8tY3nW6cB1', 'Tr0ub4dor3xQz9', 'ghx8Kq2LmPz7Rt4Vw9Ys', 'Pa55w0rdZ9q', 'S3CR3T01', 'OLDPW001', 'T1ger7Q2']) {
+  for (const secret of ['q8Lm2Zp7Rt4Vw9YsKx3N', 'pK7sQ2mZ9xL4vR8tY3nW6cB1', 'Tr0ub4dor3xQz9', 'ghx8Kq2LmPz7Rt4Vw9Ys', 'Pa55w0rdZ9q', 'S3CR3T01', 'OLDPW001', 'NEWPW002', 'T1ger7Q2', 'D7C1E2E2E6D6D9C4', 'r7Kp2Lx9Qm4Tz8Wn3Vb6Y']) {
     assert.ok(!text.includes(secret), `${secret} is in a finding`);
   }
   assert.ok(r.findings.some((f) => f.detail.startsWith('WS-REFRESH-TOKEN has a literal VALUE')));
   assert.ok(r.findings.some((f) => f.detail.startsWith('EXEC CICS CHANGE gives a literal PASSWORD')));
+  assert.ok(r.findings.some((f) => f.detail.startsWith('EXEC CICS CHANGE gives a literal NEWPASSWORD')));
+  assert.ok(r.findings.some((f) => f.detail.startsWith('WS-API-KEY has a literal VALUE')));
 });
 
 test('a Go regex construct JavaScript reads differently is refused, not translated', () => {

@@ -360,6 +360,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-new-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: cics new password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-protected-field-to-record-key",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
@@ -2316,6 +2328,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "racf-command-new-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: racf command new password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "racf-command-password",
    "framework": "cobit-2019",
    "clause": "DSS05.04",
@@ -2416,6 +2440,18 @@
    "framework": "cobit-2019",
    "clause": "BAI09.01",
    "rationale": "The rule reports: A TSO batch step runs another program, CLIST, REXX exec or job from its in-stream commands. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "tso-logon-new-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: tso logon new password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",

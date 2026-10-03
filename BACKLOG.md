@@ -600,16 +600,11 @@ only one of the five that does.
 - **Compliance.** DORA, NIST SP 800-53 and the FFIEC IT Examination Handbook ship. FFIEC's booklets
   refuse automated requests, so the PDFs were fetched by hand and extracted to `feed/sources/`;
   three of ten booklets are mapped and the other seven place obligations no static analysis can
-  evidence. PCI DSS and COBIT are different: their *text* cannot be redistributed (PCI SSC's terms
-  permit use "solely for your own personal, non-commercial" purposes and forbid preparing derivative
-  works), but a mapping of requirement numbers plus our own rationale is our work and can ship. The
-  blocker there is this project's own gate, which requires a verbatim quote. The way out is to ship
-  those mappings without quotes and have the customer drop their licensed copy into `feed/sources/`,
-  where the gate verifies locally against it.
-  COBIT 2019 now ships that way, as identifiers only (`rules/compliance-cobit2019.json`), on the
-  operator's ruling of 2026-09-30; its practice numbers have not yet been checked against a licensed
-  copy. PCI is still open: its permitted use says non-commercial, so caching it to build a mapping we
-  sell may itself need an arrangement with the Council. Ask them.
+  evidence. COBIT's *text* cannot be redistributed, but a mapping of practice numbers plus our own rationale is
+  our work and ships as identifiers only (`rules/compliance-cobit2019.json`, the operator's ruling
+  of 2026-09-30); its practice numbers have not yet been checked against a licensed copy. PCI DSS is
+  not mapped: PCI SSC's terms permit use "solely for your own personal, non-commercial" purposes and
+  forbid derivative works.
 
 - **Utility knowledge base.** `feed/worklists/utility.json` holds 34 targets and no rows have been
   generated. `feed/generate.mjs` has never been run against a real model. Ten of the targets'

@@ -166,7 +166,7 @@ obtained from public source, and saying so is more honest than an unqualified fi
 
 Superseded on 2026-09-24 by the order in [`handoff.md`](handoff.md#what-to-do-next), which was
 written after the vulnerability work landed and its rules were measured. In short: push and decide
-the CI budget; build the labelling tools and label; write the numeric-input rule; add entry points
+the CI budget; widen the machine labels; write the numeric-input rule; add entry points
 from the CSD; then a BMS reader, which is now the first language with a rule waiting for it. The
 decision this file recorded as open - whether `parser.mjs` may change - was taken: it gained
 additive fields, re-grading against GnuCOBOL is still owed, and the languages are still undecided.

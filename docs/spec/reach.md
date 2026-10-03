@@ -112,8 +112,8 @@ once the estate names the authorised libraries".
    witness. The route half (does input reach the sink) can be witnessed on public COBOL, which the
    held-out corpora already provide; the reach half cannot, because public repositories carry no
    RACF facts to be right or wrong about. So a reach *projection over a declared fact* ships now; a
-   reach *precision number* waits on a labelled corpus that has the facts, which only a practitioner
-   estate holds. See `BACKLOG.md`.
+   reach *precision number* waits on machine labels over programs that carry the facts, which only an
+   estate's own source and site file hold. See `BACKLOG.md`.
 4. **Effect — decided: a separate field, first slice built.** `effect` is its own axis, not nested
    under `reach` - reach is who can drive it, effect is what driving it runs as. Its first slice
    reuses the reach machinery: an entry the estate names privileged
@@ -306,8 +306,8 @@ reported near-miss is wrong, and an unknown is neither: precision is the range f
 being wrong to every unknown being right, one number only where nothing is unknown. Recall comes
 from planted labels alone, the only ones where every flaw is known. The table is published with each
 release.
-`diag/label-sheet.mjs` and `diag/score-corpus.mjs` score each verdict against a label sheet a person
-fills in, sealed against its answer key.
+`diag/score-corpus.mjs` scores each verdict against the execution labels, with a Wilson interval over
+the labels that decided it.
 
 ### 9.7 The verification plan
 

@@ -444,6 +444,16 @@ docs/fuzz-manifest.schema.json describes it. The set reads `ironwork-fuzz/v1`, a
 skipped, because a key added keeps the format. A manifest in any other format is in
 `abendRunProblems`: its keys may mean something else.
 
+`ironwork-fuzz-interface/v1` is a subprogram fuzzed at its interface (ironwork docs/evidence.md
+§5.2): each input is an argument to a PROCEDURE DIVISION USING item, with its `position` and, for an
+OMITTED one, `omitted`. Its findings keep their rule and severity, and `abend.inputFrom` says
+`interface` (`entry` for every other run), with `abend.callers`, the CALLs its arguments were shaped
+by, from the manifest's `callers`. The detail says the program ran as a subprogram on its first call
+in its initial state, names those CALLs or says no CALL to it is in the scanned tree, and that no
+caller run shows a caller passes the bytes. `summary.byInputFrom` counts findings both ways, a SARIF
+result carries `inputFrom` among its properties, and the build gate warns on an interface finding
+unless the policy's `interface` key says `tier` (build-gate.md §4).
+
 An abend with code `IRONWORK`, `EXEC` (an EXEC statement with no database or region behind it) or
 `JAVA` is something ironwork does not run, counted as `notModelled` and never a finding. ironwork
 exits 244 for these. A manifest that cannot be read, evidence that does not verify, or a journal

@@ -225,7 +225,9 @@ finding at the line it happened, with the input and the run's journal, once that
 `-subscript-range`, `input-causes-hang` for an input that keeps a loop running past the statement limit (S322), `input-selects-program`
 for an S806 whose journal shows the input reaching the CALL, or `input-causes-abend` for any other
 code ([docs/spec/evidence.md](docs/spec/evidence.md) §13.6). It reads manifests in format
-`ironwork-fuzz/v1`, and reports one in any other format as a problem instead of guessing at it.
+`ironwork-fuzz/v1`, and `ironwork-fuzz-interface/v1` from a subprogram fuzzed with generated
+arguments, whose findings say no caller run shows a caller passes them and warn by default; it
+reports one in any other format as a problem instead of guessing at it.
 
 ### What each finding lets someone do, and the fix
 

@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scanAbend, abendRule, ABEND_RULES } from '../lib/sets/abend.mjs';
+import { toSarif } from '../lib/sarif.mjs';
 import { ALL_RULES, RULE_SETS } from '../lib/kernel/registry.mjs';
 import { classesOfRule } from '../lib/consequence.mjs';
 import './pin-machine.mjs';
@@ -182,7 +183,7 @@ test('a manifest in format ironwork-fuzz/v1 is read, keys it does not know are s
   const other = rewritten((doc) => { doc.format = 'ironwork-fuzz/v2'; });
   assert.deepEqual(other.findings, []);
   assert.equal(other.summary.setIncomplete, true);
-  assert.match(other.summary.abendRunProblems[0], /format "ironwork-fuzz\/v2", and this cobolwork reads ironwork-fuzz\/v1$/);
+  assert.match(other.summary.abendRunProblems[0], /format "ironwork-fuzz\/v2", and this cobolwork reads ironwork-fuzz\/v1 and ironwork-fuzz-interface\/v1$/);
 });
 
 test('a fuzzed job places each abend in the COBOL step that gave it, with its data set, in-stream SYSIN and step PARM', () => {
@@ -198,6 +199,29 @@ test('a fuzzed job places each abend in the COBOL step that gave it, with its da
     'input-causes-abend-subscript-range job/src/QTYSUM.cbl:26',
   ]);
   assert.deepEqual(r.findings[0].input.map((i) => `${i.kind} ${i.name}`), ['dd MY.INPUT', 'sysin STEP3.SYSIN', 'parm STEP2']);
+});
+
+test('a subprogram fuzzed at its interface gives an S0C7 finding that names the CALL its arguments were shaped by', () => {
+  const r = scan('interface');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.deepEqual([f.rule, f.sev, f.path, f.line], ['input-causes-abend-s0c7', 'med', 'iface/ADDQTY.cbl', 14]);
+  assert.deepEqual([f.abend.inputFrom, f.abend.callers], ['interface', [{ file: 'iface/MAINP.cbl', line: 7 }]]);
+  assert.match(f.detail, /it ran as a subprogram, with arguments shaped by the CALL at iface\/MAINP\.cbl:7, on its first call in its initial state: a caller passing these bytes ends it, and no caller run shows one does$/);
+  assert.deepEqual(f.input.map((i) => [i.kind, i.name, i.position, i.omitted ?? false]), [['argument', 'QTY-REC', 0, false], ['argument', 'NOTE-REC', 1, true]]);
+  assert.deepEqual(r.summary.byInputFrom, { entry: 0, interface: 1 });
+  assert.equal(toSarif(r, { toolVersion: 'test' }).runs[0].results[0].properties.inputFrom, 'interface');
+  assert.equal(scan('s0c7').findings[0].abend.inputFrom, 'entry');
+});
+
+test('an interface finding with no CALL in the tree says so', () => {
+  const dir = join(mkdtempSync(join(tmpdir(), 'cw-abend-interface-')), 'run');
+  cpSync(join(HERE, 'runs', 'interface'), dir, { recursive: true });
+  const file = join(dir, 'manifest.json');
+  writeFileSync(file, JSON.stringify({ ...JSON.parse(readFileSync(file, 'utf8')), callers: [] }));
+  const [f] = scanAbend(REPO, { abendRuns: [dir] }).findings;
+  assert.match(f.detail, /on generated arguments, with no CALL to it in the scanned tree/);
+  assert.deepEqual(f.abend.callers, []);
 });
 
 test('an input-caused hang is an S322 finding at the line the run names, reported as excessive iteration', () => {

@@ -19,7 +19,8 @@ It prints PASS, FAIL or TODO for each step and exits 1 on any FAIL.
 2. **CI.** `--before` passes only when main's last CI run is for main's head and every job passed.
    A red job is fixed on main before the cut.
 3. **Notes.** Start from the commits `--before` lists since the previous release. Each feature and
-   fix there is either named in the notes or left out on purpose. The notes open with a
+   fix there is either named in the notes or left out on purpose. Commit the notes as `docs/releases/<version>.md`
+   before the tag. They open with a
    `## Summary` section, which the site renders as the release's row: the first paragraph is the
    benefit, each line opening with a hyphen a sub-item, a paragraph opening `**Limit:**` the limit.
 4. **Version.** commit-phase moves `package.json`'s patch version with every commit; a minor or
@@ -29,15 +30,29 @@ It prints PASS, FAIL or TODO for each step and exits 1 on any FAIL.
 ## The tag and the registries
 
 5. **Tag.** An annotated tag `v<version>` with the message `cobolwork <version>`, on the commit
-   whose CI passed. Pushing it runs `release.yml`, which publishes to PyPI.
-6. **GitHub release.** Run `npm pack` in a clean detached worktree at the tag (`prepack` writes
-   `lib/revision.json`). Attach the tarball as `cobolwork-<version>.tgz` and `cobolwork.tgz`;
-   commitwork's pin installs the first name. The notes come from step 3.
-7. **npm.** `npm publish <tarball> --access public` needs the maintainer's browser 2FA, so the
-   maintainer runs it: a session with no terminal gets `EOTP` and a link instead of a prompt. A
-   later 409 "previously staged" means the publish is still processing, and the registry can take
-   hours to show it. Steps 8 and 9 need not wait: the release row renders the registries that hold
-   the version, and `--releases` is run again once npm does.
+   whose CI passed. Pushing the tag runs `release.yml`.
+   Its `check` job fails the run unless the tag is `v` plus the version at the tagged commit, the
+   commit is an ancestor of `origin/main`, and `ci.yml` has a successful run for that commit; every
+   other job then skips. The builds run next, with provenance, and nothing publishes until all of
+   them pass. Publishing is one job per registry, in order: GitHub release, npm, PyPI. Each
+   job needs every build and the job before it. The GitHub release job has no environment and
+   runs when the builds pass; each registry job then waits in the run's "Review deployments"
+   until the operator approves it.
+   If a job fails, re-run that job from the run's page; never move or delete a release tag, since
+   the tag ruleset forbids it. Until the npm trusted publisher is set (`npm trust github
+   @portll/cobolwork --repo Portll/cobolwork --file release.yml --env npm --allow-publish`), the npm job
+   fails and the jobs after it wait. To check the workflow without a release, run `gh workflow run
+   release.yml -R Portll/cobolwork --ref main -f dry_run=true`: the checks and builds run and every
+   publish job is skipped.
+6. **GitHub release.** The release job creates the release at the tag with `--verify-tag`, attaches
+   the tarball the build packed as `cobolwork-<version>.tgz` and `cobolwork.tgz` (commitwork's pin
+   installs the first name), and takes its notes from `docs/releases/<version>.md`, which step 3
+   committed. The `check` job fails a tag whose commit lacks that file.
+7. **npm.** The npm job publishes that tarball with `npm publish --access public` through trusted
+   publishing: no token, no 2FA prompt, and provenance comes with it. A 409 "previously staged"
+   means the publish is still processing, and the registry can take hours to show it. Steps 8 and 9
+   need not wait: the release row renders the registries that hold the version, and `--releases`
+   is run again once npm does.
 
 ## After
 

@@ -3,12 +3,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, unlinkSync, utimesSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, unlinkSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { JOURNAL_KINDS, KINDS, LEDGER_KINDS, canonical, makeRecord, newChain, recordHash } from '../lib/evidence/record.mjs';
-import { EvidenceRefusal, createExclusive, openAppend, prepareDir, readLines, syncClose, writeAll } from '../lib/evidence/store.mjs';
+import { EvidenceRefusal, breakStale, createExclusive, openAppend, prepareDir, readLines, syncClose, writeAll } from '../lib/evidence/store.mjs';
 import { LEDGER, LOCK, openJournal } from '../lib/evidence/journal.mjs';
 import { PAYLOAD_TYPE, SEAL_PREDICATE, STATEMENT_TYPE, anchorGit, seal, timeStampRequest } from '../lib/evidence/seal.mjs';
 import { parseAllowedSigners } from '../lib/evidence/sshsig.mjs';
@@ -299,6 +299,24 @@ test('V2.5 An empty lock is aged from its modification time', (t) => {
   assert.equal(broken.holderPid, null);
   assert.ok(broken.ageMs >= 119000);
   assert.equal(verifyEvidence(d).verified, true);
+});
+
+test('V2.6 A lock taken after a stale one was read is put back, not broken', (t) => {
+  const d = tmp(t);
+  prepareDir(d);
+  const lock = join(d, LOCK);
+  const staleText = `999999 ${Date.now() - 120000}\n`;
+  writeFileSync(lock, staleText);
+  const seen = { text: staleText, ino: statSync(lock).ino };
+  unlinkSync(lock);
+  const peer = `${process.pid} ${Date.now()}\n`;
+  writeFileSync(lock, peer);
+  assert.equal(breakStale(lock, seen), false);
+  assert.equal(readFileSync(lock, 'utf8'), peer);
+  assert.deepEqual(readdirSync(d).filter((n) => n.startsWith(LOCK)), [LOCK]);
+  const fresh = { text: peer, ino: statSync(lock).ino };
+  assert.equal(breakStale(lock, fresh), true);
+  assert.deepEqual(readdirSync(d).filter((n) => n.startsWith(LOCK)), []);
 });
 
 // V3 - Verify

@@ -219,7 +219,8 @@ finding at the line it happened, with the input and the run's journal, once that
 `input-causes-abend-s0c7`, `-s0c4` (in a CICS task, the ASRA whose message names that check),
 `-subscript-range`, `input-causes-hang` for a loop the input caused (S322), `input-selects-program`
 for an S806 whose journal shows the input reaching the CALL, or `input-causes-abend` for any other
-code ([docs/spec/evidence.md](docs/spec/evidence.md) §13.6).
+code ([docs/spec/evidence.md](docs/spec/evidence.md) §13.6). It reads manifests in format
+`ironwork-fuzz/v1`, and reports one in any other format as a problem instead of guessing at it.
 
 ### What each finding lets someone do, and the fix
 

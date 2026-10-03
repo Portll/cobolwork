@@ -438,6 +438,12 @@ not change. That run keeps no journal, so `optimized` rests on the manifest's wo
 | `input-selects-program` | high | the abend is S806, and the run's journal has a `sink` record of kind `dynamic-program-load` at the abend's file and line with `reached` true: the marker fuzz put in place of the called name reached the CALL. An S806 without that record is a problem, not a finding |
 | `input-causes-abend` | med | any other abend |
 
+A manifest's `format` names its shape, apart from the ironwork `version` that wrote it; ironwork's
+docs/fuzz-manifest.schema.json describes it. The set reads `ironwork-fuzz/v1`, and a manifest with no
+`format` as that shape, since ironwork 0.3.0 and earlier wrote none. Keys it does not know are
+skipped, because a key added keeps the format. A manifest in any other format is in
+`abendRunProblems`: its keys may mean something else.
+
 An abend with code `IRONWORK` is something ironwork does not run, counted as `notModelled` and never a
 finding. A manifest that cannot be read, evidence that does not verify, or a journal that does not
 record the claimed abend is in `abendRunProblems` and leaves the set incomplete. A program outside

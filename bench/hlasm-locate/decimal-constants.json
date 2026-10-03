@@ -1,0 +1,176 @@
+{
+ "z390": "1.8.4.4",
+ "symbols": {
+  "AP1": {
+   "section": "FIRST",
+   "loc": 0,
+   "len": 5,
+   "type": "REL"
+  },
+  "AP2": {
+   "section": "FIRST",
+   "loc": 5,
+   "len": 4,
+   "type": "REL"
+  },
+  "AP3": {
+   "section": "FIRST",
+   "loc": 9,
+   "len": 5,
+   "type": "REL"
+  },
+  "AZ1": {
+   "section": "FIRST",
+   "loc": 19,
+   "len": 8,
+   "type": "REL"
+  },
+  "AZ2": {
+   "section": "FIRST",
+   "loc": 27,
+   "len": 5,
+   "type": "REL"
+  },
+  "AZ3": {
+   "section": "FIRST",
+   "loc": 32,
+   "len": 8,
+   "type": "REL"
+  },
+  "L10": {
+   "section": "FIRST",
+   "loc": 84,
+   "len": 4,
+   "type": "REL"
+  },
+  "L1": {
+   "section": "FIRST",
+   "loc": 48,
+   "len": 4,
+   "type": "REL"
+  },
+  "L11": {
+   "section": "FIRST",
+   "loc": 88,
+   "len": 4,
+   "type": "REL"
+  },
+  "L12": {
+   "section": "FIRST",
+   "loc": 92,
+   "len": 4,
+   "type": "REL"
+  },
+  "L13": {
+   "section": "FIRST",
+   "loc": 96,
+   "len": 4,
+   "type": "REL"
+  },
+  "L14": {
+   "section": "FIRST",
+   "loc": 100,
+   "len": 4,
+   "type": "REL"
+  },
+  "L15": {
+   "section": "FIRST",
+   "loc": 104,
+   "len": 4,
+   "type": "REL"
+  },
+  "L16": {
+   "section": "FIRST",
+   "loc": 108,
+   "len": 4,
+   "type": "REL"
+  },
+  "L17": {
+   "section": "FIRST",
+   "loc": 112,
+   "len": 4,
+   "type": "REL"
+  },
+  "L18": {
+   "section": "FIRST",
+   "loc": 116,
+   "len": 4,
+   "type": "REL"
+  },
+  "L19": {
+   "section": "FIRST",
+   "loc": 120,
+   "len": 2,
+   "type": "REL"
+  },
+  "L2": {
+   "section": "FIRST",
+   "loc": 52,
+   "len": 4,
+   "type": "REL"
+  },
+  "L3": {
+   "section": "FIRST",
+   "loc": 56,
+   "len": 4,
+   "type": "REL"
+  },
+  "L4": {
+   "section": "FIRST",
+   "loc": 60,
+   "len": 4,
+   "type": "REL"
+  },
+  "L5": {
+   "section": "FIRST",
+   "loc": 64,
+   "len": 4,
+   "type": "REL"
+  },
+  "L6": {
+   "section": "FIRST",
+   "loc": 68,
+   "len": 4,
+   "type": "REL"
+  },
+  "L7": {
+   "section": "FIRST",
+   "loc": 72,
+   "len": 4,
+   "type": "REL"
+  },
+  "L8": {
+   "section": "FIRST",
+   "loc": 76,
+   "len": 4,
+   "type": "REL"
+  },
+  "L9": {
+   "section": "FIRST",
+   "loc": 80,
+   "len": 4,
+   "type": "REL"
+  }
+ },
+ "instructions": {
+  "10": 4,
+  "11": 4,
+  "12": 4,
+  "13": 4,
+  "14": 4,
+  "15": 4,
+  "16": 4,
+  "17": 4,
+  "18": 4,
+  "19": 4,
+  "20": 4,
+  "21": 4,
+  "22": 4,
+  "23": 4,
+  "24": 4,
+  "25": 4,
+  "26": 4,
+  "27": 4,
+  "28": 2
+ }
+}

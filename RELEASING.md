@@ -33,8 +33,11 @@ It prints PASS, FAIL or TODO for each step and exits 1 on any FAIL.
 6. **GitHub release.** Run `npm pack` in a clean detached worktree at the tag (`prepack` writes
    `lib/revision.json`). Attach the tarball as `cobolwork-<version>.tgz` and `cobolwork.tgz`;
    commitwork's pin installs the first name. The notes come from step 3.
-7. **npm.** `npm publish <tarball> --access public` needs the maintainer's browser 2FA. A later 409
-   "previously staged" means the publish is still processing.
+7. **npm.** `npm publish <tarball> --access public` needs the maintainer's browser 2FA, so the
+   maintainer runs it: a session with no terminal gets `EOTP` and a link instead of a prompt. A
+   later 409 "previously staged" means the publish is still processing, and the registry can take
+   hours to show it. Steps 8 and 9 need not wait: the release row renders the registries that hold
+   the version, and `--releases` is run again once npm does.
 
 ## After
 

@@ -1781,6 +1781,32 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "input-causes-hang",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-selects-program",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: An input the program accepts chooses the program a CALL loads. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend-s0c4",
    "framework": "ffiec",
    "clause": "DA&M V",

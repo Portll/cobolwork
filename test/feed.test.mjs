@@ -31,7 +31,8 @@ test('a quote is compared with whitespace collapsed and punctuation folded', () 
 });
 
 test('the catalogue holds every rule the engine can report', () => {
-  assert.equal(CATALOGUE.size, 219);
+  assert.equal(CATALOGUE.size, 221);
+  assert.equal(CATALOGUE.get('input-selects-program').set, 'abend');
   assert.equal(CATALOGUE.get('zowe-mcp-tier-full').set, 'zowe');
   assert.ok(CATALOGUE.has('cics-commarea-without-length-check'));
   assert.equal(CATALOGUE.get('call-parameter-exceeds-caller-record').set, 'flow');

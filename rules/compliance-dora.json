@@ -1772,6 +1772,32 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "input-causes-hang",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is a technical flaw that may hinder business activity, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-selects-program",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts chooses the program a CALL loads. That is a technical flaw permitting unauthorised access, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend-s0c4",
    "framework": "dora",
    "clause": "Article 9(3)(b)",

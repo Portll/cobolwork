@@ -137,3 +137,28 @@ test('the abend code and IBM message id choose the rule', () => {
   assert.equal(abendRule({ code: 'U4038', message: 'subscript out of range (SSRANGE)' }), 'input-causes-abend');
   assert.equal(abendRule({ code: 'S0CB' }), 'input-causes-abend');
 });
+
+test('an input-caused hang is an S322 finding at the statement the statement limit ran out on', () => {
+  const r = scan('hang');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.equal(f.rule, 'input-causes-hang');
+  assert.equal(f.path, 'hang/HANGS.cbl');
+  assert.equal(f.line, 12);
+  assert.equal(f.abend.code, 'S322');
+  assert.equal(f.input[0].kind, 'sysin');
+  assert.equal(abendRule({ code: 'S322', message: '' }), 'input-causes-hang');
+});
+
+test('an S806 is the input choosing the program only where its journal records the marker reaching the CALL', () => {
+  const r = scan('chosen');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.equal(f.rule, 'input-selects-program');
+  assert.equal(f.path, 'chosen/PICKER.cbl');
+  assert.equal(f.line, 8);
+  assert.match(f.abend.message, /^CALL @#\$/);
+  const s = scan('chosen-static');
+  assert.equal(s.findings.length, 0);
+  assert.match(s.summary.abendRunProblems[0], /does not record the input reaching the CALL at STATIC\.cbl:8/);
+});

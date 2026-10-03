@@ -1,0 +1,9 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. STATIC.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-PGM PIC X(8).
+       PROCEDURE DIVISION.
+           ACCEPT WS-PGM
+           CALL 'NOSUCH'
+           GOBACK.

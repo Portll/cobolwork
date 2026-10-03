@@ -1781,6 +1781,32 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "input-causes-hang",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-selects-program",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts chooses the program a CALL loads. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend-s0c4",
    "framework": "nist-800-53r5",
    "clause": "SI-10",

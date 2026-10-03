@@ -428,6 +428,8 @@ Its rules are `execution` evidence: a run of the program on that input ended thi
 | `input-causes-abend-s0c7` | med | the abend is S0C7, a data exception, or ASRA in a CICS task whose message ends `(S0C7, which CICS reports as ASRA)` |
 | `input-causes-abend-s0c4` | high | the abend is S0C4, a protection exception, or ASRA whose message ends `(S0C4, which CICS reports as ASRA)` |
 | `input-causes-abend-subscript-range` | high | the message starts with IGZ0006S, IGZ0007S, IGZ0072S, IGZ0073S or IGZ0074S: a subscript, index, OCCURS DEPENDING ON object or reference modification SSRANGE caught out of range |
+| `input-causes-hang` | med | the abend is S322: fuzz ran a timed-out input again under a statement limit and the run reached it, which ironwork's fuzz keeps only when ACCEPT had not found SYSIN at its end |
+| `input-selects-program` | high | the abend is S806, and the run's journal has a `sink` record of kind `dynamic-program-load` at the abend's file and line with `reached` true: the marker fuzz put in place of the called name reached the CALL. An S806 without that record is a problem, not a finding |
 | `input-causes-abend` | med | any other abend |
 
 An abend with code `IRONWORK` is something ironwork does not run, counted as `notModelled` and never a

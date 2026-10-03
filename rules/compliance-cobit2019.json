@@ -1644,6 +1644,30 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "input-causes-hang",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is information processed without the control that keeps the processing complete and within its bounds, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-selects-program",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An input the program accepts chooses the program a CALL loads. That is information processed without the control that keeps it valid and authorised: the input decides what code runs, which this practice asks business process controls to prevent.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend-s0c4",
    "framework": "cobit-2019",
    "clause": "DSS06.02",

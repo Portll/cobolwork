@@ -217,8 +217,9 @@ entered ([docs/spec/evidence.md](docs/spec/evidence.md) §13.5).
 `COBOLWORK_ABENDS` names fuzz runs ironwork's harness wrote. Each abend an input caused becomes a
 finding at the line it happened, with the input and the run's journal, once that journal verifies:
 `input-causes-abend-s0c7`, `-s0c4` (in a CICS task, the ASRA whose message names that check),
-`-subscript-range`, or `input-causes-abend` for any other code
-([docs/spec/evidence.md](docs/spec/evidence.md) §13.6).
+`-subscript-range`, `input-causes-hang` for a loop the input caused (S322), `input-selects-program`
+for an S806 whose journal shows the input reaching the CALL, or `input-causes-abend` for any other
+code ([docs/spec/evidence.md](docs/spec/evidence.md) §13.6).
 
 ### What each finding lets someone do, and the fix
 

@@ -75,6 +75,8 @@ test('nothing after a macro call is placed in its section, and the line it follo
 test('V-type constants and EXTRN names are the externals a module needs', () => {
   const r = locate(['PROG     CSECT', '         L     15,=V(SUBRTN)', "OTHER    DC    V(SUB2)", '         END'].join('\n'));
   assert.deepEqual(r.esd.externals.map((e) => e.name).sort(), ['SUB2', 'SUBRTN']);
+  const c = locate(['PROG     CSECT', '         CALL  PUT1,(A,B),VL', 'A        DS    F', 'B        DS    F', '         END'].join('\n'));
+  assert.deepEqual(c.esd.externals.map((e) => `${e.how}:${e.name}`), ['CALL:PUT1']);
 });
 
 test('a constant holding &SYSDATE or &SYSTIME is placed at its fixed length, and another variable stops placement', () => {

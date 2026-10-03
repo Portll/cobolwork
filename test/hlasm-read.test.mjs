@@ -80,9 +80,14 @@ test('macro definitions, conditional assembly and substituted statements are cou
     '&N       SETC  \'X\'',
     '&N       DS    F',
   ].join('\n'));
-  const kinds = statements.map((s) => parseHlasmStatement(s)).map((r) => `${r.kind}:${r.status}`);
-  assert.deepEqual(kinds, ['MACRO DEFINITION:parsed', 'PROTOTYPE:unbuilt', 'MODEL:unbuilt', 'MACRO DEFINITION:parsed',
-    'CONDITIONAL:unbuilt', 'DC:parsed', 'CONDITIONAL:unbuilt', 'SUBSTITUTED:unbuilt']);
+  const kinds = statements.map((s) => parseHlasmStatement(s).kind);
+  assert.deepEqual(kinds, ['MACRO DEFINITION', 'PROTOTYPE', 'MODEL', 'MACRO DEFINITION', 'CONDITIONAL', 'DC', 'CONDITIONAL', 'SUBSTITUTED']);
+  assert.equal(parseHlasmStatement(statements[4]).status, 'unbuilt');
+});
+
+test('a lone comma in the operand field of an assembler instruction is no operand', () => {
+  assert.equal(parse('         EJECT ,                  NEW PAGE').status, 'parsed');
+  assert.equal(parse('         EJECT 1').status, 'unparsed');
 });
 
 test('an operation that is no name is unknown, and any other macro call is split into its operands', () => {

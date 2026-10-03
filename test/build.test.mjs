@@ -5,7 +5,8 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { build, buildSummaryLine } from '../lib/build.mjs';
+import { blockingReason, build, buildSummaryLine } from '../lib/build.mjs';
+import { combinePolicies, DEFAULT_POLICY, validatePolicy } from '../lib/policy.mjs';
 import { scanAll } from '../lib/scan.mjs';
 import { classesOf, classesOfRule, kindsOf } from '../lib/consequence.mjs';
 import { ALL_RULES } from '../lib/kernel/registry.mjs';
@@ -224,6 +225,19 @@ test('B1.7 A MED finding in no consequence class is advisory', { skip }, () => {
 });
 
 // B2 - The modes
+
+test('B1.8 An abend from a subprogram fuzzed at its interface warns unless the policy says tier', () => {
+  const abend = (inputFrom) => ({ rule: 'input-causes-abend-s0c4', sev: 'high', fingerprint: inputFrom, abend: { code: 'S0C4', inputFrom } });
+  const reason = (f, policy) => blockingReason(f, { policy, ratchet: false, introduced: new Set([f]), renewed: new Set() });
+  assert.equal(reason(abend('interface'), DEFAULT_POLICY), null);
+  assert.equal(reason(abend('interface'), { ...DEFAULT_POLICY, interface: 'tier' }), 'tier');
+  assert.equal(reason(abend('entry'), DEFAULT_POLICY), 'tier');
+  assert.deepEqual(validatePolicy({ policyVersion: 1, interface: 'tier' }), []);
+  assert.match(validatePolicy({ policyVersion: 1, interface: 'block' })[0], /interface takes warn, tier/);
+  const combined = combinePolicies({ floor: { policyVersion: 1, interface: 'tier' }, repository: { policyVersion: 1, interface: 'warn' } });
+  assert.equal(combined.policy.interface, 'tier');
+  assert.deepEqual(combined.ignored, ['interface']);
+});
 
 test('B2.1 Ratchet mode passes an old finding and fails a new one', { skip }, () => {
   const root = repo({ 'Q.cbl': dynamicSql('Q') });

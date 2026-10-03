@@ -120,6 +120,7 @@ A JSON document, `cobolwork.policy.json` at the repository's root, validated aga
 | `waivers.maxDays` | A waiver written with an expiry further off than this covers nothing | 180 |
 | `checks` | The run-time checks every program must be compiled with, by name (§7) | `subscript`, `reference-modification` |
 | `forbid` | Options, per compiler, a build must not pass, beyond those that turn a required check off | none |
+| `interface` | An abend found by fuzzing a subprogram at its interface, with no caller run shown to pass the input (`abend.inputFrom` `interface`, evidence.md §13.6): `warn` never blocks on it, `tier` gates it by its tier as any other finding. cobolwork before 0.5.62 refuses this key, so a policy that sets it needs that version or later | `warn` |
 
 There is no `off`. A rule the estate does not want is waived, with a name and a date, or set to
 `warn`, which still appears in every report.
@@ -859,6 +860,12 @@ Every scenario builds a git repository from this repository's fixtures and commi
 #### B1.7 A MED finding in no consequence class is advisory
     Given a job whose FTP step sends in cleartext, a MED finding in neither class
     Then  it is listed with tier med and blocking false, and the verdict is pass
+
+#### B1.8 An abend from a subprogram fuzzed at its interface warns unless the policy says tier
+    Given a high abend finding whose abend.inputFrom is interface
+    Then  with no interface key it is reported and does not block
+    And   with interface tier it blocks as a high finding does
+    And   the stricter of the floor and the repository applies: tier over warn
 
 ### B2 - The modes
 

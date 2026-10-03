@@ -108,6 +108,13 @@
     "always"
    ],
    "description": "When every program a change edits, or whose copybooks it edits, needs an ironwork equivalence statement passed to build --equivalence: never, only when a commit in the change names a code assistant or bot as author, committer or co-author (machineAuthored), or always. The stricter of the floor and the repository applies. Default never."
+  },
+  "interface": {
+   "enum": [
+    "warn",
+    "tier"
+   ],
+   "description": "How an abend found by fuzzing a subprogram at its interface is gated, when no caller run shows a caller passes the input that gave it: warn never blocks on it, tier gates it by its tier as any other finding. The stricter of the floor and the repository applies. Default warn. cobolwork before 0.5.62 refuses this key."
   }
  },
  "$defs": {

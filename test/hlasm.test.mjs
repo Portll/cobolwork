@@ -127,6 +127,12 @@ test('a module named by the address of its name is reported, and one named in th
   assert.match(f[0].detail, /EPLOC=PGMNAME/);
 });
 
+test('an EX finding names the instruction it runs when its target is labelled in the file', () => {
+  const src = ['EXPROG   CSECT', '         EX    3,MOVE', '         BR    14', 'MOVE     MVC   0(0,2),0(4)', '         END'].join('\n');
+  const f = scanHlasm(tree({ 'asm/EXPROG.asm': src })).findings.find((x) => x.rule === 'hlasm-executes-built-instruction');
+  assert.match(f.detail, /^EX 3,MOVE runs MVC 0\(0,2\),0\(4\): /);
+});
+
 test('statements the reader refused, macros not expanded and COPY members not in the tree are named', () => {
   const src = [
     'PROG     CSECT',

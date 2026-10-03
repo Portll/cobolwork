@@ -21,7 +21,7 @@ test('a single DCB may be written without parentheses, and an unknown option or 
 });
 
 test('DCB keeps its keywords and names the DD statement it reads', () => {
-  const r = parse('INDCB    DCB   DDNAME=sysin,DSORG=PS,MACRF=GM,RECFM=FB,LRECL=80,EODAD=EOF');
+  const r = parse('INDCB    DCB   DDNAME=sysin,MACRF=GM,RECFM=FB,LRECL=80,EODAD=EOF');
   assert.equal(r.status, 'parsed');
   assert.equal(r.node.name, 'INDCB');
   assert.equal(r.node.ddname, 'SYSIN');

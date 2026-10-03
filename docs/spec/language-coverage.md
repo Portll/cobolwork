@@ -417,20 +417,34 @@ that no COBOL rule set would ever find. Treat them as first-class.
 ## 5. Phase 4 — HLASM
 
 **Built:** the reader (`lib/hlasm.mjs`, over `lib/bms.mjs`'s card folding), the cited table
-(`rules/hlasm-operations.json`) and the five rules below (`lib/sets/hlasm.mjs`); a job step running
-an assembler CSECT or ENTRY is a defined program. Definition of done 1, 3, 4 and 5 are met
-(`diag/hlasm-measure.mjs` names each file with card errors; bench cases 103 to 105). Item 2 is
-measured by `diag/hlasm-z390.mjs` with z390 1.8.4.4 over the 3,185-repository corpus: of 652 files
-read as HLASM, 106 are macro definitions and 546 were assembled with each repository's members as
-the macro and copy library. z390 assembled 276 (return code 0 or 4) in 105 repositories; every one
-reads with no card error, and the 96 files the reader reports card errors in are all among the 270
-z390 refused. Of the other 174 it refused, 134 need macros or copy members the repository does not
-hold (CICS, a site's own), and 40 have errors a card reader does not check. Over the three random
-corpora on the drive (`--repo-depth 4`), z390 assembled 45 of 117 in 15 repositories, every one
-again with no card error, and the 14 the reader reports card errors in are again all refused.
-`SPKA`, `MODESET` and the authorized operands of the storage, attach and load macros (`KEY=`, `SP=`,
-`GLOBAL=`) appear in none of the four corpora, so the table lists them and no rule reports them
-until an estate supplies one to measure against.
+(`rules/hlasm-operations.json`) and the rules below (`lib/sets/hlasm.mjs`); a job step running an
+assembler CSECT or ENTRY is a defined program. Definition of done 1 to 5 are met.
+
+On top of it, `lib/hlasm/` reads each statement by what its operation is:
+- machine instructions against IBM's operand syntax, from `rules/hlasm-instructions.json` (2,388
+  mnemonics with their Principles of Operation pages, checked against IBM's own HLASM listing of
+  every op code);
+- assembler instructions (DC and DS, EQU, ORG, USING, sections and the rest);
+- the z/OS, Language Environment and HLASM Toolkit macros the rules read, against IBM's keywords;
+- macro definitions, whose model statements are read as the statements they are.
+
+Conditional assembly is counted, not evaluated. `lib/hlasm/locate.mjs` works out section-relative
+locations, lengths and types and the external names a module needs, and places nothing after a
+statement whose length it cannot know.
+
+`diag/hlasm-statement-measure.mjs` measures the reader by kind over a dev and a held-out corpus.
+`diag/hlasm-oracle.mjs` and `diag/hlasm-grade-z390.mjs` grade the locator against z390 1.8.4.4,
+counting only values that do not move when sixteen bytes follow every macro call. On 2026-10-03:
+
+- Statements outside conditional assembly parse at 96.4% on the dev corpus and 98.6% on the
+  held-out corpus.
+- No symbol location differs from z390's on either corpus, and 591 of 602 held-out symbols are
+  placed.
+- Instruction lengths agree on all 3,983 graded instructions.
+
+`bench/hlasm-locate/` holds the locator's own fixtures, with z390's answers recorded beside them.
+The set also names the macros it did not expand, the COPY members missing from the tree and the
+statements it could not read, and sets `coverageIncomplete` for the last two.
 
 ### Scope, stated honestly
 
@@ -471,6 +485,7 @@ resolving to an assembler module currently reports `jcl-exec-pgm-unresolved` or 
 | `hlasm-cross-memory-service` | high | `PC`/`SSAR`/`LASP` |
 | `hlasm-calls-security-product` | med | `RACROUTE` and relatives — inventory, not defect |
 | `hlasm-provides-called-module` | info | Closes the COBOL `CALL` that currently resolves to nothing |
+| `hlasm-runtime-module-name` | med | `LINK`, `XCTL`, `LOAD` or `ATTACH` given `EPLOC=` or `DE=`: the module is whatever name that storage holds |
 
 ### Definition of done
 

@@ -341,7 +341,10 @@ IBM manual defining it. A `MODESET` that switches to key zero or supervisor stat
 and problem state is not reported. `EX` and `EXRL` run their target with its second byte from a
 register, which for a move is its length, and the cross-memory instructions (`PC`, `PR`, `PT`,
 `SSAR`, `LASP`) reach another address space; both are high. `RACROUTE`, `RACHECK` and `RACINIT`
-called directly are listed as context. A BMS map or an IMS DBD or PSB in a `.asm` file is counted
+called directly are listed as context. `LINK`, `XCTL`, `LOAD` or `ATTACH` given `EPLOC=` or `DE=`
+names its module by the address of the name, so the program that runs is whatever that storage
+holds; that is medium (CWE-470), and `EP=` with a written name is not reported. An `EX` finding
+names the instruction it runs when the target is labelled in the same file. A BMS map or an IMS DBD or PSB in a `.asm` file is counted
 as what it is, and a file with no HLASM operation the reader recognises (x86, 6502 or a copy member
 of `EQU`s) is counted as unrecognised.
 
@@ -351,7 +354,9 @@ the JCL rules count it as a defined program, so a step that runs it is not unres
 
 It reads; it does not assemble. Macros are not expanded and conditional assembly is not evaluated,
 so an operation a site macro issues is seen in the macro's definition, not where the macro is used,
-and an operation in a branch `AIF` jumps over is reported as much as any other.
+and an operation in a branch `AIF` jumps over is reported as much as any other. The scan names the
+macros it did not expand, each COPY member the tree does not hold and each statement the statement
+reader (`lib/hlasm/read.mjs`) refused, by kind; the last two set `coverageIncomplete`.
 
 ## Change review
 

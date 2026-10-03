@@ -34,9 +34,9 @@ test('EJECT parses with no operand', () => {
   assert.deepEqual(r.node, { kind: 'EJECT', value: null });
 });
 
-test('EJECT refuses operand', () => {
+test('EJECT reads what follows it as remarks', () => {
   const r = parse("         EJECT 1");
-  assert.equal(r.status, 'unparsed');
+  assert.equal(r.status, 'parsed');
 });
 
 test('SPACE parses expression', () => {

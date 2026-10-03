@@ -87,7 +87,7 @@ test('macro definitions, conditional assembly and substituted statements are cou
 
 test('a lone comma in the operand field of an assembler instruction is no operand', () => {
   assert.equal(parse('         EJECT ,                  NEW PAGE').status, 'parsed');
-  assert.equal(parse('         EJECT 1').status, 'unparsed');
+  assert.equal(parse('         EJECT NEXT PAGE').status, 'parsed');
 });
 
 test('an EXEC statement keeps the words after EXEC, blanks and continuation cards included', () => {

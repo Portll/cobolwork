@@ -100,7 +100,7 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
 | `close` | `exit`, `counts` (`input`, `finding`, `suppressed`, ...), `durationMs` | last |
 
 ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence.rs`), with `tool`
-`ironwork` and three kinds of its own, so `evidence verify` reads both tools' journals:
+`ironwork` and kinds of its own, so `evidence verify` reads both tools' journals:
 
 | kind | fields | written |
 |---|---|---|
@@ -108,7 +108,8 @@ ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence
 | `call` | `program`, `from`, `sha256` | a program CALL loaded from a library, with its source's digest |
 | `abend` | `code`, `file`, `line` | the abend a run ended with |
 | `step` | `step`, `pgm`, `outcome` | a job step ironwork ran or bypassed, and how it ended (`RC=0004`, `ABEND S0C7: …`, `BYPASSED: …`, `JCL ERROR: …`) |
-| `sink` | `sink`, `file`, `line`, `marker`, `reached` | an operation an ironwork run with `--trace-marker` reached (ironwork `docs/evidence.md` §1.1): the sink kind as `lib/dataflow.mjs` names it, where it is, the marker, and whether the marker was in its operand; once reached and once not, never the operand |
+| `sink` | `sink`, `file`, `line`, `marker`, `reached`, `input` | an operation an input could steer, reached by an ironwork run: the sink kind as `lib/dataflow.mjs` names it and where it is. With `--trace-marker` (ironwork `docs/evidence.md` §1.1), the marker and whether it was in the operand, once reached and once not, never the operand. With `--trace-input` (§1.3), `input`: true where an input byte may be in the operand, false where none is, and null once the run has done something taint does not follow yet (SORT and MERGE, the Report Writer, XML and JSON, EXEC CICS, object-oriented COBOL, calls through pointers, Language Environment services), so such a sink cannot be cleared; a record for each value it first takes. `marker` and `reached` come together, and a record carries them, `input`, or both |
+| `statement` | `file`, `line`, `capped` | a statement an ironwork run with `--trace-statements` started, each time it started, at a line the trace names; `capped: true` on the hundredth record of one statement, after which it is not recorded again |
 
 A reason is recorded as its digest, not its text: a reason is free prose, and free prose is where a
 secret or a person's name ends up.

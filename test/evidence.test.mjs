@@ -7,7 +7,7 @@ import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSyn
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { canonical, makeRecord, newChain, recordHash } from '../lib/evidence/record.mjs';
+import { JOURNAL_KINDS, KINDS, LEDGER_KINDS, canonical, makeRecord, newChain, recordHash } from '../lib/evidence/record.mjs';
 import { EvidenceRefusal, createExclusive, openAppend, prepareDir, readLines, syncClose, writeAll } from '../lib/evidence/store.mjs';
 import { LEDGER, LOCK, openJournal } from '../lib/evidence/journal.mjs';
 import { PAYLOAD_TYPE, SEAL_PREDICATE, STATEMENT_TYPE, anchorGit, seal, timeStampRequest } from '../lib/evidence/seal.mjs';
@@ -218,6 +218,16 @@ test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
   assert.throws(() => makeRecord({ chain, prev, kind: 'sink', fields: { sink: 'os-command', file: 'A.cbl', line: 1 }, at }), /needs marker and reached, or input/);
   assert.throws(() => makeRecord({ chain, prev, kind: 'statement', fields: { file: 'A.cbl' }, at }), TypeError);
   assert.throws(() => makeRecord({ chain, prev, kind: 'statement', fields: { file: 'A.cbl', line: 1, capped: false }, at }), TypeError);
+});
+
+test("V1.10 The kinds table ironwork vendors is the writer's", (t) => {
+  const d = tmp(t);
+  const out = join(d, 'kinds.tsv');
+  const gen = spawnSync(process.execPath, [join(HERE, '..', 'diag', 'generate-evidence-kinds.mjs'), out], { encoding: 'utf8' });
+  assert.equal(gen.status, 0, gen.stderr);
+  const lf = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
+  assert.equal(lf(join(HERE, 'fixtures', 'evidence', 'kinds.tsv')), lf(out), 'regenerate test/fixtures/evidence/kinds.tsv with diag/generate-evidence-kinds.mjs');
+  for (const kind of Object.keys(KINDS)) assert.ok(JOURNAL_KINDS.has(kind) !== LEDGER_KINDS.has(kind), kind);
 });
 
 // V2 - The ledger

@@ -84,6 +84,9 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
   A secrets finding carries its fingerprint and never its match. A path is relative to the root it
   was read under. The writer refuses a record with a key it does not know for that kind (§5), so
   a new field is a reviewed change to this document, not a silent addition.
+- **The kinds table.** `test/fixtures/evidence/kinds.tsv`, generated from the writer's table by
+  `diag/generate-evidence-kinds.mjs`, lists each kind, the file it belongs in, its fields and the
+  fields it requires. ironwork vendors it and tests the records its run journal writes against it.
 
 ## 5. The run journal
 
@@ -499,6 +502,10 @@ is listed in `abendRunsElsewhere` instead of reported.
 #### V1.9 An ironwork run journal verifies with the same verifier
     Given a journal of ironwork's open, input, dd, call, abend and close records
     Then  verify reports it verified, and a dd record with an event it does not know as broken
+
+#### V1.10 The kinds table ironwork vendors is the writer's
+    When  diag/generate-evidence-kinds.mjs runs
+    Then  it writes test/fixtures/evidence/kinds.tsv byte for byte, with every kind in the journal or the ledger
 
 ### V2 - The ledger
 

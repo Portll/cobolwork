@@ -1659,7 +1659,7 @@
    "ruleId": "input-causes-hang",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
-   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is information processed without the control that keeps the processing complete and within its bounds, which is what this practice asks of business process controls.",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is information processed without the control that keeps the processing complete and within its bounds, which is what this practice asks of business process controls.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",

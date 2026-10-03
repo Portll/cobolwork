@@ -200,7 +200,7 @@ test('a fuzzed job places each abend in the COBOL step that gave it, with its da
   assert.deepEqual(r.findings[0].input.map((i) => `${i.kind} ${i.name}`), ['dd MY.INPUT', 'sysin STEP3.SYSIN', 'parm STEP2']);
 });
 
-test('an input-caused hang is an S322 finding at the statement the statement limit ran out on', () => {
+test('an input-caused hang is an S322 finding at the line the run names, reported as excessive iteration', () => {
   const r = scan('hang');
   assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
   const [f] = r.findings;
@@ -210,6 +210,9 @@ test('an input-caused hang is an S322 finding at the statement the statement lim
   assert.equal(f.abend.code, 'S322');
   assert.equal(f.input[0].kind, 'sysin');
   assert.equal(abendRule({ code: 'S322', message: '' }), 'input-causes-hang');
+  // The run shows the loop passed the limit, not that its exit is unreachable.
+  assert.equal(ABEND_RULES['input-causes-hang'].cwe, 'CWE-834');
+  assert.match(ABEND_RULES['input-causes-hang'].impact, /not that it would never end/);
 });
 
 test('an S806 is the input choosing the program only where its journal records the marker reaching the CALL', () => {

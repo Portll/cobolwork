@@ -1789,7 +1789,7 @@
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
-   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is a technical flaw that may hinder business activity, which this clause requires be minimised.",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is a technical flaw that may hinder business activity, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

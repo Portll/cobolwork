@@ -1798,7 +1798,7 @@
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
-   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",

@@ -1798,7 +1798,7 @@
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
-   "rationale": "The rule reports: An input the program accepts makes it loop until its time limit ends the run (S322). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",

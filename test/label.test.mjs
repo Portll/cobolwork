@@ -35,6 +35,17 @@ test('a finding is confirmed where the marker reached its operation, and unknown
   assert.equal(verifyEvidence(evidence).verified, true);
 });
 
+test('a job\'s in-stream data is fed through its DD, and a program of more than 18 digits runs under ARITH(EXTEND)', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
+  const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
+  t.after(() => rmSync(evidence, { recursive: true, force: true }));
+  const out = label(join(import.meta.dirname, 'fixtures', 'label', 'instream'), { ironwork: IRONWORK, evidence });
+  assert.deepEqual(out.labels.map((l) => [l.rule, l.line, l.label]).sort(), [
+    ['file-record-to-dynamic-program-load', 20, 'confirmed'],
+    ['jcl-instream-to-dynamic-program-load', 20, 'confirmed'],
+  ]);
+  assert.equal(verifyEvidence(evidence).verified, true);
+});
+
 test('terminal input typed into a map reaches the log in the task the pseudo-conversation starts', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
   const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
   t.after(() => rmSync(evidence, { recursive: true, force: true }));

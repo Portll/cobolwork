@@ -279,8 +279,8 @@ unmatched only where no repository's finding carries it.
 
 Labels are made by machine, execution first. `bench/label.mjs` runs each path finding's
 verification plan (§9.7) in ironwork. The marker goes in at the finding's source:
-- a batch program: every DD it assigns, and SYSIN, with the records shifted through the marker's
-  eight alignments;
+- a batch program reading a file's records or a job's in-stream data: every DD it assigns, and
+  SYSIN, with the records shifted through the marker's eight alignments;
 - a RECEIVE MAP: typed into the map's unprotected fields, across the pseudo-conversation the
   program's RETURN TRANSID starts;
 - a RECEIVE without a map: typed on a cleared screen after the transaction's name.
@@ -291,7 +291,8 @@ how the run ends at their line instead, provided the same run with a control inp
 An arithmetic finding needs a data exception where asterisks went in, with digits as the control.
 A subscript, reference modification, loop bound or `OCCURS DEPENDING` count needs ironwork's
 range abend, U4038, where nines went in, with ones as the control. That run is of a copy with a
-`CBL SSRANGE` card before its first line.
+`CBL SSRANGE` card before its first line. A program ironwork refuses for a PICTURE of more than 18
+digits runs as a copy with `CBL ARITH(EXTEND)`, the only option it compiles under.
 Anything else is unknown, with its reason. A run that did not carry the marker to the operation
 shows only that these inputs did not, so refuting a finding needs every route to its sink covered
 (§9.8).

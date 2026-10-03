@@ -20,6 +20,9 @@ const ABORT = /^(AZ|MZ)390E abort\s+(\d+)\s*(.*)$/;
 const ESD = /^ ESD=([0-9A-F]+) LOC=([0-9A-F]+) LEN=([0-9A-F]+) TYPE=(\S+) NAME=(.*)$/;
 const SYM = /^ SYM=(\S+)\s+LOC=([0-9A-F]+) LEN=([0-9A-F]+) ESD=([0-9A-F]+) TYPE=(\S+)\s+XREF=(.*)$/;
 const hex = (s) => parseInt(s, 16);
+// A macro z390 does not have, defined as one that takes any operands and generates nothing.
+export const stubMacro = (name) => `         MACRO\n&L       ${name}\n&L       DS    0H\n         MEND\n`;
+export const missingMacros = (text) => [...new Set([...String(text).matchAll(/missing macro\s*=\s*(\S+)/g)].map((m) => m[1].toUpperCase()))];
 const operationOf = (source) => (/^\S*\s+(\S+)/.exec(source)?.[1] ?? '').toUpperCase();
 
 // Reads a z390 PRN, or its console output for the errors. finished: the symbol table was printed;
@@ -145,7 +148,7 @@ function main(args) {
       for (const e of logged.errors) if (!seen.has(`${e.tool}|${e.number}|${e.file}/${e.line}|${e.stmt}`)) listing.errors.push(e);
       for (const e of listing.errors) e.text = e.text.replace(/\S*\/cw-oracle-[^\s/]+\/(?:[^\s/]+\/)*/g, '');
       listing.aborted ||= logged.aborted;
-      const missing = [...new Set([...`${out}\n${prn}`.matchAll(/missing macro\s*=\s*(\S+)/g)].map((m) => m[1].toUpperCase()))];
+      const missing = missingMacros(`${out}\n${prn}`);
       done({ timedOut, listing, missing });
     });
   });
@@ -195,7 +198,7 @@ function main(args) {
         a = await assemble(join(job, `a${round}`), name, bytes, stubDir, lib);
         const fresh = a.missing.filter((m) => NAME.test(m) && !result.stubs.includes(m));
         if (a.timedOut || !fresh.length || round === 3) break;
-        for (const m of fresh) writeFileSync(join(stubDir, `${m}.MAC`), `         MACRO\n&L       ${m}\n&L       DS    0H\n         MEND\n`);
+        for (const m of fresh) writeFileSync(join(stubDir, `${m}.MAC`), stubMacro(m));
         result.stubs.push(...fresh);
       }
       if (a.timedOut) return { ...result, why: 'timeout in run A' };

@@ -225,6 +225,17 @@ function compileOptions(ctx) {
 // say, and none only where every one found none.
 const combined = (answers) => (answers.includes(true) ? true : answers.includes(null) ? null : false);
 
+// The exit statuses ironwork keeps for a run it ended itself, not the program (its README, Exit status).
+const IRONWORK_ENDED = {
+  241: 'gave the compile no program to run',
+  242: 'refused a construct in code generation',
+  243: 'stopped at a construct the VM does not run yet',
+  244: 'reached a construct it does not run',
+  245: 'could not read the source or module',
+  246: 'refused its arguments',
+  255: 'failed',
+};
+
 // One run of one input variant, read back from its journal.
 function runVariant(f, ctx, variant) {
   const data = mkdtempSync(join(tmpdir(), 'cobolwork-label-run-'));
@@ -235,8 +246,10 @@ function runVariant(f, ctx, variant) {
     if (r.error) return { outcome: r.error.code === 'ETIMEDOUT' ? `no end in ${ctx.timeout / 1000}s` : r.error.message };
     let journal;
     try { journal = journalOf(ctx.evidence); } catch { journal = null; }
-    if (!journal || journal.run === ctx.runs) return { outcome: `ironwork kept no journal (exit ${r.status})` };
+    const ended = IRONWORK_ENDED[r.status] && `ironwork ${IRONWORK_ENDED[r.status]} (exit ${r.status})`;
+    if (!journal || journal.run === ctx.runs) return { outcome: ended || `ironwork kept no journal (exit ${r.status})` };
     ctx.runs = journal.run;
+    if (ended) return { outcome: ended };
     // A record in the program itself names the program; one in a COPY member or a called program
     // names that, and only the program's own lines moved for a staged card.
     const lineOf = (x) => x.line - (!x.file || basename(x.file) === basename(ctx.program) ? variant.lineOffset || 0 : 0);

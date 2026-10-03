@@ -97,7 +97,7 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
 | `witness` | `fingerprint`, `outcome`, `who`, `when`, `system`, `sourceSha256` | once per witness entry applied |
 | `verdict` | `verdict`, `checks`, `relaxed`, `exit` | build and gate |
 | `output` | `name` (`report`, `sarif`, `provenance`, `sbom`, `baseline`), `sha256`, `bytes`, `path` or `stdout` | once per document written |
-| `close` | `exit`, `counts` (`input`, `finding`, `suppressed`, ...), `durationMs` | last |
+| `close` | `exit` (in an ironwork run journal, the program's RETURN-CODE, negative included), `counts` (`input`, `finding`, `suppressed`, ...), `durationMs` | last |
 
 ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence.rs`), with `tool`
 `ironwork` and kinds of its own, so `evidence verify` reads both tools' journals:
@@ -444,11 +444,12 @@ docs/fuzz-manifest.schema.json describes it. The set reads `ironwork-fuzz/v1`, a
 skipped, because a key added keeps the format. A manifest in any other format is in
 `abendRunProblems`: its keys may mean something else.
 
-An abend with code `IRONWORK` is something ironwork does not run, counted as `notModelled` and never a
-finding. A manifest that cannot be read, evidence that does not verify, or a journal that does not
-record the claimed abend is in `abendRunProblems` and leaves the set incomplete. A program outside
-the scanned tree is refused, and a finding in a file the scanned tree does not hold is listed in
-`abendRunsElsewhere` instead of reported.
+An abend with code `IRONWORK`, `EXEC` (an EXEC statement with no database or region behind it) or
+`JAVA` is something ironwork does not run, counted as `notModelled` and never a finding. ironwork
+exits 244 for these. A manifest that cannot be read, evidence that does not verify, or a journal
+that does not record the claimed abend is in `abendRunProblems` and leaves the set incomplete. A
+program outside the scanned tree is refused, and a finding in a file the scanned tree does not hold
+is listed in `abendRunsElsewhere` instead of reported.
 
 ## 14. Specification (BDD)
 

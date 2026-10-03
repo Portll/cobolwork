@@ -75,6 +75,16 @@ test('an abend ironwork raises for what it does not run is counted, never a find
   assert.deepEqual(r.findings, []);
   assert.equal(r.summary.abendRuns[0].notModelled, 1);
   assert.equal(r.summary.setIncomplete, false);
+  for (const code of ['EXEC', 'JAVA']) {
+    const dir = join(mkdtempSync(join(tmpdir(), 'cw-abend-')), 'notmodelled');
+    cpSync(join(HERE, 'runs', 'notmodelled'), dir, { recursive: true });
+    const manifest = JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8'));
+    manifest.runs[0].abend.code = code;
+    writeFileSync(join(dir, 'manifest.json'), JSON.stringify(manifest));
+    const other = scanAbend(REPO, { abendRuns: [dir] });
+    assert.deepEqual(other.findings, [], code);
+    assert.equal(other.summary.abendRuns[0].notModelled, 1, code);
+  }
 });
 
 test('a program outside the tree is refused, and one the scanned tree does not hold is set aside', () => {

@@ -194,7 +194,7 @@ test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
     ['statement', { file: 'PAYROLL.cbl', line: 41 }],
     ['statement', { file: 'HELPER.cbl', line: 12, capped: true }],
     ['step', { step: 'PAY.CALC', pgm: 'PAYROLL', outcome: 'ABEND S0C7: a data exception' }],
-    ['close', { exit: 16, counts: { dd: 2 }, durationMs: 5, ledger: 'unrecorded' }],
+    ['close', { exit: 240, counts: { dd: 2 }, durationMs: 5, ledger: 'unrecorded' }],
   ];
   let prev = null;
   let text = '';
@@ -208,6 +208,7 @@ test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
   let v = verifyEvidence(d);
   assert.equal(v.verified, true, JSON.stringify(v.broken));
   assert.deepEqual(v.unrecorded, [id]);
+  assert.doesNotThrow(() => makeRecord({ chain, prev, kind: 'close', fields: { exit: -4, counts: {}, durationMs: 1, ledger: 'unrecorded' }, at }));
   assert.throws(() => makeRecord({ chain, prev, kind: 'dd', fields: { dd: 'X', event: 'rewind' }, at }), TypeError);
   assert.throws(() => makeRecord({ chain, prev, kind: 'step', fields: { step: 'S1', pgm: 'A' }, at }), TypeError);
   assert.throws(() => makeRecord({ chain, prev, kind: 'sink', fields: { sink: 'os-command', file: 'A.cbl', line: 1, marker: 'CWVRFY01', reached: 'yes' }, at }), TypeError);

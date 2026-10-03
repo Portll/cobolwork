@@ -1239,7 +1239,7 @@ Tracked as the `cobolwork-build-gate` plan.
 | 2 | The policy: schema, loader, the two layers, the hash; the base revision's copy in ratchet mode | 1 |
 | 3 | The verdict over one scan: `findings`, `coverage`, `waivers.maxDays`, exit status | 2 |
 | 4 | `cobolwork build`: ratchet mode through `diff`'s two scans and `gate`'s pairing, the compiler, provenance, SARIF | 3 |
-| 5 | Effective options per program: site defaults, compile-step `PARM`, `CBL`/`PROCESS`, build scripts' `cobc` commands, suboptions and abbreviations; the `options` check. Landed 2026-09-27 except the pinned-version check (B5.9) | 2 |
+| 5 | Effective options per program: site defaults, compile-step `PARM`, `CBL`/`PROCESS`, build scripts' `cobc` commands, suboptions and abbreviations; the `options` check, and a check the pinned GnuCOBOL cannot generate (B5.9) | 2 |
 | 6 | §11a: the four graph changes, then the `errors` set | 1 |
 | 7 | §11b: integer and decimal digits in the parser, then the three sink kinds | 1 |
 | 8 | §11c: the `secrets` set and the shared shape list | 1 |

@@ -435,7 +435,22 @@ test('B5.8 A forbidden GnuCOBOL option is refused, not removed', { skip: skip ||
   assert.equal(cobc.args(), null, 'the compiler did not run');
 });
 
-test('B5.9 A check the pinned GnuCOBOL cannot generate fails', { todo: 'the pinned-version check is not built (spec §15, step 5)' }, () => {});
+const pinsGnucobol = (version) => ({ Dockerfile: `FROM debian:12\nARG GNUCOBOL_VERSION=${version}\n` });
+test('B5.9 A check the pinned GnuCOBOL cannot generate fails', { skip: skip || posix }, () => {
+  const cobc = standInCobc();
+  const pinned = (version, over = {}) => repo({ 'Q0.cbl': QUIET, ...pinsGnucobol(version), 'cobolwork.policy.json': policy({ options: 'block', ...over }) });
+  const argumentLength = (version) => absolute(pinned(version, { checks: ['argument-length'] }), { compiler: [cobc.path, '-debug', 'Q0.cbl'] });
+  const old = argumentLength('3.1');
+  assert.equal(old.checks.options, false);
+  assert.deepEqual(old.reasons.filter((r) => /GnuCOBOL/.test(r)), ['argument-length needs EC-PROGRAM-ARG-MISMATCH, which is in GnuCOBOL 3.2 and later; Dockerfile pins 3.1']);
+  assert.equal(argumentLength('3.2').checks.options, true);
+
+  const before = absolute(pinned('2.2'), { compiler: [cobc.path, '-x', 'Q0.cbl'] });
+  assert.equal(before.checks.options, false);
+  assert.deepEqual(before.optionsAdded, [], 'no -fec is added for a cobc that has none');
+  assert.ok(before.reasons.includes('subscript needs -fec, which is in GnuCOBOL 3.1 and later; Dockerfile pins 2.2'), before.reasons.join('\n'));
+  assert.equal(absolute(pinned('2.2'), { compiler: [cobc.path, '-debug', 'Q0.cbl'] }).checks.options, true);
+});
 
 const NO_SITE = { 'cobolwork.site.json': JSON.stringify({}) };
 

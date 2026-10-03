@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-a-module-named-in-the-source",
+ "title": "LINK to a module whose name is written in the source, which no caller can change",
+ "cwe": "CWE-470",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-runtime-module-name"
+ ]
+}

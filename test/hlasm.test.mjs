@@ -111,6 +111,39 @@ test('each privileged operation is reported where it is written, and the return 
   assert.equal(r.summary.assemblerFiles, 2);
 });
 
+test('a module named by the address of its name is reported, and one named in the source is not', () => {
+  const src = [
+    'RUNPGM   CSECT',
+    '         LINK  EPLOC=PGMNAME',
+    '         XCTL  DE=LISTENT',
+    '         LOAD  EP=FIXED',
+    'PGMNAME  DS    CL8',
+    'LISTENT  DS    CL62',
+    '         END',
+  ].join('\n');
+  const r = scanHlasm(tree({ 'asm/RUNPGM.asm': src }));
+  const f = r.findings.filter((x) => x.rule === 'hlasm-runtime-module-name');
+  assert.deepEqual(f.map((x) => x.line), [2, 3]);
+  assert.match(f[0].detail, /EPLOC=PGMNAME/);
+});
+
+test('statements the reader refused, macros not expanded and COPY members not in the tree are named', () => {
+  const src = [
+    'PROG     CSECT',
+    '         SITEMAC A,B',
+    '         SITEMAC C',
+    '         COPY  NOTHERE',
+    '         COPY  HERE',
+    "         DC    A'1'",
+    '         END',
+  ].join('\n');
+  const r = scanHlasm(tree({ 'asm/PROG.asm': src, 'asm/HERE.cpy': '         DS    F\n' }));
+  assert.deepEqual(r.summary.macrosNotExpanded, [{ name: 'SITEMAC', calls: 2, definedInTree: false }]);
+  assert.deepEqual(r.summary.copyNotFound, ['NOTHERE']);
+  assert.equal(r.summary.statementsNotRead.DC.count, 1);
+  assert.equal(r.summary.coverageIncomplete, true);
+});
+
 test('maps, IMS definitions and other assemblers are counted and not read as HLASM', () => {
   const root = tree({
     'maps/MAP1.asm': asm(card('MAP1', 'DFHMSD', 'TYPE=MAP,LANG=COBOL')),

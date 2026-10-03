@@ -8,6 +8,9 @@ import { join } from 'node:path';
 import './pin-machine.mjs';
 import { checkWithIronwork, ironworkVerdict } from '../lib/ironwork.mjs';
 
+// On Windows the stub does not start, and every run reads as unrun whatever the case asks.
+const posix = { skip: process.platform === 'win32' && 'the stand-in ironwork is a shell script' };
+
 function run(status, stderr) {
   const dir = mkdtempSync(join(tmpdir(), 'cw-iw-'));
   try {
@@ -19,34 +22,34 @@ function run(status, stderr) {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
-test('exit 0 and 4 compile', () => {
+test('exit 0 and 4 compile', posix, () => {
   assert.equal(ironworkVerdict(run(0, '')), true);
   const warned = run(4, 'P.cbl:1:1: warning: odd');
   assert.equal(warned.warned, 1);
   assert.equal(ironworkVerdict(warned), true);
 });
 
-test('exit 8 fails the program though the error says "not supported"', () => {
+test('exit 8 fails the program though the error says "not supported"', posix, () => {
   const r = run(8, 'P.cbl:3:8: this clause is not supported here');
   assert.equal(r.failed.length, 1);
   assert.equal(ironworkVerdict(r), false);
 });
 
-test('exit 12 with "not supported" is undecided', () => {
+test('exit 12 with "not supported" is undecided', posix, () => {
   const r = run(12, 'P.cbl:3:8: USAGE X is not supported yet');
   assert.equal(r.notModelled.length, 1);
   assert.equal(ironworkVerdict(r), null);
 });
 
-test('exit 12 with a translator name undefined is undecided; any other name fails', () => {
+test('exit 12 with a translator name undefined is undecided; any other name fails', posix, () => {
   assert.equal(run(12, 'P.cbl:3:8: EIBCALEN is not defined').notModelled.length, 1);
   assert.equal(run(12, 'P.cbl:3:8: WS-X is not defined').failed.length, 1);
 });
 
-test('a missing copy member is unresolved', () => {
+test('a missing copy member is unresolved', posix, () => {
   assert.equal(run(12, 'P.cbl:2:8: CUST: no such member in the copy libraries').unresolved.length, 1);
 });
 
-test('an exit outside the codes is unrun', () => {
+test('an exit outside the codes is unrun', posix, () => {
   assert.equal(run(2, 'usage').unrun.length, 1);
 });

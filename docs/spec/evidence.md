@@ -422,6 +422,12 @@ under the root where the scanned tree holds that file with that digest, or the o
 at all. Without `roots` or either record, it goes under the program's directory. A file whose root
 cannot be told, or lies outside the scanned tree, is in `abendRunProblems`.
 Its rules are `execution` evidence: a run of the program on that input ended this way.
+A manifest's abend may carry `optimized`, whether a run of the same input with the program compiled
+at OPTIMIZE(2) ended in the same abend at the same place (ironwork's docs/evidence.md §5). IBM's
+optimizer may compare an unsigned zoned item with zero by its bytes where OPTIMIZE(0), its default,
+reads it as a number and ends in a data exception, so an abend with `optimized` false holds at
+OPTIMIZE(0) only. The finding's `abend` carries it and its detail says so; its rule and severity do
+not change. That run keeps no journal, so `optimized` rests on the manifest's word.
 
 | Rule | Severity | When |
 |---|---|---|

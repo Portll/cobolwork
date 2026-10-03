@@ -138,6 +138,20 @@ test('the abend code and IBM message id choose the rule', () => {
   assert.equal(abendRule({ code: 'S0CB' }), 'input-causes-abend');
 });
 
+test('an abend says whether the same input gives it compiled with OPTIMIZE(2), and its rule stays', () => {
+  const r = scan('optimized');
+  assert.equal(r.findings.length, 2, JSON.stringify(r.summary.abendRunProblems));
+  const at = (line) => r.findings.find((f) => f.line === line);
+  assert.deepEqual([at(19).rule, at(19).sev, at(19).abend.optimized], ['input-causes-abend-s0c7', 'med', false]);
+  assert.match(at(19).detail, /holds at OPTIMIZE\(0\), IBM's default: compiled with OPTIMIZE\(2\) the same input does not end there$/);
+  assert.equal(at(22).abend.optimized, true);
+  assert.match(at(22).detail, /compiled with OPTIMIZE\(2\) it ends the same way$/);
+  assert.equal(at(19).path, 'opt/ZEROCMP.cbl');
+  const [old] = scan('s0c7').findings;
+  assert.equal('optimized' in old.abend, false);
+  assert.match(old.detail, /kept$/);
+});
+
 test('an input-caused hang is an S322 finding at the statement the statement limit ran out on', () => {
   const r = scan('hang');
   assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));

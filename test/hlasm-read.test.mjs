@@ -138,3 +138,13 @@ test('a length attribute of the location counter or a literal opens no string be
   assert.equal(parseHlasmStatement(counter).status, 'parsed');
   assert.equal(literal.field, "1,L'=F'1'");
 });
+
+test("a repository's own macro overrides a macro the reader knows by name, never an instruction", () => {
+  const src = ['         IF    (CLI,FLAG,EQ,C\'Y\'),THEN', '         LINK  EP=PROGA', '         MSG   2,0(3)'].join('\n');
+  const [own, link, msg] = readHlasmStatements(src, { libraryMacros: new Set(['IF', 'MSG']) }).statements.map(parseHlasmStatement);
+  assert.equal(own.kind, 'MACRO CALL');
+  assert.equal(own.node.library, true);
+  assert.equal(link.kind, 'LINK');
+  assert.equal(msg.kind, 'RXY');
+  assert.notEqual(parseHlasmStatement(readHlasmStatements(src).statements[0]).kind, 'MACRO CALL');
+});

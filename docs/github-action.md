@@ -111,6 +111,10 @@ The file is the scan's SARIF with each finding that blocks the build at level `e
 other finding at `warning` or `note`. Code scanning therefore shows what stopped the build as an
 error and the remaining debt as advisory.
 
+Each rule that names a CWE is related to it through the run's CWE taxonomy, `runs[0].taxonomies`,
+and each file a result names is listed once in `runs[0].artifacts`, which every location points at
+by index.
+
 Code scanning keeps one severity per alert, from the latest upload that reported it. A finding that
 blocks `main` in absolute mode is debt in a pull request's ratchet, so that pull request's upload
 shows the `main` alert as a warning until `main` is scanned again. Its security severity, which the

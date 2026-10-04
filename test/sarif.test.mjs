@@ -182,3 +182,48 @@ test('an incomplete set says whether it is a configuration gap or a coverage gap
     assert.ok(!(inv.toolConfigurationNotifications || []).some((n) => n.properties.set === 'jcl'));
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('each rule that names a CWE is related to that taxon in the run\'s CWE taxonomy', () => {
+  const report = scanAll(CASES, { repos: null });
+  const run = sarifOf(report);
+  const [cwe] = run.taxonomies;
+  assert.equal(run.taxonomies.length, 1);
+  assert.equal(cwe.name, 'CWE');
+  const taxa = cwe.taxa.map((t) => t.id);
+  assert.deepEqual(taxa, [...taxa].sort((a, b) => a - b), 'taxa in numeric order');
+  const rules = [...run.tool.driver.rules, ...run.tool.extensions.flatMap((e) => e.rules)];
+  const related = new Set();
+  for (const rule of rules) {
+    const declared = report.ruleCwe[rule.id];
+    if (!declared) { assert.equal(rule.relationships, undefined, rule.id); continue; }
+    const [{ target }] = rule.relationships;
+    assert.equal(`CWE-${target.id}`, declared, rule.id);
+    assert.deepEqual(target.toolComponent, { name: 'CWE', index: 0 });
+    assert.ok(taxa.includes(target.id), `${rule.id}: CWE-${target.id} is a taxon`);
+    related.add(target.id);
+  }
+  assert.deepEqual([...related].sort((a, b) => a - b), taxa, 'every taxon is one a described rule names');
+  for (const t of cwe.taxa) assert.equal(t.helpUri, `https://cwe.mitre.org/data/definitions/${t.id}.html`);
+});
+
+test('a run whose rules name no CWE carries no taxonomy', () => {
+  const run = sarifOf({ findings: [{ rule: 'x', path: 'A.cbl', line: 1, detail: 'x' }], ruleText: {}, ruleCwe: {}, summary: {} });
+  assert.equal(run.taxonomies, undefined);
+  assert.equal(run.tool.driver.rules[0].relationships, undefined);
+});
+
+test('every location points by index at the one artifact holding its file', () => {
+  const run = sarifOf(scanAll(CASES, { repos: null }));
+  const uris = run.artifacts.map((a) => a.location.uri);
+  assert.equal(new Set(uris).size, uris.length, 'each file is listed once');
+  assert.deepEqual(uris, [...uris].sort());
+  const named = new Set();
+  for (const r of run.results) {
+    for (const { physicalLocation: { artifactLocation: a } } of [...r.locations, ...(r.relatedLocations || [])]) {
+      assert.equal(run.artifacts[a.index].location.uri, a.uri);
+      assert.equal(a.uriBaseId, '%SRCROOT%');
+      named.add(a.uri);
+    }
+  }
+  assert.deepEqual([...named].sort(), uris, 'every artifact is named by some location');
+});

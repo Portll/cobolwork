@@ -1,0 +1,187 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-build-provenance.schema.json",
+ "title": "cobolwork build provenance",
+ "description": "What a build verdict was given: the revisions, policy, sources, waivers and compiler. docs/spec/build-gate.md. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "toolVersion",
+  "flowModel",
+  "revisions",
+  "policy",
+  "sources",
+  "waivers",
+  "compiler",
+  "verdict",
+  "relaxed"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-build-provenance"
+  },
+  "schemaVersion": {
+   "const": 1
+  },
+  "toolVersion": {
+   "type": "string"
+  },
+  "flowModel": {
+   "type": "string"
+  },
+  "builtAt": {
+   "type": "string",
+   "description": "From SOURCE_DATE_EPOCH, when set."
+  },
+  "revisions": {
+   "type": "object",
+   "properties": {
+    "base": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "head": {
+     "type": "string"
+    }
+   }
+  },
+  "policy": {
+   "type": "object",
+   "properties": {
+    "canonical": {
+     "type": "string"
+    },
+    "sha256": {
+     "type": "string"
+    },
+    "setBy": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "sources": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "path",
+     "sha256"
+    ],
+    "properties": {
+     "path": {
+      "type": "string"
+     },
+     "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     }
+    }
+   }
+  },
+  "copylibs": {
+   "type": "array"
+  },
+  "waivers": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "fingerprint": {
+      "type": "string"
+     },
+     "rule": {
+      "type": "string"
+     },
+     "who": {
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "expires": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "compiler": {
+   "type": [
+    "object",
+    "null"
+   ]
+  },
+  "verdict": {
+   "enum": [
+    "pass",
+    "fail",
+    "undecided"
+   ]
+  },
+  "relaxed": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "toolRevision": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "description": "A commit and whether its tree held changes, with where it was read.",
+   "properties": {
+    "commit": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "dirty": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "tag": {
+     "type": "string"
+    },
+    "from": {
+     "type": "string"
+    }
+   }
+  },
+  "revision": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "description": "A commit and whether its tree held changes, with where it was read.",
+   "properties": {
+    "commit": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "dirty": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "tag": {
+     "type": "string"
+    },
+    "from": {
+     "type": "string"
+    }
+   }
+  }
+ }
+}

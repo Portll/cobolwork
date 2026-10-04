@@ -1,5 +1,6 @@
 // The part of JSON Schema 2020-12 cobolwork's schemas use, checked without a dependency. Returns one
-// string per place a value departs from its schema; an empty list means it conforms.
+// string per place a value departs from its schema; an empty list means it conforms. `load` reads
+// another schema in schema/ by file name, for a $ref such as "cobolwork-finding.schema.json".
 const TYPES = {
   object: (v) => v !== null && typeof v === 'object' && !Array.isArray(v),
   array: Array.isArray,
@@ -13,15 +14,17 @@ const SUPPORTED = new Set(['$schema', '$id', '$ref', '$defs', 'title', 'descript
   'additionalProperties', 'patternProperties', 'items', 'enum', 'const', 'minimum', 'maximum', 'minLength', 'pattern',
   'anyOf', 'oneOf', 'minItems', 'uniqueItems', 'format', 'examples', 'default', 'deprecated']);
 
-export function schemaProblems(value, schema, root = schema, at = '$') {
+export function schemaProblems(value, schema, root = schema, at = '$', load = null) {
   if (schema === true || schema === undefined) return [];
   if (schema === false) return [`${at}: is not allowed`];
   const unknown = Object.keys(schema).filter((k) => !SUPPORTED.has(k));
   if (unknown.length) throw new Error(`${at}: the schema uses ${unknown.join(', ')}, which schema-check does not read`);
   if (schema.$ref) {
-    const m = /^#\/\$defs\/(.+)$/.exec(schema.$ref);
-    if (!m || !root.$defs?.[m[1]]) throw new Error(`${at}: cannot resolve ${schema.$ref}`);
-    return schemaProblems(value, root.$defs[m[1]], root, at);
+    const m = /^([a-z.-]+\.schema\.json)?(?:#\/\$defs\/(.+))?$/.exec(schema.$ref);
+    const other = m?.[1] ? load?.(m[1]) : root;
+    const target = m && other && (m[2] ? other.$defs?.[m[2]] : m[1] ? other : null);
+    if (!target) throw new Error(`${at}: cannot resolve ${schema.$ref}`);
+    return schemaProblems(value, target, other, at, load);
   }
   const out = [];
   if (schema.type) {
@@ -41,22 +44,22 @@ export function schemaProblems(value, schema, root = schema, at = '$') {
   if (Array.isArray(value)) {
     if (schema.minItems !== undefined && value.length < schema.minItems) out.push(`${at}: has fewer than ${schema.minItems} items`);
     if (schema.uniqueItems && new Set(value.map((v) => JSON.stringify(v))).size !== value.length) out.push(`${at}: repeats an item`);
-    if (schema.items !== undefined) value.forEach((v, i) => out.push(...schemaProblems(v, schema.items, root, `${at}[${i}]`)));
+    if (schema.items !== undefined) value.forEach((v, i) => out.push(...schemaProblems(v, schema.items, root, `${at}[${i}]`, load)));
   }
   if (TYPES.object(value)) {
     for (const k of schema.required || []) if (!(k in value)) out.push(`${at}: lacks ${k}`);
     const patterns = Object.entries(schema.patternProperties || {}).map(([p, s]) => [new RegExp(p, 'u'), s]);
     for (const [k, v] of Object.entries(value)) {
       const where = `${at}.${k}`;
-      if (schema.properties && k in schema.properties) { out.push(...schemaProblems(v, schema.properties[k], root, where)); continue; }
+      if (schema.properties && k in schema.properties) { out.push(...schemaProblems(v, schema.properties[k], root, where, load)); continue; }
       const matched = patterns.filter(([re]) => re.test(k));
-      if (matched.length) { for (const [, s] of matched) out.push(...schemaProblems(v, s, root, where)); continue; }
-      if (schema.additionalProperties !== undefined) out.push(...schemaProblems(v, schema.additionalProperties, root, where));
+      if (matched.length) { for (const [, s] of matched) out.push(...schemaProblems(v, s, root, where, load)); continue; }
+      if (schema.additionalProperties !== undefined) out.push(...schemaProblems(v, schema.additionalProperties, root, where, load));
     }
   }
   for (const [key, need] of [['anyOf', (n) => n >= 1], ['oneOf', (n) => n === 1]]) {
     if (!schema[key]) continue;
-    const passing = schema[key].filter((s) => !schemaProblems(value, s, root, at).length).length;
+    const passing = schema[key].filter((s) => !schemaProblems(value, s, root, at, load).length).length;
     if (!need(passing)) out.push(`${at}: matches ${passing} of the ${key} schemas`);
   }
   return out;

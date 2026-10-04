@@ -1,0 +1,372 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-build.schema.json",
+ "title": "cobolwork build verdict",
+ "description": "The verdict cobolwork build gives a tree or a change, and why. docs/spec/build-gate.md. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "verdict",
+  "relaxed",
+  "mode",
+  "checks",
+  "blocking",
+  "findings",
+  "waived",
+  "policy",
+  "reasons",
+  "summary"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-build"
+  },
+  "schemaVersion": {
+   "const": 1
+  },
+  "verdict": {
+   "enum": [
+    "pass",
+    "fail",
+    "undecided"
+   ]
+  },
+  "relaxed": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "description": "Checks the policy turned to warnings."
+  },
+  "mode": {
+   "enum": [
+    "absolute",
+    "ratchet"
+   ]
+  },
+  "checks": {
+   "type": "object",
+   "description": "Each check and its result: true passed, false failed, null undecided.",
+   "additionalProperties": {
+    "type": [
+     "boolean",
+     "null"
+    ]
+   }
+  },
+  "blocking": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/finding"
+   }
+  },
+  "findings": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/finding"
+   }
+  },
+  "waived": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "fingerprint": {
+      "type": "string"
+     },
+     "rule": {
+      "type": "string"
+     },
+     "tier": {
+      "type": "string"
+     },
+     "who": {
+      "type": "string"
+     },
+     "reason": {
+      "type": "string"
+     },
+     "expires": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "expired": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "fingerprint": {
+      "type": "string"
+     },
+     "rule": {
+      "type": "string"
+     },
+     "who": {
+      "type": "string"
+     },
+     "expired": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "overlong": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "fingerprint": {
+      "type": "string"
+     },
+     "rule": {
+      "type": "string"
+     },
+     "who": {
+      "type": "string"
+     },
+     "at": {
+      "type": "string"
+     },
+     "expires": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "optionsAdded": {
+   "type": "array"
+  },
+  "optionsChanged": {
+   "type": "array"
+  },
+  "equivalence": {
+   "type": "object",
+   "description": "The equivalence statement and each program's result."
+  },
+  "configurationChanged": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "policy": {
+   "type": "object",
+   "description": "The policy applied, its hash, which file set each key, and keys it ignored.",
+   "properties": {
+    "sha256": {
+     "type": "string"
+    },
+    "setBy": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "string"
+     }
+    },
+    "ignored": {
+     "type": "array"
+    },
+    "applied": {
+     "type": "object",
+     "description": "As schema/cobolwork.policy.schema.json describes it."
+    }
+   }
+  },
+  "compiled": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "description": "The compiler run: its path, arguments and status, or ironwork's results."
+  },
+  "reasons": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "reasonsNotShown": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "repositoryText": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "description": "The fields that quote text from the repository."
+  },
+  "summary": {
+   "type": "object",
+   "required": [
+    "flowModel",
+    "toolVersion",
+    "findings",
+    "blocking",
+    "waived",
+    "byTier",
+    "coverageIncomplete"
+   ],
+   "properties": {
+    "flowModel": {
+     "type": "string"
+    },
+    "toolVersion": {
+     "type": "string"
+    },
+    "findings": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "blocking": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "waived": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "byTier": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "coverageIncomplete": {
+     "type": "boolean"
+    },
+    "baselineProblems": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "base": {
+     "type": "string"
+    },
+    "head": {
+     "type": "string"
+    },
+    "toolRevision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    },
+    "revision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  }
+ },
+ "$defs": {
+  "finding": {
+   "type": "object",
+   "required": [
+    "fingerprint",
+    "rule",
+    "tier",
+    "sev",
+    "classes",
+    "path",
+    "line",
+    "blocking"
+   ],
+   "properties": {
+    "fingerprint": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{32}$"
+    },
+    "rule": {
+     "type": "string"
+    },
+    "tier": {
+     "enum": [
+      "info",
+      "low",
+      "med",
+      "high",
+      "crit",
+      "known-exploitable"
+     ]
+    },
+    "sev": {
+     "type": "string"
+    },
+    "classes": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "path": {
+     "type": "string"
+    },
+    "line": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "exploitability": {
+     "type": "string"
+    },
+    "introduced": {
+     "type": "boolean"
+    },
+    "blocking": {
+     "type": "boolean"
+    },
+    "because": {
+     "type": "string"
+    }
+   }
+  }
+ }
+}

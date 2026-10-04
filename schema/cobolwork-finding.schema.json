@@ -1,0 +1,465 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-finding.schema.json",
+ "title": "cobolwork finding",
+ "description": "One finding, as the scan, flow and diff reports carry it, and a checked route under checked. README.md describes each key. A rule set may add a key in a minor release; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "rule",
+  "path",
+  "line",
+  "detail",
+  "sev",
+  "evidence"
+ ],
+ "properties": {
+  "rule": {
+   "type": "string",
+   "description": "The rule id."
+  },
+  "path": {
+   "type": "string",
+   "description": "The file, relative to the scanned root."
+  },
+  "line": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "The line; 1 where the finding is about a whole file or program."
+  },
+  "detail": {
+   "type": "string"
+  },
+  "sev": {
+   "enum": [
+    "info",
+    "low",
+    "med",
+    "high",
+    "crit"
+   ]
+  },
+  "guardedFrom": {
+   "enum": [
+    "info",
+    "low",
+    "med",
+    "high",
+    "crit"
+   ],
+   "description": "The severity the rule declares, where a check below it lowered this one."
+  },
+  "cwe": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "pattern": "^CWE-[0-9]+$"
+  },
+  "evidence": {
+   "enum": [
+    "path",
+    "construct",
+    "tampering",
+    "advisory",
+    "exposure",
+    "change",
+    "execution",
+    "coverage",
+    "context"
+   ],
+   "description": "What the tool established: README.md, Findings and Claim Severity."
+  },
+  "fingerprint": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{32}$",
+   "description": "The finding's identity across runs, cobolwork/v1."
+  },
+  "program": {
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "step": {
+   "type": "string",
+   "description": "The job step, for a JCL finding."
+  },
+  "name": {
+   "type": "string"
+  },
+  "names": {
+   "type": "array"
+  },
+  "crossProgram": {
+   "type": "boolean"
+  },
+  "hops": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "sources": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "How many sources reach the sink."
+  },
+  "trace": {
+   "type": "array",
+   "description": "The route from source to sink, one step per data item.",
+   "items": {
+    "type": "object",
+    "properties": {
+     "program": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "item": {
+      "type": "string"
+     },
+     "file": {
+      "type": "string"
+     },
+     "via": {
+      "type": "string"
+     },
+     "dir": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "related": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/location"
+   }
+  },
+  "routes": {
+   "type": "object",
+   "description": "With --all-routes: every route from each source to the sink.",
+   "properties": {
+    "sources": {
+     "type": "array"
+    },
+    "statements": {
+     "type": "array"
+    },
+    "complete": {
+     "type": "boolean"
+    },
+    "unplaced": {
+     "type": "array"
+    }
+   }
+  },
+  "guard": {
+   "type": "object",
+   "description": "The check that guards the route.",
+   "properties": {
+    "program": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "item": {
+     "type": "string"
+    },
+    "file": {
+     "type": "string"
+    },
+    "line": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "stops": {
+     "type": "boolean"
+    }
+   }
+  },
+  "checkElsewhere": {
+   "type": "object",
+   "description": "A check on the item that does not run before the use.",
+   "properties": {
+    "program": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "item": {
+     "type": "string"
+    },
+    "file": {
+     "type": "string"
+    },
+    "line": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    }
+   }
+  },
+  "startedBy": {
+   "type": "array",
+   "description": "The jobs and transactions that start the program.",
+   "items": {
+    "type": "object",
+    "properties": {
+     "job": {
+      "type": "string"
+     },
+     "step": {
+      "type": "string"
+     },
+     "file": {
+      "type": "string"
+     },
+     "line": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "transaction": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "startedByMore": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "Entries that start the program beyond those listed."
+  },
+  "screen": {
+   "type": "object",
+   "description": "The BMS field a terminal input came from.",
+   "properties": {
+    "item": {
+     "type": "string"
+    },
+    "field": {
+     "type": "string"
+    },
+    "map": {
+     "type": "string"
+    },
+    "mapset": {
+     "type": "string"
+    },
+    "marks": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "declared": {
+     "type": "boolean"
+    }
+   }
+  },
+  "reach": {
+   "enum": [
+    "open",
+    "restricted",
+    "undeclared"
+   ],
+   "description": "Who can drive the finding, from the estate's facts."
+  },
+  "effect": {
+   "enum": [
+    "privileged"
+   ],
+   "description": "What driving it runs as, where the estate says the entry runs privileged."
+  },
+  "exploitability": {
+   "type": "object",
+   "required": [
+    "verdict"
+   ],
+   "properties": {
+    "verdict": {
+     "enum": [
+      "confirmed",
+      "exploitable",
+      "attacker-driven",
+      "restricted",
+      "mitigated",
+      "upstream",
+      "refuted"
+     ]
+    },
+    "drivenBy": {
+     "type": "string"
+    },
+    "because": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "unknown": {
+     "type": "string"
+    },
+    "fixAt": {
+     "type": "object"
+    }
+   }
+  },
+  "executed": {
+   "type": "object",
+   "description": "Whether the estate's runs entered the finding's paragraph.",
+   "properties": {
+    "paragraph": {
+     "type": "string"
+    },
+    "entered": {
+     "type": "integer",
+     "minimum": 0
+    }
+   }
+  },
+  "suppressed": {
+   "type": "object",
+   "description": "The baseline entry that suppresses it, on a finding under suppressed."
+  },
+  "abend": {
+   "type": "object",
+   "description": "An abend a fuzz run kept: its code, message, whether OPTIMIZE(2) gave it too, and whether the input came through the program's entry or its interface.",
+   "properties": {
+    "code": {
+     "type": "string"
+    },
+    "message": {
+     "type": "string"
+    },
+    "optimized": {
+     "type": "boolean"
+    },
+    "inputFrom": {
+     "enum": [
+      "entry",
+      "interface"
+     ]
+    },
+    "callers": {
+     "type": "array"
+    }
+   }
+  },
+  "input": {
+   "type": "array",
+   "description": "The input that caused an abend."
+  },
+  "run": {
+   "type": "object",
+   "description": "The fuzz run and journal that kept the abend.",
+   "properties": {
+    "dir": {
+     "type": "string"
+    },
+    "journal": {
+     "type": "string"
+    }
+   }
+  },
+  "ssrange": {
+   "type": "boolean"
+  },
+  "arguments": {
+   "type": "array",
+   "description": "Each CALL argument whose size differs from the parameter it is passed to.",
+   "items": {
+    "type": "object",
+    "properties": {
+     "position": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "argument": {
+      "type": "string"
+     },
+     "argumentBytes": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "bytesToEndOfRecord": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "parameter": {
+      "type": "string"
+     },
+     "parameterBytes": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    }
+   }
+  },
+  "alsoUses": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "unreached": {
+   "type": "boolean"
+  },
+  "impact": {
+   "type": "string",
+   "description": "What the finding lets someone do, where the finding carries its own."
+  },
+  "remedy": {
+   "type": "string",
+   "description": "The standard fix, where the finding carries its own."
+  }
+ },
+ "$defs": {
+  "location": {
+   "type": "object",
+   "description": "A source location the finding relates to, or an advisory it rests on, by id and url.",
+   "properties": {
+    "path": {
+     "type": "string"
+    },
+    "line": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "detail": {
+     "type": "string"
+    },
+    "id": {
+     "type": "string"
+    },
+    "url": {
+     "type": "string"
+    }
+   },
+   "anyOf": [
+    {
+     "required": [
+      "path"
+     ]
+    },
+    {
+     "required": [
+      "id"
+     ]
+    }
+   ]
+  }
+ }
+}

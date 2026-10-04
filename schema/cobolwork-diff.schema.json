@@ -1,0 +1,217 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-diff.schema.json",
+ "title": "cobolwork diff report",
+ "description": "What a change between two revisions did: findings it introduced and resolved, and layout and call changes. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "summary",
+  "findings",
+  "introduced",
+  "resolved"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-diff"
+  },
+  "schemaVersion": {
+   "const": 3
+  },
+  "findings": {
+   "type": "array",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   },
+   "description": "Findings about the change itself: layout and call changes."
+  },
+  "introduced": {
+   "type": "array",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   }
+  },
+  "resolved": {
+   "type": "array",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   }
+  },
+  "ruleText": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleEvidence": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "summary": {
+   "type": "object",
+   "required": [
+    "flowModel",
+    "toolVersion",
+    "findings",
+    "byRule",
+    "introduced",
+    "resolved",
+    "coverageIncomplete"
+   ],
+   "properties": {
+    "flowModel": {
+     "type": "string"
+    },
+    "toolVersion": {
+     "type": "string"
+    },
+    "findings": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "byRule": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "introduced": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "resolved": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "programsCompared": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "programsAdded": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "programsRemoved": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "programsWithLayoutChange": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "reachedOnlyThroughCopybooks": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copybooksImplicated": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "unread": {
+     "type": "object",
+     "description": "What could not be read on each side, and the findings that could not be compared for it.",
+     "properties": {
+      "base": {
+       "type": "array"
+      },
+      "head": {
+       "type": "array"
+      },
+      "findingsNotCompared": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "configurationChanged": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "change": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "coverageIncomplete": {
+     "type": "boolean"
+    },
+    "nosrc": {
+     "type": "boolean"
+    },
+    "base": {
+     "type": "string"
+    },
+    "head": {
+     "type": "string"
+    },
+    "toolRevision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    },
+    "revision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,465 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-flow.schema.json",
+ "title": "cobolwork flow report",
+ "description": "The report cobolwork flow writes: the flow rule set alone. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "summary",
+  "findings",
+  "checked",
+  "ruleText"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-flow"
+  },
+  "schemaVersion": {
+   "const": 3
+  },
+  "findings": {
+   "type": "array",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   }
+  },
+  "checked": {
+   "type": "array",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   },
+   "description": "Routes a check stops, which are not findings."
+  },
+  "suppressed": {
+   "type": "array",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   },
+   "description": "Findings a baseline entry suppresses."
+  },
+  "baselineExpired": {
+   "type": "array",
+   "description": "Findings back in the report because the judgement lapsed.",
+   "items": {
+    "type": "object"
+   }
+  },
+  "ruleText": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleCwe": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleImpact": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleRemedy": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleEvidence": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "summary": {
+   "type": "object",
+   "required": [
+    "findings",
+    "byRule",
+    "flowModel",
+    "toolVersion",
+    "filesScanned",
+    "coverageIncomplete"
+   ],
+   "properties": {
+    "findings": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "byRule": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "flowModel": {
+     "type": "string"
+    },
+    "toolVersion": {
+     "type": "string"
+    },
+    "filesScanned": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "programsParsed": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "filesUnreadable": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "filesEbcdic": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "filesOverBudget": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "crossProgram": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "checked": {
+     "type": "integer",
+     "minimum": 0,
+     "description": "Routes a check stops, listed under checked."
+    },
+    "entryPoints": {
+     "type": "object",
+     "description": "What starts each program: the transactions, job steps and calls the tree holds."
+    },
+    "programsUnordered": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "mapsReceived": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "protectedFields": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "mapsNotRead": {
+     "type": "string"
+    },
+    "nosrc": {
+     "type": "boolean"
+    },
+    "coverageIncomplete": {
+     "type": "boolean"
+    },
+    "walksCut": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "sourcesNotWalked": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "readInPart": {
+     "type": "string"
+    },
+    "creditUndecided": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "setIncomplete": {
+     "type": "boolean"
+    },
+    "notLooked": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "unreadable": {
+     "type": "array"
+    },
+    "unparsed": {
+     "type": "array"
+    },
+    "filesNotReached": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "stoppedBy": {
+     "type": "string"
+    },
+    "siteWarnings": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "Keys in cobolwork.site.json this cobolwork does not read."
+    },
+    "feedWarnings": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "Keys in a witness feed or reachability extract this cobolwork does not read."
+    },
+    "byReach": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "byEffect": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "reachFeeds": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "extract": {
+        "type": "string"
+       },
+       "retrieved": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "reachFeedProblems": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "reachNote": {
+     "type": "string"
+    },
+    "effectNote": {
+     "type": "string"
+    },
+    "byExploitability": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "handling": {
+     "type": "string"
+    },
+    "witnessFeeds": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "witness": {
+        "type": "string"
+       },
+       "recorded": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "byWitness": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "witnessFeedProblems": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "witnessUnmatched": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "Fingerprints a witness result names and no finding carries."
+    },
+    "witnessOverruled": {
+     "type": "array",
+     "items": {
+      "type": "object"
+     }
+    },
+    "executionFeeds": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "programs": {
+        "type": "integer",
+        "minimum": 0
+       }
+      }
+     }
+    },
+    "byExecution": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "executionFeedProblems": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "baseline": {
+     "type": "object",
+     "description": "What the baseline suppressed, what lapsed, and what no finding matched.",
+     "properties": {
+      "path": {
+       "type": "string"
+      },
+      "source": {
+       "enum": [
+        "tree",
+        "explicit"
+       ]
+      },
+      "suppressed": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "expired": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "stale": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "refused": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "refusedWhy": {
+       "type": "string"
+      },
+      "problems": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "toolRevision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    },
+    "revision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    },
+    "identity": {
+     "type": "object",
+     "required": [
+      "version",
+      "shared"
+     ],
+     "properties": {
+      "version": {
+       "const": "cobolwork/v1"
+      },
+      "shared": {
+       "type": "integer",
+       "minimum": 0
+      }
+     }
+    },
+    "byTransaction": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "byJob": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    }
+   }
+  }
+ }
+}

@@ -30,12 +30,19 @@ The JavaScript exports of `lib/` are not covered.
 ## Documents
 
 Each JSON document cobolwork writes names itself in `tool` and gives its version in
-`schemaVersion`. `cobolwork capabilities` lists both under `documents`.
+`schemaVersion`. `cobolwork capabilities` lists both under `documents`. Each schema describes every
+key its document carries at the top level, the scan, flow and diff schemas every key in `summary` and
+in each finding too, and a test holds the documents cobolwork writes to them.
 
 | Document | Version | Schema |
 |---|---|---|
-| `cobolwork` (`scan`), `cobolwork-flow`, `cobolwork-inventory`, `cobolwork-diff`, `cobolwork-gate` | 3 | |
-| `cobolwork-build`, `cobolwork-build-provenance` | 1 | |
+| `cobolwork` (`scan`) | 3 | `schema/cobolwork-report.schema.json`, each finding `schema/cobolwork-finding.schema.json` |
+| `cobolwork-flow` | 3 | `schema/cobolwork-flow.schema.json` |
+| `cobolwork-inventory` | 3 | `schema/cobolwork-inventory.schema.json` |
+| `cobolwork-diff` | 3 | `schema/cobolwork-diff.schema.json` |
+| `cobolwork-gate` | 3 | `schema/cobolwork-gate.schema.json` |
+| `cobolwork-build` | 1 | `schema/cobolwork-build.schema.json` |
+| `cobolwork-build-provenance` | 1 | `schema/cobolwork-build-provenance.schema.json` |
 | `cobolwork-capabilities` | 1 | `schema/cobolwork-capabilities.schema.json` |
 | `cobolwork-explain` | 1 | `schema/cobolwork-explain.schema.json` |
 | `cobolwork-parse` | 1 | `schema/cobolwork-parse.schema.json` |

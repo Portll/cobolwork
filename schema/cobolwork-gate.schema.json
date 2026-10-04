@@ -1,0 +1,211 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-gate.schema.json",
+ "title": "cobolwork gate verdict",
+ "description": "Whether a patch fixes the finding it targets without adding another. docs/spec/remediation-gate.md. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "verdict",
+  "target",
+  "outcome",
+  "checks",
+  "reasons",
+  "summary"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-gate"
+  },
+  "schemaVersion": {
+   "const": 3
+  },
+  "verdict": {
+   "enum": [
+    "pass",
+    "fail",
+    "undecided"
+   ]
+  },
+  "target": {
+   "type": "object",
+   "description": "The finding the patch is meant to fix.",
+   "required": [
+    "fingerprint",
+    "rule",
+    "path",
+    "line"
+   ],
+   "properties": {
+    "fingerprint": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{32}$"
+    },
+    "rule": {
+     "type": "string"
+    },
+    "sev": {
+     "type": "string"
+    },
+    "evidence": {
+     "type": "string"
+    },
+    "path": {
+     "type": "string"
+    },
+    "line": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "program": {
+     "type": "string"
+    }
+   }
+  },
+  "outcome": {
+   "enum": [
+    "cleared-by-check",
+    "gone-unexplained",
+    "lowered-by-check",
+    "no-longer-fires",
+    "program-removed",
+    "source-removed",
+    "statement-removed",
+    "still-reported"
+   ],
+   "description": "What became of the target in the patched tree."
+  },
+  "pairedBy": {
+   "type": "string"
+  },
+  "checks": {
+   "type": "object",
+   "description": "Each check and its result: true passed, false failed, null undecided.",
+   "additionalProperties": {
+    "type": [
+     "boolean",
+     "null"
+    ]
+   }
+  },
+  "compiled": {
+   "description": "The compile check's record, where one ran."
+  },
+  "reasons": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "reasonsNotShown": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "repositoryText": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "description": "The fields that quote text from the repository."
+  },
+  "summary": {
+   "type": "object",
+   "required": [
+    "mode",
+    "flowModel",
+    "toolVersion",
+    "coverageIncomplete"
+   ],
+   "properties": {
+    "mode": {
+     "enum": [
+      "gate",
+      "target-only"
+     ]
+    },
+    "flowModel": {
+     "type": "string"
+    },
+    "toolVersion": {
+     "type": "string"
+    },
+    "introduced": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "resolved": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "changedFiles": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "coverageIncomplete": {
+     "type": "boolean"
+    },
+    "base": {
+     "type": "string"
+    },
+    "head": {
+     "type": "string"
+    },
+    "toolRevision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    },
+    "revision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,559 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-report.schema.json",
+ "title": "cobolwork scan report",
+ "description": "The report cobolwork scan writes as JSON, tool cobolwork. README.md describes it. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "summary",
+  "findings",
+  "ruleText",
+  "ruleCwe",
+  "ruleEvidence",
+  "evidence"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork"
+  },
+  "schemaVersion": {
+   "const": 3
+  },
+  "summary": {
+   "type": "object",
+   "required": [
+    "findings",
+    "byRule",
+    "filesScanned",
+    "coverageIncomplete",
+    "identity",
+    "flowModel",
+    "toolVersion"
+   ],
+   "properties": {
+    "findings": {
+     "type": "integer",
+     "minimum": 0,
+     "description": "Findings in the report, after any baseline."
+    },
+    "byRule": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "bySeverity": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "byEvidence": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "filesScanned": {
+     "type": "integer",
+     "minimum": 0,
+     "description": "Files the widest rule set read."
+    },
+    "bySet": {
+     "type": "object",
+     "description": "Each rule set's own summary: what it read, what it could not, and why it stopped.",
+     "additionalProperties": {
+      "type": "object"
+     }
+    },
+    "programs": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "programFiles": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copybookFiles": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "jclFiles": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copiesMissing": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "filesUnreadable": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "filesEbcdic": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "filesOverBudget": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "cicsPrograms": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "crossProgram": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "repos": {
+     "type": "integer",
+     "minimum": 0,
+     "description": "With --repos: how many repositories the report covers."
+    },
+    "perRepo": {
+     "type": "object",
+     "description": "With --repos: each repository's own counts.",
+     "additionalProperties": {
+      "type": "object"
+     }
+    },
+    "advisoryFeeds": {
+     "type": "array",
+     "description": "The advisory extracts the scan was given."
+    },
+    "advisoryCoverage": {
+     "type": "object",
+     "description": "The products the advisory rules searched."
+    },
+    "byTransaction": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "byJob": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "siteWarnings": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "Keys in cobolwork.site.json this cobolwork does not read."
+    },
+    "feedWarnings": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "Keys in a witness feed or reachability extract this cobolwork does not read."
+    },
+    "byReach": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "byEffect": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "reachFeeds": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "extract": {
+        "type": "string"
+       },
+       "retrieved": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "reachFeedProblems": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "reachNote": {
+     "type": "string"
+    },
+    "effectNote": {
+     "type": "string"
+    },
+    "byExploitability": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "handling": {
+     "type": "string"
+    },
+    "witnessFeeds": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "witness": {
+        "type": "string"
+       },
+       "recorded": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "byWitness": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "witnessFeedProblems": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "witnessUnmatched": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "Fingerprints a witness result names and no finding carries."
+    },
+    "witnessOverruled": {
+     "type": "array",
+     "items": {
+      "type": "object"
+     }
+    },
+    "executionFeeds": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "programs": {
+        "type": "integer",
+        "minimum": 0
+       }
+      }
+     }
+    },
+    "byExecution": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "executionFeedProblems": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "ruleSets": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "flowModel": {
+     "type": "string"
+    },
+    "toolVersion": {
+     "type": "string"
+    },
+    "identity": {
+     "type": "object",
+     "required": [
+      "version",
+      "shared"
+     ],
+     "properties": {
+      "version": {
+       "const": "cobolwork/v1"
+      },
+      "shared": {
+       "type": "integer",
+       "minimum": 0
+      }
+     }
+    },
+    "nosrc": {
+     "type": "boolean",
+     "description": "No source file was read."
+    },
+    "coverageIncomplete": {
+     "type": "boolean",
+     "description": "Some source was not read. Read this before the finding count."
+    },
+    "setsIncomplete": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "set",
+       "kind",
+       "why"
+      ],
+      "properties": {
+       "set": {
+        "type": "string"
+       },
+       "kind": {
+        "enum": [
+         "configuration",
+         "coverage"
+        ]
+       },
+       "why": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "baseline": {
+     "type": "object",
+     "description": "What the baseline suppressed, what lapsed, and what no finding matched.",
+     "properties": {
+      "path": {
+       "type": "string"
+      },
+      "source": {
+       "enum": [
+        "tree",
+        "explicit"
+       ]
+      },
+      "suppressed": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "expired": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "stale": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "refused": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "refusedWhy": {
+       "type": "string"
+      },
+      "problems": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "toolRevision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    },
+    "revision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    },
+    "pdsExport": {
+     "type": "object",
+     "description": "With --pds-export: the export the scan read."
+    }
+   }
+  },
+  "inventory": {
+   "type": "object",
+   "description": "What the reading found in the tree: source formats, missing and refused copybooks, unreadable and EBCDIC files, links and unreadable directories."
+  },
+  "findings": {
+   "type": "array",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   }
+  },
+  "checked": {
+   "type": "array",
+   "description": "Routes a check stops, which are not findings.",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   }
+  },
+  "suppressed": {
+   "type": "array",
+   "description": "Findings a baseline entry suppresses, each with suppressed.",
+   "items": {
+    "$ref": "cobolwork-finding.schema.json"
+   }
+  },
+  "baselineExpired": {
+   "type": "array",
+   "description": "Findings back in the report because the judgement lapsed.",
+   "items": {
+    "type": "object"
+   }
+  },
+  "ruleText": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleCwe": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleEvidence": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleImpact": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleRemedy": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "evidence": {
+   "type": "object",
+   "description": "What each evidence kind establishes.",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "exploitabilityVerdicts": {
+   "type": "object",
+   "description": "What each exploitability verdict means.",
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "ruleCompliance": {
+   "type": "object",
+   "description": "The clauses each rule bears on.",
+   "additionalProperties": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "framework": {
+       "type": "string"
+      },
+      "clause": {
+       "type": "string"
+      },
+      "title": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "compliance": {
+   "type": "array",
+   "description": "Each compliance framework loaded, with what its mapping does not claim.",
+   "items": {
+    "type": "object"
+   }
+  },
+  "complianceUnloaded": {
+   "type": "array",
+   "items": {
+    "type": "object"
+   }
+  }
+ }
+}

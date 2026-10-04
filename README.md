@@ -136,7 +136,8 @@ own text. No line number goes into it, so code added above a finding does not ch
 compares findings by it, and SARIF carries it as `partialFingerprints["cobolwork/v1"]`. Two findings
 that only their position tells apart share one, and `summary.identity.shared` counts them. What goes
 into a fingerprint changes only in a major release, under a new version. [STABILITY.md](STABILITY.md)
-lists that and the other contracts a release keeps.
+lists that and the other contracts a release keeps. `schema/cobolwork-finding.schema.json` describes
+a finding, and `schema/` holds a schema for every document cobolwork writes or reads.
 
 ### Findings and Claim Severity
 

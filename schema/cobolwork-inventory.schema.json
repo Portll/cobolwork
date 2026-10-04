@@ -1,0 +1,206 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-inventory.schema.json",
+ "title": "cobolwork inventory",
+ "description": "What cobolwork inventory found in a tree: its sources, their formats, and the copybooks they resolve or miss. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "summary"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-inventory"
+  },
+  "schemaVersion": {
+   "const": 3
+  },
+  "missingCopybooks": {
+   "type": "object",
+   "description": "Each copybook no tree or library holds, with how many COPY statements name it.",
+   "additionalProperties": {
+    "type": "integer",
+    "minimum": 0
+   }
+  },
+  "refusedCopies": {
+   "type": "array"
+  },
+  "unreadable": {
+   "type": "array"
+  },
+  "ebcdic": {
+   "type": "array"
+  },
+  "recursiveCopybooks": {
+   "type": "object",
+   "description": "Each copybook that copies itself, directly or through others."
+  },
+  "summary": {
+   "type": "object",
+   "required": [
+    "toolVersion",
+    "filesScanned",
+    "coverageIncomplete"
+   ],
+   "properties": {
+    "toolVersion": {
+     "type": "string"
+    },
+    "filesScanned": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "programs": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "programFiles": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copybookFiles": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "jclFiles": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copiesResolved": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copiesMissing": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copiesSystem": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copiesRefused": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "copiesRecursive": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "filesUnreadable": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "filesEbcdic": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "notPrograms": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "dirsUnreadable": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "symlinks": {
+     "type": "object",
+     "properties": {
+      "followed": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "outside": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "broken": {
+       "type": "integer",
+       "minimum": 0
+      }
+     }
+    },
+    "withEmbeddedSql": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "withCics": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "withDli": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "formats": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "integer",
+      "minimum": 0
+     }
+    },
+    "nosrc": {
+     "type": "boolean"
+    },
+    "coverageIncomplete": {
+     "type": "boolean"
+    },
+    "toolRevision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    },
+    "revision": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "A commit and whether its tree held changes, with where it was read.",
+     "properties": {
+      "commit": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dirty": {
+       "type": [
+        "boolean",
+        "null"
+       ]
+      },
+      "tag": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  }
+ }
+}

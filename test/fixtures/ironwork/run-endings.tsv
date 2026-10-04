@@ -1,0 +1,13 @@
+# Generated from crates/cli/src/exit.rs by its tests; do not edit.
+# kind	id	outcome
+status	240	abend
+status	241	refused
+status	242	not-generated
+status	243	stopped
+status	244	not-run
+status	245	unreadable
+status	246	usage
+status	255	internal
+abend	IRONWORK	not-run
+abend	EXEC	not-run
+abend	JAVA	not-run

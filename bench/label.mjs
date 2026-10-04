@@ -28,6 +28,7 @@ import { buildFileIndex, parseFile } from '../lib/parser.mjs';
 import { scan as scanFlow } from '../lib/sets/flow.mjs';
 import { isProgram, readSource } from '../lib/sources.mjs';
 import { MARKER } from '../lib/verify.mjs';
+import { RUN_ENDINGS } from '../lib/ironwork-ids.mjs';
 
 // The journal's sink names that show a finding's sink kind, as ironwork docs/evidence.md §1.1
 // records them. A TD queue's data is `log` to ironwork whatever the CSD makes of the queue.
@@ -225,15 +226,16 @@ function compileOptions(ctx) {
 // say, and none only where every one found none.
 const combined = (answers) => (answers.includes(true) ? true : answers.includes(null) ? null : false);
 
-// The exit statuses ironwork keeps for a run it ended itself, not the program (its README, Exit status).
+// How ironwork ended a run itself rather than the program, by the ending its exit status names; an
+// abend is read from the journal instead.
 const IRONWORK_ENDED = {
-  241: 'gave the compile no program to run',
-  242: 'refused a construct in code generation',
-  243: 'stopped at a construct the VM does not run yet',
-  244: 'reached a construct it does not run',
-  245: 'could not read the source or module',
-  246: 'refused its arguments',
-  255: 'failed',
+  refused: 'gave the compile no program to run',
+  'not-generated': 'refused a construct in code generation',
+  stopped: 'stopped at a construct the VM does not run yet',
+  'not-run': 'reached a construct it does not run',
+  unreadable: 'could not read the source or module',
+  usage: 'refused its arguments',
+  internal: 'failed',
 };
 
 // One run of one input variant, read back from its journal.
@@ -246,7 +248,8 @@ function runVariant(f, ctx, variant) {
     if (r.error) return { outcome: r.error.code === 'ETIMEDOUT' ? `no end in ${ctx.timeout / 1000}s` : r.error.message };
     let journal;
     try { journal = journalOf(ctx.evidence); } catch { journal = null; }
-    const ended = IRONWORK_ENDED[r.status] && `ironwork ${IRONWORK_ENDED[r.status]} (exit ${r.status})`;
+    const why = IRONWORK_ENDED[RUN_ENDINGS[r.status]];
+    const ended = why && `ironwork ${why} (exit ${r.status})`;
     if (!journal || journal.run === ctx.runs) return { outcome: ended || `ironwork kept no journal (exit ${r.status})` };
     ctx.runs = journal.run;
     if (ended) return { outcome: ended };

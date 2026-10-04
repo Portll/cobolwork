@@ -56,6 +56,33 @@ jobs:
       - name: Test
         run: npm test
 
+  # ironwork's run-endings table is vendored in test/fixtures/ironwork; this job compares the copy.
+  ironwork-ids:
+    name: ironwork's run endings
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: Portll/ironwork
+          # Pinned to an ironwork commit whose table the copy matches.
+          ref: e91af772d50cd5ce10c7abac21f4ecd2507f1d5d
+          path: ironwork
+          persist-credentials: false
+          sparse-checkout: docs/run-endings.tsv
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - name: Compare the vendored run endings with ironwork's
+        env:
+          COBOLWORK_IRONWORK_DIR: ${{ github.workspace }}/ironwork
+        run: node --test test/ironwork-ids.test.mjs
+
   scan-self:
     name: scan its own benchmark
     runs-on: ubuntu-latest

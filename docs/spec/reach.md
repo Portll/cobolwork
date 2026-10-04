@@ -308,9 +308,11 @@ program with `-L` on the repository's program directories. A main-program findin
 file and line is a caller running the subprogram and ending there: the interface finding is
 confirmed. Otherwise it is unknown with its reason: no program ironwork compiles CALLs it (the
 interface manifest lists only callers that compile), callers that CALL a PROGRAM-ID `-L` does not
-find by file name, callers that were not fuzzed or had every run refused, or a caller that ran and
-did not end there. Its precision is therefore the share callers confirmed at its low end,
-and it is never pooled with execution labels.
+find by file name, callers that were not fuzzed as main programs or had every run refused, callers
+whose runs never started the CALL, or a caller whose runs started the CALL and did not end there.
+The last two come from each caller's run coverage (ironwork's `runCoverage`); a caller fuzzed before
+ironwork kept it is a caller that ran and did not end there. Its precision is therefore the share
+callers confirmed at its low end, and it is never pooled with execution labels.
 
 `bench/precision.mjs` turns the labels into precision per rule, and per verdict where `--corpus`
 names the repositories the execution labels came from: each such label is joined by fingerprint to

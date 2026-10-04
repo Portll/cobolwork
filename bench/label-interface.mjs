@@ -12,11 +12,12 @@
 // with abend.inputFrom; scan-results.json unless --scan names another in it), fuzz-results*.jsonl (a
 // row per distinct program) and, per program, its fuzz directory and DIR.interface beside it.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { basename, extname, join } from 'node:path';
+import { basename, extname, join, posix } from 'node:path';
 
 export const SOURCE = 'execution-interface';
 
 const key = (f) => `${f.rule}|${f.path}|${f.line}`;
+const fuzzDir = (file) => file.replace(/[\\/]/g, '__');
 const readJson = (file) => { try { return JSON.parse(readFileSync(file, 'utf8')); } catch { return null; } };
 
 function rows(run) {
@@ -31,13 +32,28 @@ function rows(run) {
 }
 
 // Why a caller program did not run the subprogram, or null when it ran: its row's skip reason, that
-// no row names it, or that its manifest counts every run refused.
+// no row names it, that it has no main-program manifest (a program fuzzed only at its interface), or
+// that its manifest counts every run refused.
 function callerRan(run, byProgram, repo, file) {
   const row = byProgram.get(`${repo}|${file}`);
   if (!row) return 'no fuzz run of it';
   if (row.skipped) return `not fuzzed: ${row.skipped}`;
-  const counts = readJson(join(run, repo, file.replace(/[\\/]/g, '__'), 'manifest.json'))?.counts;
-  return counts && counts.runs > 0 && counts.refused === counts.runs ? 'every run of it refused' : null;
+  const counts = readJson(join(run, repo, fuzzDir(file), 'manifest.json'))?.counts;
+  if (!counts) return 'not fuzzed as a main program';
+  return counts.runs > 0 && counts.refused === counts.runs ? 'every run of it refused' : null;
+}
+
+// Whether any of a caller's runs started its CALL line, from the coverage its fuzz run added up
+// (the manifest's runCoverage), which names each file from the innermost of the manifest's roots;
+// null where the manifest names no coverage.
+function callStarted(run, repo, caller) {
+  const dir = join(run, repo, fuzzDir(caller.file));
+  const manifest = readJson(join(dir, 'manifest.json'));
+  const coverage = manifest?.runCoverage ? readJson(join(dir, manifest.runCoverage)) : null;
+  if (!Array.isArray(coverage?.statements)) return null;
+  const roots = (Array.isArray(manifest.roots) ? manifest.roots : []).filter((r) => typeof r === 'string');
+  const isCaller = (file) => file === caller.file || roots.some((r) => posix.join(r.replace(/\\/g, '/'), file) === caller.file);
+  return coverage.statements.some((s) => s.line === caller.line && s.runs > 0 && isCaller(s.file));
 }
 
 export function labelInterface(run, { scan = 'scan-results.json' } = {}) {
@@ -70,7 +86,11 @@ export function labelInterface(run, { scan = 'scan-results.json' } = {}) {
       else if (String(manifest.program.id || '').toUpperCase() !== stem) why = `its callers CALL ${manifest.program.id}, which -L does not find in ${basename(f.path)}`;
       else {
         const notRun = callers.map((c) => callerRan(run, byProgram, s.repo, c.file));
-        why = notRun.every(Boolean) ? `no caller ran: ${[...new Set(notRun)].join('; ')}` : 'a caller ran and did not end there';
+        const started = callers.filter((c, i) => !notRun[i]).map((c) => callStarted(run, s.repo, c));
+        if (notRun.every(Boolean)) why = `no caller ran: ${[...new Set(notRun)].join('; ')}`;
+        else if (started.includes(true)) why = 'a caller ran the CALL and did not end there';
+        else if (started.every((x) => x === false)) why = 'no caller run reached the CALL';
+        else why = 'a caller ran and did not end there';
       }
       labels.push({ ...base, label: 'unknown', why });
     }

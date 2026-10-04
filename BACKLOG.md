@@ -573,10 +573,11 @@ that declares it rather than to whoever merged the findings. What that specifica
     grows faster than the program count, since its graph stays in the heap until every program is
     read: 52 programs take 2.4 times as long as 26.
 
-  A copy of a program of 256 KiB or more reuses the original's control analysis (`ab4e0b8`):
-  cnafbadboy's full scan takes 589 s against 928 s. Open in the spec: node objects as columns (22%
-  of the heap on a Unieuro sample) and workers. Fewer arithmetic rounds on a large program is a
-  separate precision decision.
+  A copy of a program of 256 KiB or more reuses the original's control analysis: cnafbadboy's full
+  scan takes 589 s against 928 s. Call contexts are numbers rather than strings split at every
+  return edge, which took 43% of ACAS's flow time: its flow set takes 62 to 68 s against 83 to 87 s.
+  Open in the spec: workers. Fewer arithmetic rounds on a large program is a separate precision
+  decision.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

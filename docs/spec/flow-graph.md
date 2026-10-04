@@ -3,14 +3,13 @@
 How the flow engine holds its graph so that the largest repositories finish a full scan within
 memory, without leaving out a single route.
 
-Status: 4.1 and 4.3's edges are built (`2e512f7`, `b23399b`), with two smaller steps the heap
-showed next: one empty list for nodes with no source or sink (`8c2664f`) and one condition per
-content (`09041b9`). 4.4 is built as reuse of the control analysis for large copied programs.
-4.2 is dropped: measured, it frees a few megabytes and would renumber nodes. Node columns and 4.5
-are open.
-Written for an engineer coming to it cold. It assumes the codebase, not the discussion that produced
-it, and it is measured against `94d6814`, where one pass reads and parses each program for every
-rule set (`lib/kernel/shared-pass.mjs`).
+Status: 4.1, 4.3 and 4.4 are built: fact sets once per content as the facts they hold, in one
+buffer per program (`2e512f7`); edges as columns (`b23399b`); one empty list for nodes with no
+source or sink, one condition per content; nodes that hold only what differs between them; and
+reuse of the control analysis for large copied programs. 4.2 is dropped: measured, it frees a few
+megabytes and would renumber nodes. Typed node columns are not built: after the steps above, node
+objects are 18.5 MB of a 139 MB heap on one Unieuro program in fifty, and columns would free about
+10 MB at the cost of rewriting every node read. 4.5 is open.
 
 Depends on: nothing outside `lib/dataflow.mjs`. `analyze()` returns findings, constructs, entries
 and counts, never the graph. Every change below stays inside that file and `lib/control.mjs`.

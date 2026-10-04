@@ -9,10 +9,12 @@ source or sink, one condition per content; nodes that hold only what differs bet
 reuse of the control analysis for large copied programs. 4.2 is dropped: measured, it frees a few
 megabytes and would renumber nodes. Typed node columns are not built: after the steps above, node
 objects are 18.5 MB of a 139 MB heap on one Unieuro program in fifty, and columns would free about
-10 MB at the cost of rewriting every node read. 4.5 is open.
+10 MB at the cost of rewriting every node read. 4.5 is built for the control analysis: programs of
+32 KiB and more have it built in worker threads (`lib/control-workers.mjs`).
 
 Depends on: nothing outside `lib/dataflow.mjs`. `analyze()` returns findings, constructs, entries
-and counts, never the graph. Every change below stays inside that file and `lib/control.mjs`.
+and counts, never the graph. Every change below stays inside that file and `lib/control.mjs`, except
+4.5, which adds `lib/control-workers.mjs` and the directory tree's `parseSpec`.
 
 ---
 
@@ -171,11 +173,63 @@ What reuse covers, and what it does not:
 - Every program file is read once more before the pass, to find the copies. Every repository pays
   that read, copies or not.
 
-### 4.5 Build fragments in parallel (later)
+### 4.5 Build control analyses in worker threads
 
-Fragments are plain data, typed arrays and tables. Worker threads can build them and transfer
-them without copying. Per-program work is independent, and linking and the walk stay on the main
-thread. Memory per worker bounds it, and 4.1 to 4.4 are what make that memory small: it follows them.
+A worker runs `buildControl`, the pure per-program part of the flow set and most of its time on large
+programs. `summarise()` writes the shared graph and numbers its nodes in program order, so it stays on
+the main thread, and so do linking and the walk.
+
+- **What a worker does.** It reads and parses the file as the directory tree does, from
+  `tree.parseSpec` (`parseInDirectory`), runs `buildControl` and the fact interning on each program,
+  and posts each analysis kept as 4.4 keeps a copy's: references into the parse as positions in a
+  fixed walk of it. The main thread restores it onto its own parse of the same file. A parse is never
+  sent: it is an object graph that clones slowly, and its identity is what the analysis refers to.
+- **Which programs.** 32 KiB of text and more (`controlWorkerMinBytes`). Below that, walking the
+  parse and restoring cost the main thread about what building does: on ACAS, 410 programs, moving
+  every one saved 1 s of 3.3 s. A later copy that 4.4 restores is not sent, and neither is a PL/I
+  program, which its own parser reads rather than the tree's.
+- **Order and waiting.** The main thread asks for the files after the one it is reading, at most one
+  more than there are workers at a time, since an answer waiting to be taken holds the whole
+  analysis: up to 217 MB serialised on cnafbadboy. A file no worker has started when the main thread
+  reaches it is taken back and analysed there; a started one is waited for. The scan stays
+  synchronous: the wait blocks on a counter the workers raise (`Atomics.wait`), and answers are read
+  with `receiveMessageOnPort`.
+- **A worker that fails.** Every failure a worker can catch is answered, and the main thread then
+  analyses the program itself. One that runs out of heap dies without answering, and nothing the
+  main thread can read while it waits says so. A worker's heap is the main thread's size, so that
+  program would exhaust the main thread's too: the wait for a started analysis ends at 30 minutes.
+- **Trees.** Directory trees only. A tree held in memory (a git revision, a PDS export, a test's)
+  has no `parseSpec`, and its programs are analysed on the main thread as before.
+- **How many.** `COBOLWORK_CONTROL_WORKERS`, or `controlWorkers` in the options; by default one fewer
+  than the machine's threads, at most four. 0 turns them off.
+- **Memory.** A worker holds one program's parse and analysis at a time: 0.8 to 1.3 GB at its peak
+  on cnafbadboy's programs of 9 to 17 MB. That memory is the machine's, which the memory guard reads,
+  so on a machine short of memory the flow set can stop reading sooner with workers than without.
+
+Gates, and how each is met:
+
+- **Equal to the program's own.** With `COBOLWORK_VERIFY_REUSE=1` every analysis a worker built is
+  built again on the main thread and compared, as a reused one is.
+- **Equivalence.** The run in §5 with verify on: CardDemo, CABS, CobolCraft, GenApp, CobolSharp,
+  LASA, ACAS, one Unieuro program in ten, cnafbadboy's `Batch/`, `rishalab_COBug` and
+  `infinityabundance_gnucobol-rs`, reports identical to `main`.
+
+Full scans, 0 workers against 4, reports identical. Single runs except where marked, on a shared
+18-thread machine at load 25 to 67, so each figure is good to about a fifth:
+
+| | 0 workers | 4 workers | Peak resident, 0 / 4 |
+|---|---|---|---|
+| cnafbadboy `Batch/`, 26 programs of up to 17 MB | 314 s | 109 s | 1.6 / 4.1 GB |
+| CobolSharp | 151 s | 78 s | 0.4 / 1.3 GB |
+| LASA | 293 s | 199 s | 1.1 / 1.0 GB |
+| `infinityabundance_gnucobol-rs` | 103 s | 50 s | 0.6 / 1.6 GB |
+| ACAS, run twice, alternating | 129, 205 s | 123, 156 s | 1.1 / 1.1 GB |
+| One Unieuro program in ten, run twice, alternating | 452, 435 s | 305, 313 s | 1.3 / 2.9 GB |
+
+The flow set alone on the Unieuro sample took 371 s with no workers and 204 s with four: the main
+thread's share of the control analysis fell from 204 s to 34 s, and it waited 41 s in 25 waits for
+analyses a worker had started. What remains on the main thread is the parse, `summarise()` and the
+walk.
 
 ## 5. How each change is committed
 
@@ -210,4 +264,4 @@ or with every parse frozen) and `same2.mjs` (compare, naming the first differenc
 - Whether 4.4's key includes the program's directory, which would make it exact without relying
   on the claim that location enters only at linking. It would lose cnafbadboy's three copies,
   which sit in different directories.
-- The worker count, and whether workers ship in the same release as 4.4 (4.5).
+- The default worker count (4.5): one fewer than the machine's threads, at most four.

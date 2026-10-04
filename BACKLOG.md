@@ -576,8 +576,10 @@ that declares it rather than to whoever merged the findings. What that specifica
   A copy of a program of 256 KiB or more reuses the original's control analysis: cnafbadboy's full
   scan takes 589 s against 928 s. Call contexts are numbers rather than strings split at every
   return edge, which took 43% of ACAS's flow time: its flow set takes 62 to 68 s against 83 to 87 s.
-  Open in the spec: workers. Fewer arithmetic rounds on a large program is a separate precision
-  decision.
+  Programs of 32 KiB or more have their control analysis built in worker threads, four by default:
+  cnafbadboy's `Batch/` scans in 109 s against 314 s, one Unieuro program in ten in about 310 s
+  against 440 s, at up to 2.5 GB more peak memory. Fewer arithmetic rounds on a large program is a
+  separate precision decision.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

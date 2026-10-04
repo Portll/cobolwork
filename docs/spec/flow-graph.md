@@ -3,7 +3,10 @@
 How the flow engine holds its graph so that the largest repositories finish a full scan within
 memory, without leaving out a single route.
 
-Status: proposed, 2026-10-02. Not started.
+Status: 4.1 and 4.3's edges are built (`2e512f7`, `b23399b`), with two smaller steps the heap
+showed next: one empty list for nodes with no source or sink (`8c2664f`) and one condition per
+content (`09041b9`). 4.2 is dropped: measured, it frees a few megabytes and would renumber nodes.
+Node columns, 4.4 and 4.5 are open.
 Written for an engineer coming to it cold. It assumes the codebase, not the discussion that produced
 it, and it is measured against `94d6814`, where one pass reads and parses each program for every
 rule set (`lib/kernel/shared-pass.mjs`).

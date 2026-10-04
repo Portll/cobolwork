@@ -353,10 +353,11 @@ the 500 set 2026-10-04:
 |---|---|---|---|---|
 | 100 repositories, held out | 489 | 100% recall, 100% precision | 0 disagree of 15,888 | 100% |
 | 300 repositories, held out | 2,210 | 99.9% / 100% | 8 disagree of 94,786 | 100% / 99.7% |
-| 500 repositories, held out | 21,707 | 99.996% / 99.999% | 26 disagree of 719,173 | 100% / 100% |
+| 500 repositories, held out | 21,707 | 100% / 100% | 0 disagree of 719,184 | 100% / 100% |
 
-On the 500 set the 26 size disagreements fall in 11 repositories, none with more than 7. The grade
-covers only programs GnuCOBOL accepts, so a program with EXEC SQL or EXEC CICS is graded only
+On the 500 set every data item, size and call agrees with the compiler: 845,704 items, 27,703
+calls. Of 146,004 labels one differs, an `EJECT` written in Area A, which GnuCOBOL reads as a
+paragraph and IBM as the listing directive it is. The grade covers only programs GnuCOBOL accepts, so a program with EXEC SQL or EXEC CICS is graded only
 through the precompiler stand-in in `diag/precompiler.mjs`, which rewrites what the parser would
 otherwise have to read. The tests compare the parser with the compiler's answers kept in `test/fixtures/parser/*.golden.json`,
 so they run without GnuCOBOL.

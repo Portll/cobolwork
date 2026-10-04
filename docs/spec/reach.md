@@ -292,9 +292,9 @@ verification plan (§9.7) in ironwork. The marker goes in at the finding's sourc
   in a copy where each ACCEPT FROM COMMAND-LINE, ARGUMENT-VALUE, ENVIRONMENT-VALUE or ENVIRONMENT
   name is a MOVE of ALL the marker, rotated through its eight alignments, to the same receiver, an
   ACCEPT FROM ARGUMENT-NUMBER moves 1, and a DISPLAY UPON their names displays to SYSOUT, each
-  in the columns it held. Every DD and SYSIN hold the control, so no other input carries the
-  marker. An ACCEPT with an EXCEPTION phrase, or whose variable is on another line, is not
-  rewritten. These rows record `labelledOn: rewritten` and are their own stratum in
+  in the columns it held, an END-ACCEPT on the same line with it. Every DD and SYSIN hold the
+  control, so no other input carries the marker. An ACCEPT whose variable is on another line, or
+  that goes on past its line with an EXCEPTION phrase or END-ACCEPT, is not rewritten. These rows record `labelledOn: rewritten` and are their own stratum in
   `bench/precision.mjs` (`execution-rewritten`), never pooled with execution labels.
 
 ironwork runs with `--trace-marker`. The finding is confirmed where the run's sealed journal has a

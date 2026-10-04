@@ -104,13 +104,14 @@ function fileRecordVariants(program, byAbend) {
 // GnuCOBOL's command-line and environment statements, which Enterprise COBOL does not have and
 // ironwork refuses or reads as SYSIN: an ACCEPT from COMMAND-LINE, ARGUMENT-VALUE, ENVIRONMENT-VALUE,
 // ENVIRONMENT and a name, or ARGUMENT-NUMBER, and a DISPLAY UPON one of their names.
-const ARGV_ACCEPT = /\bACCEPT([ \t]+)([A-Z0-9][A-Z0-9_-]*(?:\([^)\n]*\))?)[ \t]+FROM[ \t]+(COMMAND-LINE|ARGUMENT-VALUE|ARGUMENT-NUMBER|ENVIRONMENT-VALUE|ENVIRONMENT(?:[ \t]+(?:'[^'\n]*'|"[^"\n]*"|[A-Z0-9][A-Z0-9_-]*))?)(?![A-Z0-9_-])/gi;
+const ARGV_ACCEPT = /\bACCEPT([ \t]+)([A-Z0-9][A-Z0-9_-]*(?:\([^)\n]*\))?)[ \t]+FROM[ \t]+(COMMAND-LINE|ARGUMENT-VALUE|ARGUMENT-NUMBER|ENVIRONMENT-VALUE|ENVIRONMENT(?:[ \t]+(?:'[^'\n]*'|"[^"\n]*"|[A-Z0-9][A-Z0-9_-]*))?)(?![A-Z0-9_-])(?:[ \t]+END-ACCEPT(?![A-Z0-9_-]))?/gi;
 const ARGV_UPON = /\bUPON[ \t]+(?:ENVIRONMENT-NAME|ENVIRONMENT-VALUE|ARGUMENT-NUMBER|COMMAND-LINE)(?![A-Z0-9_-])/gi;
-const EXCEPTION_PHRASE = /^\s*(?:NOT[ \t\r\n]+)?(?:ON[ \t\r\n]+)?EXCEPTION\b|^\s*END-ACCEPT\b/i;
+const ACCEPT_GOES_ON = /^\s*(?:(?:NOT\s+)?(?:ON\s+)?EXCEPTION|END-ACCEPT)(?![A-Z0-9_-])/i;
 
-// The program's text with each command-line or environment ACCEPT made a MOVE of ALL `fill` to its
-// receiver, an argument count made 1, and each DISPLAY UPON their names made a DISPLAY to SYSOUT, every
-// statement padded to the columns it held; or why it cannot be. `fill` is at most eight characters.
+// The program's text with each command-line or environment ACCEPT, and an END-ACCEPT on its line,
+// made a MOVE of ALL `fill` to its receiver, an argument count made 1, and each DISPLAY UPON their
+// names made a DISPLAY to SYSOUT, every statement padded to the columns it held; or why it cannot be.
+// `fill` is at most eight characters.
 export function argvRewritten(text, fill) {
   if (!/\bACCEPT\b/i.test(text)) return { why: 'the program has no ACCEPT' };
   let found = 0;
@@ -118,7 +119,7 @@ export function argvRewritten(text, fill) {
   const out = text.replace(ARGV_ACCEPT, (span, gap, receiver, from, at, whole) => {
     found++;
     if (/^ENVIRONMENT$/i.test(from)) why ??= 'an ACCEPT FROM ENVIRONMENT names its variable on another line';
-    if (EXCEPTION_PHRASE.test(whole.slice(at + span.length))) why ??= 'an ACCEPT of the command line or environment has an EXCEPTION phrase, which a MOVE does not take';
+    if (ACCEPT_GOES_ON.test(whole.slice(at + span.length))) why ??= 'an ACCEPT of the command line or environment goes on past its line, with an EXCEPTION phrase or END-ACCEPT, which a MOVE does not take';
     const move = /^ARGUMENT-NUMBER$/i.test(from) ? `MOVE 1 TO ${receiver}` : `MOVE ALL '${fill}' TO ${receiver}`;
     return move.padEnd(span.length);
   }).replace(ARGV_UPON, (span) => ' '.repeat(span.length));

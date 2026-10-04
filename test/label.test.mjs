@@ -89,7 +89,7 @@ test('nines past a table or field end the run under SSRANGE at the operation, an
 
 test('the command line and environment become MOVEs in the columns they held, and an ACCEPT a MOVE cannot stand for is named', () => {
   const lines = [
-    '           ACCEPT WS-ARG FROM COMMAND-LINE',
+    '           ACCEPT WS-ARG FROM COMMAND-LINE END-ACCEPT',
     '           ACCEPT WS-ARG(1:4) FROM ARGUMENT-VALUE.',
     "           ACCEPT WS-HOME FROM ENVIRONMENT 'HOME'",
     '           DISPLAY "MT_HOME" UPON environment-name',
@@ -110,7 +110,7 @@ test('the command line and environment become MOVEs in the columns they held, an
   ]);
   assert.equal(argvRewritten("           ACCEPT WS-HOME FROM ENVIRONMENT\n               'HOME'", MARKER).why, 'an ACCEPT FROM ENVIRONMENT names its variable on another line');
   assert.equal(argvRewritten("           ACCEPT WS-HOME FROM ENVIRONMENT 'HOME'\n               ON EXCEPTION CONTINUE", MARKER).why,
-    'an ACCEPT of the command line or environment has an EXCEPTION phrase, which a MOVE does not take');
+    'an ACCEPT of the command line or environment goes on past its line, with an EXCEPTION phrase or END-ACCEPT, which a MOVE does not take');
   assert.equal(argvRewritten('           ACCEPT WS-CARD', MARKER).why, 'no ACCEPT of the command line or environment was found to rewrite');
 });
 
@@ -120,7 +120,7 @@ test('command-line and environment input is moved into a rewritten copy and labe
   const out = label(join(import.meta.dirname, 'fixtures', 'label', 'argv'), { ironwork: IRONWORK, evidence });
   assert.deepEqual(out.labels.map((l) => [l.path, l.line, l.labelledOn, l.label, l.variant ?? l.why]).sort(), [
     ['ARGLOAD.cbl', 10, 'rewritten', 'confirmed', 'command line or environment rotated 0'],
-    ['ENVGUARD.cbl', 10, 'rewritten', 'unknown', 'an ACCEPT of the command line or environment has an EXCEPTION phrase, which a MOVE does not take'],
+    ['ENVGUARD.cbl', 10, 'rewritten', 'unknown', 'an ACCEPT of the command line or environment goes on past its line, with an EXCEPTION phrase or END-ACCEPT, which a MOVE does not take'],
     ['ENVLOAD.cbl', 8, 'rewritten', 'confirmed', 'command line or environment rotated 0'],
   ]);
   assert.equal(verifyEvidence(evidence).verified, true);

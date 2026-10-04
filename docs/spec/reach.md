@@ -302,6 +302,15 @@ shows only that these inputs did not, so refuting a finding needs every route to
 (§9.8).
 `bench/seed.mjs` adds planted labels: a flaw or a near-miss put into a real program, labelled by
 construction, and whether the scan reported it.
+`bench/label-interface.mjs` labels the abend findings of a subprogram fuzzed at its interface
+(evidence.md §13.6), source `execution-interface`, from one corpus run that also fuzzed every main
+program with `-L` on the repository's program directories. A main-program finding at the same rule,
+file and line is a caller running the subprogram and ending there: the interface finding is
+confirmed. Otherwise it is unknown with its reason: no program ironwork compiles CALLs it (the
+interface manifest lists only callers that compile), callers that CALL a PROGRAM-ID `-L` does not
+find by file name, callers that were not fuzzed or had every run refused, or a caller that ran and
+did not end there. Its precision is therefore the share callers confirmed at its low end,
+and it is never pooled with execution labels.
 
 `bench/precision.mjs` turns the labels into precision per rule, and per verdict where `--corpus`
 names the repositories the execution labels came from: each such label is joined by fingerprint to

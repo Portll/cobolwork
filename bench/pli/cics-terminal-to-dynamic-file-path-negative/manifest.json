@@ -1,0 +1,9 @@
+{
+  "id": "cics-terminal-to-dynamic-file-path-negative",
+  "title": "Terminal input chooses the record; the file read is a constant",
+  "cwe": "CWE-73",
+  "expect": [],
+  "negativeFor": [
+    "cics-terminal-to-dynamic-file-path"
+  ]
+}

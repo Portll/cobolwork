@@ -1,0 +1,9 @@
+{
+  "id": "cics-web-to-dynamic-file-path-negative",
+  "title": "The request picks between two files the program names",
+  "cwe": "CWE-73",
+  "expect": [],
+  "negativeFor": [
+    "cics-web-to-dynamic-file-path"
+  ]
+}

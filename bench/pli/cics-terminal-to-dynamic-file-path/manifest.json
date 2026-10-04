@@ -1,0 +1,11 @@
+{
+  "id": "cics-terminal-to-dynamic-file-path",
+  "title": "Terminal input decides which CICS file the program reads",
+  "cwe": "CWE-73",
+  "expect": [
+    {
+      "rule": "cics-terminal-to-dynamic-file-path",
+      "file": "MAIN.pli"
+    }
+  ]
+}

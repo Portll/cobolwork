@@ -1,0 +1,11 @@
+{
+  "id": "cics-web-to-dynamic-file-path",
+  "title": "A web request decides which CICS file the program writes",
+  "cwe": "CWE-73",
+  "expect": [
+    {
+      "rule": "cics-web-to-dynamic-file-path",
+      "file": "MAIN.pli"
+    }
+  ]
+}

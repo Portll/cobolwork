@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-cobol-calls-the-assembler-module",
+ "title": "A COBOL program calls an assembler module by name and the assembler CSECT has that name",
+ "cwe": "-",
+ "expect": [
+  {
+   "rule": "hlasm-provides-called-module",
+   "file": "HELLO.asm"
+  }
+ ]
+}

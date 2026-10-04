@@ -6,7 +6,10 @@
 // that these inputs did not (docs/spec/reach.md §9.6; refuting needs coverage of every route).
 //
 //   node bench/label.mjs <repository | corpus-root> [--corpus] [--ironwork path] [--out file]
-//                        [--evidence dir] [--timeout ms]
+//                        [--evidence dir] [--timeout ms] [--trace-input]
+//
+// With --trace-input each run also follows input by taint, and an unknown label whose operation
+// ran says what taint found there in `inputAtSink`. No label is refuted on it (reach.md §9.8).
 //
 // ironwork only reads the repository: data sets and the journal go to temporary directories, and
 // the journals stay in --evidence (or a new temporary directory, named in the output), where
@@ -25,6 +28,7 @@ import { buildFileIndex, parseFile } from '../lib/parser.mjs';
 import { scan as scanFlow } from '../lib/sets/flow.mjs';
 import { isProgram, readSource } from '../lib/sources.mjs';
 import { MARKER } from '../lib/verify.mjs';
+import { RUN_ENDINGS } from '../lib/ironwork-ids.mjs';
 
 // The journal's sink names that show a finding's sink kind, as ironwork docs/evidence.md §1.1
 // records them. A TD queue's data is `log` to ironwork whatever the CSD makes of the queue.
@@ -80,6 +84,10 @@ const fills = (byAbend) => (byAbend ? [{ name: byAbend.named, text: (n) => byAbe
   : [...Array(MARKER.length).keys()].map((shift) => ({ name: `shifted ${shift}`, text: (n) => shifted(shift).slice(0, n) })));
 const controlOf = (byAbend) => byAbend?.control ?? '0';
 
+// Sources a program reads through a DD: a file's records, and a job's in-stream data, which reaches
+// the program as the records of the DD it is written on.
+const FED_BY_DD = new Set(['file-record', 'jcl-instream']);
+
 // Every DD the program assigns, and SYSIN, holding each fill.
 function fileRecordVariants(program, byAbend) {
   const files = parseFile(program).programs.flatMap((p) => p.files || []);
@@ -91,6 +99,59 @@ function fileRecordVariants(program, byAbend) {
   })];
   const control = { name: 'records of the control', args: holding(controlOf(byAbend).repeat(RECORD)) };
   return fills(byAbend).map((fill) => ({ name: `records ${fill.name}`, args: holding(fill.text(RECORD)), control }));
+}
+
+// GnuCOBOL's command-line and environment statements, which Enterprise COBOL does not have and
+// ironwork refuses or reads as SYSIN: an ACCEPT from COMMAND-LINE, ARGUMENT-VALUE, ENVIRONMENT-VALUE,
+// ENVIRONMENT and a name, or ARGUMENT-NUMBER, and a DISPLAY UPON one of their names.
+const ARGV_ACCEPT = /\bACCEPT([ \t]+)([A-Z0-9][A-Z0-9_-]*(?:\([^)\n]*\))?)[ \t]+FROM[ \t]+(COMMAND-LINE|ARGUMENT-VALUE|ARGUMENT-NUMBER|ENVIRONMENT-VALUE|ENVIRONMENT(?:[ \t]+(?:'[^'\n]*'|"[^"\n]*"|[A-Z0-9][A-Z0-9_-]*))?)(?![A-Z0-9_-])(?:[ \t]+END-ACCEPT(?![A-Z0-9_-]))?/gi;
+const ARGV_UPON = /\bUPON[ \t]+(?:ENVIRONMENT-NAME|ENVIRONMENT-VALUE|ARGUMENT-NUMBER|COMMAND-LINE)(?![A-Z0-9_-])/gi;
+const ACCEPT_GOES_ON = /^\s*(?:(?:NOT\s+)?(?:ON\s+)?EXCEPTION|END-ACCEPT)(?![A-Z0-9_-])/i;
+
+// The program's text with each command-line or environment ACCEPT, and an END-ACCEPT on its line,
+// made a MOVE of ALL `fill` to its receiver, an argument count made 1, and each DISPLAY UPON their
+// names made a DISPLAY to SYSOUT, every statement padded to the columns it held; or why it cannot be.
+// `fill` is at most eight characters.
+export function argvRewritten(text, fill) {
+  if (!/\bACCEPT\b/i.test(text)) return { why: 'the program has no ACCEPT' };
+  let found = 0;
+  let why = null;
+  const out = text.replace(ARGV_ACCEPT, (span, gap, receiver, from, at, whole) => {
+    found++;
+    if (/^ENVIRONMENT$/i.test(from)) why ??= 'an ACCEPT FROM ENVIRONMENT names its variable on another line';
+    if (ACCEPT_GOES_ON.test(whole.slice(at + span.length))) why ??= 'an ACCEPT of the command line or environment goes on past its line, with an EXCEPTION phrase or END-ACCEPT, which a MOVE does not take';
+    const move = /^ARGUMENT-NUMBER$/i.test(from) ? `MOVE 1 TO ${receiver}` : `MOVE ALL '${fill}' TO ${receiver}`;
+    return move.padEnd(span.length);
+  }).replace(ARGV_UPON, (span) => ' '.repeat(span.length));
+  if (why) return { why };
+  if (!found) return { why: 'no ACCEPT of the command line or environment was found to rewrite' };
+  return { text: out };
+}
+
+// The finding's command-line or environment input as the marker at each of the eight rotations, or
+// the input an abend's witness needs, moved into every receiver of a rewritten ACCEPT in a staged
+// copy; every DD the program assigns and SYSIN hold the control, so no other input carries it.
+function argvVariants(program, byAbend) {
+  const text = readSource(program).text;
+  const probe = argvRewritten(text, controlOf(byAbend));
+  if (probe.why) return { why: probe.why };
+  const files = parseFile(program).programs.flatMap((p) => p.files || []);
+  const dds = [...new Set([...files.flatMap((x) => ddNames(x.assign)), 'SYSIN'])];
+  const holding = (fill) => {
+    const rewrite = (source) => argvRewritten(source, fill).text;
+    return {
+      rewrite,
+      args: (dir) => ['run', staged(program, [], dir, rewrite), '-I', dirname(program), ...dds.flatMap((dd) => {
+        const path = join(dir, dd);
+        writeFileSync(path, `${Array(RECORDS).fill(controlOf(byAbend).repeat(RECORD)).join('\n')}\n`);
+        return ['--dd', `${dd}=${path}:text`];
+      })],
+    };
+  };
+  const rotations = byAbend ? [{ name: byAbend.named, fill: byAbend.value }]
+    : [...Array(MARKER.length).keys()].map((k) => ({ name: `rotated ${k}`, fill: MARKER.slice(k) + MARKER.slice(0, k) }));
+  const control = { name: 'the control moved in', ...holding(controlOf(byAbend)) };
+  return { rewrite: control.rewrite, variants: rotations.map((r) => ({ name: `command line or environment ${r.name}`, ...holding(r.fill), control })) };
 }
 
 // The statement that begins at `line`, in the program's code columns, up to END-EXEC.
@@ -160,56 +221,106 @@ function journalOf(evidence) {
   return { run, records };
 }
 
-// A copy of the program with an SSRANGE card before its first line, in the run's own directory, so
-// a range check ends the run; the program's directory stays a copy library.
-function underSsrange(program, variant) {
+// A copy of the program in `dir`, its text rewritten where `rewrite` is given, with a CBL card of
+// `options` before its first line where there are any.
+function staged(program, options, dir, rewrite = (text) => text) {
+  const path = join(dir, 'staged', basename(program));
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, `${options.length ? `       CBL ${options.join(',')}\n` : ''}${rewrite(readSource(program).text)}`);
+  return path;
+}
+
+// The variant run on a staged copy in the run's own directory; the program's directory stays a copy
+// library.
+function underOptions(program, options, variant) {
   const args = (dir) => {
     const [command, , ...rest] = variant.args(dir);
-    const staged = join(dir, 'ssrange', basename(program));
-    mkdirSync(dirname(staged), { recursive: true });
-    writeFileSync(staged, `       CBL SSRANGE\n${readSource(program).text}`);
-    return [command, staged, '-I', dirname(program), ...rest];
+    return [command, staged(program, options, dir, variant.rewrite), '-I', dirname(program), ...rest];
   };
-  return { ...variant, args, lineOffset: 1, control: variant.control && underSsrange(program, variant.control) };
+  return { ...variant, args, lineOffset: 1, control: variant.control && underOptions(program, options, variant.control) };
 }
 
 const libraries = (ctx) => [...ctx.copyDirs.flatMap((d) => ['-I', d]), ...ctx.programDirs.flatMap((d) => ['-L', d])];
 
-// Whether ironwork compiles the program, and why not: a refusal is not the finding's to answer for.
-function refusal(ctx) {
-  if (ctx.checked.has(ctx.program)) return ctx.checked.get(ctx.program);
-  const r = spawnSync(ctx.ironwork, ['check', ctx.program, ...libraries(ctx)], { cwd: tmpdir(), encoding: 'utf8', timeout: ctx.timeout, maxBuffer: 1 << 22, stdio: ['ignore', 'ignore', 'pipe'] });
-  const first = String(r.stderr || '').split('\n').find((l) => l && !/: (warning|informational): /.test(l));
-  const why = r.status === 0 || r.status === 4 ? null
-    : `ironwork does not compile the program: ${first ? first.replace(/^.*?:\d+:\d+: /, '').replace(/'[^']*'/g, "'…'").slice(0, 160) : r.error?.message || `exit ${r.status}`}`;
-  ctx.checked.set(ctx.program, why);
-  return why;
+// Options a program can only have been compiled with, by what ironwork refuses without them: a
+// PICTURE of more than 18 digits compiles only under ARITH(EXTEND).
+const NEEDED = [{ refused: /ARITH\(COMPAT\) allows/, option: 'ARITH(EXTEND)' }];
+
+// Why ironwork refuses the program under `options`, or null where it compiles.
+function refusalUnder(ctx, options) {
+  const dir = options.length || ctx.rewrite ? mkdtempSync(join(tmpdir(), 'cobolwork-label-check-')) : null;
+  try {
+    const program = dir ? staged(ctx.program, options, dir, ctx.rewrite) : ctx.program;
+    const r = spawnSync(ctx.ironwork, ['check', program, ...(dir ? ['-I', dirname(ctx.program)] : []), ...libraries(ctx)], { cwd: tmpdir(), encoding: 'utf8', timeout: ctx.timeout, maxBuffer: 1 << 22, stdio: ['ignore', 'ignore', 'pipe'] });
+    if (r.status === 0 || r.status === 4) return null;
+    const first = String(r.stderr || '').split('\n').find((l) => l && !/: (warning|informational): /.test(l));
+    return first ? first.replace(/^.*?:\d+:\d+: /, '').replace(/'[^']*'/g, "'…'").slice(0, 160) : r.error?.message || `exit ${r.status}`;
+  } finally {
+    if (dir) rmSync(dir, { recursive: true, force: true });
+  }
 }
+
+// The options ironwork compiles the program under, or why it does not: a refusal is not the
+// finding's to answer for.
+function compileOptions(ctx) {
+  const key = ctx.rewrite ? `${ctx.program}\0rewritten` : ctx.program;
+  if (ctx.checked.has(key)) return ctx.checked.get(key);
+  const options = [];
+  let why = refusalUnder(ctx, options);
+  for (const need of NEEDED) {
+    if (!why || !need.refused.test(why)) continue;
+    options.push(need.option);
+    why = refusalUnder(ctx, options);
+  }
+  const out = why ? { why: `ironwork does not compile the program: ${why}` } : { options };
+  ctx.checked.set(key, out);
+  return out;
+}
+
+// What taint found over several answers: input where any found it, unknown where any could not
+// say, and none only where every one found none.
+const combined = (answers) => (answers.includes(true) ? true : answers.includes(null) ? null : false);
+
+// How ironwork ended a run itself rather than the program, by the ending its exit status names; an
+// abend is read from the journal instead.
+const IRONWORK_ENDED = {
+  refused: 'gave the compile no program to run',
+  'not-generated': 'refused a construct in code generation',
+  stopped: 'stopped at a construct the VM does not run yet',
+  'not-run': 'reached a construct it does not run',
+  unreadable: 'could not read the source or module',
+  usage: 'refused its arguments',
+  internal: 'failed',
+};
 
 // One run of one input variant, read back from its journal.
 function runVariant(f, ctx, variant) {
   const data = mkdtempSync(join(tmpdir(), 'cobolwork-label-run-'));
   try {
     const [command, program, ...rest] = variant.args(data);
-    const args = [command, program, ...libraries(ctx), ...rest, '--evidence', ctx.evidence, '--trace-marker', MARKER, '--clock', '2026-01-01T00:00:00'];
+    const args = [command, program, ...libraries(ctx), ...rest, '--evidence', ctx.evidence, '--trace-marker', MARKER, ...(ctx.traceInput ? ['--trace-input'] : []), '--clock', '2026-01-01T00:00:00'];
     const r = spawnSync(ctx.ironwork, args, { cwd: data, encoding: 'utf8', timeout: ctx.timeout, maxBuffer: 1 << 22, stdio: ['ignore', 'ignore', 'pipe'] });
     if (r.error) return { outcome: r.error.code === 'ETIMEDOUT' ? `no end in ${ctx.timeout / 1000}s` : r.error.message };
     let journal;
     try { journal = journalOf(ctx.evidence); } catch { journal = null; }
-    if (!journal || journal.run === ctx.runs) return { outcome: `ironwork kept no journal (exit ${r.status})` };
+    const why = IRONWORK_ENDED[RUN_ENDINGS[r.status]];
+    const ended = why && `ironwork ${why} (exit ${r.status})`;
+    if (!journal || journal.run === ctx.runs) return { outcome: ended || `ironwork kept no journal (exit ${r.status})` };
     ctx.runs = journal.run;
-    const at = journal.records.filter((x) => x.kind === 'sink' && (TRACED[ctx.sink] || []).includes(x.sink) && x.line === f.line && basename(x.file) === basename(f.path));
-    const abend = journal.records.find((x) => x.kind === 'abend');
-    // An abend in the program itself names the program; one in a COPY member or a called program
+    if (ended) return { outcome: ended };
+    // A record in the program itself names the program; one in a COPY member or a called program
     // names that, and only the program's own lines moved for a staged card.
-    const inProgram = !abend?.file || basename(abend.file) === basename(ctx.program);
-    const atOperation = !!abend && abend.line - (inProgram ? variant.lineOffset || 0 : 0) === f.line && basename(abend.file || ctx.program) === basename(f.path);
+    const lineOf = (x) => x.line - (!x.file || basename(x.file) === basename(ctx.program) ? variant.lineOffset || 0 : 0);
+    const at = journal.records.filter((x) => x.kind === 'sink' && (TRACED[ctx.sink] || []).includes(x.sink) && lineOf(x) === f.line && basename(x.file) === basename(f.path));
+    const abend = journal.records.find((x) => x.kind === 'abend');
+    const atOperation = !!abend && lineOf(abend) === f.line && basename(abend.file || ctx.program) === basename(f.path);
     return {
       run: journal.run,
       reached: at.some((x) => x.reached),
       atSink: at.length > 0,
+      input: combined(at.map((x) => x.input ?? null)),
       ran: true,
-      abend: abend ? `${abend.code}${abend.line ? ` at ${abend.file || basename(ctx.program)}:${abend.line - (inProgram ? variant.lineOffset || 0 : 0)}` : ''}` : null,
+      abend: abend ? `${abend.code}${abend.line ? ` at ${abend.file || basename(ctx.program)}:${lineOf(abend)}` : ''}` : null,
       abendAtOperation: atOperation ? abend.code : null,
     };
   } finally {
@@ -219,11 +330,13 @@ function runVariant(f, ctx, variant) {
 
 export function labelFinding(f, root, opts) {
   const kinds = kindsOf(f.rule);
-  const base = { source: 'execution', rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line };
+  // Command-line and environment input runs only in a rewritten copy (argvRewritten), so its labels
+  // are their own stratum.
+  const base = { source: 'execution', ...(kinds?.source === 'argv-or-env' ? { labelledOn: 'rewritten' } : {}), rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line };
   const unknown = (why) => ({ ...base, label: 'unknown', why });
   const byAbend = ABENDS[kinds?.sink];
   if (!kinds || (!TRACED[kinds.sink] && !byAbend)) return unknown(`ironwork does not trace the sink ${kinds?.sink ?? '?'}`);
-  if (kinds.source !== 'file-record' && kinds.source !== 'cics-terminal') return unknown(`the labeller does not feed the source ${kinds.source} yet`);
+  if (!FED_BY_DD.has(kinds.source) && kinds.source !== 'cics-terminal' && kinds.source !== 'argv-or-env') return unknown(`the labeller does not feed the source ${kinds.source} yet`);
   // The input enters in the program that reads it, which a cross-program finding runs from.
   const candidates = [...(f.related || []).map((r) => r.path), ...(f.trace || []).map((t) => t.file), f.path].filter(Boolean).map((p) => resolve(root, p));
   const program = candidates.find(isProgram);
@@ -231,17 +344,24 @@ export function labelFinding(f, root, opts) {
   const ctx = { ...opts, program, sink: kinds.sink, runs: null };
   let variants;
   try {
-    if (kinds.source === 'file-record') variants = fileRecordVariants(program, byAbend);
-    else {
+    if (FED_BY_DD.has(kinds.source)) variants = fileRecordVariants(program, byAbend);
+    else if (kinds.source === 'argv-or-env') {
+      const planned = argvVariants(program, byAbend);
+      if (planned.why) return unknown(planned.why);
+      variants = planned.variants;
+      ctx.rewrite = planned.rewrite;
+    } else {
       const source = (f.related || []).find((r) => resolve(root, r.path) === program);
       const planned = source ? terminalVariants(program, source.line, opts.maps, byAbend) : { why: 'the finding does not say where the input is received' };
       if (planned.why) return unknown(planned.why);
       variants = planned.variants;
     }
   } catch { return unknown('the program does not parse'); }
-  if (byAbend?.ssrange) variants = variants.map((v) => underSsrange(program, v));
-  const refused = refusal(ctx);
-  if (refused) return unknown(refused);
+  const compiled = compileOptions(ctx);
+  if (compiled.why) return unknown(compiled.why);
+  // SSRANGE so that a range check ends the run.
+  const options = [...(byAbend?.ssrange ? ['SSRANGE'] : []), ...compiled.options];
+  if (options.length) variants = variants.map((v) => underOptions(program, options, v));
   try { ctx.runs = journalOf(ctx.evidence).run; } catch { /* no run yet */ }
   const seen = [];
   for (const variant of variants) {
@@ -263,7 +383,8 @@ export function labelFinding(f, root, opts) {
     : seen.some((r) => r.atSink) ? 'the operation ran without the marker in its operand'
     : seen.find((r) => r.abend) ? `the run ended before the operation: ABEND ${seen.find((r) => r.abend).abend}`
       : 'the run did not reach the operation';
-  return { ...unknown(why), runs: seen.map((r) => r.run) };
+  const atSink = seen.filter((r) => r.atSink);
+  return { ...unknown(why), runs: seen.map((r) => r.run), ...(opts.traceInput && atSink.length ? { inputAtSink: combined(atSink.map((r) => r.input)) } : {}) };
 }
 
 // The repository's BMS mapsets by name, and the directories that hold them, which ironwork reads
@@ -306,7 +427,7 @@ export function label(given, opts = {}) {
   const target = resolve(given);
   const evidence = opts.evidence || mkdtempSync(join(tmpdir(), 'cobolwork-label-evidence-'));
   mkdirSync(evidence, { recursive: true });
-  const run = { ironwork: opts.ironwork || 'ironwork', timeout: opts.timeout || 20000, evidence: resolve(evidence), checked: new Map() };
+  const run = { ironwork: opts.ironwork || 'ironwork', timeout: opts.timeout || 20000, evidence: resolve(evidence), checked: new Map(), traceInput: opts.traceInput === true };
   const repos = opts.corpus ? readdirSync(target, { withFileTypes: true }).filter((d) => d.isDirectory() && !d.name.startsWith('.')).map((d) => join(target, d.name)).sort() : [target];
   const labels = [];
   const incomplete = [];
@@ -320,7 +441,8 @@ export function label(given, opts = {}) {
     const r = (byRule[l.rule] ??= { confirmed: 0, unknown: 0 });
     r[l.label]++;
   }
-  return { tool: 'cobolwork-label', marker: MARKER, evidence: run.evidence, byRule, incomplete, labels };
+  const inputAtSink = run.traceInput ? Object.fromEntries([true, false, null].map((v) => [String(v), labels.filter((l) => l.inputAtSink === v).length])) : undefined;
+  return { tool: 'cobolwork-label', marker: MARKER, evidence: run.evidence, byRule, ...(inputAtSink ? { inputAtSink } : {}), incomplete, labels };
 }
 
 function main(argv) {
@@ -333,10 +455,11 @@ function main(argv) {
     else if (a === '--out') opts.out = argv[++i];
     else if (a === '--evidence') opts.evidence = argv[++i];
     else if (a === '--timeout') opts.timeout = Number(argv[++i]);
+    else if (a === '--trace-input') opts.traceInput = true;
     else target = a;
   }
   if (!target) {
-    process.stderr.write('usage: node bench/label.mjs <repository | corpus-root> [--corpus] [--ironwork path] [--out file] [--evidence dir] [--timeout ms]\n');
+    process.stderr.write('usage: node bench/label.mjs <repository | corpus-root> [--corpus] [--ironwork path] [--out file] [--evidence dir] [--timeout ms] [--trace-input]\n');
     return 2;
   }
   const out = label(target, opts);

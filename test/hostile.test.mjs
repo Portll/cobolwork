@@ -9,6 +9,7 @@ import { inventory } from '../lib/inventory.mjs';
 import { scanAll } from '../lib/scan.mjs';
 import { versionRangeProblems } from '../lib/advisories.mjs';
 import { REGISTRY } from '../lib/kernel/registry.mjs';
+import { loopOver } from '../lib/kernel/shared-pass.mjs';
 import { toSarif } from '../lib/sarif.mjs';
 import { loadSite, classifyPath } from '../lib/site.mjs';
 import { loadBaseline, applyBaseline, validateEntry } from '../lib/baseline.mjs';
@@ -186,8 +187,11 @@ test('a rule set that throws is reported as not having run, and the other sets r
   const job = ['//J JOB (X),\'T\'', '//S1 EXEC PGM=IKJEFT01', '//SYSTSIN DD *', '  LOGON USER01 PASSWORD(SECRET01)', '/*', ''].join('\n');
   const root = tree({ 'a/J.jcl': job, 'b/J.jcl': job });
   const priv = REGISTRY.find((s) => s.name === 'priv');
-  const real = priv.scan;
-  priv.scan = () => { throw new Error(`bad input \x1b]52;c;aGk=\x07${'x'.repeat(500)}`); };
+  const { scan: real, steps: realSteps } = priv;
+  const bad = () => new Error(`bad input \x1b]52;c;aGk=\x07${'x'.repeat(500)}`);
+  priv.scan = () => { throw bad(); };
+  // In a full scan the set runs through the shared pass, and throws from inside its file loop there.
+  priv.steps = function* (_, opts) { yield loopOver(opts.tree.list(), () => { throw bad(); }); };
   try {
     for (const r of [scanAll(join(root, 'a')), scanAll(root, { repos: ['a', 'b'] })]) {
       assert.ok(r.findings.some((f) => f.rule === 'jcl-instream-credential'), 'the jcl set still reports');
@@ -202,7 +206,7 @@ test('a rule set that throws is reported as not having run, and the other sets r
       assert.equal(r.summary.coverageIncomplete, true);
       assert.ok(toSarif(r).runs[0].invocations[0].toolExecutionNotifications.some((n) => n.properties?.set === 'priv'));
     }
-  } finally { priv.scan = real; }
+  } finally { priv.scan = real; priv.steps = realSteps; }
 });
 
 // The site file, the baseline and the packs the site names come from the tree too.

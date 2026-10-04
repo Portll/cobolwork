@@ -360,6 +360,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-new-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: cics new password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-protected-field-to-record-key",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
@@ -996,6 +1008,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "credential-in-source",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A credential is written into the source. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "csd-defines-diagnostic-transaction",
    "framework": "cobit-2019",
    "clause": "DSS05.04",
@@ -1524,10 +1548,142 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "hlasm-calls-security-product",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: Assembler source calls the security product directly. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-cross-memory-service",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Assembler source uses a cross-memory instruction, reaching another address space or another authority. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-executes-built-instruction",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Assembler source runs an instruction whose length or mask comes from a register at run time. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-provides-called-module",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: An assembler CSECT or ENTRY is a module a COBOL program in this tree CALLs. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-supervisor-state-change",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-runtime-module-name",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: Assembler source loads or calls a module whose name it reads from storage at run time. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-fixed-initialization-vector",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program enciphers through ICSF with an initialization vector that never changes. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-single-length-des-key",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program generates a single-length DES key through ICSF. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-weak-hash",
+   "framework": "cobit-2019",
+   "clause": "DSS06.06",
+   "rationale": "The rule reports: A program hashes with MD5 or SHA-1 through ICSF. That is information released to people it was never meant for, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "input-causes-abend",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
    "rationale": "The rule reports: An input the program accepts ends its run with an abend. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-hang",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is information processed without the control that keeps the processing complete and within its bounds, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-selects-program",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An input the program accepts chooses the program a CALL loads. That is information processed without the control that keeps it valid and authorised: the input decides what code runs, which this practice asks business process controls to prevent.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",
@@ -1992,6 +2148,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-racf-new-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: jcl racf new password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-racf-password",
    "framework": "cobit-2019",
    "clause": "DSS05.04",
@@ -2172,6 +2340,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "racf-command-new-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: racf command new password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "racf-command-password",
    "framework": "cobit-2019",
    "clause": "DSS05.04",
@@ -2280,6 +2460,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "tso-logon-new-password",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: Credential pattern: tso logon new password. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "tso-logon-password",
    "framework": "cobit-2019",
    "clause": "DSS05.04",
@@ -2304,6 +2496,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "web-client-opens-cleartext",
+   "framework": "cobit-2019",
+   "clause": "DSS05.02",
+   "rationale": "The rule reports: A program opens an outbound HTTP connection without TLS. That is information or a credential crossing a connection with nothing protecting it, which this practice requires be secured.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "web-cookie-without-secure-attributes",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
@@ -2320,6 +2524,18 @@
    "framework": "cobit-2019",
    "clause": "DSS06.02",
    "rationale": "The rule reports: A program writes a link that opens a new window with a handle back to this one. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-receive-length-exceeds-area",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A web receive lets CICS write more bytes than the area it writes into. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",

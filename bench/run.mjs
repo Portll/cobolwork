@@ -2,11 +2,13 @@
 // should report and, for a negative, what it must not. A case is matched on rule and file, never
 // on line number: code moves, and a line-keyed expectation turns an unrelated edit into a failure.
 //
-//   node bench/run.mjs [--json] [--validate]
-//     --validate  also compile every case with GnuCOBOL, so a case cannot be invalid COBOL
+//   node bench/run.mjs [--json] [--validate] [--only id,id]
+//     --validate  also compile every case with GnuCOBOL, so a case cannot be invalid COBOL, and
+//                 assemble its HLASM with z390 when Z390 names an unpacked release
+//     --only      score these cases alone
 //
 // Exit 0 when every case scores as declared, 1 otherwise, 2 when the benchmark could not run.
-import { readdirSync, readFileSync, existsSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,14 +17,17 @@ import { REGISTRY } from '../lib/kernel/registry.mjs';
 import { directoryTree } from '../lib/kernel/source-tree.mjs';
 import { parseJcl } from '../lib/jcl.mjs';
 import { prepareForWitness } from '../diag/precompiler.mjs';
+import { stubMacro, missingMacros } from '../diag/hlasm-oracle.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CASES = join(HERE, 'cases');
 const asJson = process.argv.includes('--json');
 const validate = process.argv.includes('--validate');
+const only = process.argv.includes('--only') ? new Set(process.argv[process.argv.indexOf('--only') + 1].split(',')) : null;
+const Z390 = process.env.Z390 && existsSync(join(process.env.Z390, 'z390.jar')) ? process.env.Z390 : null;
 
 if (!existsSync(CASES)) { process.stderr.write('bench: no cases directory\n'); process.exit(2); }
-const ids = readdirSync(CASES, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name).sort();
+const ids = readdirSync(CASES, { withFileTypes: true }).filter(d => d.isDirectory() && (!only || only.has(d.name))).map(d => d.name).sort();
 if (!ids.length) { process.stderr.write('bench: no cases\n'); process.exit(2); }
 
 const results = [];
@@ -73,6 +78,27 @@ for (const id of ids) {
       const bad = parseJcl(readFileSync(join(dir, file), 'utf8'), file).diags.filter(d => d.sev === 'error');
       if (bad.length) { compiles = `${file}: line ${bad[0].line}: ${bad[0].text}`; break; }
     }
+    // An assembler case is assembled by z390, with z390's macro library and the case's own members.
+    for (const file of Z390 ? readdirSync(dir).filter(f => /\.(asm|mlc)$/i.test(f)) : []) {
+      if (compiles !== true) break;
+      const tmp = mkdtempSync(join(tmpdir(), 'cobolwork-bench-'));
+      const name = file.replace(/\.[^.]+$/, '').toUpperCase().replace(/[^A-Z0-9$#@]/g, '').slice(0, 8) || 'CASE';
+      writeFileSync(join(tmp, `${name}.MLC`), readFileSync(join(dir, file)));
+      // Authorized and site macros are not in z390's library: each is stubbed, so z390 still checks
+      // everything around it; the macro's own operands are the HLASM reader's to check.
+      const stubs = join(tmp, 'stub');
+      mkdirSync(stubs);
+      const assemble = () => spawnSync('java', ['-classpath', join(Z390, 'z390.jar'), '-Xrs', 'mz390', `${name}.MLC`, `sysmac(+${join(Z390, 'mac')}+${dir}+${stubs})`, `syscpy(+${join(Z390, 'mac')}+${dir})`], { cwd: tmp, encoding: 'latin1', timeout: 60000 });
+      let r = assemble();
+      for (let round = 0; round < 3; round++) {
+        const missing = missingMacros(`${r.stdout}${r.stderr}${existsSync(join(tmp, `${name}.PRN`)) ? readFileSync(join(tmp, `${name}.PRN`), 'latin1') : ''}`);
+        if (!missing.length) break;
+        for (const m of missing) writeFileSync(join(stubs, `${m}.MAC`), stubMacro(m));
+        r = assemble();
+      }
+      if (r.status > 4 || r.status === null) compiles = `${file}: z390 return code ${r.status}: ${(`${r.stdout}${r.stderr}`.split('\n').find(l => /E error|abort/.test(l)) || '').trim()}`;
+      rmSync(tmp, { recursive: true, force: true });
+    }
     if (compiles !== true) { results.push({ id, title: manifest.title, cwe: manifest.cwe, kind: expected.length ? 'positive' : 'negative', matched: matched.length, missing, extra, compiles }); continue; }
     for (const file of readdirSync(dir).filter(f => /\.(cbl|cob)$/i.test(f))) {
       const tmp = mkdtempSync(join(tmpdir(), 'cobolwork-bench-'));
@@ -80,7 +106,9 @@ for (const id of ids) {
       const prepared = manifest.precompile === false ? src : prepareForWitness(src, manifest.format || 'fixed');
       const target = join(tmp, file);
       writeFileSync(target, prepared, 'latin1');
-      const r = spawnSync('cobc', ['-fsyntax-only', '-frelax-syntax-checks', `-std=${manifest.std || 'default'}`, `-fformat=${manifest.format || 'fixed'}`, '-I', dir, target], { encoding: 'latin1' });
+      // IBM Enterprise COBOL, read strictly, unless the case names another standard: a GnuCOBOL
+      // program (ACCEPT FROM COMMAND-LINE, which IBM does not have) says "std": "default".
+      const r = spawnSync('cobc', ['-fsyntax-only', '-frelax-syntax-checks', `-std=${manifest.std || 'ibm-strict'}`, `-fformat=${manifest.format || 'fixed'}`, '-I', dir, target], { encoding: 'latin1' });
       if (r.status !== 0) compiles = `${file}: ${(r.stderr || '').split('\n').find(l => / error: /.test(l)) || 'refused'}`;
       rmSync(tmp, { recursive: true, force: true });
       if (compiles !== true) break;

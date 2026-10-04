@@ -38,7 +38,7 @@ it:
 | **IMS DBD/PSB** | **None.** z390 ships no IMS emulation at all | Self-consistency against `BYTES=` totals, plus hand-built fixtures |
 | **DB2 DDL** | A mature SQL parser as a differ, not a truth | Every statement type present in the corpus; anything else reported unparsed |
 | **HLASM** | **z390 (GPL v2, HLASM-compatible) — confirmed** | **Not 100%.** See below |
-| **PL/I** | Iron Spring PL/I (licence needs checking) | **Not 100%.** See below |
+| **PL/I** | Iron Spring PL/I, not used until its owner confirms the terms in writing (§6) | **Not 100%.** See below |
 
 ### The z390 question is answered, and two phases lose their oracle
 
@@ -416,6 +416,37 @@ that no COBOL rule set would ever find. Treat them as first-class.
 
 ## 5. Phase 4 — HLASM
 
+**Built:** the reader (`lib/hlasm.mjs`, over `lib/bms.mjs`'s card folding), the cited table
+(`rules/hlasm-operations.json`) and the rules below (`lib/sets/hlasm.mjs`); a job step running an
+assembler CSECT or ENTRY is a defined program. Definition of done 1 to 5 are met.
+
+On top of it, `lib/hlasm/` reads each statement by what its operation is:
+- machine instructions against IBM's operand syntax, from `rules/hlasm-instructions.json` (2,388
+  mnemonics with their Principles of Operation pages, checked against IBM's own HLASM listing of
+  every op code);
+- assembler instructions (DC and DS, EQU, ORG, USING, sections and the rest);
+- the z/OS, Language Environment and HLASM Toolkit macros the rules read, against IBM's keywords;
+- macro definitions, whose model statements are read as the statements they are.
+
+Conditional assembly is counted, not evaluated. `lib/hlasm/locate.mjs` works out section-relative
+locations, lengths and types and the external names a module needs, and places nothing after a
+statement whose length it cannot know.
+
+`diag/hlasm-statement-measure.mjs` measures the reader by kind over a dev and a held-out corpus.
+`diag/hlasm-oracle.mjs` and `diag/hlasm-grade-z390.mjs` grade the locator against z390 1.8.4.4,
+counting only values that do not move when sixteen bytes follow every macro call. On 2026-10-03:
+
+- Statements outside conditional assembly parse at 99.5% on the dev corpus and 99.7% on the
+  held-out corpus (measured 2026-10-04).
+- No symbol location differs from z390's on either corpus, and 546 of 557 graded held-out
+  symbols are placed. Values z390 gives differently from the Language Reference (an EQU's length,
+  a literal pool z390 pads) are not graded.
+- Instruction lengths agree on all 3,983 graded instructions.
+
+`bench/hlasm-locate/` holds the locator's own fixtures, with z390's answers recorded beside them.
+The set also names the macros it did not expand, the COPY members missing from the tree and the
+statements it could not read, and sets `coverageIncomplete` for the last two.
+
 ### Scope, stated honestly
 
 114 genuine HLASM files across the corpus. Assembler matters because assembler stubs are where
@@ -455,6 +486,7 @@ resolving to an assembler module currently reports `jcl-exec-pgm-unresolved` or 
 | `hlasm-cross-memory-service` | high | `PC`/`SSAR`/`LASP` |
 | `hlasm-calls-security-product` | med | `RACROUTE` and relatives — inventory, not defect |
 | `hlasm-provides-called-module` | info | Closes the COBOL `CALL` that currently resolves to nothing |
+| `hlasm-runtime-module-name` | med | `LINK`, `XCTL`, `LOAD` or `ATTACH` given `EPLOC=` or `DE=`: the module is whatever name that storage holds |
 
 ### Definition of done
 
@@ -513,14 +545,31 @@ byte-range taint model applies unchanged, and every `*-to-*` rule works. Plus:
 
 1. **A measured parse rate over the corpus**, per statement, published the way the COBOL parser's
    grading table is. Not "100%" unless it is 100%.
-2. Structure offsets checked against a hand-built fixture set with known sizes; against Iron Spring
-   PL/I if its licence permits redistribution of a grading harness — **verify the licence before
-   depending on it**.
+2. Structure offsets checked against a hand-built fixture set with known sizes. Iron Spring PL/I
+   is not used as an oracle until Iron Spring Software confirms in writing that cobolwork may run
+   it to grade offsets and publish what it computes (see *The Iron Spring licence* below).
 3. Every unparsed statement counted and reported; `coverageIncomplete` set when any exist.
 4. An `EXEC SQL` taint path through PL/I demonstrated in `bench/cases/`.
 
 **Effort: 32–44h** for the corpus subset. A full front end is several times that and is not
 recommended.
+
+### The Iron Spring licence
+
+Read on 2026-10-04, for version 1.4.1 (`pli-1.4.1.tgz`, SHA-256
+`1f58a7be72b03158c2e1f97f6faae41a2a60118839c667186199075884e6f878`). Two texts disagree:
+
+- The licence in the distribution (`readme_linux.html`): "Iron Spring Software grants you the
+  right to use and copy the Iron Spring PL/I compiler and library freely. You may distribute
+  programs compiled using the compiler and/or linked with the library under any terms you wish
+  without restriction." The library's source is under the LGPL. The compiler is closed-source.
+- The site's FAQ (`iron-spring.com/faq.html`): "Iron Spring PL/I is free for non-commercial and
+  hobbyiest use. The price of the commercial version has not yet been determined".
+
+cobolwork grants other terms for a fee beside the AGPL (`LICENSING.md`). If the FAQ governs, a
+grading harness is commercial use. A letter from Iron Spring Software settles which text applies
+without counsel. Until one arrives the grade rests on hand-built fixtures, which needs no
+licence, and nothing in the tree was computed by Iron Spring PL/I.
 
 ---
 
@@ -603,7 +652,7 @@ them will be wrong in a way the tests will not catch.
 | Risk | Mitigation |
 |---|---|
 | ~~**z390 does not ship `DFH`/IMS macros**~~ — **CONFIRMED, not a risk any more** | Settled in §0. BMS and IMS have no external oracle; round-trip and `BYTES=` self-consistency are the method, and the README states they are read, not assembled. Budget more hand-built fixtures in phases 1 and 2 accordingly |
-| **Iron Spring PL/I's licence forbids a redistributable harness** | Check before phase 5. Fall back to fixtures with hand-computed offsets |
+| **Iron Spring PL/I's terms are unsettled** | Read 2026-10-04 (§6): the distribution's licence grants free use, the site's FAQ limits free use to non-commercial. Hand-computed fixtures until Iron Spring Software confirms in writing |
 | **Scope creep into a real assembler or PL/I front end** | The definition of done for phases 4 and 5 is a *measured subset*. If a pull request starts implementing conditional assembly, it has left the plan |
 | **Corpus bias** | The corpus is star-ranked public GitHub COBOL: teaching material, vendor demos and tooling. Its manifest says so. A rule quiet here is quiet on *that* population, not on a bank |
 | **Five half-parsers** | Ship after each phase. The project's credibility rests on one parser being genuinely graded; four ungraded ones would cost more than they add |

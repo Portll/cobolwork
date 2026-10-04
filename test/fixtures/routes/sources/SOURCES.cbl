@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. SOURCES.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-ARG              PIC X(40).
+       01 WS-ENV              PIC X(40).
+       01 WS-CMD              PIC X(40).
+       PROCEDURE DIVISION.
+           ACCEPT WS-ARG FROM COMMAND-LINE
+           ACCEPT WS-ENV FROM ENVIRONMENT 'CMD'
+           MOVE WS-ARG TO WS-CMD
+           CALL 'SYSTEM' USING WS-CMD
+           MOVE WS-ENV TO WS-CMD
+           CALL 'SYSTEM' USING WS-CMD
+           GOBACK.

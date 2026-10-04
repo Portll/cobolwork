@@ -5,18 +5,17 @@ regulations that get amended, utilities that vendors keep shipping, advisories t
 conventions that belong to one customer. A forked scanner with this year's rules is worthless in
 two years, which is the only durable thing a security tool sells.
 
-Six items, specified in [`specs/`](specs/), ordered by benefit against cost:
+Five items, specified in [`specs/`](specs/), ordered by benefit against cost:
 
 | | Item | Task | Benefit | ROI | Estimate |
 |---|---|---|---|---|---|
-| ① | [Compliance mappings](specs/01-compliance.md) | Medium | **Big** | **1** | 20–30h (10–12h for DORA + PCI) |
+| ① | [Compliance mappings](specs/01-compliance.md) | Medium | **Big** | **1** | 20–30h |
 | ③ | [JCL as an attack surface](specs/03-jcl.md) | Large | **Big** | 2 | 15–25h |
 | ⑤ | [Vendor rule packs](specs/05-vendor-packs.md) | Medium | Medium | 3 | 12–18h |
 | ④ | [Compiler advisories](specs/04-advisories.md) | Small | Small–Med | 4 | 4–8h |
 | ② | [Site reconnaissance](specs/02-recon.md) | Med–Large | Medium | 5 | 14–20h |
-| ⑥ | [Hand-labelled corpus](specs/06-corpus.md) | Large | Small | 6 | 20–35h |
 
-≈ 110 hours against roughly 14 hours of engineering time in the engine so far. **The feed is about
+≈ 90 hours against roughly 14 hours of engineering time in the engine so far. **The feed is about
 eight times the tool.** That is the argument for selling it before building all of it: ship ④ and
 half of ①, charge, and let the first customer fund ③.
 
@@ -65,14 +64,12 @@ good rows, that is a finding about the gate; if it is rejecting bad ones, the br
 
 ## What the model may not do
 
-`corpus` is not in `GENERABLE`, and [`schema.mjs`](schema.mjs) requires `method: "human"` on every
-row of it. If a model labels the flow corpus, the precision number becomes "our engine agrees with
-a 27B model" — circular, worthless, and spotted immediately by exactly the reviewer the corpus
-exists to convince. See [`specs/06-corpus.md`](specs/06-corpus.md). The prohibition is structural
-because discipline at hour twenty is not a control.
+`GENERABLE` in [`schema.mjs`](schema.mjs) names the kinds a model may author, and the feed holds no
+kind that carries a precision label. Precision labels are made by machine, in `bench/`: execution
+labels from ironwork, negatives from coverage, planted flaws, and two models agreeing. A model's
+opinion of one finding is never a label on its own.
 
-The model *may* triage: ranking which 50 of 2,210 programs deserve a person's attention is a real
-10× and changes no label.
+The model *may* triage: ranking which programs deserve a person's attention changes no label.
 
 ## Licensing
 
@@ -80,8 +77,7 @@ The tooling here is AGPL with the rest of cobolwork — it has no standalone val
 is good for the project. The **generated rows** are the licensed artifact and belong under separate
 terms; `feed/out/` is gitignored accordingly.
 
-Source documents are other people's copyright. PCI DSS is the Council's; the utility manuals are
-IBM's. They are cached under `feed/sources/` for the gate to check quotes against, that directory
+Source documents are other people's copyright. The utility manuals are IBM's. They are cached under `feed/sources/` for the gate to check quotes against, that directory
 is gitignored, and **the feed ships citations, not text**. Quoting a clause to identify it is
 ordinary; assembling enough that the feed substitutes for the standard is not.
 

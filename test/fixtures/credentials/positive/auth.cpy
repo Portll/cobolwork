@@ -1,0 +1,7 @@
+           05  WS-AUTH-TOKEN      PIC X(20) VALUE 'q8Lm2Zp7Rt4Vw9YsKx3N'.
+           05  WS-REFRESH-TOKEN   PIC X(24)
+               VALUE 'pK7sQ2mZ9xL4vR8tY3nW6cB1'.
+           05  WS-API-KEY         PIC X(8)  VALUE X'D7C1E2E2E6D6D9C4'.
+           05  WS-ACCESS-TOKEN    PIC X(64) VALUE 'r7Kp2Lx9Qm4Tz8Wn3Vb6Y
+      -    'c1Hd5Jf0Gs2Ne7Ua4Mi9OkPl3Rq8StVw5Xy0Za2Bc4D'.
+      D01  WS-DEBUG-PASSWORD   PIC X(8)  VALUE 'Dbg7Pw9Q'.

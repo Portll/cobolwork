@@ -34,7 +34,7 @@ A list of gaps in the engine and the tooling around it was worked through that d
 | More outbound channels | `2d30235`, `1915eb1`, `cd4b500` | CardDemo's `FTPJCL` logs on with a password in its input, now reported |
 | `COPY` resolved as the build resolves it | `00cfcc7` | seeded recall 75 of 75; 224 resolutions moved, every one from a program to a copybook |
 | Stable finding identity; baselines that expire | `dfcefc8`, `c67cc84` | commitwork's lane keys on the fingerprint |
-| Precision tools; A/B measurement; estate facts from JCL | `33b08b2`, `bb9d5bb`, `6b8829d`, `d5c1b71` | the labelling itself is not started |
+| Precision tools; A/B measurement; estate facts from JCL | `33b08b2`, `6b8829d`, `d5c1b71` | precision is scored from machine labels (reach.md §9.6) |
 | A customer advisory feed | `ca25481`, `818ce14` | - |
 | N-LOG's taint half (from the z-sibling list) | "feat: terminal or web input written unchecked to a log, and a system response code sent to a web client, are reported" | outside input written unchecked to a log: GenApp's `LGSTSQ` writes terminal input to CSMT; a system response code sent to a web client: no witness, as nothing in the corpus uses the CICS web API |
 
@@ -175,9 +175,9 @@ findings against 22 from outside input.
 
 **Not measured, and stated as such:**
 
-- **Precision on real code.** Every rule's precision is still measured on cases this project wrote.
-  A hand-labelled corpus is the only independent witness. The tools for it exist
-  (`diag/label-sheet.mjs`, `diag/score-corpus.mjs`); the labelling is not started.
+- **Precision on real code.** It comes from machine labels in `bench/`: execution labels from
+  ironwork and planted flaws are in, and `diag/score-corpus.mjs` scores each verdict against them.
+  Negatives from coverage and labels from two models are not built (BACKLOG, machine labels).
 - **The 2026-09-24 rules over the whole corpus.** The arithmetic and loop-bound rules were counted
   over the 57 repositories a loaded machine read completely, the protected-field rule over CardDemo,
   and the sign-on bypass with the CICS set alone.
@@ -197,10 +197,9 @@ In order. Each item says what it is worth and what it costs.
    and 24 and on windows with Node 22, and scans the benchmark on ubuntu. `npm test` is parallel
    there; the serial run is still the one to trust locally.
 
-2. **Label the corpus.** `diag/label-sheet.mjs` writes a blind worksheet and a sealed answer key;
-   `diag/score-corpus.mjs` turns labelled rows into precision and recall per rule. The labelling is
-   20-35 hours of a person and cannot be compressed, and until it is done no rule's precision has an
-   independent witness.
+2. **Widen the machine labels.** `bench/label.mjs` runs each finding's verification plan in ironwork
+   and `bench/precision.mjs` turns the labels into precision per rule. Each sink and source ironwork
+   learns to trace turns unknown labels into confirmed ones; machine time, no hours of a person.
 
 3. **Re-measure on a quiet machine.** The 2026-09-24 rules were counted on partial runs (above).
    `diag/measure-rules.mjs --baseline` compares two runs over what both read completely.
@@ -274,7 +273,7 @@ advises. N4, N6, N8 and N9 landed on 2026-09-30, as `program-checks-stored-passw
 |---|---|---|
 | T1 | `diag/measure-rules.mjs --baseline <old.json>`: print, per rule, what a change added and removed, only over repositories both runs read completely. | Every engine change this round needed an A/B, and the only honest one compares complete runs. Landed, `6b8829d`. |
 | T2 | `diag/measure-rules.mjs --list <rule>`: every finding for a rule, distinct by content, with its trace. | Reading findings is how every wrong conclusion this round was caught. Landed, `6b8829d`. |
-| T3 | `diag/label-sheet.mjs` and `diag/score-corpus.mjs` | The labelling tools of next step 2. Landed, `bb9d5bb`. |
+| T3 | `diag/score-corpus.mjs` | Scores each exploitability verdict against the machine labels of next step 2, with a Wilson interval over the labels that decided it. |
 | T4 | `diag/propose-site.mjs` extended to draft `internalReaderDds` from region JCL and `compilerOptions` from compile PROCs, for a person to confirm. | The three estate facts are what make three rules run. Landed, `d5c1b71`. |
 | T5 | A customer advisory feed: an import for the estate's own IBM Z Security Portal extract, checked by the same gate, never committed. | Reaches the non-public half of the record. Landed as "feat: a customer's own advisory extract is loaded for a scan, held to the published rows' shape, and named in the report": `--advisories` (`893ae5d`), `COBOLWORK_ADVISORIES` or `advisoryFeeds`. |
 | T6 | SARIF `partialFingerprints` | So a finding keeps its identity across runs and `diff` can say fixed or new. Landed, `dfcefc8`, with baselines in `c67cc84`. |

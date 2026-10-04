@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. APROG.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-X               PIC X(40).
+       01 WS-NAME            PIC X(8) VALUE 'BPROG'.
+       PROCEDURE DIVISION.
+           ACCEPT WS-X FROM COMMAND-LINE
+           CALL 'SUBPG' USING WS-X
+           CALL 'DISP' USING WS-NAME
+           GOBACK.

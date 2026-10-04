@@ -1,0 +1,9 @@
+{
+ "id": "115-a-database-password-read-at-run-time",
+ "title": "The same sign-on with the password read from the environment at run time",
+ "cwe": "CWE-798",
+ "expect": [],
+ "negativeFor": [
+  "credential-in-source"
+ ]
+}

@@ -1,0 +1,48 @@
+{
+ "clock": "2026-10-01T00:00:00",
+ "counts": {
+  "abend": 9,
+  "clean": 21,
+  "refused": 0,
+  "runs": 30,
+  "timeout": 0
+ },
+ "entry": "run",
+ "inputs": [
+  {
+   "bytes": "wVdQuT8=",
+   "id": "r0-INDD",
+   "kind": "dd",
+   "minimized": true,
+   "name": "INDD"
+  }
+ ],
+ "program": {
+  "file": "src/MAINP.cbl",
+  "id": "MAINP"
+ },
+ "roots": [
+  "src",
+  "lib"
+ ],
+ "runs": [
+  {
+   "abend": {
+    "code": "S0C7",
+    "file": "SUBADD.cbl",
+    "line": 9,
+    "message": "Data exception"
+   },
+   "coverage": "coverage/0.json",
+   "input": [
+    "r0-INDD"
+   ],
+   "journal": "20261002T132555Z-fb727a1858a7d32b",
+   "outcome": "abend"
+  }
+ ],
+ "seed": 1,
+ "strategy": "fields",
+ "tool": "ironwork-fuzz",
+ "version": "0.2.0"
+}

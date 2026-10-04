@@ -22,6 +22,10 @@ test('taint a subprogram keeps in its own storage reaches a later caller', () =>
   assert.deepEqual(commands('static'), ['BPROG.cbl']);
 });
 
+test('taint a subprogram keeps reaches a caller started through a CALL by a variable', () => {
+  assert.deepEqual(commands('dispatch'), ['BPROG.cbl']);
+});
+
 test('a nested call returns to the frame it was made from, and that frame to its own caller', () => {
   assert.deepEqual(commands('nested'), ['APROG.cbl']);
 });

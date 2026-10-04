@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-ex-moves-a-length-from-the-caller",
+ "title": "EX runs an MVC whose length is a halfword the caller passes, with no check against the field it fills",
+ "cwe": "CWE-119",
+ "expect": [
+  {
+   "rule": "hlasm-executes-built-instruction",
+   "file": "MVCLEN.asm"
+  }
+ ]
+}

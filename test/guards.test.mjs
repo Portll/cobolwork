@@ -86,6 +86,17 @@ test('a check holds across a loop whose calls cannot change the field that names
   assert.equal(f.guard?.stops, undefined);
 });
 
+test('a check holds across a loop of EXEC CICS LINK, which reads the program name it is given', () => {
+  const transfer = (file) => report.findings.filter(x => x.path === file && x.rule === 'cics-terminal-to-cics-dynamic-transfer');
+  assert.equal(transfer('LINKLOOP.cbl').length, 0);
+  const [c] = report.checked.filter(x => x.path === 'LINKLOOP.cbl');
+  assert.deepEqual(c.guard, { program: 'LINKLOOP', item: 'WS-PGM', file: 'LINKLOOP.cbl', line: 13, stops: true });
+  // In the communication area, the name may come back changed for the next pass.
+  const [f] = transfer('LINKAREA.cbl');
+  assert.ok(f, 'a name in the communication area is reported');
+  assert.equal(f.guard?.stops, undefined);
+});
+
 test('SARIF carries the check beside the evidence kind', () => {
   const sarif = toSarif(report);
   const r = sarif.runs[0].results.find(x => x.ruleId === 'argv-or-env-to-os-command' && x.locations[0].physicalLocation.artifactLocation.uri === 'GUARDED.cbl');

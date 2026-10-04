@@ -1,0 +1,11 @@
+RACCHK   CSECT
+         STM   14,12,12(13)
+         LR    12,15
+         USING RACCHK,12
+         RACROUTE REQUEST=AUTH,CLASS='FACILITY',ENTITY=RESNAME,        X
+               ATTR=READ,WORKA=WORK,RELEASE=7730
+         LM    14,12,12(13)
+         BR    14
+RESNAME  DC    CL39'CW.SAMPLE.RESOURCE'
+WORK     DS    CL512
+         END

@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-a-program-call-into-another-space",
+ "title": "A program issues a PC instruction to a program-call number to invoke a routine in another address space",
+ "cwe": "CWE-668",
+ "expect": [
+  {
+   "rule": "hlasm-cross-memory-service",
+   "file": "PCALL.asm"
+  }
+ ]
+}

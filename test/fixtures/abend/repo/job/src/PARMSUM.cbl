@@ -1,0 +1,21 @@
+       CBL SSRANGE
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. PARMSUM.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-NUM PIC 9(5).
+       01 WS-TOTAL PIC 9(9) VALUE 0.
+       01 WS-TABLE.
+          05 WS-SLOT PIC X(3) OCCURS 10 TIMES.
+       LINKAGE SECTION.
+       01 PARM-AREA.
+          05 PARM-LEN  PIC S9(4) COMP.
+          05 PARM-TEXT PIC X(100).
+       PROCEDURE DIVISION USING PARM-AREA.
+           DISPLAY 'PARM ' PARM-LEN ' ' PARM-TEXT (1:PARM-LEN + 1)
+           IF PARM-LEN >= 5
+              MOVE PARM-TEXT (1:5) TO WS-NUM
+              ADD WS-NUM TO WS-TOTAL
+              MOVE 'ABC' TO WS-SLOT (PARM-LEN)
+           END-IF
+           GOBACK.

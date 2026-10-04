@@ -3,12 +3,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, unlinkSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { canonical, makeRecord, newChain, recordHash } from '../lib/evidence/record.mjs';
-import { EvidenceRefusal, createExclusive, openAppend, prepareDir, readLines, syncClose, writeAll } from '../lib/evidence/store.mjs';
+import { JOURNAL_KINDS, KINDS, LEDGER_KINDS, canonical, makeRecord, newChain, recordHash } from '../lib/evidence/record.mjs';
+import { EvidenceRefusal, breakStale, createExclusive, openAppend, prepareDir, readLines, syncClose, writeAll } from '../lib/evidence/store.mjs';
 import { LEDGER, LOCK, openJournal } from '../lib/evidence/journal.mjs';
 import { PAYLOAD_TYPE, SEAL_PREDICATE, STATEMENT_TYPE, anchorGit, seal, timeStampRequest } from '../lib/evidence/seal.mjs';
 import { parseAllowedSigners } from '../lib/evidence/sshsig.mjs';
@@ -18,6 +18,7 @@ import { scanJcl } from '../lib/sets/jcl.mjs';
 import { applyEstateFacts } from '../lib/scan.mjs';
 import { machineAuthored } from '../lib/equivalence.mjs';
 import { slsaStatement } from '../lib/evidence/slsa.mjs';
+import { SINK_KINDS } from '../lib/dataflow.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -188,8 +189,13 @@ test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
     ['dd', { dd: 'INFILE', event: 'end', sha256: 'b'.repeat(64), bytes: 11 }],
     ['abend', { code: 'S0C7', file: 'PAYROLL.cbl', line: 42 }],
     ['sink', { sink: 'dynamic-program-load', file: 'PAYROLL.cbl', line: 40, marker: 'CWVRFY01', reached: true }],
+    ['sink', { sink: 'os-command', file: 'PAYROLL.cbl', line: 44, input: true }],
+    ['sink', { sink: 'os-command', file: 'PAYROLL.cbl', line: 46, input: null }],
+    ['sink', { sink: 'dynamic-program-load', file: 'PAYROLL.cbl', line: 40, marker: 'CWVRFY01', reached: false, input: false }],
+    ['statement', { file: 'PAYROLL.cbl', line: 41 }],
+    ['statement', { file: 'HELPER.cbl', line: 12, capped: true }],
     ['step', { step: 'PAY.CALC', pgm: 'PAYROLL', outcome: 'ABEND S0C7: a data exception' }],
-    ['close', { exit: 16, counts: { dd: 2 }, durationMs: 5, ledger: 'unrecorded' }],
+    ['close', { exit: 240, counts: { dd: 2 }, durationMs: 5, ledger: 'unrecorded' }],
   ];
   let prev = null;
   let text = '';
@@ -203,9 +209,36 @@ test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
   let v = verifyEvidence(d);
   assert.equal(v.verified, true, JSON.stringify(v.broken));
   assert.deepEqual(v.unrecorded, [id]);
+  assert.doesNotThrow(() => makeRecord({ chain, prev, kind: 'close', fields: { exit: -4, counts: {}, durationMs: 1, ledger: 'unrecorded' }, at }));
   assert.throws(() => makeRecord({ chain, prev, kind: 'dd', fields: { dd: 'X', event: 'rewind' }, at }), TypeError);
   assert.throws(() => makeRecord({ chain, prev, kind: 'step', fields: { step: 'S1', pgm: 'A' }, at }), TypeError);
   assert.throws(() => makeRecord({ chain, prev, kind: 'sink', fields: { sink: 'os-command', file: 'A.cbl', line: 1, marker: 'CWVRFY01', reached: 'yes' }, at }), TypeError);
+  assert.throws(() => makeRecord({ chain, prev, kind: 'sink', fields: { sink: 'os-command', file: 'A.cbl', line: 1, input: 'yes' }, at }), TypeError);
+  assert.throws(() => makeRecord({ chain, prev, kind: 'sink', fields: { sink: 'os-command', file: 'A.cbl', line: 1, marker: 'CWVRFY01' }, at }), /marker and reached come together/);
+  assert.throws(() => makeRecord({ chain, prev, kind: 'sink', fields: { sink: 'os-command', file: 'A.cbl', line: 1, reached: true, input: true }, at }), /marker and reached come together/);
+  assert.throws(() => makeRecord({ chain, prev, kind: 'sink', fields: { sink: 'os-command', file: 'A.cbl', line: 1 }, at }), /needs marker and reached, or input/);
+  assert.throws(() => makeRecord({ chain, prev, kind: 'statement', fields: { file: 'A.cbl' }, at }), TypeError);
+  assert.throws(() => makeRecord({ chain, prev, kind: 'statement', fields: { file: 'A.cbl', line: 1, capped: false }, at }), TypeError);
+});
+
+// The tables diag/generate-evidence-kinds.mjs writes, each against the committed copy.
+function generatedTables(t) {
+  const d = tmp(t);
+  const gen = spawnSync(process.execPath, [join(HERE, '..', 'diag', 'generate-evidence-kinds.mjs'), d], { encoding: 'utf8' });
+  assert.equal(gen.status, 0, gen.stderr);
+  const lf = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
+  return (name) => [lf(join(HERE, 'fixtures', 'evidence', name)), lf(join(d, name)), `regenerate test/fixtures/evidence/${name} with diag/generate-evidence-kinds.mjs`];
+}
+
+test("V1.10 The kinds table ironwork vendors is the writer's", (t) => {
+  assert.equal(...generatedTables(t)('kinds.tsv'));
+  for (const kind of Object.keys(KINDS)) assert.ok(JOURNAL_KINDS.has(kind) !== LEDGER_KINDS.has(kind), kind);
+});
+
+test("V1.11 The sink kinds ironwork vendors are the flow engine's", (t) => {
+  const [committed, generated, message] = generatedTables(t)('sinks.tsv');
+  assert.equal(committed, generated, message);
+  assert.deepEqual(committed.split('\n').filter((l) => l && !l.startsWith('#')), Object.keys(SINK_KINDS).sort());
 });
 
 // V2 - The ledger
@@ -261,6 +294,60 @@ test('V2.3 A stale lock is broken and the break is recorded', (t) => {
   assert.ok(broken >= 0);
   assert.equal(kinds[broken].holderPid, dead);
   assert.ok(broken < kinds.findIndex((r) => r.kind === 'run'));
+});
+
+test('V2.5 An empty lock is aged from its modification time', (t) => {
+  const d = tmp(t);
+  prepareDir(d);
+  writeFileSync(join(d, LOCK), '');
+  const fresh = openJournal(d, { command: 'scan', argv: [], roots: [], toolVersion: '0.0.0', lock: { waitMs: 100 } });
+  assert.equal(fresh.close({ exit: 0 }).ledger, 'unrecorded');
+  const old = (Date.now() - 120000) / 1000;
+  utimesSync(join(d, LOCK), old, old);
+  assert.equal(run(d).result.ledger, 'recorded');
+  const records = readLines(join(d, LEDGER)).lines.map((l) => JSON.parse(l));
+  const broken = records.find((r) => r.kind === 'lock-broken');
+  assert.equal(broken.holderPid, null);
+  assert.ok(broken.ageMs >= 119000);
+  assert.equal(verifyEvidence(d).verified, true);
+});
+
+test('V2.6 A lock taken after a stale one was read is left alone', (t) => {
+  const d = tmp(t);
+  prepareDir(d);
+  const lock = join(d, LOCK);
+  const staleText = `999999 ${Date.now() - 120000}\n`;
+  writeFileSync(lock, staleText);
+  const seen = { text: staleText, ino: statSync(lock).ino };
+  unlinkSync(lock);
+  const peer = `${process.pid} ${Date.now()}\n`;
+  writeFileSync(lock, peer);
+  // A rename or a link changes a file's ctime, so an unchanged one shows the lock never left its path.
+  const before = statSync(lock, { bigint: true });
+  assert.equal(breakStale(lock, seen), false);
+  const after = statSync(lock, { bigint: true });
+  assert.equal(readFileSync(lock, 'utf8'), peer);
+  assert.deepEqual([after.ino, after.ctimeNs], [before.ino, before.ctimeNs]);
+  assert.deepEqual(readdirSync(d).filter((n) => n.startsWith(LOCK)), [LOCK]);
+  assert.equal(breakStale(lock, { text: peer, ino: statSync(lock).ino }), true);
+  assert.match(readFileSync(lock, 'utf8'), new RegExp(`^${process.pid} \\d+\\n$`));
+  assert.deepEqual(readdirSync(d).filter((n) => n.startsWith(LOCK)), [LOCK]);
+});
+
+test("V2.7 A breaker's claim is held while it breaks, and removed once stale", (t) => {
+  const d = tmp(t);
+  prepareDir(d);
+  const dead = spawnSync(process.execPath, ['-e', '0']).pid;
+  const staleText = `${dead} ${Date.now() - 120000}\n`;
+  writeFileSync(join(d, LOCK), staleText);
+  writeFileSync(join(d, `${LOCK}.break`), `${process.pid} ${Date.now()}\n`);
+  const waiting = openJournal(d, { command: 'scan', argv: [], roots: [], toolVersion: '0.0.0', lock: { waitMs: 100 } });
+  assert.equal(waiting.close({ exit: 0 }).ledger, 'unrecorded');
+  assert.equal(readFileSync(join(d, LOCK), 'utf8'), staleText);
+  writeFileSync(join(d, `${LOCK}.break`), `${dead} ${Date.now() - 120000}\n`);
+  assert.equal(run(d).result.ledger, 'recorded');
+  assert.ok(readLines(join(d, LEDGER)).lines.some((l) => JSON.parse(l).kind === 'lock-broken'));
+  assert.deepEqual(readdirSync(d).filter((n) => n.startsWith(LOCK)), []);
 });
 
 // V3 - Verify
@@ -533,7 +620,155 @@ test('V5.3 An RFC 3161 request is DER over the envelope digest', () => {
   assert.notEqual(timeStampRequest(bytes).nonce, req.nonce);
 });
 
-test('V5.4 A time-stamp response for another digest does not seal', { todo: 'verify --tsr is not built (spec §16 step 4)' }, () => {});
+// A TimeStampResp holding only what verify reads: status, the TSTInfo's imprint, genTime and nonce.
+function timeStampResponse(digestHex, nonceHex) {
+  const der = (tag, ...parts) => {
+    const body = Buffer.concat(parts);
+    const len = body.length < 128 ? Buffer.from([body.length]) : Buffer.from([0x82, body.length >> 8, body.length & 0xff]);
+    return Buffer.concat([Buffer.from([tag]), len, body]);
+  };
+  const oid = (...bytes) => der(0x06, Buffer.from(bytes));
+  const sha256Oid = oid(0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01);
+  const tst = der(0x30, der(0x02, Buffer.from([1])), oid(0x2a, 0x03), der(0x30, der(0x30, sha256Oid, Buffer.from([0x05, 0x00])), der(0x04, Buffer.from(digestHex, 'hex'))),
+    der(0x02, Buffer.from([7])), der(0x18, Buffer.from('20261002120000Z')), der(0x02, Buffer.from(nonceHex, 'hex')));
+  const encapsulated = der(0x30, oid(0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x09, 0x10, 0x01, 0x04), der(0xa0, der(0x04, tst)));
+  const signed = der(0x30, der(0x02, Buffer.from([3])), der(0x31), encapsulated, der(0x31));
+  return der(0x30, der(0x30, der(0x02, Buffer.from([0]))), der(0x30, oid(0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x07, 0x02), der(0xa0, signed)));
+}
+
+test('V5.4 A time-stamp response for another digest does not seal', (t) => {
+  const d = tmp(t);
+  run(d);
+  seal(d, { toolVersion: '0.0.0' });
+  const a = cli(['evidence', 'anchor', '--evidence', d, '--tsq', join(d, 'req.tsq'), '--quiet']);
+  assert.equal(a.status, 0, a.stderr);
+  const { nonce } = JSON.parse(a.stdout).tsq;
+  assert.ok(existsSync(join(d, 'seals', '0.tsq')), 'the request is kept beside the seal');
+  writeFileSync(join(d, 'resp.tsr'), timeStampResponse('ab'.repeat(32), nonce));
+  const v = cli(['evidence', 'verify', '--evidence', d, '--tsr', join(d, 'resp.tsr'), '--quiet']);
+  assert.equal(v.status, 1, v.stderr);
+  const verdict = JSON.parse(v.stdout);
+  assert.equal(verdict.sealed, false);
+  assert.match(verdict.sealedReason, /message imprint/);
+});
+
+// A time-stamp authority made with the openssl on PATH: a CA, a TSA certificate it signed, and a
+// configuration `openssl ts -reply` reads. Null when that openssl cannot make one.
+function testAuthority(d) {
+  const cnf = join(d, 'tsa.cnf');
+  writeFileSync(join(d, 'serial'), '01\n');
+  writeFileSync(cnf, [
+    '[ req ]', 'distinguished_name = dn', 'prompt = no', '[ dn ]', 'CN = test',
+    '[ ca ]', 'basicConstraints = critical,CA:TRUE', 'keyUsage = critical,keyCertSign',
+    '[ tsa ]', 'basicConstraints = critical,CA:FALSE', 'extendedKeyUsage = critical,timeStamping', 'keyUsage = critical,digitalSignature',
+    '[ tsa1 ]', `serial = ${join(d, 'serial')}`, `signer_cert = ${join(d, 'tsa.pem')}`, `certs = ${join(d, 'ca.pem')}`, `signer_key = ${join(d, 'tsa.key')}`,
+    'default_policy = 1.2.3.4.1', 'digests = sha256', 'signer_digest = sha256', 'accuracy = secs:1', '',
+  ].join('\n'));
+  const ok = (...args) => spawnSync('openssl', args, { cwd: d, timeout: 20000 }).status === 0;
+  const made = ok('ecparam', '-name', 'prime256v1', '-genkey', '-noout', '-out', 'ca.key')
+    && ok('req', '-new', '-x509', '-key', 'ca.key', '-out', 'ca.pem', '-days', '2', '-config', cnf, '-extensions', 'ca', '-subj', '/CN=Evidence Test CA')
+    && ok('ecparam', '-name', 'prime256v1', '-genkey', '-noout', '-out', 'tsa.key')
+    && ok('req', '-new', '-key', 'tsa.key', '-out', 'tsa.csr', '-config', cnf, '-subj', '/CN=Evidence Test TSA')
+    && ok('x509', '-req', '-in', 'tsa.csr', '-CA', 'ca.pem', '-CAkey', 'ca.key', '-CAcreateserial', '-out', 'tsa.pem', '-days', '2', '-extfile', cnf, '-extensions', 'tsa');
+  return made ? { ca: join(d, 'ca.pem'), reply: (query, out) => ok('ts', '-reply', '-config', cnf, '-section', 'tsa1', '-queryfile', query, '-out', out) } : null;
+}
+
+test('V5.7 A time-stamp response for the seal and the nonce of its kept request seals', { ...SSH, ...(have('openssl') ? {} : { skip: 'openssl is not on PATH' }) }, (t) => {
+  const d = tmp(t);
+  const tsa = testAuthority(d);
+  if (!tsa) return t.skip('the openssl on PATH cannot make a test time-stamp authority');
+  const key = sshKey(d);
+  writeFileSync(join(d, 'allowed'), `ci namespaces="cobolwork-evidence" ${key.line}\n`);
+  const ev = join(d, 'ev');
+  run(ev);
+  seal(ev, { sshKey: key.path, toolVersion: '0.0.0' });
+  assert.equal(cli(['evidence', 'anchor', '--evidence', ev, '--tsq', join(d, 'req.tsq')]).status, 0);
+  if (!tsa.reply(join(d, 'req.tsq'), join(d, 'resp.tsr'))) return t.skip('the openssl on PATH does not answer a time-stamp request');
+  const verify = (...extra) => {
+    const r = cli(['evidence', 'verify', '--evidence', ev, '--allowed-signers', join(d, 'allowed'), '--tsr', join(d, 'resp.tsr'), '--quiet', ...extra]);
+    return { status: r.status, ...JSON.parse(r.stdout) };
+  };
+  const good = verify('--tsa-ca', tsa.ca);
+  assert.equal(good.sealed, true, good.sealedReason);
+  assert.equal(good.status, 0);
+  assert.equal(good.timeStamp.seal, '0.dsse.json');
+  assert.equal(verify().sealed, null, 'without the CA the signature is unchecked');
+  mkdirSync(join(d, 'stranger'));
+  const stranger = testAuthority(join(d, 'stranger'));
+  assert.equal(verify('--tsa-ca', stranger.ca).sealed, false, 'another CA does not vouch for the response');
+});
+
+test('V5.8 A cosign bundle over a seal seals', { ...SSH, ...(have('cosign') ? {} : { skip: 'cosign is not on PATH' }) }, (t) => {
+  const d = tmp(t);
+  const env = { ...process.env, COSIGN_PASSWORD: '' };
+  const cosign = (...args) => spawnSync('cosign', args, { cwd: d, env, timeout: 60000 });
+  if (cosign('generate-key-pair').status !== 0) return t.skip('cosign cannot make a key pair here');
+  const key = sshKey(d);
+  writeFileSync(join(d, 'allowed'), `ci namespaces="cobolwork-evidence" ${key.line}\n`);
+  const ev = join(d, 'ev');
+  run(ev);
+  const s = seal(ev, { sshKey: key.path, toolVersion: '0.0.0' });
+  writeFileSync(join(d, 'other'), 'not a seal\n');
+  for (const [blob, bundle] of [[s.path, 'seal.bundle'], [join(d, 'other'), 'other.bundle']]) {
+    const r = cosign('sign-blob', '--key', 'cosign.key', '--bundle', bundle, '--tlog-upload=false', '--use-signing-config=false', '--yes', blob);
+    if (r.status !== 0) return t.skip(`cosign cannot sign offline here: ${String(r.stderr).trim().split('\n').pop()}`);
+  }
+  const verify = (bundle) => {
+    const r = cli(['evidence', 'verify', '--evidence', ev, '--allowed-signers', join(d, 'allowed'), '--cosign-bundle', join(d, bundle), '--cosign-key', join(d, 'cosign.pub'), '--insecure-ignore-tlog', '--quiet']);
+    return JSON.parse(r.stdout);
+  };
+  const good = verify('seal.bundle');
+  assert.equal(good.sealed, true, good.sealedReason);
+  assert.deepEqual(good.transparencyLog, { seal: '0.dsse.json', tlogChecked: false });
+  const other = verify('other.bundle');
+  assert.equal(other.sealed, false);
+  assert.match(other.sealedReason, /verifies against no seal/);
+});
+
+// Two signed seals, each anchored in its own commit of a witness read at HEAD; the ledger then cut
+// back to the first seal's length, as someone hiding the second run would cut it.
+function twoWitnessedSeals(t) {
+  const d = tmp(t);
+  const key = sshKey(d);
+  run(d);
+  const first = seal(d, { sshKey: key.path, toolVersion: '0.0.0' });
+  run(d);
+  const second = seal(d, { sshKey: key.path, toolVersion: '0.0.0' });
+  const repo = join(d, 'anchor');
+  const git = gitRepo(repo);
+  for (const s of [first, second]) anchorGit(s.path, { repo, chain: ledgerChainOf(s), seq: s.seq });
+  const pin = git('rev-parse', 'HEAD');
+  const lines = readFileSync(join(d, LEDGER), 'utf8').split('\n');
+  writeFileSync(join(d, LEDGER), `${lines.slice(0, first.statement.predicate.ledgerLength).join('\n')}\n`);
+  unlinkSync(second.path);
+  const allowed = allowedFor(['ci', key]);
+  const verify = (opts = {}) => verifyEvidence(d, { allowed, anchorGit: repo, anchorRef: 'HEAD', ...opts });
+  return { d, git, pin, second, verify };
+}
+
+test('V5.5 A witness rewritten past its pinned commit does not seal', { ...SSH, ...GIT }, (t) => {
+  const { git, pin, verify } = twoWitnessedSeals(t);
+  assert.equal(verify().sealed, false, 'the witness still holds the newer seal');
+  git('reset', '-q', '--hard', 'HEAD~1');
+  const unpinned = verify();
+  assert.equal(unpinned.sealed, true, 'without a pin the rewrite and the cut agree');
+  const pinned = verify({ anchorPin: pin });
+  assert.equal(pinned.sealed, false);
+  assert.match(pinned.sealedReason, /rewritten/);
+  assert.equal(pinned.exit, 1);
+});
+
+test('V5.6 A seal deleted from the witness after its pinned commit does not seal', { ...SSH, ...GIT }, (t) => {
+  const { git, pin, second, verify } = twoWitnessedSeals(t);
+  const rel = `${ledgerChainOf(second)}/${second.seq}.dsse.json`;
+  git('rm', '-q', rel);
+  git('commit', '-q', '-m', 'tidy');
+  assert.equal(verify().sealed, true, 'without a pin the deletion goes unseen');
+  const pinned = verify({ anchorPin: pin });
+  assert.equal(pinned.sealed, false);
+  assert.match(pinned.sealedReason, new RegExp(`${rel.replace('.', '\\.')}.*no longer holds it`));
+  assert.equal(verify({ anchorPin: pin }).witnessCommit, git('rev-parse', 'HEAD'));
+});
 
 // V6 - Provenance
 
@@ -1042,6 +1277,40 @@ test('V10.3 An equivalent, signed statement satisfies requireEquivalence always'
   assert.deepEqual(doc.equivalence.programs[0].signer, ['assurance']);
   const unsigned = buildChange(repo, ['--equivalence', plain, '--allowed-signers', join(d, 'allowed')]).doc;
   assert.equal(unsigned.checks.equivalence, false, 'an unsigned statement does not satisfy a build that names signers');
+});
+
+test('V10.9 Without allowed signers a required statement does not pass', GIT, (t) => {
+  const { d, repo, base, head } = changeRepo(t);
+  const { doc } = buildChange(repo, ['--equivalence', statementFile(d, 'plain.json', { base, head })]);
+  assert.equal(doc.checks.equivalence, false);
+  assert.match(doc.equivalence.programs[0].because, /no --allowed-signers were given/);
+});
+
+test('V10.10 An allowed-signers file inside the repository is refused', GIT, (t) => {
+  const { d, repo, base, head } = changeRepo(t);
+  writeFileSync(join(repo, 'allowed'), 'anyone namespaces="cobolwork-evidence" ssh-ed25519 AAAA\n');
+  const r = cli(['build', repo, '--base', 'HEAD~1', '--head', 'HEAD', '--quiet', '--equivalence', statementFile(d, 'plain.json', { base, head }), '--allowed-signers', join(repo, 'allowed')]);
+  assert.equal(r.status, 2, r.stderr);
+  assert.match(r.stderr, /inside the repository/);
+});
+
+test('V10.11 A statement whose coverage leaves out an edited paragraph does not pass', GIT, (t) => {
+  const d = tmp(t);
+  const repo = join(d, 'repo');
+  const git = gitRepo(repo);
+  const program = (rate) => ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. PAY.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.', '       01 WS-AMT PIC S9(4) COMP.', '       PROCEDURE DIVISION.', '       CALC.', `           COMPUTE WS-AMT = WS-AMT * ${rate}.`, '       REPORT-IT.', '           DISPLAY WS-AMT.', '           GOBACK.', ''].join('\n');
+  writeFileSync(join(repo, 'PAY.cbl'), program(2));
+  git('add', '.');
+  git('commit', '-q', '-m', 'base');
+  const base = sha256(readFileSync(join(repo, 'PAY.cbl')));
+  writeFileSync(join(repo, 'PAY.cbl'), `      * the rate moves to 3\n${program(3)}`);
+  git('commit', '-q', '-am', 'head');
+  const head = sha256(readFileSync(join(repo, 'PAY.cbl')));
+  const judged = (changed) => buildChange(repo, ['--equivalence', statementFile(d, `${changed.join('-')}.json`, { base, head, coverage: { paragraphs: 2, reached: 2, scope: 'changed', changed, unreached: [] } })]).doc.equivalence.programs[0];
+  const narrow = judged(['REPORT-IT']);
+  assert.equal(narrow.ok, false);
+  assert.match(narrow.because, /does not list CALC as changed/);
+  assert.equal(judged(['CALC']).ok, true, 'a comment line and the move it causes change no other paragraph');
 });
 
 test('V10.4 A change to a copybook alone needs a statement for each program that copies it', GIT, (t) => {

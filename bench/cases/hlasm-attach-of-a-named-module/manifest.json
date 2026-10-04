@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-attach-of-a-named-module",
+ "title": "A program attaches a module by a fixed name, which is not a runtime module name",
+ "cwe": "CWE-470",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-runtime-module-name"
+ ]
+}

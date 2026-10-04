@@ -8,7 +8,8 @@
 //                        [--out file] [--keep dir]
 //
 // A near-miss is the flaw's change with the one property that makes it a flaw taken away: the
-// input or its length checked before it is used, or the input read and not used. Every variant of
+// input or its length checked before it is used, against a list or the bounds of what it indexes,
+// passed to SQL as a host variable rather than as text, or read and not used. Every variant of
 // an operator is planted into the same host, so a flaw and its near-misses differ only in that
 // property. Each planted program is a label by construction (`labels` in --out, source `planted`):
 // a flaw the rule does not report is a miss, a near-miss it reports is a false alarm. Both are
@@ -96,23 +97,30 @@ function dynamicCall(src) {
   return { lines, line: k + 1, target, pic: `PIC X(${Math.max(8, target.length)})` };
 }
 
-// Whether the flow analysis, run to completion, holds no facts at the CALL on `line`, so credits no
-// check before it. Facts rather than `reached` decide it: `reached` lets an EXIT PROGRAM carry on.
-function callHoldsNoFacts(host, line) {
+// Whether the flow analysis, run to completion, holds no facts at the statement `find` picks, so
+// credits no check before it. Facts rather than `reached` decide it: `reached` lets an EXIT PROGRAM
+// carry on.
+function holdsNoFacts(host, find) {
   for (const p of host.parse().programs) {
-    const call = p.calls.find((c) => c.file === host.file && c.line === line);
-    if (!call) continue;
+    const statement = find(p);
+    if (!statement) continue;
     const byName = new Map();
     for (const it of p.items) if (!byName.has(it.name)) byName.set(it.name, it);
     const indexNames = new Set(p.items.flatMap((it) => it.indexNames || []));
     const resolve = (tok) => (tok ? p.resolved.get(tok) || (tok.t === 'word' ? byName.get(tok.u) || (indexNames.has(tok.u) ? { index: tok.u } : null) : null) : null);
     let ctl;
     try { ctl = buildControl(p, resolve); } catch { return false; }
-    const at = ctl && ctl.nodeOf.get(p.statements[call.stmtIndex]);
+    const at = ctl && ctl.nodeOf.get(statement);
     return !!ctl && !ctl.partial && at != null && !ctl.facts.has(at);
   }
   return false;
 }
+
+const callHoldsNoFacts = (host, line) => holdsNoFacts(host, (p) => {
+  const call = p.calls.find((c) => c.file === host.file && c.line === line);
+  return call && p.statements[call.stmtIndex];
+});
+const execHoldsNoFacts = (host, line) => holdsNoFacts(host, (p) => p.execs.find((e) => e.file === host.file && e.line === line));
 
 // A CICS program that tests EIBCALEN in its procedure division and reads the caller's
 // communication area. EIBCALEN named where no plant reaches - a declaration, as a translated
@@ -129,11 +137,10 @@ function readsCommareaAndTestsLength(src, host) {
   if (namesLength(lines.slice(0, at.proc).join('\n'))) return 'names EIBCALEN in a declaration';
   if (host.copybooks.some((p) => namesLength(readSource(p).text))) return 'a copybook it includes names EIBCALEN';
   if (/\bSET\s+ADDRESS\s+OF\s+DFHCOMMAREA\s+TO\b/i.test(procedure)) return 'points DFHCOMMAREA at its own storage';
-  const reads = host.parse().programs.some((p) => {
-    const area = p.items.find((i) => i.name === 'DFHCOMMAREA' && i.section === 'LINKAGE');
-    return area && subtreeRead(area);
-  });
-  return reads ? null : 'does not read a communication area';
+  const areas = host.parse().programs.map((p) => p.items.find((i) => i.name === 'DFHCOMMAREA' && i.section === 'LINKAGE')).filter(Boolean);
+  if (!areas.some(subtreeRead)) return 'does not read a communication area';
+  // A copied 01 under DFHCOMMAREA ends the group with no storage, which the rule rightly passes over.
+  return areas.some((a) => a.size > 0) ? null : 'its communication area holds no storage';
 }
 
 const subtreeRead = (x) => x.directRefs > 0 || x.children.some(subtreeRead);
@@ -145,6 +152,70 @@ function withoutLengthCheck(src) {
   const at = sites(lines);
   return lines.map((l, i) => (i > at.proc && code(l) ? l.slice(0, 7) + l.slice(7).replace(/\bEIBCALEN\b/gi, 'EIBRESP ') : l));
 }
+
+// CICS does not let a program ACCEPT, so a command-line flaw planted there is no program anyone runs.
+const batch = (host) => (host.parse().programs[0].execs.some((e) => e.kind === 'CICS') ? 'a CICS program, which has no command line' : null);
+
+// Items of the host's own WORKING-STORAGE that one unqualified name reaches.
+function ownItems(host) {
+  const { items } = host.parse().programs[0];
+  const uses = new Map();
+  for (const it of items) uses.set(it.name, (uses.get(it.name) || 0) + 1);
+  const inTable = (it) => { for (let a = it.parent; a; a = a.parent) if (a.occurs > 1) return true; return false; };
+  return items.filter((it) => it.section === 'WORKING-STORAGE' && it.name !== 'FILLER' && uses.get(it.name) === 1 && !inTable(it));
+}
+
+// The first table of a fixed size, so `name (WS-SEED-IX)` is one element of it and `bound` its last.
+function tableOf(host) {
+  const t = ownItems(host).find((it) => it.occurs > 1 && !it.dependingOn);
+  return t ? { name: t.name, bound: t.occurs } : null;
+}
+
+// The first alphanumeric elementary item outside any table, which a reference modification can
+// start anywhere in from 1 to `bound`.
+function fieldOf(host) {
+  const f = ownItems(host).find((it) => it.occurs === 1 && !it.children.length && it.size >= 2 && /^(X(\(\d+\))?)+$/i.test(it.picture || ''));
+  return f ? { name: f.name, bound: f.size } : null;
+}
+
+// The program's own first EXEC CICS XCTL or LINK of a literal program, rewritten to transfer to the
+// program WS-SEED-PGM names, with the program it named and the line the EXEC starts on.
+const PROGRAM_LITERAL = /\bPROGRAM\s*\(\s*(['"])([^'"]+)\1\s*\)/i;
+function transferSite(src, host) {
+  for (const e of host.parse().programs[0].execs) {
+    if (e.kind !== 'CICS' || e.file !== host.file || !['XCTL', 'LINK'].includes(e.toks[0]?.u)) continue;
+    const t = e.toks;
+    const k = t.findIndex((x, i) => x.u === 'PROGRAM' && (t[i + 1]?.u ?? t[i + 1]?.v) === '(' && t[i + 2]?.t === 'lit');
+    if (k < 0) continue;
+    const lines = src.split(/\r?\n/);
+    const at = t[k + 2].line - 1;
+    if (!PROGRAM_LITERAL.test(code(lines[at]))) return { skip: 'the transfer names its program across lines' };
+    const rewritten = code(lines[at]).replace(PROGRAM_LITERAL, 'PROGRAM(WS-SEED-PGM)').trimEnd();
+    if (rewritten.length > 65) return { skip: 'the rewritten transfer would pass column 72' };
+    lines[at] = lines[at].slice(0, 7) + rewritten;
+    const target = String(t[k + 2].v);
+    return { lines, line: e.line, target, pic: `PIC X(${Math.max(8, target.length)})` };
+  }
+  return { skip: 'no EXEC CICS XCTL or LINK of a literal program' };
+}
+
+const receiveInto = (field, end = '') => [`MOVE LENGTH OF ${field} TO WS-SEED-LEN`, `EXEC CICS RECEIVE INTO(${field})`, `     LENGTH(WS-SEED-LEN) END-EXEC${end}`];
+
+// A number read from the command line into `item`, put through `check`, then used by `use`.
+const numberFromArgv = (src, item, check, use) => insert(src.split(/\r?\n/), {
+  items: [`01 ${item} PIC 9(4).`],
+  statements: [`ACCEPT ${item} FROM COMMAND-LINE`, ...check, `${use}.`],
+});
+const aboveOnly = (item, bound) => [`IF ${item} > ${bound}`, '   GOBACK', 'END-IF'];
+const bothBounds = (item, bound) => [`IF ${item} < 1 OR ${item} > ${bound}`, '   GOBACK', 'END-IF'];
+// The command line read and shown, and `use` made with a number the program chose.
+const numberFromLiteral = (src, item, use) => insert(src.split(/\r?\n/), {
+  items: [`01 ${item} PIC 9(4).`, '01 WS-SEED-IN PIC X(80).'],
+  statements: ['ACCEPT WS-SEED-IN FROM COMMAND-LINE', 'DISPLAY WS-SEED-IN', `MOVE 1 TO ${item}`, `${use}.`],
+});
+
+const SQL_TEXT = ['01 WS-SEED-SQL.', '   49 WS-SEED-SQL-LEN PIC S9(4) COMP.', '   49 WS-SEED-SQL-TXT PIC X(80).'];
+const EXECUTE_IMMEDIATE = 'EXEC SQL EXECUTE IMMEDIATE :WS-SEED-SQL END-EXEC.';
 
 // Each operator names the rule and set that should report its flaws. `host` says why a program
 // cannot take the operator, or nothing; each variant's `plant` returns the new text, or a reason
@@ -258,6 +329,144 @@ export const OPERATORS = {
         plant: (src) => insert(withoutLengthCheck(src), {
           statements: ['IF EIBCALEN < LENGTH OF DFHCOMMAREA', '   EXEC CICS RETURN END-EXEC', 'END-IF.'],
         }),
+      },
+    },
+  },
+  // The host's own first table of a fixed size, indexed by a number from the command line.
+  'argv-to-subscript': {
+    set: 'flow', rule: 'argv-or-env-to-subscript',
+    host: (_, host) => batch(host) || (tableOf(host) ? null : 'no fixed-size table of its own'),
+    variants: {
+      'index-from-argv': {
+        label: FLAW,
+        plant: (src, host) => numberFromArgv(src, 'WS-SEED-IX', [], `DISPLAY ${tableOf(host).name} (WS-SEED-IX)`),
+      },
+      // A PIC 9 number is never negative, but 0 passes this check and is the element before the table.
+      'index-checked-above-only': {
+        label: FLAW,
+        plant(src, host) {
+          const t = tableOf(host);
+          return numberFromArgv(src, 'WS-SEED-IX', aboveOnly('WS-SEED-IX', t.bound), `DISPLAY ${t.name} (WS-SEED-IX)`);
+        },
+      },
+      'index-checked-both-bounds': {
+        label: NEAR_MISS,
+        plant(src, host) {
+          const t = tableOf(host);
+          return numberFromArgv(src, 'WS-SEED-IX', bothBounds('WS-SEED-IX', t.bound), `DISPLAY ${t.name} (WS-SEED-IX)`);
+        },
+      },
+      'argv-read-literal-index': {
+        label: NEAR_MISS,
+        plant: (src, host) => numberFromLiteral(src, 'WS-SEED-IX', `DISPLAY ${tableOf(host).name} (WS-SEED-IX)`),
+      },
+    },
+  },
+  // The host's own first alphanumeric field, read from where, or for as long as, the command line says.
+  'argv-to-reference-modification': {
+    set: 'flow', rule: 'argv-or-env-to-reference-modification',
+    host: (_, host) => batch(host) || (fieldOf(host) ? null : 'no alphanumeric field of its own'),
+    variants: {
+      'start-from-argv': {
+        label: FLAW,
+        plant: (src, host) => numberFromArgv(src, 'WS-SEED-AT', [], `DISPLAY ${fieldOf(host).name} (WS-SEED-AT:1)`),
+      },
+      'length-from-argv': {
+        label: FLAW,
+        plant: (src, host) => numberFromArgv(src, 'WS-SEED-AT', [], `DISPLAY ${fieldOf(host).name} (1:WS-SEED-AT)`),
+      },
+      'start-checked-both-bounds': {
+        label: NEAR_MISS,
+        plant(src, host) {
+          const f = fieldOf(host);
+          return numberFromArgv(src, 'WS-SEED-AT', bothBounds('WS-SEED-AT', f.bound), `DISPLAY ${f.name} (WS-SEED-AT:1)`);
+        },
+      },
+      'argv-read-literal-start': {
+        label: NEAR_MISS,
+        plant: (src, host) => numberFromLiteral(src, 'WS-SEED-AT', `DISPLAY ${fieldOf(host).name} (WS-SEED-AT:1)`),
+      },
+    },
+  },
+  // A Db2 program made to run SQL text from the command line.
+  'argv-to-dynamic-sql': {
+    set: 'flow', rule: 'argv-or-env-to-dynamic-sql',
+    host: (_, host) => batch(host) || (host.parse().programs[0].execs.some((e) => e.kind === 'SQL' && e.file === host.file) ? null : 'no EXEC SQL of its own'),
+    variants: {
+      'statement-from-argv': {
+        label: FLAW,
+        plant: (src) => insert(src.split(/\r?\n/), {
+          items: SQL_TEXT,
+          statements: ['ACCEPT WS-SEED-SQL-TXT FROM COMMAND-LINE', 'MOVE 80 TO WS-SEED-SQL-LEN', EXECUTE_IMMEDIATE],
+        }),
+      },
+      'prepared-from-argv': {
+        label: FLAW,
+        plant: (src) => insert(src.split(/\r?\n/), {
+          items: SQL_TEXT,
+          statements: ['ACCEPT WS-SEED-SQL-TXT FROM COMMAND-LINE', 'MOVE 80 TO WS-SEED-SQL-LEN',
+            'EXEC SQL PREPARE SEEDSTMT FROM :WS-SEED-SQL END-EXEC', 'EXEC SQL EXECUTE SEEDSTMT END-EXEC.'],
+        }),
+      },
+      'statement-allowed-by-an-evaluate': {
+        label: NEAR_MISS,
+        plant: (src) => insert(src.split(/\r?\n/), {
+          items: SQL_TEXT,
+          statements: ['ACCEPT WS-SEED-SQL-TXT FROM COMMAND-LINE',
+            ...allowList('WS-SEED-SQL-TXT', ['COMMIT', 'ROLLBACK'], ['MOVE 80 TO WS-SEED-SQL-LEN', EXECUTE_IMMEDIATE])],
+        }),
+      },
+      // The remedy the rule names: the input as a host variable of a static statement.
+      'argv-as-a-host-variable': {
+        label: NEAR_MISS,
+        plant: (src) => insert(src.split(/\r?\n/), {
+          items: ['01 WS-SEED-KEY PIC X(8).'],
+          statements: ['ACCEPT WS-SEED-KEY FROM COMMAND-LINE', 'EXEC SQL DELETE FROM SEEDTAB',
+            '     WHERE SEEDKEY = :WS-SEED-KEY END-EXEC.'],
+        }),
+      },
+    },
+  },
+  // The program's own first XCTL or LINK of a literal program, made to transfer where the terminal
+  // says. A CICS program has no command line, so the input is the terminal's.
+  'terminal-to-cics-transfer': {
+    set: 'flow', rule: 'cics-terminal-to-cics-dynamic-transfer',
+    host(src, host) {
+      const site = transferSite(src, host);
+      if (site.skip) return site.skip;
+      return execHoldsNoFacts(host, site.line) ? 'no route from its entries reaches its first literal transfer' : null;
+    },
+    variants: {
+      'transfer-target-from-terminal': {
+        label: FLAW,
+        plant(src, host) {
+          const { lines, pic } = transferSite(src, host);
+          return insert(lines, {
+            items: [`01 WS-SEED-PGM ${pic}.`, '01 WS-SEED-LEN PIC S9(4) COMP.'],
+            statements: receiveInto('WS-SEED-PGM', '.'),
+          });
+        },
+      },
+      // GOBACK rather than EXEC CICS RETURN, which a host's IGNORE CONDITION lets fail and carry on.
+      'terminal-must-name-the-program': {
+        label: NEAR_MISS,
+        plant(src, host) {
+          const { lines, target, pic } = transferSite(src, host);
+          return insert(lines, {
+            items: [`01 WS-SEED-PGM ${pic}.`, '01 WS-SEED-LEN PIC S9(4) COMP.'],
+            statements: [...receiveInto('WS-SEED-PGM'), `IF WS-SEED-PGM NOT = '${target}'`, '   GOBACK', 'END-IF.'],
+          });
+        },
+      },
+      'terminal-read-literal-target': {
+        label: NEAR_MISS,
+        plant(src, host) {
+          const { lines, target, pic } = transferSite(src, host);
+          return insert(lines, {
+            items: [`01 WS-SEED-PGM ${pic} VALUE '${target}'.`, '01 WS-SEED-IN PIC X(80).', '01 WS-SEED-LEN PIC S9(4) COMP.'],
+            statements: receiveInto('WS-SEED-IN', '.'),
+          });
+        },
       },
     },
   },

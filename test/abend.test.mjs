@@ -2,9 +2,12 @@
 // real `ironwork run --evidence` of the fixture program on a record of asterisks.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { cpSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scanAbend, abendRule, ABEND_RULES } from '../lib/sets/abend.mjs';
+import { toSarif } from '../lib/sarif.mjs';
 import { ALL_RULES, RULE_SETS } from '../lib/kernel/registry.mjs';
 import { classesOfRule } from '../lib/consequence.mjs';
 import './pin-machine.mjs';
@@ -73,6 +76,16 @@ test('an abend ironwork raises for what it does not run is counted, never a find
   assert.deepEqual(r.findings, []);
   assert.equal(r.summary.abendRuns[0].notModelled, 1);
   assert.equal(r.summary.setIncomplete, false);
+  for (const code of ['EXEC', 'JAVA']) {
+    const dir = join(mkdtempSync(join(tmpdir(), 'cw-abend-')), 'notmodelled');
+    cpSync(join(HERE, 'runs', 'notmodelled'), dir, { recursive: true });
+    const manifest = JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8'));
+    manifest.runs[0].abend.code = code;
+    writeFileSync(join(dir, 'manifest.json'), JSON.stringify(manifest));
+    const other = scanAbend(REPO, { abendRuns: [dir] });
+    assert.deepEqual(other.findings, [], code);
+    assert.equal(other.summary.abendRuns[0].notModelled, 1, code);
+  }
 });
 
 test('a program outside the tree is refused, and one the scanned tree does not hold is set aside', () => {
@@ -82,7 +95,51 @@ test('a program outside the tree is refused, and one the scanned tree does not h
   assert.deepEqual(r.summary.abendRunsElsewhere, ['elsewhere: OTHER.cbl']);
 });
 
+test('an abend in a library member is placed in that library, found through the root its journal read it from', () => {
+  const r = scan('library');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.equal(f.rule, 'input-causes-abend-s0c7');
+  assert.equal(f.path, 'copy/ADDQTY.cpy');
+  assert.equal(f.line, 1);
+  assert.equal(r.summary.abendRunsElsewhere, undefined);
+});
+
+test('an abend in a CALLed program is placed in its source, found under the root that holds it with the digest its call record gives', () => {
+  const r = scan('called');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.equal(f.rule, 'input-causes-abend-s0c7');
+  assert.equal(f.path, 'lib/SUBADD.cbl');
+  assert.equal(f.line, 9);
+});
+
+test('an abend in a member read from a library outside the tree is a problem, not a finding beside the program', () => {
+  const r = scan('library-outside');
+  assert.deepEqual(r.findings, []);
+  assert.match(r.summary.abendRunProblems[0], /ADDQTY\.cpy, which its journal and manifest do not place in the scanned tree/);
+  assert.equal(r.summary.setIncomplete, true);
+});
+
+test('a data exception in a CICS task, reported as ASRA, is an S0C7 finding with the COMMAREA or screen script that gave it', () => {
+  const r = scan('cics');
+  assert.equal(r.findings.length, 2, JSON.stringify(r.summary.abendRunProblems));
+  for (const f of r.findings) {
+    assert.equal(f.rule, 'input-causes-abend-s0c7');
+    assert.equal(f.path, 'cics/ORDCICS.cbl');
+    assert.equal(f.abend.code, 'ASRA');
+  }
+  const at = (line) => r.findings.find((f) => f.line === line).input;
+  assert.deepEqual(at(23), [{ kind: 'commarea', name: 'DFHCOMMAREA', bytes: 'QFxcXA==', minimized: true }]);
+  assert.deepEqual(at(27), [{ kind: 'terminal', name: 'TERM', bytes: Buffer.from('home\ntab\nstring 85+\nENTER\n').toString('base64'), minimized: true }]);
+});
+
 test('the abend code and IBM message id choose the rule', () => {
+  assert.equal(abendRule({ code: 'ASRA', message: 'Data exception (S0C7, which CICS reports as ASRA)' }), 'input-causes-abend-s0c7');
+  assert.equal(abendRule({ code: 'ASRA', message: 'Protection exception (S0C4, which CICS reports as ASRA)' }), 'input-causes-abend-s0c4');
+  assert.equal(abendRule({ code: 'ASRA', message: '(S0C7, which CICS reports as ASRA) typed by the operator' }), 'input-causes-abend');
+  assert.equal(abendRule({ code: 'ASRA', message: 'Data exception (S0C7)' }), 'input-causes-abend');
+  assert.equal(abendRule({ code: 'AEIM', message: 'NOTFND (S0C7, which CICS reports as ASRA)' }), 'input-causes-abend');
   assert.equal(abendRule({ code: 'S0C7' }), 'input-causes-abend-s0c7');
   assert.equal(abendRule({ code: 'S0C4' }), 'input-causes-abend-s0c4');
   assert.equal(abendRule({ code: 'U4038', message: 'IGZ0006S The reference to table WS-E by verb number 01 was out of range' }), 'input-causes-abend-subscript-range');
@@ -92,4 +149,105 @@ test('the abend code and IBM message id choose the rule', () => {
   assert.equal(abendRule({ code: 'U4038', message: 'IGZ0007S The length of group WS-T exceeded its maximum' }), 'input-causes-abend-subscript-range');
   assert.equal(abendRule({ code: 'U4038', message: 'subscript out of range (SSRANGE)' }), 'input-causes-abend');
   assert.equal(abendRule({ code: 'S0CB' }), 'input-causes-abend');
+});
+
+test('an abend says whether the same input gives it compiled with OPTIMIZE(2), and its rule stays', () => {
+  const r = scan('optimized');
+  assert.equal(r.findings.length, 2, JSON.stringify(r.summary.abendRunProblems));
+  const at = (line) => r.findings.find((f) => f.line === line);
+  assert.deepEqual([at(19).rule, at(19).sev, at(19).abend.optimized], ['input-causes-abend-s0c7', 'med', false]);
+  assert.match(at(19).detail, /holds at OPTIMIZE\(0\), IBM's default: compiled with OPTIMIZE\(2\) the same input does not end there$/);
+  assert.equal(at(22).abend.optimized, true);
+  assert.match(at(22).detail, /compiled with OPTIMIZE\(2\) it ends the same way$/);
+  assert.equal(at(19).path, 'opt/ZEROCMP.cbl');
+  const [old] = scan('s0c7').findings;
+  assert.equal('optimized' in old.abend, false);
+  assert.match(old.detail, /kept$/);
+});
+
+test('a manifest in format ironwork-fuzz/v1 is read, keys it does not know are skipped, and another format is refused', () => {
+  const [f, ...rest] = scan('format').findings;
+  assert.deepEqual(rest, []);
+  assert.deepEqual([f.rule, f.path, f.line], ['input-causes-abend-s0c7', 'ABEND7.cbl', 18]);
+  const rewritten = (change) => {
+    const dir = join(mkdtempSync(join(tmpdir(), 'cw-abend-format-')), 'run');
+    cpSync(join(HERE, 'runs', 'format'), dir, { recursive: true });
+    const file = join(dir, 'manifest.json');
+    const doc = JSON.parse(readFileSync(file, 'utf8'));
+    change(doc);
+    writeFileSync(file, JSON.stringify(doc));
+    return scanAbend(REPO, { abendRuns: [dir] });
+  };
+  const added = rewritten((doc) => { doc.later = 1; doc.runs[0].abend.later = true; });
+  assert.equal(added.findings.length, 1, JSON.stringify(added.summary.abendRunProblems));
+  const other = rewritten((doc) => { doc.format = 'ironwork-fuzz/v2'; });
+  assert.deepEqual(other.findings, []);
+  assert.equal(other.summary.setIncomplete, true);
+  assert.match(other.summary.abendRunProblems[0], /format "ironwork-fuzz\/v2", and this cobolwork reads ironwork-fuzz\/v1 and ironwork-fuzz-interface\/v1$/);
+});
+
+test('a fuzzed job places each abend in the COBOL step that gave it, with its data set, in-stream SYSIN and step PARM', () => {
+  const r = scan('job');
+  assert.equal(r.summary.setIncomplete, false, JSON.stringify(r.summary.abendRunProblems));
+  const places = r.findings.map((f) => `${f.rule} ${f.path}:${f.line}`).sort();
+  assert.deepEqual(places, [
+    'input-causes-abend-s0c7 job/src/CARDSUM.cbl:10',
+    'input-causes-abend-s0c7 job/src/PARMSUM.cbl:18',
+    'input-causes-abend-s0c7 job/src/QTYSUM.cbl:26',
+    'input-causes-abend-subscript-range job/src/PARMSUM.cbl:15',
+    'input-causes-abend-subscript-range job/src/PARMSUM.cbl:19',
+    'input-causes-abend-subscript-range job/src/QTYSUM.cbl:26',
+  ]);
+  assert.deepEqual(r.findings[0].input.map((i) => `${i.kind} ${i.name}`), ['dd MY.INPUT', 'sysin STEP3.SYSIN', 'parm STEP2']);
+});
+
+test('a subprogram fuzzed at its interface gives an S0C7 finding that names the CALL its arguments were shaped by', () => {
+  const r = scan('interface');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.deepEqual([f.rule, f.sev, f.path, f.line], ['input-causes-abend-s0c7', 'med', 'iface/ADDQTY.cbl', 14]);
+  assert.deepEqual([f.abend.inputFrom, f.abend.callers], ['interface', [{ file: 'iface/MAINP.cbl', line: 7 }]]);
+  assert.match(f.detail, /it ran as a subprogram, with arguments shaped by the CALL at iface\/MAINP\.cbl:7, on its first call in its initial state: a caller passing these bytes ends it, and no caller run shows one does$/);
+  assert.deepEqual(f.input.map((i) => [i.kind, i.name, i.position, i.omitted ?? false]), [['argument', 'QTY-REC', 0, false], ['argument', 'NOTE-REC', 1, true]]);
+  assert.deepEqual(r.summary.byInputFrom, { entry: 0, interface: 1 });
+  assert.equal(toSarif(r, { toolVersion: 'test' }).runs[0].results[0].properties.inputFrom, 'interface');
+  assert.equal(scan('s0c7').findings[0].abend.inputFrom, 'entry');
+});
+
+test('an interface finding with no CALL in the tree says so', () => {
+  const dir = join(mkdtempSync(join(tmpdir(), 'cw-abend-interface-')), 'run');
+  cpSync(join(HERE, 'runs', 'interface'), dir, { recursive: true });
+  const file = join(dir, 'manifest.json');
+  writeFileSync(file, JSON.stringify({ ...JSON.parse(readFileSync(file, 'utf8')), callers: [] }));
+  const [f] = scanAbend(REPO, { abendRuns: [dir] }).findings;
+  assert.match(f.detail, /on generated arguments, with no CALL to it in the scanned tree/);
+  assert.deepEqual(f.abend.callers, []);
+});
+
+test('an input-caused hang is an S322 finding at the line the run names, reported as excessive iteration', () => {
+  const r = scan('hang');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.equal(f.rule, 'input-causes-hang');
+  assert.equal(f.path, 'hang/HANGS.cbl');
+  assert.equal(f.line, 12);
+  assert.equal(f.abend.code, 'S322');
+  assert.equal(f.input[0].kind, 'sysin');
+  assert.equal(abendRule({ code: 'S322', message: '' }), 'input-causes-hang');
+  // The run shows the loop passed the limit, not that its exit is unreachable.
+  assert.equal(ABEND_RULES['input-causes-hang'].cwe, 'CWE-834');
+  assert.match(ABEND_RULES['input-causes-hang'].impact, /not that it would never end/);
+});
+
+test('an S806 is the input choosing the program only where its journal records the marker reaching the CALL', () => {
+  const r = scan('chosen');
+  assert.equal(r.findings.length, 1, JSON.stringify(r.summary.abendRunProblems));
+  const [f] = r.findings;
+  assert.equal(f.rule, 'input-selects-program');
+  assert.equal(f.path, 'chosen/PICKER.cbl');
+  assert.equal(f.line, 8);
+  assert.match(f.abend.message, /^CALL @#\$/);
+  const s = scan('chosen-static');
+  assert.equal(s.findings.length, 0);
+  assert.match(s.summary.abendRunProblems[0], /does not record the input reaching the CALL at STATIC\.cbl:8/);
 });

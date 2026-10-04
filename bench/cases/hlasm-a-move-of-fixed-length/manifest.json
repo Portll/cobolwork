@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-a-move-of-fixed-length",
+ "title": "An MVC moves the field with the length written in the source, so nothing the caller passes sets it",
+ "cwe": "CWE-119",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-executes-built-instruction"
+ ]
+}

@@ -197,6 +197,15 @@ one user impersonating another - plus session invalidation (CWE-613) and SOAPAct
 (CWE-290). Those need the dataflow engine and a model of what an authorisation decision is, not a
 name match.
 
+**Measured again where sign-on is written.** The wider corpora have what the 124 repositories did
+not: across the 3,185-repository corpus and the three random corpora on the drive, `EXEC CICS
+SIGNON` appears 43 times in 22 repositories, every one with `USERID` and `PASSWORD`, and `ASSIGN
+USERID` 85 times in 35. `VERIFY PASSWORD`, `CHANGE PASSWORD` and `START ... USERID` do not appear,
+and `QUERY SECURITY` is in one repository. Nothing there is the impersonation shape: no program
+starts work under a user it was told about. Where an identity from the request decides which record
+is read or changed, the flow rules already report it as `*-to-record-key` and `*-to-record-update`,
+and a rule named for identity would report the same route twice. Not built.
+
 ### N-CRYPTO - 10 defects
 
 **A connection or a cipher is requested at a strength the estate would not accept if asked.**
@@ -229,8 +238,22 @@ six CWE-327 rows are about cipher *strength* and CVE-2025-33142 about a weak TLS
 absent one; neither is what this reads, and neither has an artefact in any repository to read it
 from.
 
-Still wanted, if an estate ever supplies the artefact: the ICSF rule array, where the computed case
-is a `coverage` finding rather than a silent pass.
+**The ICSF rule array, measured where it is written.** The 3,185-repository corpus has the
+artefact the 124 repositories did not: 7 calls to ICSF services in 3 repositories. Two are forks of
+GenApp carrying IBM's own sample, which generates a `SINGLE` key and enciphers under `CUSP` with an
+all-zero ICV, and one hashes with `MD5`. The crypto set reads them from IBM's parameter lists
+(`rules/icsf-services.json`): `icsf-single-length-des-key`, `icsf-fixed-initialization-vector` and
+`icsf-weak-hash`, 5 findings, every argument decided. A computed argument is counted as undecided
+rather than passed.
+
+**`WEB OPEN`, measured where the web API is used.** In the 14 repositories that use `EXEC CICS WEB`
+there are 47 `WEB OPEN` statements: 13 ask for HTTPS, 2 ask for HTTP, and 32 take the scheme from
+a field (23, filled by `WEB PARSE` of a URL) or from a `URIMAP` the repository does not define (9).
+The two are the same program in two repositories, `SENDSMS`, which sends a text message's number
+and body to a provider at a private address over HTTP. `web-client-opens-cleartext` reports them.
+An HTTP scheme can still be encrypted by an AT-TLS policy outside the program, which no repository
+holds, and the finding says so; a client `URIMAP` with `ATTLS(AWARE)` is the form that makes it
+visible, and is not reported.
 
 ### N-LOG - 9 defects
 
@@ -284,6 +307,15 @@ sink rather than a construct - it belongs in the `*-to-*` family the flow engine
 Built so on 2026-09-30: `*-to-storage-length`, on `GETMAIN FLENGTH` or `LENGTH` and the size
 `CEEGTST` is given, cleared by an upper bound tested first.
 
+**The web half, measured where the web API is used.** The 3,185-repository corpus and the three
+random corpora on the drive hold 14 repositories that use `EXEC CICS WEB`. Their `WEB RECEIVE` and
+`WEB CONVERSE` statements with an `INTO` area all pass a `MAXLENGTH`, and every one that resolves (a
+literal, a `VALUE`, or `LENGTH OF`) equals its area. A receive with no bound is not a shape CICS
+allows: with `INTO`, `MAXLENGTH` is required, and its absence fails the command with `INVREQ`, RESP2
+16 (CICS TS 6.x, WEB RECEIVE (Server) and (Client)). What can overrun is a `MAXLENGTH` longer than
+the area, and `web-receive-length-exceeds-area` reports that where it is a literal or `LENGTH OF`.
+No statement in the corpus has it.
+
 ### N-XXE - 7 defects
 
 **A document from outside is parsed as XML with entity and expansion handling left to the default.**
@@ -313,7 +345,11 @@ finding would be about expansion and about what the code does with `XML-EVENT`, 
 resolution, and it needs grading against the compiler before it ships. What shipped on 2026-09-30
 is the route only: `*-to-xml-document` at low, saying the document reached `XML PARSE` and that
 what the parser does with a DTD is the `XMLPARSE` option's, which is not read. `TRANSFORM
-XMLTODATA` is not read.
+XMLTODATA` is not read, and on the measurement it should not be yet: across the 3,185-repository
+corpus and the three random corpora on the drive it occurs once, in one repository, and CICS TS
+6.x's pages for the command, for transforming XML to application data and for how the assistants
+comply with the XML schema specification say nothing about a DTD, so a route to it would claim a
+consequence nothing documents.
 
 ### N-COOKIE - 6 defects
 

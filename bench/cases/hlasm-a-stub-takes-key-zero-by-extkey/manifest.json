@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-a-stub-takes-key-zero-by-extkey",
+ "title": "An assembler stub takes PSW key zero with MODESET EXTKEY=ZERO, saving its key to restore after the copy",
+ "cwe": "CWE-250",
+ "expect": [
+  {
+   "rule": "hlasm-supervisor-state-change",
+   "file": "KEYZERO.asm"
+  }
+ ]
+}

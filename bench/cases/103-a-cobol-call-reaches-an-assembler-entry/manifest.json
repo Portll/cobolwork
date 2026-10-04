@@ -1,0 +1,11 @@
+{
+ "id": "103-a-cobol-call-reaches-an-assembler-entry",
+ "title": "A COBOL program CALLs a name no COBOL program declares, and an assembler ENTRY of that name is the module it reaches",
+ "cwe": null,
+ "expect": [
+  {
+   "rule": "hlasm-provides-called-module",
+   "file": "DATECNV.asm"
+  }
+ ]
+}

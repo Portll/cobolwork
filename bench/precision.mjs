@@ -12,6 +12,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve, basename } from 'node:path';
 import { scanAll } from '../lib/scan.mjs';
 
+// The stratum a label is counted in: its source, and how it was labelled where that is not the
+// program as written (labelledOn: rewritten), which is never pooled with the source's own.
+const stratumOf = (l) => (l.labelledOn ? `${l.source}-${l.labelledOn}` : l.source);
+
 // What a label says of a reported finding: right, wrong, or unknown; and of a planted flaw nobody
 // reported, that it was missed. A near-miss nobody reported says nothing about precision.
 export function outcomeOf(l) {
@@ -58,7 +62,7 @@ export function precision(files, { corpus = null } = {}) {
   for (const file of files) {
     const doc = JSON.parse(readFileSync(file, 'utf8'));
     const list = Array.isArray(doc.labels) ? doc.labels : [];
-    const kinds = [...new Set(list.map((l) => l.source))];
+    const kinds = [...new Set(list.map(stratumOf))];
     sources.push({ file: basename(file), labels: list.length, sources: kinds });
     labels.push(...list);
   }
@@ -69,10 +73,10 @@ export function precision(files, { corpus = null } = {}) {
   for (const l of labels) {
     const outcome = outcomeOf(l);
     if (!outcome || !l.rule || !l.source) continue;
-    tally(byRule, l.rule, l.source, outcome);
+    tally(byRule, l.rule, stratumOf(l), outcome);
     if (l.source !== 'execution' || !corpus) continue;
     const verdict = verdictOf.get(`${l.repo ?? ''}|${l.fingerprint}`);
-    if (verdict) tally(byVerdict, verdict, l.source, outcome); else unjoined++;
+    if (verdict) tally(byVerdict, verdict, stratumOf(l), outcome); else unjoined++;
   }
   const finish = (table) => Object.fromEntries(Object.entries(table).sort(([a], [b]) => (a < b ? -1 : 1))
     .map(([k, bySource]) => [k, Object.fromEntries(Object.entries(bySource).map(([s, c]) => [s, measure(c, s)]))]));

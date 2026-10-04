@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. HANGS.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-CARD PIC X.
+       01 WS-DIG REDEFINES WS-CARD PIC 9.
+       01 WS-N PIC 9(4) COMP VALUE 0.
+       PROCEDURE DIVISION.
+           ACCEPT WS-CARD
+           IF WS-DIG IS NUMERIC
+              PERFORM UNTIL WS-N = WS-DIG
+                 ADD 2 TO WS-N
+              END-PERFORM
+           END-IF
+           GOBACK.

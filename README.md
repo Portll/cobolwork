@@ -340,19 +340,18 @@ The parser is graded against GnuCOBOL's own listing (`cobc -t -Xref -ftsymbols`)
 data item with the size the compiler computed, every label, called programs, and which references
 write to a field. `diag/grade-against-gnucobol.mjs` runs that comparison over a corpus, on
 repositories never used while building the parser. The 100 and 300 sets were measured 2026-09-18,
-the 500 set 2026-09-26:
+the 500 set 2026-10-04:
 
 | Corpus | Files the compiler accepted | Data items | Sizes | Labels and calls |
 |---|---|---|---|---|
 | 100 repositories, held out | 489 | 100% recall, 100% precision | 0 disagree of 15,888 | 100% |
 | 300 repositories, held out | 2,210 | 99.9% / 100% | 8 disagree of 94,786 | 100% / 99.7% |
-| 500 repositories, held out | 21,624 | 99.98% / 99.998% | 5,881 disagree of 733,835 | 100% / 100% |
+| 500 repositories, held out | 21,707 | 99.996% / 99.999% | 26 disagree of 719,173 | 100% / 100% |
 
-On the 500 set, 5,643 of the 5,881 size disagreements come from one repository that vendors a COBOL
-research dataset; the other repositories disagree on 238 of 343,444. The grade covers only programs
-GnuCOBOL accepts, so a program with EXEC SQL or EXEC CICS is graded only through the precompiler
-stand-in in `diag/precompiler.mjs`, which rewrites what the parser would otherwise have to read. The
-tests compare the parser with the compiler's answers kept in `test/fixtures/parser/*.golden.json`,
+On the 500 set the 26 size disagreements fall in 11 repositories, none with more than 7. The grade
+covers only programs GnuCOBOL accepts, so a program with EXEC SQL or EXEC CICS is graded only
+through the precompiler stand-in in `diag/precompiler.mjs`, which rewrites what the parser would
+otherwise have to read. The tests compare the parser with the compiler's answers kept in `test/fixtures/parser/*.golden.json`,
 so they run without GnuCOBOL.
 
 HLASM is graded against z390, an HLASM-compatible assembler, by `diag/hlasm-oracle.mjs` and

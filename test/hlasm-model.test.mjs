@@ -23,6 +23,15 @@ test('a model statement is read as the statement it is, its variable symbols sta
   assert.equal(parseHlasmStatement(sequence).status, 'parsed');
 });
 
+test('a name with a variable symbol after its first character is dropped and the statement read', () => {
+  const [, , inner] = definition('&NAME    GETPARM', 'KFBR&SYSNDX L    14,4(15)   GET ADDRESS');
+  const r = parseHlasmStatement(inner);
+  assert.equal(r.status, 'parsed');
+  assert.equal(r.node.as, 'RX');
+  const [open] = readHlasmStatements('A&B.C    DS    F').statements;
+  assert.equal(parseHlasmStatement(open).status, 'parsed');
+});
+
 test('an operation that is a variable symbol is refused, and open-code statements with variable symbols are read', () => {
   const [, , op] = definition('         MYMAC', '         &OP   1,2');
   assert.match(parseHlasmStatement(op).reason, /decided when the macro is expanded/);

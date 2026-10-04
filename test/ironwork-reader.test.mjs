@@ -50,6 +50,19 @@ test('a missing copy member is unresolved', posix, () => {
   assert.equal(run(12, 'P.cbl:2:8: CUST: no such member in the copy libraries').unresolved.length, 1);
 });
 
+test('a message id is kept apart from the message, and an IWR id is undecided at 12', posix, () => {
+  const failed = run(12, 'P.cbl:3:8: IWC0101-S WS-X is not defined').failed[0];
+  assert.deepEqual([failed.id, failed.message], ['IWC0101', 'WS-X is not defined']);
+  assert.equal(run(12, 'P.cbl:3:8: IWC0101-S EIBCALEN is not defined').notModelled.length, 1);
+  assert.equal(run(12, 'P.cbl:3:8: IWR0001-S XML PARSE VALIDATING WITH FILE S').notModelled.length, 1);
+  assert.equal(run(8, 'P.cbl:3:8: IWR0001-S XML PARSE VALIDATING WITH FILE S').failed.length, 1);
+});
+
+test('an informational line is not an error, with a position or without', posix, () => {
+  assert.equal(run(12, 'P.cbl:3:8: informational: a note').failed.length, 0);
+  assert.equal(run(12, 'P.cbl: informational: a note').failed.length, 0);
+});
+
 test('an exit outside the codes is unrun', posix, () => {
   assert.equal(run(2, 'usage').unrun.length, 1);
 });

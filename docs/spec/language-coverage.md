@@ -438,8 +438,9 @@ counting only values that do not move when sixteen bytes follow every macro call
 
 - Statements outside conditional assembly parse at 96.4% on the dev corpus and 98.6% on the
   held-out corpus.
-- No symbol location differs from z390's on either corpus, and 591 of 602 held-out symbols are
-  placed.
+- No symbol location differs from z390's on either corpus, and 546 of 557 graded held-out
+  symbols are placed. Values z390 gives differently from the Language Reference (an EQU's length,
+  a literal pool z390 pads) are not graded.
 - Instruction lengths agree on all 3,983 graded instructions.
 
 `bench/hlasm-locate/` holds the locator's own fixtures, with z390's answers recorded beside them.

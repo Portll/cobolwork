@@ -360,12 +360,15 @@ z390's macros, or IBM's, expand. Measured 2026-10-03 over the files z390 assembl
 
 | Corpus | Files | Symbol locations | Statement locations | Instruction lengths | External names |
 |---|---|---|---|---|---|
-| 12 repositories, dev | 58 | 975 agree of 976, 0 differ | 2,555 of 2,600, 0 differ | 2,273 of 2,273 | 65 of 65 |
-| 17 repositories, held out | 76 | 591 agree of 602, 0 differ | 1,696 of 1,740, 0 differ | 1,710 of 1,710 | 90 of 92 |
+| 12 repositories, dev | 48 | 935 agree of 936, 0 differ | 2,511 of 2,546, 0 differ | 2,273 of 2,273 | 55 of 55 |
+| 17 repositories, held out | 76 | 546 agree of 557, 0 differ | 1,631 of 1,675, 0 differ | 1,710 of 1,710 | 90 of 92 |
 
 A value not agreeing was not placed, never placed differently: it follows a statement of unknown
-length. An EQU's length is not graded, because z390 gives it 1 where the Language Reference gives it
-the length of its leftmost term, which the reader follows. Of the statements outside conditional
+length. Two of z390's values are not graded, because it differs from the Language Reference, which
+the reader follows: an EQU's length, where z390 gives 1 and the reference the length of the
+leftmost term; and anything after a literal pool where z390 pads a literal that the reference packs.
+A file with an error that can move a location is not graded either, such as an undefined symbol in
+a statement holding a literal, which z390 then leaves out of the pool. Of the statements outside conditional
 assembly, 96.4% parse on the dev corpus and 98.6% on the held-out one; the rest are counted by
 kind. `bench/hlasm-locate/` holds small programs, one assembler feature each, with z390's answers
 recorded beside them, so the tests check the locator without z390.

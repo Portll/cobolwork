@@ -10,7 +10,7 @@ import { toSarif } from '../lib/sarif.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const SCHEMA = JSON.parse(readFileSync(join(HERE, '..', 'schema', 'cobolwork-site.schema.json'), 'utf8'));
+const SCHEMA = JSON.parse(readFileSync(join(HERE, '..', 'schema', 'cobolwork.site.schema.json'), 'utf8'));
 
 const withSite = (body, fn) => {
   const dir = mkdtempSync(join(tmpdir(), 'cw-site-'));

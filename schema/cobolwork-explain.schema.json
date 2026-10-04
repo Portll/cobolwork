@@ -1,0 +1,360 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-explain.schema.json",
+ "title": "cobolwork explain",
+ "description": "One finding with the source behind it, for a person or a model to act on. It carries source text, which a report never does. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "carriesSource",
+  "note",
+  "fingerprint",
+  "shared",
+  "finding",
+  "hops",
+  "sink",
+  "guard",
+  "related",
+  "declarations",
+  "verify",
+  "unread"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-explain"
+  },
+  "schemaVersion": {
+   "const": 1
+  },
+  "carriesSource": {
+   "const": true
+  },
+  "note": {
+   "type": "string"
+  },
+  "fingerprint": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{32}$"
+  },
+  "shared": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "How many findings share the fingerprint."
+  },
+  "suppressed": {
+   "type": "object",
+   "description": "The baseline entry that suppresses the finding."
+  },
+  "finding": {
+   "type": "object",
+   "required": [
+    "rule",
+    "sev",
+    "evidence",
+    "path",
+    "line",
+    "detail"
+   ],
+   "properties": {
+    "rule": {
+     "type": "string"
+    },
+    "sev": {
+     "enum": [
+      "info",
+      "low",
+      "med",
+      "high",
+      "crit"
+     ]
+    },
+    "guardedFrom": {
+     "type": "string"
+    },
+    "cwe": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "evidence": {
+     "type": "string"
+    },
+    "claim": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "What the evidence kind establishes."
+    },
+    "whoActs": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "impact": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "remedy": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "program": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "path": {
+     "type": "string"
+    },
+    "line": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "crossProgram": {
+     "type": "boolean"
+    },
+    "detail": {
+     "type": "string"
+    }
+   }
+  },
+  "hops": {
+   "type": "array",
+   "description": "Each step of the route from source to sink.",
+   "items": {
+    "type": "object",
+    "properties": {
+     "n": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "program": {
+      "type": "string"
+     },
+     "item": {
+      "type": "string"
+     },
+     "file": {
+      "type": "string"
+     },
+     "via": {
+      "type": "string"
+     },
+     "path": {
+      "type": "string"
+     },
+     "line": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "code": {
+      "type": "string"
+     },
+     "why": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "sink": {
+   "$ref": "#/$defs/location"
+  },
+  "guard": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "description": "The check that guards the route, where the finding names one."
+  },
+  "related": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/location"
+   }
+  },
+  "declarations": {
+   "type": "array",
+   "description": "The data items on the route, as declared.",
+   "items": {
+    "type": "object",
+    "properties": {
+     "program": {
+      "type": "string"
+     },
+     "item": {
+      "type": "string"
+     },
+     "level": {
+      "type": "integer"
+     },
+     "picture": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "usage": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "size": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "offset": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "section": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "occurs": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "redefines": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "path": {
+      "type": "string"
+     },
+     "line": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    }
+   }
+  },
+  "verify": {
+   "type": "object",
+   "description": "How to reproduce the finding in a test region the estate owns.",
+   "required": [
+    "where",
+    "start",
+    "tool",
+    "enter",
+    "value",
+    "observe",
+    "run",
+    "record"
+   ],
+   "properties": {
+    "where": {
+     "type": "string"
+    },
+    "start": {
+     "type": "string"
+    },
+    "tool": {
+     "type": "string"
+    },
+    "enter": {
+     "type": "string"
+    },
+    "value": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "observe": {
+     "type": "string"
+    },
+    "run": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "stopBefore": {
+     "type": "string"
+    },
+    "check": {
+     "type": "string"
+    },
+    "record": {
+     "type": "string"
+    }
+   }
+  },
+  "unread": {
+   "type": "array",
+   "description": "Files the packet names and could not quote.",
+   "items": {
+    "type": "object",
+    "required": [
+     "path",
+     "why"
+    ],
+    "properties": {
+     "path": {
+      "type": "string"
+     },
+     "why": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ },
+ "$defs": {
+  "location": {
+   "type": "object",
+   "required": [
+    "path",
+    "line"
+   ],
+   "properties": {
+    "path": {
+     "type": "string"
+    },
+    "line": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "detail": {
+     "type": "string"
+    },
+    "code": {
+     "type": "string",
+     "description": "The source line, read from the tree."
+    },
+    "why": {
+     "type": "string",
+     "description": "Why the line could not be quoted."
+    }
+   }
+  }
+ }
+}

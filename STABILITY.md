@@ -35,8 +35,12 @@ Each JSON document cobolwork writes names itself in `tool` and gives its version
 | Document | Version | Schema |
 |---|---|---|
 | `cobolwork` (`scan`), `cobolwork-flow`, `cobolwork-inventory`, `cobolwork-diff`, `cobolwork-gate` | 3 | |
-| `cobolwork-build`, `cobolwork-build-provenance`, `cobolwork-capabilities` | 1 | |
-| `cobolwork-explain`, `cobolwork-parse`, `cobolwork-baseline`, `cobolwork-evidence` | 1 | |
+| `cobolwork-build`, `cobolwork-build-provenance` | 1 | |
+| `cobolwork-capabilities` | 1 | `schema/cobolwork-capabilities.schema.json` |
+| `cobolwork-explain` | 1 | `schema/cobolwork-explain.schema.json` |
+| `cobolwork-parse` | 1 | `schema/cobolwork-parse.schema.json` |
+| `cobolwork-baseline` | 1 | `schema/cobolwork-baseline.schema.json` |
+| `cobolwork-evidence` | 1 | `schema/cobolwork-evidence.schema.json` |
 | SARIF | 2.1.0 | The coverage property bag: `schema/cobolwork-coverage.schema.json` |
 | CycloneDX SBOM | 1.6 | |
 | Evidence records | `cobolwork-evidence/v1` | `docs/spec/evidence.md`; record kinds in `test/fixtures/evidence/kinds.tsv` |
@@ -45,9 +49,9 @@ The files cobolwork reads:
 
 | File | Version key | Schema |
 |---|---|---|
-| `cobolwork.site.json` | `version`: 1 | `schema/cobolwork-site.schema.json` |
+| `cobolwork.site.json` | `version`: 1 | `schema/cobolwork.site.schema.json` |
 | Build policy | `policyVersion`: 1 | `schema/cobolwork.policy.schema.json` |
-| `cobolwork.baseline.json` | `version`: 1 | |
+| `cobolwork.baseline.json` | `version`: 1 | `schema/cobolwork.baseline.schema.json` |
 | Witness feed (`COBOLWORK_WITNESS`) | `version`: 1 | `schema/cobolwork-witness.schema.json` |
 | Reachability extract (`COBOLWORK_REACH`) | `version`: 1 | `schema/cobolwork-reach.schema.json` |
 | Execution coverage (`COBOLWORK_EXECUTION`) | ironwork's | `schema/cobolwork-execution.schema.json`, the keys read |

@@ -1,0 +1,105 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-parse.schema.json",
+ "title": "cobolwork parse",
+ "description": "What cobolwork parse read in one source file. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "file",
+  "format",
+  "finalFormat",
+  "programs",
+  "copies",
+  "diagnostics"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-parse"
+  },
+  "schemaVersion": {
+   "const": 1
+  },
+  "file": {
+   "type": "string"
+  },
+  "format": {
+   "type": "string",
+   "description": "The source format detected at the first line: fixed, free or terminal."
+  },
+  "finalFormat": {
+   "type": "string",
+   "description": "The format in force at the end, after any >>SOURCE directive."
+  },
+  "programs": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "items",
+     "labels",
+     "calls",
+     "execs",
+     "diagnostics"
+    ],
+    "properties": {
+     "id": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "items": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Data items declared."
+     },
+     "labels": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Sections and paragraphs."
+     },
+     "calls": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "execs": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "EXEC blocks."
+     },
+     "diagnostics": {
+      "type": "integer",
+      "minimum": 0
+     }
+    }
+   }
+  },
+  "copies": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "name",
+     "status"
+    ],
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string",
+      "description": "How the COPY was resolved, or why it was not."
+     }
+    }
+   }
+  },
+  "diagnostics": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "Diagnostics in the file as a whole."
+  }
+ }
+}

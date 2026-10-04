@@ -1,0 +1,36 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-baseline.schema.json",
+ "title": "cobolwork baseline output",
+ "description": "The line cobolwork baseline writes after it updates the baseline file. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "path",
+  "added",
+  "entries"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-baseline"
+  },
+  "schemaVersion": {
+   "const": 1
+  },
+  "path": {
+   "type": "string",
+   "description": "The baseline file written."
+  },
+  "added": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "Entries this run added."
+  },
+  "entries": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "Entries the file now holds."
+  }
+ }
+}

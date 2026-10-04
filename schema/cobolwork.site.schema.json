@@ -1,6 +1,6 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
- "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-site.schema.json",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork.site.schema.json",
  "title": "cobolwork site file",
  "description": "cobolwork.site.json: the facts about an estate that no repository holds. lib/site.mjs reads it; a key it does not read is reported under summary.siteWarnings, and a key opening with an underscore is a note for people.",
  "type": "object",

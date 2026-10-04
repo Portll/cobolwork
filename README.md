@@ -299,7 +299,7 @@ clean result.
 Some rules need facts no repository holds: which dataset qualifiers are production, which DDs reach
 the internal reader, the compiler options and runtime versions in use, which libraries are
 authorised. They go in `cobolwork.site.json`, and `node diag/propose-site.mjs <path>` drafts one from
-the estate's own JCL for a person to correct. `schema/cobolwork-site.schema.json` describes the
+the estate's own JCL for a person to correct. `schema/cobolwork.site.schema.json` describes the
 file. Its `version` is 1, and a file without one is read as version 0, which holds the same keys. A
 key cobolwork does not read is named under `summary.siteWarnings` rather than dropped, and a key
 opening with `_` is a note for people. Without a fact, the rule that needs it says it did not

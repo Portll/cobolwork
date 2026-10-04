@@ -1,0 +1,239 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-capabilities.schema.json",
+ "title": "cobolwork capabilities",
+ "description": "What this cobolwork can do: cobolwork capabilities. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "toolVersion",
+  "toolRevision",
+  "commands",
+  "globalOptions",
+  "documents",
+  "identity",
+  "analysis",
+  "sourceKinds",
+  "evidenceKinds",
+  "build",
+  "gate",
+  "ironwork"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-capabilities"
+  },
+  "schemaVersion": {
+   "const": 1
+  },
+  "toolVersion": {
+   "type": "string"
+  },
+  "toolRevision": {
+   "$ref": "#/$defs/revision"
+  },
+  "commands": {
+   "type": "object",
+   "description": "Each command, what it takes and what it writes.",
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "args",
+     "options",
+     "documents"
+    ],
+    "properties": {
+     "args": {
+      "$ref": "#/$defs/strings"
+     },
+     "options": {
+      "$ref": "#/$defs/strings"
+     },
+     "documents": {
+      "$ref": "#/$defs/strings",
+      "description": "The tool names of the documents the command writes."
+     }
+    }
+   }
+  },
+  "globalOptions": {
+   "$ref": "#/$defs/strings"
+  },
+  "documents": {
+   "type": "object",
+   "description": "Each document's tool name and its schemaVersion, or the standard version of a SARIF or CycloneDX document.",
+   "additionalProperties": {
+    "type": [
+     "integer",
+     "string"
+    ]
+   }
+  },
+  "identity": {
+   "type": "object",
+   "required": [
+    "version"
+   ],
+   "properties": {
+    "version": {
+     "const": "cobolwork/v1",
+     "description": "The fingerprint version."
+    }
+   }
+  },
+  "analysis": {
+   "type": "object",
+   "required": [
+    "flowModel",
+    "ruleSets",
+    "rules"
+   ],
+   "properties": {
+    "flowModel": {
+     "type": "string"
+    },
+    "ruleSets": {
+     "$ref": "#/$defs/strings"
+    },
+    "rules": {
+     "type": "integer",
+     "minimum": 0
+    }
+   }
+  },
+  "sourceKinds": {
+   "type": "object",
+   "description": "Which files are read as each kind of source.",
+   "additionalProperties": {
+    "type": [
+     "array",
+     "string"
+    ]
+   }
+  },
+  "evidenceKinds": {
+   "$ref": "#/$defs/strings"
+  },
+  "build": {
+   "type": "object",
+   "required": [
+    "tiers",
+    "classes",
+    "checks",
+    "compilers",
+    "defaultPolicy",
+    "exit"
+   ],
+   "properties": {
+    "tiers": {
+     "$ref": "#/$defs/strings"
+    },
+    "classes": {
+     "$ref": "#/$defs/strings"
+    },
+    "checks": {
+     "$ref": "#/$defs/strings"
+    },
+    "compilers": {
+     "$ref": "#/$defs/strings"
+    },
+    "defaultPolicy": {
+     "type": "object",
+     "description": "The policy a build applies when none is given, as schema/cobolwork.policy.schema.json describes it."
+    },
+    "exit": {
+     "$ref": "#/$defs/exit"
+    }
+   }
+  },
+  "gate": {
+   "type": "object",
+   "required": [
+    "exit"
+   ],
+   "properties": {
+    "exit": {
+     "$ref": "#/$defs/exit"
+    }
+   }
+  },
+  "ironwork": {
+   "type": "object",
+   "description": "The ironwork releases this cobolwork reads.",
+   "required": [
+    "minimum",
+    "formats",
+    "runEndings",
+    "notRunAbends"
+   ],
+   "properties": {
+    "minimum": {
+     "type": "string"
+    },
+    "formats": {
+     "type": "object",
+     "description": "Each format cobolwork reads from ironwork, and the first ironwork release that writes it.",
+     "additionalProperties": {
+      "type": "string"
+     }
+    },
+    "runEndings": {
+     "type": "object",
+     "description": "Each exit status ironwork keeps for itself, and what it means.",
+     "additionalProperties": {
+      "type": "string"
+     }
+    },
+    "notRunAbends": {
+     "$ref": "#/$defs/strings"
+    }
+   }
+  }
+ },
+ "$defs": {
+  "strings": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "exit": {
+   "type": "object",
+   "description": "Each verdict and the exit status that reports it.",
+   "additionalProperties": {
+    "type": "integer"
+   }
+  },
+  "revision": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "description": "The commit cobolwork was built from, whether its tree held changes, the release tag, and whether this was read from a checkout or the release; null where none of them can be read.",
+   "properties": {
+    "commit": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "dirty": {
+     "type": [
+      "boolean",
+      "null"
+     ]
+    },
+    "tag": {
+     "type": "string"
+    },
+    "from": {
+     "enum": [
+      "checkout",
+      "release"
+     ]
+    }
+   }
+  }
+ }
+}

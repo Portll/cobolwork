@@ -1,0 +1,101 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork.baseline.schema.json",
+ "title": "cobolwork baseline file",
+ "description": "cobolwork.baseline.json: judgements over findings, matched by fingerprint. lib/baseline.mjs reads it and refuses an entry that does not validate.",
+ "type": "object",
+ "required": [
+  "entries"
+ ],
+ "patternProperties": {
+  "^_": {}
+ },
+ "properties": {
+  "$schema": {
+   "type": "string"
+  },
+  "version": {
+   "type": "integer",
+   "minimum": 0,
+   "maximum": 1,
+   "description": "The baseline version. A file without one is read as version 0, which holds the same entries as version 1."
+  },
+  "entries": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/entry"
+   }
+  }
+ },
+ "$defs": {
+  "entry": {
+   "type": "object",
+   "required": [
+    "fingerprint",
+    "rule",
+    "action",
+    "reason",
+    "who",
+    "at"
+   ],
+   "properties": {
+    "fingerprint": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{32}$"
+    },
+    "rule": {
+     "type": "string",
+     "minLength": 1
+    },
+    "path": {
+     "type": "string",
+     "description": "Where the finding was when the entry was written; not used to match it."
+    },
+    "action": {
+     "enum": [
+      "accept",
+      "false-positive",
+      "wont-fix",
+      "incorrect-scan-result",
+      "note",
+      "resolved"
+     ],
+     "description": "The first four suppress the finding until expires."
+    },
+    "reason": {
+     "type": "string",
+     "minLength": 1
+    },
+    "who": {
+     "type": "string",
+     "minLength": 1
+    },
+    "at": {
+     "type": "string",
+     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:?[0-9]{2})?)?$"
+    },
+    "expires": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:?[0-9]{2})?)?$",
+     "description": "Required for an action that suppresses."
+    },
+    "defect": {
+     "type": "object",
+     "required": [
+      "detail"
+     ],
+     "properties": {
+      "detail": {
+       "type": "string",
+       "minLength": 1
+      }
+     },
+     "description": "What the scanner got wrong, for incorrect-scan-result."
+    }
+   }
+  }
+ }
+}

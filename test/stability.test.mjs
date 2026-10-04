@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { capabilities } from '../lib/capabilities.mjs';
@@ -43,6 +43,11 @@ test('the exit statuses STABILITY.md gives are the ones build and gate use', () 
   assert.equal(cells(rowNaming('| `build`'))[1],
     `${BUILD_EXIT.pass} pass, ${BUILD_EXIT.fail} fail, ${BUILD_EXIT.undecided} undecided, ${BUILD_EXIT.compilerFailed} the compiler failed after a pass, 2 could not run`);
   assert.equal(cells(rowNaming('| `gate --exit-code`'))[1], `${VERDICT_EXIT.pass} pass, ${VERDICT_EXIT.fail} fail, ${VERDICT_EXIT.undecided} undecided, 2 could not run`);
+});
+
+test('STABILITY.md names every schema in schema/', () => {
+  const missing = readdirSync(join(HERE, '..', 'schema')).filter((f) => f.endsWith('.schema.json') && !STABILITY.includes(`schema/${f}`));
+  assert.deepEqual(missing, []);
 });
 
 test('STABILITY.md names the fingerprint version in force', () => {

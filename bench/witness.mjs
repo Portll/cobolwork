@@ -6,6 +6,7 @@
 //   node bench/witness.mjs <labels.json> [--repo name] [--out feed.json]
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { WITNESS_VERSION } from '../lib/exploitability.mjs';
 
 export function witnessFeed(doc, { repo = null, recorded = new Date().toISOString().slice(0, 10) } = {}) {
   const results = {};
@@ -19,7 +20,7 @@ export function witnessFeed(doc, { repo = null, recorded = new Date().toISOStrin
       evidence: { dir: resolve(doc.evidence), run: l.run },
     };
   }
-  return { witness: `ironwork execution labels${repo ? ` for ${repo}` : ''}`, recorded, results };
+  return { version: WITNESS_VERSION, witness: `ironwork execution labels${repo ? ` for ${repo}` : ''}`, recorded, results };
 }
 
 function main(argv) {

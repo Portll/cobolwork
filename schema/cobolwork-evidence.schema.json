@@ -1,0 +1,132 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-evidence.schema.json",
+ "title": "cobolwork evidence output",
+ "description": "What cobolwork evidence verify, seal and anchor report. evidence sign writes a DSSE envelope instead. docs/spec/evidence.md. A later minor release may add keys; a reader ignores keys it does not know.",
+ "type": "object",
+ "required": [
+  "tool",
+  "schemaVersion",
+  "verb"
+ ],
+ "properties": {
+  "tool": {
+   "const": "cobolwork-evidence"
+  },
+  "schemaVersion": {
+   "const": 1
+  },
+  "verb": {
+   "enum": [
+    "verify",
+    "seal",
+    "anchor"
+   ]
+  },
+  "verified": {
+   "type": "boolean",
+   "description": "verify: every record and seal checked out."
+  },
+  "broken": {
+   "type": "array",
+   "description": "verify: each check that failed, where.",
+   "items": {
+    "type": "object"
+   }
+  },
+  "unrecorded": {
+   "type": "array",
+   "items": {
+    "type": "object"
+   }
+  },
+  "open": {
+   "type": "array",
+   "items": {
+    "type": "object"
+   }
+  },
+  "anchored": {
+   "type": [
+    "object",
+    "boolean",
+    "null"
+   ]
+  },
+  "sealed": {
+   "type": [
+    "boolean",
+    "null"
+   ]
+  },
+  "sealedReason": {
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "unsealedTail": {
+   "type": [
+    "integer",
+    "null"
+   ]
+  },
+  "signatures": {
+   "type": "array",
+   "items": {
+    "type": "object"
+   }
+  },
+  "seals": {
+   "type": "array",
+   "items": {
+    "type": "object"
+   }
+  },
+  "exit": {
+   "enum": [
+    0,
+    1,
+    3
+   ],
+   "description": "verify: the exit status the command ends with."
+  },
+  "seq": {
+   "type": "integer",
+   "minimum": 0,
+   "description": "seal: the seal's number."
+  },
+  "path": {
+   "type": "string"
+  },
+  "sha256": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "signed": {
+   "type": "boolean"
+  },
+  "ledgerLength": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "tip": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "anchor": {
+   "type": "object",
+   "description": "seal with --anchor-git or --tsq: what anchor reports."
+  },
+  "seal": {
+   "type": "string",
+   "description": "anchor: the seal anchored."
+  },
+  "git": {
+   "type": "object"
+  },
+  "tsq": {
+   "type": "object"
+  }
+ }
+}

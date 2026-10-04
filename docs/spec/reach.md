@@ -104,6 +104,9 @@ once the estate names the authorised libraries".
    `openJobs`/`restrictedJobs` keys in `cobolwork.site.json` are the fallback the feed overrides
    per entry. Both are built (`lib/reach.mjs`, `lib/site.mjs`). The feed is refused from inside the
    scanned tree and named in the report, exactly as an advisory feed is.
+   `schema/cobolwork-reach.schema.json` describes the extract: its `version` is 1, one without it
+   is read as version 0 with the same keys, and a newer one is refused under
+   `summary.reachFeedProblems`. A key it does not hold is named under `summary.feedWarnings`.
 2. **Re-rank or annotate — decided: annotate.** `reach` rides as its own field on a finding
    (`open` / `restricted` / `undeclared`) and `summary.byReach` counts the three ways; severity is
    untouched, because severity is urgency and reach is who can drive it, and collapsing them would
@@ -252,6 +255,10 @@ attack:
 
 Those fields are all that is read; what was sent to the system is not recorded here. A result
 lacking an outcome, who, when or where is refused and named under `summary.witnessFeedProblems`.
+`schema/cobolwork-witness.schema.json` describes the feed. Its `version` is 1, a feed without one is
+read as version 0 with the same keys, and a newer one is refused under
+`summary.witnessFeedProblems`. A key the feed does not hold, at the top or in a result, is named
+under `summary.feedWarnings`.
 
 - `reproduced` makes the verdict `confirmed`, whatever the reading said, and cites the result in
   `because`. The finding takes back the severity a check or the reading took off it, since the test

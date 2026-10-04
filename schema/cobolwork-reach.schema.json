@@ -1,0 +1,74 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-reach.schema.json",
+ "title": "cobolwork reachability extract",
+ "description": "Who may start each transaction and job, and which run with elevated authority, reduced from a RACF unload and the SIT and brought as COBOLWORK_REACH. docs/spec/reach.md. lib/reach.mjs reads it; a key it does not read is reported under summary.feedWarnings, and a key opening with an underscore is a note for people.",
+ "type": "object",
+ "required": [
+  "extract",
+  "retrieved"
+ ],
+ "additionalProperties": false,
+ "patternProperties": {
+  "^_": {}
+ },
+ "properties": {
+  "$schema": {
+   "type": "string"
+  },
+  "version": {
+   "description": "The extract version. An extract without one is read as version 0, which holds the same keys as version 1.",
+   "type": "integer",
+   "minimum": 0,
+   "maximum": 1
+  },
+  "extract": {
+   "type": "string",
+   "minLength": 1,
+   "description": "Which extract this is."
+  },
+  "retrieved": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+   "description": "When the extract was taken."
+  },
+  "transactions": {
+   "$ref": "#/$defs/access",
+   "description": "Each transaction's access, by name."
+  },
+  "jobs": {
+   "$ref": "#/$defs/access",
+   "description": "Each job's access, by name."
+  },
+  "privileged": {
+   "type": "object",
+   "description": "The transactions and jobs that run with elevated authority.",
+   "additionalProperties": false,
+   "properties": {
+    "transactions": {
+     "$ref": "#/$defs/names"
+    },
+    "jobs": {
+     "$ref": "#/$defs/names"
+    }
+   }
+  }
+ },
+ "$defs": {
+  "access": {
+   "type": "object",
+   "additionalProperties": {
+    "enum": [
+     "open",
+     "restricted"
+    ]
+   }
+  },
+  "names": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  }
+ }
+}

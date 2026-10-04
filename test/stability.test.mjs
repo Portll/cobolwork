@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { capabilities } from '../lib/capabilities.mjs';
 import { SITE_VERSION } from '../lib/site.mjs';
 import { BASELINE_VERSION } from '../lib/baseline.mjs';
+import { WITNESS_VERSION } from '../lib/exploitability.mjs';
+import { REACH_VERSION } from '../lib/reach.mjs';
 import { BUILD_EXIT } from '../lib/build.mjs';
 import { VERDICT_EXIT } from '../lib/gate.mjs';
 import { FINGERPRINT_VERSION } from '../lib/kernel/identity.mjs';
@@ -31,6 +33,8 @@ test('each document STABILITY.md lists carries the version capabilities gives it
 test('the files cobolwork reads are listed at the versions it reads', () => {
   assert.equal(cells(rowNaming('`cobolwork.site.json`'))[1], `\`version\`: ${SITE_VERSION}`);
   assert.equal(cells(rowNaming('`cobolwork.baseline.json`'))[1], `\`version\`: ${BASELINE_VERSION}`);
+  assert.equal(cells(rowNaming('`COBOLWORK_WITNESS`'))[1], `\`version\`: ${WITNESS_VERSION}`);
+  assert.equal(cells(rowNaming('`COBOLWORK_REACH`'))[1], `\`version\`: ${REACH_VERSION}`);
   assert.equal(cells(rowNaming('Build policy'))[1], `\`policyVersion\`: ${capabilities().build.defaultPolicy.policyVersion}`);
 });
 

@@ -1,0 +1,107 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-witness.schema.json",
+ "title": "cobolwork witness feed",
+ "description": "An estate's own test results, brought as COBOLWORK_WITNESS. docs/spec/reach.md section 9.5. lib/exploitability.mjs reads it; a key it does not read is reported under summary.feedWarnings, and a key opening with an underscore is a note for people.",
+ "type": "object",
+ "required": [
+  "witness",
+  "recorded",
+  "results"
+ ],
+ "additionalProperties": false,
+ "patternProperties": {
+  "^_": {}
+ },
+ "properties": {
+  "$schema": {
+   "type": "string"
+  },
+  "version": {
+   "description": "The witness feed version. A feed without one is read as version 0, which holds the same keys as version 1.",
+   "type": "integer",
+   "minimum": 0,
+   "maximum": 1
+  },
+  "witness": {
+   "type": "string",
+   "minLength": 1,
+   "description": "Whose tests the results are."
+  },
+  "recorded": {
+   "$ref": "#/$defs/date",
+   "description": "When the feed was recorded."
+  },
+  "results": {
+   "type": "object",
+   "description": "One result per finding, keyed by its fingerprint.",
+   "additionalProperties": {
+    "$ref": "#/$defs/result"
+   }
+  }
+ },
+ "$defs": {
+  "date": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+  },
+  "result": {
+   "type": "object",
+   "required": [
+    "outcome",
+    "by",
+    "on",
+    "system"
+   ],
+   "additionalProperties": false,
+   "patternProperties": {
+    "^_": {}
+   },
+   "properties": {
+    "outcome": {
+     "enum": [
+      "reproduced",
+      "not-reproduced"
+     ]
+    },
+    "by": {
+     "type": "string",
+     "minLength": 1,
+     "description": "Who ran the test."
+    },
+    "on": {
+     "$ref": "#/$defs/date",
+     "description": "When the test ran."
+    },
+    "system": {
+     "type": "string",
+     "minLength": 1,
+     "description": "The system the test ran on."
+    },
+    "reference": {
+     "type": "string",
+     "description": "A change or ticket the test belongs to."
+    },
+    "evidence": {
+     "type": "object",
+     "description": "The ironwork run that reproduced the finding: an evidence directory relative to the feed, and the run's id.",
+     "required": [
+      "dir",
+      "run"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "dir": {
+       "type": "string",
+       "minLength": 1
+      },
+      "run": {
+       "type": "string",
+       "pattern": "^[0-9TZ]+-[0-9a-f]{16}$"
+      }
+     }
+    }
+   }
+  }
+ }
+}

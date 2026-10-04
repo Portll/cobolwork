@@ -416,9 +416,10 @@ is), from runs of the estate's own tests. A finding inside a paragraph of a prog
 carries `executed: { paragraph, entered }`: the paragraph it is in, by the report's line for each
 paragraph, and how often the runs entered it, summed over the reports. The summary counts
 `byExecution` (`entered`, `never-entered`) and names the reports in `executionFeeds`; a report that
-cannot be read is in `executionFeedProblems`. A finding before a program's first paragraph, or in a
-program no report covers, has no `executed`. The program a finding is in is the last PROGRAM-ID at
-or before its line. It annotates and does not re-rank: a paragraph the tests never enter is code
+cannot be read is in `executionFeedProblems`. The format is ironwork's, and
+`schema/cobolwork-execution.schema.json` describes the keys cobolwork reads. A finding before a
+program's first paragraph, or in a program no report covers, has no `executed`. The program a
+finding is in is the last PROGRAM-ID at or before its line. It annotates and does not re-rank: a paragraph the tests never enter is code
 nobody has seen run, and one they enter is code whose behaviour a change to it would show.
 
 ### 13.6 Abends from fuzzing

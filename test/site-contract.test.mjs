@@ -64,7 +64,7 @@ test('a newer version is not read, and the problem names both versions', () => {
     const site = loadSite(dir);
     assert.equal(site.present, false);
     assert.deepEqual(site.systemNames, []);
-    assert.deepEqual(site.problems, [`${SITE_FILE} is version ${SITE_VERSION + 1}, and this cobolwork reads up to version ${SITE_VERSION}; upgrade cobolwork, so the file was not read`]);
+    assert.deepEqual(site.problems, [`${SITE_FILE} is version ${SITE_VERSION + 1}, and this cobolwork reads up to version ${SITE_VERSION}; upgrade cobolwork, so it was not read`]);
   });
 });
 

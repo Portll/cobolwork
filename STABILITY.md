@@ -48,10 +48,14 @@ The files cobolwork reads:
 | `cobolwork.site.json` | `version`: 1 | `schema/cobolwork-site.schema.json` |
 | Build policy | `policyVersion`: 1 | `schema/cobolwork.policy.schema.json` |
 | `cobolwork.baseline.json` | `version`: 1 | |
+| Witness feed (`COBOLWORK_WITNESS`) | `version`: 1 | `schema/cobolwork-witness.schema.json` |
+| Reachability extract (`COBOLWORK_REACH`) | `version`: 1 | `schema/cobolwork-reach.schema.json` |
+| Execution coverage (`COBOLWORK_EXECUTION`) | ironwork's | `schema/cobolwork-execution.schema.json`, the keys read |
 
-A site file or baseline without its version key is read as version 0, which holds the same keys as
-version 1. A newer version than the release reads is refused, and the message names both versions.
-A key the site file does not hold is named under `summary.siteWarnings`.
+A file of cobolwork's own without its version key is read as version 0, which holds the same keys
+as version 1. A newer version than the release reads is refused, and the message names both
+versions. A key the site file does not hold is named under `summary.siteWarnings`, and one a witness
+feed or reachability extract does not hold under `summary.feedWarnings`.
 
 ## How a contract changes
 

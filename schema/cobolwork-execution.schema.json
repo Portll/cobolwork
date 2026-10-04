@@ -1,0 +1,53 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-execution.schema.json",
+ "title": "What cobolwork reads from an execution coverage report",
+ "description": "COBOLWORK_EXECUTION names coverage reports that ironwork run --coverage writes, from ironwork 0.2.0. The format is ironwork's, so this schema describes only the keys lib/execution.mjs reads and allows every other key. docs/spec/evidence.md section 13.5.",
+ "type": "object",
+ "required": [
+  "programs"
+ ],
+ "properties": {
+  "programs": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "program",
+     "detail"
+    ],
+    "properties": {
+     "program": {
+      "type": "string",
+      "description": "The PROGRAM-ID."
+     },
+     "detail": {
+      "type": "array",
+      "description": "Each paragraph of the program.",
+      "items": {
+       "type": "object",
+       "required": [
+        "name",
+        "line",
+        "entered"
+       ],
+       "properties": {
+        "name": {
+         "type": "string"
+        },
+        "line": {
+         "type": "integer"
+        },
+        "entered": {
+         "type": "integer",
+         "minimum": 0,
+         "description": "How many times a run entered the paragraph."
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

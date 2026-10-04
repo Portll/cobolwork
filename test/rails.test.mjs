@@ -88,7 +88,9 @@ test('every rule set walks the tree inside the memory guard', () => {
     // is how a set enumerates now; the old check looked for idx.index.values() and would have
     // skipped every set silently once they stopped building their own index.
     if (!/tree\.list\(\)/.test(src)) continue;
-    if (!isCalled(src, 'eachWithinMemory')) unguarded.push(name);
+    // A set that yields loopOver asks the scan's shared pass for the same guarded loop.
+    const guarded = isCalled(src, 'eachWithinMemory') || (isCalled(src, 'loopOver') && !/guarded:\s*false/.test(src));
+    if (!guarded) unguarded.push(name);
   }
   assert.deepEqual(unguarded, [], `these rule sets read the tree without a memory budget:\n  ${unguarded.join('\n  ')}`);
 });

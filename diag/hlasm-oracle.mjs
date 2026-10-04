@@ -18,8 +18,10 @@ const LISTED = /^([0-9A-F]{6,8}) ([0-9A-F ]*?)\((\d+)\/(\d+)\)(\d+)([+= ]|$)(.*)
 const ERROR = /^(AZ|MZ)390E error\s+(\d+)\s*(?:\((\d+)\/(\d+)\)(\d+))?\s?(.*)$/;
 const ABORT = /^(AZ|MZ)390E abort\s+(\d+)\s*(.*)$/;
 const ESD = /^ ESD=([0-9A-F]+) LOC=([0-9A-F]+) LEN=([0-9A-F]+) TYPE=(\S+) NAME=(.*)$/;
+const LIT = /^ LIT=(\S+)\s+LOC=([0-9A-F]+) LEN=([0-9A-F]+) ESD=[0-9A-F]+ POOL=(\d+)/;
 const SYM = /^ SYM=(\S+)\s+LOC=([0-9A-F]+) LEN=([0-9A-F]+) ESD=([0-9A-F]+) TYPE=(\S+)\s+XREF=(.*)$/;
 const hex = (s) => parseInt(s, 16);
+const namesLiteral = (field) => /(^|[,(])=/.test(String(field || '').replace(/'(?:[^']|'')*'/g, "''"));
 // A macro z390 does not have, defined as one that takes any operands and generates nothing.
 export const stubMacro = (name) => `         MACRO\n&L       ${name}\n&L       DS    0H\n         MEND\n`;
 export const missingMacros = (text) => [...new Set([...String(text).matchAll(/missing macro\s*=\s*(\S+)/g)].map((m) => m[1].toUpperCase()))];
@@ -32,6 +34,7 @@ export function parseListing(text) {
   const statements = [];
   const symbols = [];
   const errors = [];
+  const literals = [];
   let part = null;
   let last = null;
   let finished = false;
@@ -39,7 +42,8 @@ export function parseListing(text) {
     if (line === 'External Symbol Definitions') { part = 'esd'; continue; }
     if (line === 'Assembler Listing') { part = 'listing'; continue; }
     if (line === '.Symbol Table Listing.') { part = 'symbols'; finished = true; continue; }
-    if (/^(?:\.Literal Table Listing\.|Relocation Definitions)$/.test(line)) { part = null; continue; }
+    if (line === '.Literal Table Listing.') { part = 'literals'; continue; }
+    if (line === 'Relocation Definitions') { part = null; continue; }
     const explained = last;
     last = null;
     let m;
@@ -55,12 +59,28 @@ export function parseListing(text) {
       statements.push({ stmt: Number(m[5]), loc: hex(m[1]), obj, file: Number(m[3]), line: Number(m[4]), generated: m[6] === '+' || m[6] === '=', source: m[7] });
     } else if (part === 'esd' && (m = ESD.exec(line))) {
       esd.push({ id: hex(m[1]), loc: hex(m[2]), len: hex(m[3]), type: m[4], name: m[5].trim() });
+    } else if (part === 'literals' && (m = LIT.exec(line))) {
+      literals.push({ text: m[1], loc: hex(m[2]), len: hex(m[3]), pool: Number(m[4]) });
     } else if (part === 'symbols' && (m = SYM.exec(line))) {
       symbols.push({ name: m[1], loc: hex(m[2]), len: hex(m[3]), esd: hex(m[4]), type: m[5], xref: m[6].trim().split(/\s+/).filter(Boolean).map(Number) });
     }
   }
   const aborted = errors.some((e) => e.number === 165 || e.text.startsWith('abort: '));
-  return { esd, statements, symbols, errors, end: statements.some((s) => operationOf(s.source) === 'END'), finished, aborted };
+  return { esd, statements, symbols, errors, literals, end: statements.some((s) => operationOf(s.source) === 'END'), finished, aborted };
+}
+
+// HLASM packs each literal pool with no gap between literals, except to halfword-align an odd-length
+// literal a relative instruction names; z390 pads others too, which moves what follows the pool. The
+// number of the first pool z390 pads, or null. Pool n is the nth LTORG's; the last may be END's.
+// https://www.ibm.com/docs/en/hla-and-tf/1.6.0?topic=instructions-ltorg-instruction
+function paddedPool(listing) {
+  const pools = new Map();
+  for (const l of listing.literals) (pools.get(l.pool) || pools.set(l.pool, []).get(l.pool)).push(l);
+  for (const n of [...pools.keys()].sort((x, y) => x - y)) {
+    const pool = pools.get(n).sort((x, y) => x.loc - y.loc);
+    for (let i = 1; i < pool.length; i++) if (pool[i].loc > pool[i - 1].loc + pool[i - 1].len) return n;
+  }
+  return null;
 }
 
 // Mnemonics from z390's instruction summary: Fmt HLASM is an assembler instruction, any other a machine one.
@@ -209,6 +229,13 @@ function main(args) {
       const failed = failure(a, 'A');
       const b = failed ? null : await assemble(join(job, 'b'), name, Buffer.from(`${bSource.join('\n')}\n`, 'latin1'), stubDir, lib);
       const compared = compare(a.listing, b && !b.timedOut ? b.listing : null);
+      // Nothing after a pool z390 pads is graded: its locations follow z390's padding, not HLASM's.
+      const padded = failed ? null : paddedPool(a.listing);
+      const ltorg = padded ? open.filter((st) => st.operation === 'LTORG')[padded - 1] : null;
+      if (ltorg) {
+        for (const x of [...compared.statements, ...compared.symbols]) if (x.line > ltorg.line) x.stable = false;
+        for (const x of compared.esd) x.stable = false;
+      }
       const why = failed ?? failure(b, 'B') ?? compared.why;
       return { ...result, ...compared, graded: !why, why };
     } finally {
@@ -285,7 +312,10 @@ function main(args) {
           if (seen.has(key)) continue;
           seen.add(key);
           errors.push(record);
-          if (why || e.number === 144 || generated || (st && machine.has(st.operation))) continue;
+          // An instruction's length is fixed by its op code, so an error on one moves nothing, unless
+          // it names a literal: z390 leaves a literal out of the pool when its statement has an error
+          // other than an unresolved base (144), which moves everything after the pool.
+          if (why || e.number === 144 || generated || (st && machine.has(st.operation) && !namesLiteral(st.field))) continue;
           const on = e.file == null ? 'with no position' : !st ? 'on no statement' : isCall(st.operation) ? 'on macro call' : `on ${st.operation}`;
           why = `error ${e.number} ${on}${run ? ' in run B' : ''}`;
         }

@@ -167,7 +167,8 @@ test('an unload alone is read with its descriptors, with RDWs or bare, and named
   }
   const dir = exportOf({ 'IBMUSER.COPYLIB.unload': withBdwSdw(records) });
   try {
-    assert.deepEqual(pdsExportTree(dir).list().map((p) => p.split('@pds/')[1]), ['IBMUSER.COPYLIB/CUSTREC', 'IBMUSER.COPYLIB/PAYCALC']);
+    const tree = pdsExportTree(dir);
+    assert.deepEqual(tree.list().map(tree.rel), ['IBMUSER.COPYLIB/CUSTREC', 'IBMUSER.COPYLIB/PAYCALC']);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

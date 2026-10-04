@@ -79,8 +79,18 @@ which a directory scan reads as nothing at all. The adapter takes both layouts, 
 and `--record` downloads. Each member is held as `DATA.SET/MEMBER` under a root beside the export
 that does not exist, so a finding names the member as z/OS does. Members are read from disk when
 asked for, with no link followed at read time. A file whose path is not a data set and member name,
-or that names a member already held, is counted in `summary.pdsExport` and not read. XMIT and
-IEBCOPY unloads wait for an estate that brings one.
+or that names a member already held, is counted in `summary.pdsExport` and not read.
+
+An XMIT file (TSO TRANSMIT) or an IEBCOPY unload in the export is read into its data set, whatever
+the file is called: the transmission's INMR02 names the data set, and an unload alone is named by its
+file without the last extension. A partitioned data set's members are held under that name, each
+placed by its directory entry's TTR, which a member block's MBBCCHHR gives through COPYR2's extents
+and COPYR1's tracks per cylinder; an alias is counted, not held twice. A sequential data set is one
+file named by the data set. An unload with a BDW and SDW, with an RDW, or with neither is read. A
+PDSE unload, one IEBCOPY marked in error, a transmission of more than one file or one cut short is
+counted in `summary.pdsExport.archives` with the reason, and not read. The layouts are IBM's (z/OS
+TSO/E Customization, "Format of transmitted data"; DFSMSdfp Utilities, "Unload partitioned data set
+format"), and the test fixtures are built from them byte by byte, since no corpus holds one.
 
 One near-miss worth recording. Routing reads through the tree broke `programIds()` in the JCL set —
 a module-level helper with no tree in scope — and its `catch { continue }` **swallowed the

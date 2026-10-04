@@ -371,7 +371,7 @@ the reader follows: an EQU's length, where z390 gives 1 and the reference the le
 leftmost term; and anything after a literal pool where z390 pads a literal that the reference packs.
 A file with an error that can move a location is not graded either, such as an undefined symbol in
 a statement holding a literal, which z390 then leaves out of the pool. Of the statements outside conditional
-assembly, 96.4% parse on the dev corpus and 98.6% on the held-out one; the rest are counted by
+assembly, 99.5% parse on the dev corpus and 99.7% on the held-out one; the rest are counted by
 kind. `bench/hlasm-locate/` holds small programs, one assembler feature each, with z390's answers
 recorded beside them, so the tests check the locator without z390.
 

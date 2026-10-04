@@ -436,8 +436,8 @@ statement whose length it cannot know.
 `diag/hlasm-oracle.mjs` and `diag/hlasm-grade-z390.mjs` grade the locator against z390 1.8.4.4,
 counting only values that do not move when sixteen bytes follow every macro call. On 2026-10-03:
 
-- Statements outside conditional assembly parse at 96.4% on the dev corpus and 98.6% on the
-  held-out corpus.
+- Statements outside conditional assembly parse at 99.5% on the dev corpus and 99.7% on the
+  held-out corpus (measured 2026-10-04).
 - No symbol location differs from z390's on either corpus, and 546 of 557 graded held-out
   symbols are placed. Values z390 gives differently from the Language Reference (an EQU's length,
   a literal pool z390 pads) are not graded.

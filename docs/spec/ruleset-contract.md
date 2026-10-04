@@ -92,6 +92,12 @@ counted in `summary.pdsExport.archives` with the reason, and not read. The layou
 TSO/E Customization, "Format of transmitted data"; DFSMSdfp Utilities, "Unload partitioned data set
 format"), and the test fixtures are built from them byte by byte, since no corpus holds one.
 
+`diff --pds-export` reads each side as a PDS export: a revision through `pdsExportRevision`, the same
+naming over the revision's blobs in memory, and the working tree through `pdsExportTree`, limited to
+the members whose files git tracks or would track. A finding names the member on both sides, so a
+copybook changed in one data set is a layout change in the programs of another that copy it.
+`summary.pdsExport` holds each side's counts.
+
 One near-miss worth recording. Routing reads through the tree broke `programIds()` in the JCL set —
 a module-level helper with no tree in scope — and its `catch { continue }` **swallowed the
 ReferenceError**, so the set silently returned an empty program list and four tests failed with no

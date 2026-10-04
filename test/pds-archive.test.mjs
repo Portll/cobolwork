@@ -3,9 +3,11 @@
 // Utilities "Unload partitioned data set format". No corpus holds a real one.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { diffRefs } from '../lib/diff.mjs';
 import { readArchive } from '../lib/kernel/pds-archive.mjs';
 import { pdsExportTree, validateTree } from '../lib/kernel/source-tree.mjs';
 import { scanAll } from '../lib/scan.mjs';
@@ -117,10 +119,10 @@ function memberRecord({ m, cc, hh, r }, lines) {
 
 // PAYCALC's first block is on relative track 1, record 1: extent 0, cylinder X'10', track 1.
 // CUSTREC's is on relative track 2 + 15 - 3 = 14, record 3: extent 1, cylinder X'21', track 2.
-function unloadRecords(opts) {
+function unloadRecords(opts = {}) {
   return [copyr1(opts), copyr2(), directory([
     { name: 'CUSTREC', ttr: 0x000e03 }, { name: 'PAYCALC', ttr: 0x000101 }, { name: 'PAYOLD', ttr: 0x000101, alias: true },
-  ]), memberRecord({ m: 0, cc: 0x10, hh: 1, r: 1 }, PAYCALC), memberRecord({ m: 1, cc: 0x21, hh: 2, r: 3 }, CUSTREC)];
+  ]), memberRecord({ m: 0, cc: 0x10, hh: 1, r: 1 }, PAYCALC), memberRecord({ m: 1, cc: 0x21, hh: 2, r: 3 }, opts.custrec || CUSTREC)];
 }
 
 const withBdwSdw = (records) => Buffer.concat(records.map((r) => Buffer.concat([half(r.length + 8), half(0), half(r.length + 4), half(0), r])));
@@ -223,4 +225,54 @@ test('a scan of an export holding an XMIT reports findings in the member, with C
     const parsed = tree.parse(resolve(tree.root, 'IBMUSER.PAYROLL.COBOL/PAYCALC'));
     assert.deepEqual(parsed.copies.map((c) => [c.status, tree.rel(c.path)]), [['resolved', 'IBMUSER.PAYROLL.COBOL/CUSTREC']]);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+const git = (cwd, args) => {
+  const r = spawnSync('git', args, { cwd, encoding: 'utf8' });
+  if (r.status !== 0) throw new Error(`git ${args.join(' ')}: ${r.stderr}`);
+  return r.stdout.trim();
+};
+const WIDER = ['       01 CUSTREC.', '          05 CUST-ID PIC X(10).'];
+
+// A repository holding an export, a commit for each map of files.
+function exportRepo(...revisions) {
+  const root = mkdtempSync(join(tmpdir(), 'cw-pds-diff-'));
+  git(root, ['init', '-q']);
+  for (const [k, v] of [['user.email', 't@example.com'], ['user.name', 't'], ['core.autocrlf', 'false']]) git(root, ['config', k, v]);
+  revisions.forEach((files, i) => {
+    for (const [name, bytes] of Object.entries(files)) {
+      mkdirSync(join(root, name, '..'), { recursive: true });
+      writeFileSync(join(root, name), bytes);
+    }
+    git(root, ['add', '-A']);
+    git(root, ['commit', '-qm', `r${i}`]);
+  });
+  return root;
+}
+
+const layoutChanged = (res) => res.findings.filter((f) => f.rule.startsWith('diff-layout')).map((f) => [f.rule, f.path]);
+
+test('diff --pds-export compares two revisions of an export member by member, and the working tree against one', { skip: spawnSync('git', ['--version']).status !== 0 && 'git is not installed' }, () => {
+  const text = (lines) => `${lines.join('\n')}\n`;
+  const root = exportRepo(
+    { 'ibmuser/cobol/paycalc.txt': text(PAYCALC), 'ibmuser/copylib/custrec.txt': text(CUSTREC) },
+    { 'ibmuser/copylib/custrec.txt': text(WIDER) },
+  );
+  try {
+    const res = diffRefs(root, 'HEAD~1', 'HEAD', { pdsExport: true });
+    assert.deepEqual(layoutChanged(res), [['diff-layout-changed-unedited-program', 'IBMUSER.COBOL/PAYCALC']]);
+    assert.equal(res.summary.pdsExport.head.members, 2);
+    writeFileSync(join(root, 'ibmuser/copylib/custrec.txt'), text(CUSTREC));
+    assert.deepEqual(layoutChanged(diffRefs(root, 'HEAD', null, { pdsExport: true })), [['diff-layout-changed-unedited-program', 'IBMUSER.COBOL/PAYCALC']]);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('diff --pds-export reads an XMIT in each revision', { skip: spawnSync('git', ['--version']).status !== 0 && 'git is not installed' }, () => {
+  const root = exportRepo(
+    { 'payroll.xmi': xmitOfUnload('IBMUSER.PAYROLL.COBOL', unloadRecords()) },
+    { 'payroll.xmi': xmitOfUnload('IBMUSER.PAYROLL.COBOL', unloadRecords({ custrec: WIDER })) },
+  );
+  try {
+    assert.deepEqual(layoutChanged(diffRefs(root, 'HEAD~1', 'HEAD', { pdsExport: true })), [['diff-layout-changed-unedited-program', 'IBMUSER.PAYROLL.COBOL/PAYCALC']]);
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });

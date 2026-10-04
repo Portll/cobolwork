@@ -294,7 +294,7 @@ if (opts.copylib && opts._.length && !COPYLIB_COMMANDS.includes(opts._[0])) {
 const notDirs = (opts.copylib || []).filter((d) => { try { return !statSync(d).isDirectory(); } catch { return true; } });
 if (notDirs.length) { process.stderr.write(`cobolwork: --copylib ${notDirs.join(', ')} is not a directory\n`); process.exit(2); }
 const systemDirs = opts.copylib || [];
-if (opts.pdsExport && opts._.length && opts._[0] !== 'scan') { process.stderr.write('cobolwork: --pds-export is for scan only\n'); process.exit(2); }
+if (opts.pdsExport && opts._.length && !['scan', 'diff'].includes(opts._[0])) { process.stderr.write('cobolwork: --pds-export is for scan and diff\n'); process.exit(2); }
 if (opts.pdsExport && opts.repos) { process.stderr.write('cobolwork: --pds-export reads one export; --repos does not apply\n'); process.exit(2); }
 if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
   process.stderr.write(`cobolwork: --json is for capabilities; every other command writes JSON unless --format says otherwise\n`);
@@ -390,7 +390,7 @@ try {
     warnCoverage(report);
   } else if (command === 'diff') {
     if (!opts.base) { process.stderr.write(`cobolwork: diff needs --base <ref>\n`); process.exit(2); }
-    const report = diffRefs(root, opts.base, opts.head || null, { only: opts.only, fullTrace: opts.fullTrace === true, systemDirs });
+    const report = diffRefs(root, opts.base, opts.head || null, { only: opts.only, fullTrace: opts.fullTrace === true, systemDirs, pdsExport: opts.pdsExport === true });
     stampRevisions(report.summary, opts.head || null);
     recordFindings(journal, { findings: [...report.findings, ...(report.introduced || [])] });
     if (opts.format === 'sarif') emit(toSarif({ ...report, findings: [...report.findings, ...report.introduced] }, { toolVersion: VERSION }), opts);

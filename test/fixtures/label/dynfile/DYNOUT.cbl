@@ -1,0 +1,24 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DYNOUT.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT IN-FILE ASSIGN TO INDD.
+           SELECT OUT-FILE ASSIGN TO WS-NAME
+               FILE STATUS IS WS-FS.
+       DATA DIVISION.
+       FILE SECTION.
+       FD  IN-FILE.
+       01  IN-REC      PIC X(80).
+       FD  OUT-FILE.
+       01  OUT-REC     PIC X(80).
+       WORKING-STORAGE SECTION.
+       01  WS-NAME     PIC X(8).
+       01  WS-FS       PIC XX.
+       PROCEDURE DIVISION.
+           OPEN INPUT IN-FILE
+           READ IN-FILE INTO WS-NAME
+           CLOSE IN-FILE
+           OPEN OUTPUT OUT-FILE
+           DISPLAY 'STATUS ' WS-FS
+           GOBACK.

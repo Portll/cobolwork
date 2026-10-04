@@ -294,8 +294,16 @@ verification plan (§9.7) in ironwork. The marker goes in at the finding's sourc
   ACCEPT FROM ARGUMENT-NUMBER moves 1, and a DISPLAY UPON their names displays to SYSOUT, each
   in the columns it held, an END-ACCEPT on the same line with it. Every DD and SYSIN hold the
   control, so no other input carries the marker. An ACCEPT whose variable is on another line, or
-  that goes on past its line with an EXCEPTION phrase or END-ACCEPT, is not rewritten. These rows record `labelledOn: rewritten` and are their own stratum in
-  `bench/precision.mjs` (`execution-rewritten`), never pooled with execution labels.
+  that goes on past its line with an EXCEPTION phrase or END-ACCEPT, is not rewritten. These rows
+  record `labelledOn: rewritten` and are their own stratum in `bench/precision.mjs`
+  (`execution-rewritten`), never pooled with execution labels.
+
+A file a SELECT assigns from a data item (`dynamic-file-path` at a SELECT) is Micro Focus's and
+GnuCOBOL's form, which ironwork runs and traces only under `--compliance extended`: each OPEN takes
+the DD name from the item's value and records the sink at the SELECT, the line cobolwork reports.
+Those findings compile and run in that mode, whatever their source, and record `labelledOn:
+extended` (`rewritten+extended` for command-line input), each its own stratum. The sink's other
+form, an EXEC CICS FILE or DATASET option, ironwork does not trace, and those findings are unknown.
 
 ironwork runs with `--trace-marker`. The finding is confirmed where the run's sealed journal has a
 `sink` record at its line with the marker in the operand. Two kinds of finding are confirmed by

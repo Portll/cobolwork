@@ -125,3 +125,16 @@ test('command-line and environment input is moved into a rewritten copy and labe
   ]);
   assert.equal(verifyEvidence(evidence).verified, true);
 });
+
+test('a file a SELECT assigns from a data item is traced under --compliance extended, its labels a stratum of their own and with command-line input the rewritten one besides; a CICS FILE option is not traced', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
+  const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
+  t.after(() => rmSync(evidence, { recursive: true, force: true }));
+  const out = label(join(import.meta.dirname, 'fixtures', 'label', 'dynfile'), { ironwork: IRONWORK, evidence });
+  assert.deepEqual(out.labels.map((l) => [l.rule, l.path, l.line, l.labelledOn, l.label, l.variant]).sort(), [
+    ['argv-or-env-to-dynamic-file-path', 'ARGFILE.cbl', 6, 'rewritten+extended', 'confirmed', 'command line or environment rotated 0'],
+    ['cics-terminal-to-dynamic-file-path', 'CICSREAD.cbl', 10, undefined, 'unknown', undefined],
+    ['file-record-to-dynamic-file-path', 'DYNOUT.cbl', 7, 'extended', 'confirmed', 'records shifted 0'],
+  ]);
+  assert.equal(out.labels.find((l) => l.path === 'CICSREAD.cbl').why, 'ironwork traces a file named at run time in SELECT ... ASSIGN, not in an EXEC CICS FILE or DATASET option');
+  assert.equal(verifyEvidence(evidence).verified, true);
+});

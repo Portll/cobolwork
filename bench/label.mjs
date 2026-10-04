@@ -48,7 +48,15 @@ export const TRACED = {
   'outbound-host': ['outbound-host'],
   'outbound-http': ['outbound-http'],
   'cics-sysid': ['cics-sysid'],
+  'dynamic-file-path': ['dynamic-file-path'],
 };
+
+// Whether a file-named-at-run-time finding is a SELECT whose ASSIGN names a data item, Micro Focus's
+// and GnuCOBOL's form, which ironwork runs and traces only under --compliance extended. The other
+// form, an EXEC CICS FILE or DATASET option, ironwork does not trace.
+function assignsFromItem(f, root) {
+  try { return /^\s*SELECT\b/i.test(statementAt(resolve(root, f.path), f.line)); } catch { return false; }
+}
 
 // Sinks whose witness is how the run ends rather than a marker, with the input that provokes it
 // and a control that should not. A byte whose low half is not a digit ends zoned arithmetic with a
@@ -240,6 +248,7 @@ function underOptions(program, options, variant) {
   return { ...variant, args, lineOffset: 1, control: variant.control && underOptions(program, options, variant.control) };
 }
 
+const compliance = (ctx) => (ctx.extended ? ['--compliance', 'extended'] : []);
 const libraries = (ctx) => [...ctx.copyDirs.flatMap((d) => ['-I', d]), ...ctx.programDirs.flatMap((d) => ['-L', d])];
 
 // Options a program can only have been compiled with, by what ironwork refuses without them: a
@@ -251,7 +260,7 @@ function refusalUnder(ctx, options) {
   const dir = options.length || ctx.rewrite ? mkdtempSync(join(tmpdir(), 'cobolwork-label-check-')) : null;
   try {
     const program = dir ? staged(ctx.program, options, dir, ctx.rewrite) : ctx.program;
-    const r = spawnSync(ctx.ironwork, ['check', program, ...(dir ? ['-I', dirname(ctx.program)] : []), ...libraries(ctx)], { cwd: tmpdir(), encoding: 'utf8', timeout: ctx.timeout, maxBuffer: 1 << 22, stdio: ['ignore', 'ignore', 'pipe'] });
+    const r = spawnSync(ctx.ironwork, ['check', program, ...(dir ? ['-I', dirname(ctx.program)] : []), ...libraries(ctx), ...compliance(ctx)], { cwd: tmpdir(), encoding: 'utf8', timeout: ctx.timeout, maxBuffer: 1 << 22, stdio: ['ignore', 'ignore', 'pipe'] });
     if (r.status === 0 || r.status === 4) return null;
     const first = String(r.stderr || '').split('\n').find((l) => l && !/: (warning|informational): /.test(l));
     return first ? first.replace(/^.*?:\d+:\d+: /, '').replace(/'[^']*'/g, "'…'").slice(0, 160) : r.error?.message || `exit ${r.status}`;
@@ -263,7 +272,7 @@ function refusalUnder(ctx, options) {
 // The options ironwork compiles the program under, or why it does not: a refusal is not the
 // finding's to answer for.
 function compileOptions(ctx) {
-  const key = ctx.rewrite ? `${ctx.program}\0rewritten` : ctx.program;
+  const key = `${ctx.program}\0${ctx.rewrite ? 'rewritten' : ''}\0${ctx.extended ? 'extended' : ''}`;
   if (ctx.checked.has(key)) return ctx.checked.get(key);
   const options = [];
   let why = refusalUnder(ctx, options);
@@ -298,7 +307,7 @@ function runVariant(f, ctx, variant) {
   const data = mkdtempSync(join(tmpdir(), 'cobolwork-label-run-'));
   try {
     const [command, program, ...rest] = variant.args(data);
-    const args = [command, program, ...libraries(ctx), ...rest, '--evidence', ctx.evidence, '--trace-marker', MARKER, ...(ctx.traceInput ? ['--trace-input'] : []), '--clock', '2026-01-01T00:00:00'];
+    const args = [command, program, ...libraries(ctx), ...compliance(ctx), ...rest, '--evidence', ctx.evidence, '--trace-marker', MARKER, ...(ctx.traceInput ? ['--trace-input'] : []), '--clock', '2026-01-01T00:00:00'];
     const r = spawnSync(ctx.ironwork, args, { cwd: data, encoding: 'utf8', timeout: ctx.timeout, maxBuffer: 1 << 22, stdio: ['ignore', 'ignore', 'pipe'] });
     if (r.error) return { outcome: r.error.code === 'ETIMEDOUT' ? `no end in ${ctx.timeout / 1000}s` : r.error.message };
     let journal;
@@ -330,18 +339,22 @@ function runVariant(f, ctx, variant) {
 
 export function labelFinding(f, root, opts) {
   const kinds = kindsOf(f.rule);
-  // Command-line and environment input runs only in a rewritten copy (argvRewritten), so its labels
-  // are their own stratum.
-  const base = { source: 'execution', ...(kinds?.source === 'argv-or-env' ? { labelledOn: 'rewritten' } : {}), rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line };
+  // Command-line and environment input runs only in a rewritten copy (argvRewritten), and a sink
+  // ironwork traces only under --compliance extended runs in that mode, so their labels are their
+  // own strata.
+  const extended = kinds?.sink === 'dynamic-file-path' && assignsFromItem(f, root);
+  const labelledOn = [kinds?.source === 'argv-or-env' && 'rewritten', extended && 'extended'].filter(Boolean).join('+');
+  const base = { source: 'execution', ...(labelledOn ? { labelledOn } : {}), rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line };
   const unknown = (why) => ({ ...base, label: 'unknown', why });
   const byAbend = ABENDS[kinds?.sink];
   if (!kinds || (!TRACED[kinds.sink] && !byAbend)) return unknown(`ironwork does not trace the sink ${kinds?.sink ?? '?'}`);
+  if (kinds.sink === 'dynamic-file-path' && !extended) return unknown('ironwork traces a file named at run time in SELECT ... ASSIGN, not in an EXEC CICS FILE or DATASET option');
   if (!FED_BY_DD.has(kinds.source) && kinds.source !== 'cics-terminal' && kinds.source !== 'argv-or-env') return unknown(`the labeller does not feed the source ${kinds.source} yet`);
   // The input enters in the program that reads it, which a cross-program finding runs from.
   const candidates = [...(f.related || []).map((r) => r.path), ...(f.trace || []).map((t) => t.file), f.path].filter(Boolean).map((p) => resolve(root, p));
   const program = candidates.find(isProgram);
   if (!program) return unknown('no program source on the finding');
-  const ctx = { ...opts, program, sink: kinds.sink, runs: null };
+  const ctx = { ...opts, program, sink: kinds.sink, runs: null, extended };
   let variants;
   try {
     if (FED_BY_DD.has(kinds.source)) variants = fileRecordVariants(program, byAbend);

@@ -90,9 +90,11 @@ test('labels made on a rewritten copy are their own stratum, never pooled with t
     { source: 'execution', rule, label: 'confirmed' },
     { source: 'execution', labelledOn: 'rewritten', rule, label: 'confirmed' },
     { source: 'execution', labelledOn: 'rewritten', rule, label: 'unknown' },
+    { source: 'execution', labelledOn: 'rewritten+extended', rule, label: 'confirmed' },
   ] };
   const out = withFiles([doc], (files) => precision(files));
-  assert.deepEqual(out.sources[0].sources, ['execution', 'execution-rewritten']);
+  assert.deepEqual(out.sources[0].sources, ['execution', 'execution-rewritten', 'execution-rewritten+extended']);
   assert.deepEqual(out.byRule[rule].execution.precision, { low: 1, high: 1 });
   assert.deepEqual(out.byRule[rule]['execution-rewritten'].precision, { low: 0.5, high: 1 });
+  assert.deepEqual(out.byRule[rule]['execution-rewritten+extended'].precision, { low: 1, high: 1 });
 });

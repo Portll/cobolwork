@@ -21,10 +21,11 @@ const cells = (row) => row.split('|').slice(1, -1).map((c) => c.trim());
 test('each document STABILITY.md lists carries the version capabilities gives it', () => {
   const { documents } = capabilities();
   for (const name of ['cobolwork', 'cobolwork-flow', 'cobolwork-inventory', 'cobolwork-diff', 'cobolwork-gate',
-    'cobolwork-build', 'cobolwork-build-provenance', 'cobolwork-capabilities', 'cobolwork-explain', 'cobolwork-parse']) {
+    'cobolwork-build', 'cobolwork-build-provenance', 'cobolwork-capabilities', 'cobolwork-explain', 'cobolwork-parse',
+    'cobolwork-baseline', 'cobolwork-evidence']) {
     const row = rowNaming(`\`${name}\``);
     assert.ok(row, `${name} has a row`);
-    assert.equal(cells(row)[1], documents[name] === null ? 'none yet' : String(documents[name]), name);
+    assert.equal(cells(row)[1], String(documents[name]), name);
   }
   assert.equal(cells(rowNaming('SARIF'))[1], documents.sarif);
   assert.equal(cells(rowNaming('CycloneDX'))[1], documents.cyclonedx);

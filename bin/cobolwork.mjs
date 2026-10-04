@@ -14,6 +14,7 @@ import { diffRefs } from '../lib/diff.mjs';
 import { gateRefs, VERDICT_EXIT } from '../lib/gate.mjs';
 import { build, buildSarif, buildSummaryLine } from '../lib/build.mjs';
 import { capabilities } from '../lib/capabilities.mjs';
+import { PARSE_SCHEMA_VERSION, BASELINE_RESULT_SCHEMA_VERSION } from '../lib/version.mjs';
 import { commitAt, revisionOf, toolRevision } from '../lib/revision.mjs';
 import { stampFingerprints } from '../lib/kernel/identity.mjs';
 import { pdsExportTree } from '../lib/kernel/source-tree.mjs';
@@ -460,7 +461,7 @@ try {
     recordInputs(journal, 0, root);
     recordFindings(journal, report);
     recordBaselineWrite(journal, { before: held.entries, after: entries, who: opts.who, expires: expires.toISOString(), reason: opts.reason, path, text: written });
-    const line = `${JSON.stringify({ tool: 'cobolwork-baseline', path, added, entries: entries.length })}\n`;
+    const line = `${JSON.stringify({ tool: 'cobolwork-baseline', schemaVersion: BASELINE_RESULT_SCHEMA_VERSION, path, added, entries: entries.length })}\n`;
     recordOutput(journal, 'baseline', line);
     process.stdout.write(line);
   } else if (command === 'tui') {
@@ -494,7 +495,7 @@ try {
   } else if (command === 'parse') {
     const r = parseFile(root, { format: 'auto' });
     emit({
-      tool: 'cobolwork-parse', file: r.file, format: r.format, finalFormat: r.finalFormat,
+      tool: 'cobolwork-parse', schemaVersion: PARSE_SCHEMA_VERSION, file: r.file, format: r.format, finalFormat: r.finalFormat,
       programs: r.programs.map(p => ({ id: p.id, items: p.items.length, labels: p.labels.length, calls: p.calls.length, execs: p.execs.length, diagnostics: p.diags.length })),
       copies: r.copies.map(c => ({ name: c.name, status: c.status })),
       diagnostics: r.diags.length,

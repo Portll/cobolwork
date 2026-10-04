@@ -134,7 +134,9 @@ language, are not in it.
 and the paragraph or section it sits in (the job, step and DD for JCL), and the flagged statement's
 own text. No line number goes into it, so code added above a finding does not change it. `diff`
 compares findings by it, and SARIF carries it as `partialFingerprints["cobolwork/v1"]`. Two findings
-that only their position tells apart share one, and `summary.identity.shared` counts them.
+that only their position tells apart share one, and `summary.identity.shared` counts them. What goes
+into a fingerprint changes only in a major release, under a new version. [STABILITY.md](STABILITY.md)
+lists that and the other contracts a release keeps.
 
 ### Findings and Claim Severity
 

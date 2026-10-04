@@ -1,8 +1,8 @@
 {
  "about": "What lib/precompile.mjs turns EXEC CICS into, and the IBM documents that say so: for each command it translates, each option's argument type and the direction its data moves, which decides whether the CALL passes it BY CONTENT or BY REFERENCE; the numbers DFHRESP and DFHVALUE stand for; and what the translator adds to the LINKAGE SECTION. lib/cics-commands.mjs is generated from this file and provenance/words.json by diag/generate-precompile.mjs, and test/precompile.test.mjs checks that the two agree. The directions and notes are this project's reading of the documents, written in its own words; no text, copybook or translator output of IBM's is reproduced beyond names and numbers.",
- "method": "Each command's options and argument types were read from its syntax diagram in the CICS TS 5.3 Application Programming Reference (rendered to text with macOS PDFKit); every option-with-argument in the diagram is listed. The reference defines the argument types: a data-value only sends, a data-area receives and also sends where the option's description says so (FROM is its example), a ptr-ref receives, and a name, filename, systemname, hhmmss or ptr-value is given to CICS. Each data-area option's description was read, and one that sends, or sends and receives, carries a note saying why, with the page where the manual says so; a note without a page is an input the description names as the thing the command acts on or writes out. A cvda option's direction is read from its command: ASSIGN returns them, every other listed command is given them. 'identify' and 'default' are this project's rules for telling a command from its namesakes (SEND MAP from SEND), not IBM's. The URL in 'doc' is the command's page in IBM's current CICS TS documentation, for a reader; the facts were read from the 5.3 manuals, whose files are hashed below.",
+ "method": "Each command's options and argument types were read from its syntax diagram in the CICS TS 5.3 Application Programming Reference (rendered to text with macOS PDFKit); every option-with-argument in the diagram is listed. The reference defines the argument types: a data-value only sends, a data-area receives and also sends where the option's description says so (FROM is its example), a ptr-ref receives, and a name, filename, systemname, hhmmss or ptr-value is given to CICS. Each data-area option's description was read, and one that sends, or sends and receives, carries a note saying why, with the page where the manual says so; a note without a page is an input the description names as the thing the command acts on or writes out. A cvda option's direction is read from its command: ASSIGN returns them, every other listed command is given them. 'identify' and 'default' are this project's rules for telling a command from its namesakes (SEND MAP from SEND), not IBM's. The URL in 'doc' is the command's page in IBM's current CICS TS documentation, for a reader; the facts were read from the 5.3 manuals, whose files are hashed below. The INQUIRE and SET commands were read the same way from the 5.3 System Programming Reference, whose pages their notes cite: INQUIRE returns its cvdas, and the option naming the resource is both where a browse's NEXT returns the next name in it. Where a description says CICS returns a value in an option its syntax types data-value, the description decides the direction and a note says so. A command named by three words (WEB READ HTTPHEADER) is found by those words in order and carries no 'identify'. The asynchronous API, added after 5.3, was read from IBM's CICS TS 6.x pages, hashed under cics-api-6.x; its entries name that source and have no page.",
  "retrieved": "2026-09-27",
- "docsChecked": "2026-09-28: each command's 'doc' page was fetched and its title read as EXEC CICS and the command's name.",
+ "docsChecked": "2026-09-28: each command's 'doc' page was fetched and its title read as EXEC CICS and the command's name. 2026-10-05: the same for every command added for precompile step 4.",
  "sources": {
   "cics-api-5.3": {
    "title": "CICS Transaction Server for z/OS Version 5 Release 3, Application Programming Reference (SC34-7402-00)",
@@ -29,7 +29,7 @@
    "sha256": "3decb1fe07f1146d6a3978fb0ac32d4a3b36b6c08e9bb2ed96e22f91d0d41bfa",
    "bytes": 4639731,
    "retrieved": "2026-09-27",
-   "usedFor": "the CVDA numbers DFHVALUE stands for"
+   "usedFor": "the CVDA numbers DFHVALUE stands for; the INQUIRE and SET commands' syntax and option descriptions; DATASET as the translator's synonym for FILE (p. 647)"
   },
   "cics-eib-6.x": {
    "title": "CICS TS 6.x: EIB fields including EIBRESP and EIBRESP2",
@@ -116,6 +116,42 @@
    "retrieved": "2026-09-30",
    "method": "curl -sS -L -A curl/8.7.1 (IBM Docs answers other agents 403); each table split into <tr> rows and <td>/<th> cells, tags stripped, the registered-trademark sign and the parentheses around alias names removed; a value both tables give must agree except as dfhvalue.notes says",
    "usedFor": "the CVDA numbers DFHVALUE stands for that CICS TS 5.3 lacks, and the release each first appears in"
+  },
+  "cics-api-6.x": {
+   "title": "CICS Transaction Server for z/OS 6.x, the asynchronous API commands (IBM Docs)",
+   "publisher": "IBM",
+   "retrieved": "2026-10-05",
+   "topics": [
+    {
+     "title": "EXEC CICS RUN TRANSID",
+     "url": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-run-transid",
+     "content": "https://www.ibm.com/docs/api/v1/content/SSJL4D_6.x/reference-applications/commands-api/dfhp4_runtransid.html",
+     "bytes": 15940,
+     "sha256": "3864bfb001941c554605b16ddf14cf4835660c9d947546dfe2deea7baa74f785"
+    },
+    {
+     "title": "EXEC CICS FETCH CHILD",
+     "url": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-fetch-child",
+     "content": "https://www.ibm.com/docs/api/v1/content/SSJL4D_6.x/reference-applications/commands-api/dfhp4_fetchchild.html",
+     "bytes": 19532,
+     "sha256": "7a69de1041f8ae0971e11b18bc30a7390dad8c6ca88470908848461ae2b321f8"
+    },
+    {
+     "title": "EXEC CICS FETCH ANY",
+     "url": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-fetch-any",
+     "content": "https://www.ibm.com/docs/api/v1/content/SSJL4D_6.x/reference-applications/commands-api/fetchany.html",
+     "bytes": 19711,
+     "sha256": "fc3db6c488e68bb85a4b82c39c86dde01df09de367d6013b871d55b7530cd210"
+    },
+    {
+     "title": "EXEC CICS FREE CHILD",
+     "url": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-free-child",
+     "content": "https://www.ibm.com/docs/api/v1/content/SSJL4D_6.x/reference-applications/commands-api/freechild.html",
+     "bytes": 9368,
+     "sha256": "6f49fc2f57aa78e7de8c2eb4818e43fb3e6a3e7a659bb0e8dc4d545ce0d524e4"
+    }
+   ],
+   "usedFor": "RUN TRANSID, FETCH CHILD, FETCH ANY and FREE CHILD, added in CICS TS 5.4 and absent from the 5.3 manuals: each topic as the content API returned it, hashed"
   }
  },
  "argumentTypes": {
@@ -214,6 +250,32 @@
      "ptr-value",
      "sends"
     ]
+   }
+  },
+  "ALLOCATE": {
+   "title": "ALLOCATE (APPC)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-allocate-appc",
+   "page": 42,
+   "options": {
+    "SYSID": [
+     "systemname",
+     "sends"
+    ],
+    "PROFILE": [
+     "name",
+     "sends"
+    ],
+    "PARTNER": [
+     "name",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "STATE": "p. 44: CICS returns the new conversation's state, ALLOCATED"
    }
   },
   "ASKTIME": {
@@ -707,6 +769,113 @@
     ]
    }
   },
+  "CONNECT PROCESS": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-connect-process",
+   "page": 94,
+   "identify": [
+    "PROCESS"
+   ],
+   "options": {
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "SESSION": [
+     "name",
+     "sends"
+    ],
+    "PROCNAME": [
+     "data-area",
+     "sends"
+    ],
+    "PROCLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "PARTNER": [
+     "name",
+     "sends"
+    ],
+    "SYNCLEVEL": [
+     "data-value",
+     "sends"
+    ],
+    "PIPLIST": [
+     "data-area",
+     "sends"
+    ],
+    "PIPLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "PROCNAME": "p. 94: names the transaction the remote system is to attach",
+    "PIPLIST": "p. 94: the process initialization parameters sent to the remote system",
+    "STATE": "p. 95: CICS returns the conversation's state"
+   }
+  },
+  "CONVERSE": {
+   "title": "CONVERSE (APPC)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-converse-appc",
+   "page": 98,
+   "options": {
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "FROMLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "FROMFLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "TOLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "TOFLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "MAXLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "MAXFLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "FROM": "the data sent",
+    "TOLENGTH": "p. 117: the maximum accepted when INTO has no MAXLENGTH; set to the length received",
+    "TOFLENGTH": "p. 116: the fullword form of TOLENGTH",
+    "STATE": "p. 116: CICS returns the conversation's state"
+   }
+  },
   "DEFINE COUNTER": {
    "title": "DEFINE COUNTER and DEFINE DCOUNTER",
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-define-counter-define-dcounter",
@@ -799,12 +968,17 @@
     "SYSID": [
      "systemname",
      "sends"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
     "TOKEN": "p. 150: identifies the READ UPDATE or browse for update this request follows",
     "RIDFLD": "names the record or records to delete",
-    "NUMREC": "p. 149: set by CICS to the number of records deleted"
+    "NUMREC": "p. 149: set by CICS to the number of records deleted",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
    }
   },
   "DELETE CONTAINER": {
@@ -905,6 +1079,232 @@
     "MAXLIFETIME": "how long the enqueue lasted"
    }
   },
+  "DOCUMENT CREATE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-document-create",
+   "page": 173,
+   "identify": [
+    "CREATE"
+   ],
+   "options": {
+    "DOCTOKEN": [
+     "data-area",
+     "receives"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "TEXT": [
+     "data-area",
+     "sends"
+    ],
+    "BINARY": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-area",
+     "sends"
+    ],
+    "FROMDOC": [
+     "data-area",
+     "sends"
+    ],
+    "TEMPLATE": [
+     "name",
+     "sends"
+    ],
+    "SYMBOLLIST": [
+     "data-area",
+     "sends"
+    ],
+    "LISTLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "DELIMITER": [
+     "data-value",
+     "sends"
+    ],
+    "DOCSIZE": [
+     "data-area",
+     "receives"
+    ],
+    "HOSTCODEPAGE": [
+     "name",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "a template or a retrieved document the new document is built from",
+    "TEXT": "text the new document starts with, converted to the client code page when sent",
+    "BINARY": "data the new document starts with, never converted",
+    "LENGTH": "p. 174: the program gives the length of the FROM, TEXT or BINARY buffer; the diagram prints it as a data-area, the option list as a data-value",
+    "FROMDOC": "p. 174: the token of an existing document whose contents are copied",
+    "SYMBOLLIST": "p. 174: name=value symbol definitions the program supplies"
+   }
+  },
+  "DOCUMENT DELETE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-document-delete",
+   "page": 177,
+   "identify": [
+    "DELETE"
+   ],
+   "options": {
+    "DOCTOKEN": [
+     "data-area",
+     "sends"
+    ]
+   },
+   "notes": {
+    "DOCTOKEN": "p. 177: the token of the document to delete"
+   }
+  },
+  "DOCUMENT INSERT": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-document-insert",
+   "page": 178,
+   "identify": [
+    "INSERT"
+   ],
+   "options": {
+    "DOCTOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "TEXT": [
+     "data-area",
+     "sends"
+    ],
+    "BINARY": [
+     "data-area",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "SYMBOL": [
+     "name",
+     "sends"
+    ],
+    "TEMPLATE": [
+     "name",
+     "sends"
+    ],
+    "FROMDOC": [
+     "data-area",
+     "sends"
+    ],
+    "BOOKMARK": [
+     "name",
+     "sends"
+    ],
+    "DOCSIZE": [
+     "data-value",
+     "receives"
+    ],
+    "HOSTCODEPAGE": [
+     "name",
+     "sends"
+    ],
+    "AT": [
+     "name",
+     "sends"
+    ],
+    "TO": [
+     "name",
+     "sends"
+    ]
+   },
+   "notes": {
+    "DOCTOKEN": "p. 179: the token of the document that receives the insertion",
+    "TEXT": "text inserted, converted to the client code page when sent",
+    "BINARY": "data inserted, never converted",
+    "FROM": "a template or a retrieved document inserted",
+    "FROMDOC": "p. 179: the token of the document whose contents are copied in",
+    "DOCSIZE": "p. 179: printed as a data-value, but CICS writes the document's current size into it"
+   }
+  },
+  "DOCUMENT RETRIEVE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-document-retrieve",
+   "page": 182,
+   "identify": [
+    "RETRIEVE"
+   ],
+   "options": {
+    "DOCTOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "LENGTH": [
+     "data-value",
+     "receives"
+    ],
+    "MAXLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "CHARACTERSET": [
+     "name",
+     "sends"
+    ],
+    "CLNTCODEPAGE": [
+     "name",
+     "sends"
+    ]
+   },
+   "notes": {
+    "DOCTOKEN": "p. 183: the token of the document to copy out",
+    "LENGTH": "p. 183: printed as a data-value, but CICS returns in it the length copied, or the whole document's length when it truncates",
+    "CLNTCODEPAGE": "p. 183: in the option list but not the diagram; the older spelling of CHARACTERSET, still accepted"
+   }
+  },
+  "DOCUMENT SET": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-document-set",
+   "page": 184,
+   "identify": [
+    "SET"
+   ],
+   "options": {
+    "DOCTOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "SYMBOL": [
+     "name",
+     "sends"
+    ],
+    "VALUE": [
+     "data-area",
+     "sends"
+    ],
+    "SYMBOLLIST": [
+     "data-area",
+     "sends"
+    ],
+    "DELIMITER": [
+     "data-value",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "DOCTOKEN": "p. 184: the token of the document whose symbol table is updated",
+    "VALUE": "p. 185: the value the program gives the symbol",
+    "SYMBOLLIST": "p. 185: name=value symbol definitions the program supplies"
+   }
+  },
   "DUMP TRANSACTION": {
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-dump-transaction",
    "page": 187,
@@ -967,6 +1367,26 @@
     "SYSID": [
      "systemname",
      "sends"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
+    ]
+   },
+   "notes": {
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
+   }
+  },
+  "ENDBROWSE CONTAINER": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-endbrowse-container-channel",
+   "page": 196,
+   "identify": [
+    "CONTAINER"
+   ],
+   "options": {
+    "BROWSETOKEN": [
+     "data-value",
+     "sends"
     ]
    }
   },
@@ -1019,6 +1439,223 @@
    "notes": {
     "FROM": "the trace data",
     "FROMLENGTH": "the length of the trace data"
+   }
+  },
+  "EXTRACT ATTRIBUTES": {
+   "title": "EXTRACT ATTRIBUTES (APPC)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-extract-attributes-appc",
+   "page": 212,
+   "identify": [
+    "ATTRIBUTES"
+   ],
+   "options": {
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "STATE": "p. 212: CICS returns the conversation's state"
+   }
+  },
+  "EXTRACT PROCESS": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-extract-process",
+   "page": 221,
+   "identify": [
+    "PROCESS"
+   ],
+   "options": {
+    "PROCNAME": [
+     "data-area",
+     "receives"
+    ],
+    "PROCLENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "MAXPROCLEN": [
+     "data-value",
+     "sends"
+    ],
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "SYNCLEVEL": [
+     "data-area",
+     "receives"
+    ],
+    "PIPLIST": [
+     "ptr-ref",
+     "receives"
+    ],
+    "PIPLENGTH": [
+     "data-area",
+     "receives"
+    ]
+   }
+  },
+  "EXTRACT WEB": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-extract-web",
+   "page": 228,
+   "identify": [
+    "WEB"
+   ],
+   "options": {
+    "SESSTOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "SCHEME": [
+     "cvda",
+     "receives"
+    ],
+    "HOST": [
+     "data-area",
+     "receives"
+    ],
+    "HOSTLENGTH": [
+     "data-value",
+     "both"
+    ],
+    "HOSTTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "HTTPMETHOD": [
+     "data-area",
+     "receives"
+    ],
+    "METHODLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "HTTPVERSION": [
+     "data-area",
+     "receives"
+    ],
+    "VERSIONLEN": [
+     "data-area",
+     "both"
+    ],
+    "PATH": [
+     "data-area",
+     "receives"
+    ],
+    "PATHLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "PORTNUMBER": [
+     "data-area",
+     "receives"
+    ],
+    "QUERYSTRING": [
+     "data-area",
+     "receives"
+    ],
+    "QUERYSTRLEN": [
+     "data-area",
+     "both"
+    ],
+    "REQUESTTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "URIMAP": [
+     "data-area",
+     "receives"
+    ],
+    "REALM": [
+     "data-area",
+     "receives"
+    ],
+    "REALMLEN": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "SESSTOKEN": "p. 231: the token WEB OPEN returned, naming the client connection asked about",
+    "SCHEME": "p. 231: CICS returns the scheme of the request or connection",
+    "HOSTLENGTH": "p. 229: the HOST buffer's length going in, the host name's length on return; the manual prints data-value",
+    "HOSTTYPE": "p. 229: CICS returns the form of the address in HOST",
+    "METHODLENGTH": "p. 230: the HTTPMETHOD buffer's length going in, the method's length on return",
+    "VERSIONLEN": "p. 231: the HTTPVERSION buffer's length going in, the version's length on return",
+    "PATHLENGTH": "p. 230: the PATH buffer's length going in, the path's length on return",
+    "QUERYSTRLEN": "p. 230: the QUERYSTRING buffer's length going in, the query string's length on return",
+    "REQUESTTYPE": "p. 231: CICS returns whether the request was HTTP",
+    "REALMLEN": "p. 231: the REALM buffer's length going in; after a 401 response, the realm name's length"
+   }
+  },
+  "FETCH ANY": {
+   "source": "cics-api-6.x",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-fetch-any",
+   "page": null,
+   "identify": [
+    "ANY"
+   ],
+   "options": {
+    "ANY": [
+     "data-area",
+     "receives"
+    ],
+    "CHANNEL": [
+     "data-area",
+     "receives"
+    ],
+    "COMPSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "ABCODE": [
+     "data-area",
+     "receives"
+    ],
+    "TIMEOUT": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "COMPSTATUS": "Options: CICS returns the fetched child completion status in it"
+   }
+  },
+  "FETCH CHILD": {
+   "source": "cics-api-6.x",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-fetch-child",
+   "page": null,
+   "identify": [
+    "CHILD"
+   ],
+   "options": {
+    "CHILD": [
+     "data-value",
+     "sends"
+    ],
+    "CHANNEL": [
+     "data-area",
+     "receives"
+    ],
+    "COMPSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "ABCODE": [
+     "data-area",
+     "receives"
+    ],
+    "TIMEOUT": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "COMPSTATUS": "Options: CICS returns the child task completion status in it"
    }
   },
   "FORMATTIME": {
@@ -1134,6 +1771,38 @@
     "ABSTIME": "the absolute time to format",
     "STRINGZONE": "the zone DATESTRING is written for",
     "STRINGFORMAT": "the format DATESTRING is written in"
+   }
+  },
+  "FREE": {
+   "title": "FREE and FREE (APPC)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-free",
+   "page": 239,
+   "options": {
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "STATE": "p. 240: CICS returns the conversation's state, 0 once no conversation remains"
+   }
+  },
+  "FREE CHILD": {
+   "source": "cics-api-6.x",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-free-child",
+   "page": null,
+   "identify": [
+    "CHILD"
+   ],
+   "options": {
+    "CHILD": [
+     "data-value",
+     "sends"
+    ]
    }
   },
   "FREEMAIN": {
@@ -1264,6 +1933,23 @@
     ]
    }
   },
+  "GETNEXT CONTAINER": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-getnext-container-channel",
+   "page": 305,
+   "identify": [
+    "CONTAINER"
+   ],
+   "options": {
+    "CONTAINER": [
+     "data-area",
+     "receives"
+    ],
+    "BROWSETOKEN": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
   "HANDLE ABEND": {
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-handle-abend",
    "page": 314,
@@ -1307,6 +1993,2119 @@
    ],
    "anyOption": "none",
    "options": {}
+  },
+  "INQUIRE ASSOCIATION": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-inquire-association",
+   "page": 213,
+   "identify": [
+    "ASSOCIATION"
+   ],
+   "options": {
+    "ASSOCIATION": [
+     "data-value",
+     "sends"
+    ],
+    "ACAPPLNAME": [
+     "data-area",
+     "receives"
+    ],
+    "ACMAJORVER": [
+     "data-area",
+     "receives"
+    ],
+    "ACMICROVER": [
+     "data-area",
+     "receives"
+    ],
+    "ACMINORVER": [
+     "data-area",
+     "receives"
+    ],
+    "ACOPERNAME": [
+     "data-area",
+     "receives"
+    ],
+    "ACPLATNAME": [
+     "data-area",
+     "receives"
+    ],
+    "APPLDATA": [
+     "data-area",
+     "receives"
+    ],
+    "APPLID": [
+     "data-area",
+     "receives"
+    ],
+    "CLIENTIPADDR": [
+     "data-area",
+     "receives"
+    ],
+    "CLIENTLOC": [
+     "data-area",
+     "receives"
+    ],
+    "CLIENTPORT": [
+     "data-area",
+     "receives"
+    ],
+    "CLNTIPFAMILY": [
+     "cvda",
+     "receives"
+    ],
+    "DNAME": [
+     "data-area",
+     "receives"
+    ],
+    "FACILNAME": [
+     "data-area",
+     "receives"
+    ],
+    "FACILTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "INITUSERID": [
+     "data-area",
+     "receives"
+    ],
+    "IPCONN": [
+     "data-area",
+     "receives"
+    ],
+    "IPFAMILY": [
+     "cvda",
+     "receives"
+    ],
+    "LUNAME": [
+     "data-area",
+     "receives"
+    ],
+    "MVSIMAGE": [
+     "data-area",
+     "receives"
+    ],
+    "NETID": [
+     "data-area",
+     "receives"
+    ],
+    "ODADPTRID": [
+     "data-area",
+     "receives"
+    ],
+    "ODADPTRDATA1": [
+     "data-area",
+     "receives"
+    ],
+    "ODADPTRDATA2": [
+     "data-area",
+     "receives"
+    ],
+    "ODADPTRDATA3": [
+     "data-area",
+     "receives"
+    ],
+    "ODAPPLID": [
+     "data-area",
+     "receives"
+    ],
+    "ODCLNTIPADDR": [
+     "data-area",
+     "receives"
+    ],
+    "ODCLNTPORT": [
+     "data-area",
+     "receives"
+    ],
+    "ODFACILNAME": [
+     "data-area",
+     "receives"
+    ],
+    "ODFACILTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "ODIPFAMILY": [
+     "cvda",
+     "receives"
+    ],
+    "ODLUNAME": [
+     "data-area",
+     "receives"
+    ],
+    "ODNETID": [
+     "data-area",
+     "receives"
+    ],
+    "ODNETWORKID": [
+     "data-area",
+     "receives"
+    ],
+    "ODSERVERPORT": [
+     "data-area",
+     "receives"
+    ],
+    "ODSTARTTIME": [
+     "data-area",
+     "receives"
+    ],
+    "ODTASKID": [
+     "data-area",
+     "receives"
+    ],
+    "ODTCPIPS": [
+     "data-area",
+     "receives"
+    ],
+    "ODTRANSID": [
+     "data-area",
+     "receives"
+    ],
+    "ODUSERID": [
+     "data-area",
+     "receives"
+    ],
+    "PHAPPLID": [
+     "data-area",
+     "receives"
+    ],
+    "PHCOUNT": [
+     "data-area",
+     "receives"
+    ],
+    "PHNETWORKID": [
+     "data-area",
+     "receives"
+    ],
+    "PHSTARTTIME": [
+     "data-area",
+     "receives"
+    ],
+    "PHTASKID": [
+     "data-area",
+     "receives"
+    ],
+    "PHTRANSID": [
+     "data-area",
+     "receives"
+    ],
+    "PROGRAM": [
+     "data-area",
+     "receives"
+    ],
+    "REALM": [
+     "data-area",
+     "receives"
+    ],
+    "SERVERIPADDR": [
+     "data-area",
+     "receives"
+    ],
+    "SERVERPORT": [
+     "data-area",
+     "receives"
+    ],
+    "SRVRIPFAMILY": [
+     "cvda",
+     "receives"
+    ],
+    "STARTTIME": [
+     "data-area",
+     "receives"
+    ],
+    "TCPIPJOB": [
+     "data-area",
+     "receives"
+    ],
+    "TCPIPSERVICE": [
+     "data-area",
+     "receives"
+    ],
+    "TCPIPZONE": [
+     "data-area",
+     "receives"
+    ],
+    "TRNGRPID": [
+     "data-area",
+     "receives"
+    ],
+    "TRANSACTION": [
+     "data-area",
+     "receives"
+    ],
+    "USERCORRDATA": [
+     "data-area",
+     "receives"
+    ],
+    "USERID": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "source": "cics-spr-5.3",
+   "notes": {
+    "CLNTIPFAMILY": "p. 8: its description says CICS returns it",
+    "FACILTYPE": "p. 8: its description says CICS returns it",
+    "IPFAMILY": "p. 8: its description says CICS returns it",
+    "ODFACILTYPE": "p. 8: its description says CICS returns it",
+    "ODIPFAMILY": "p. 8: its description says CICS returns it",
+    "SRVRIPFAMILY": "p. 8: its description says CICS returns it"
+   }
+  },
+  "INQUIRE CONNECTION": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-inquire-connection",
+   "page": 258,
+   "identify": [
+    "CONNECTION"
+   ],
+   "options": {
+    "CONNECTION": [
+     "data-value",
+     "both"
+    ],
+    "ACCESSMETHOD": [
+     "cvda",
+     "receives"
+    ],
+    "ACQSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "AUTOCONNECT": [
+     "cvda",
+     "receives"
+    ],
+    "CHANGEAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "CHANGEAGREL": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGETIME": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGEUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "CONNSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "CONNTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "CQP": [
+     "cvda",
+     "receives"
+    ],
+    "DEFINESOURCE": [
+     "data-area",
+     "receives"
+    ],
+    "DEFINETIME": [
+     "data-area",
+     "receives"
+    ],
+    "EXITTRACING": [
+     "cvda",
+     "receives"
+    ],
+    "GRNAME": [
+     "data-area",
+     "receives"
+    ],
+    "INSTALLAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLTIME": [
+     "data-area",
+     "receives"
+    ],
+    "INSTALLUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "LINKSYSTEM": [
+     "data-area",
+     "receives"
+    ],
+    "MEMBERNAME": [
+     "data-area",
+     "receives"
+    ],
+    "NETNAME": [
+     "data-area",
+     "receives"
+    ],
+    "NQNAME": [
+     "data-area",
+     "receives"
+    ],
+    "PENDSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "PROTOCOL": [
+     "cvda",
+     "receives"
+    ],
+    "RECEIVECOUNT": [
+     "data-area",
+     "receives"
+    ],
+    "RECOVSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "REMOTENAME": [
+     "data-area",
+     "receives"
+    ],
+    "REMOTESYSNET": [
+     "data-area",
+     "receives"
+    ],
+    "REMOTESYSTEM": [
+     "data-area",
+     "receives"
+    ],
+    "SENDCOUNT": [
+     "data-area",
+     "receives"
+    ],
+    "SERVSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "XLNSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "ZCPTRACING": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "CONNECTION": "p. 259: the command browses with START, NEXT and END; on NEXT CICS returns the next connection's name here (browse rules, p. 23)",
+    "ACCESSMETHOD": "p. 8: its description says CICS returns it",
+    "ACQSTATUS": "p. 8: its description says CICS returns it",
+    "AUTOCONNECT": "p. 8: its description says CICS returns it",
+    "CHANGEAGENT": "p. 8: its description says CICS returns it",
+    "CONNSTATUS": "p. 8: its description says CICS returns it",
+    "CONNTYPE": "p. 8: its description says CICS returns it",
+    "CQP": "p. 8: its description says CICS returns it",
+    "EXITTRACING": "p. 8: its description says CICS returns it",
+    "INSTALLAGENT": "p. 8: its description says CICS returns it",
+    "PENDSTATUS": "p. 8: its description says CICS returns it",
+    "PROTOCOL": "p. 8: its description says CICS returns it",
+    "RECOVSTATUS": "p. 8: its description says CICS returns it",
+    "SERVSTATUS": "p. 8: its description says CICS returns it",
+    "XLNSTATUS": "p. 8: its description says CICS returns it",
+    "ZCPTRACING": "p. 8: its description says CICS returns it"
+   },
+   "source": "cics-spr-5.3"
+  },
+  "INQUIRE FILE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-inquire-file",
+   "page": 327,
+   "identify": [
+    "FILE"
+   ],
+   "options": {
+    "FILE": [
+     "data-value",
+     "both"
+    ],
+    "ACCESSMETHOD": [
+     "cvda",
+     "receives"
+    ],
+    "ADD": [
+     "cvda",
+     "receives"
+    ],
+    "BASEDSNAME": [
+     "data-area",
+     "receives"
+    ],
+    "BLOCKFORMAT": [
+     "cvda",
+     "receives"
+    ],
+    "BLOCKKEYLEN": [
+     "data-area",
+     "receives"
+    ],
+    "BLOCKSIZE": [
+     "data-area",
+     "receives"
+    ],
+    "BROWSE": [
+     "cvda",
+     "receives"
+    ],
+    "CFDTPOOL": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGEAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "CHANGEAGREL": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGETIME": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGEUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "DEFINESOURCE": [
+     "data-area",
+     "receives"
+    ],
+    "DEFINETIME": [
+     "data-area",
+     "receives"
+    ],
+    "DELETE": [
+     "cvda",
+     "receives"
+    ],
+    "DISPOSITION": [
+     "cvda",
+     "receives"
+    ],
+    "DSNAME": [
+     "data-area",
+     "receives"
+    ],
+    "EMPTYSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "ENABLESTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "EXCLUSIVE": [
+     "cvda",
+     "receives"
+    ],
+    "FWDRECSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLTIME": [
+     "data-area",
+     "receives"
+    ],
+    "INSTALLUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "JOURNALNUM": [
+     "data-area",
+     "receives"
+    ],
+    "KEYLENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "KEYPOSITION": [
+     "data-area",
+     "receives"
+    ],
+    "LOADTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "LSRPOOLNUM": [
+     "data-area",
+     "receives"
+    ],
+    "MAXNUMRECS": [
+     "data-area",
+     "receives"
+    ],
+    "OBJECT": [
+     "cvda",
+     "receives"
+    ],
+    "OPENSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "RBATYPE": [
+     "cvda",
+     "receives"
+    ],
+    "READ": [
+     "cvda",
+     "receives"
+    ],
+    "READINTEG": [
+     "cvda",
+     "receives"
+    ],
+    "RECORDFORMAT": [
+     "cvda",
+     "receives"
+    ],
+    "RECORDSIZE": [
+     "data-area",
+     "receives"
+    ],
+    "RECOVSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "RELTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "REMOTENAME": [
+     "data-area",
+     "receives"
+    ],
+    "REMOTESYSTEM": [
+     "data-area",
+     "receives"
+    ],
+    "REMOTETABLE": [
+     "cvda",
+     "receives"
+    ],
+    "RLSACCESS": [
+     "cvda",
+     "receives"
+    ],
+    "STRINGS": [
+     "data-area",
+     "receives"
+    ],
+    "TABLE": [
+     "cvda",
+     "receives"
+    ],
+    "TABLENAME": [
+     "data-area",
+     "receives"
+    ],
+    "TYPE": [
+     "cvda",
+     "receives"
+    ],
+    "UPDATE": [
+     "cvda",
+     "receives"
+    ],
+    "UPDATEMODEL": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "FILE": "p. 329: the command browses with START, NEXT and END; on NEXT CICS returns the next file's name here (browse rules, p. 23)",
+    "ACCESSMETHOD": "p. 8: its description says CICS returns it",
+    "ADD": "p. 8: its description says CICS returns it",
+    "BLOCKFORMAT": "p. 8: its description says CICS returns it",
+    "BROWSE": "p. 8: its description says CICS returns it",
+    "CHANGEAGENT": "p. 8: its description says CICS returns it",
+    "DELETE": "p. 8: its description says CICS returns it",
+    "DISPOSITION": "p. 8: its description says CICS returns it",
+    "EMPTYSTATUS": "p. 8: its description says CICS returns it",
+    "ENABLESTATUS": "p. 8: its description says CICS returns it",
+    "EXCLUSIVE": "p. 8: its description says CICS returns it",
+    "FWDRECSTATUS": "p. 8: its description says CICS returns it",
+    "INSTALLAGENT": "p. 8: its description says CICS returns it",
+    "LOADTYPE": "p. 8: its description says CICS returns it",
+    "OBJECT": "p. 8: its description says CICS returns it",
+    "OPENSTATUS": "p. 8: its description says CICS returns it",
+    "RBATYPE": "p. 8: its description says CICS returns it",
+    "READ": "p. 8: its description says CICS returns it",
+    "READINTEG": "p. 8: its description says CICS returns it",
+    "RECORDFORMAT": "p. 8: its description says CICS returns it",
+    "RECOVSTATUS": "p. 8: its description says CICS returns it",
+    "RELTYPE": "p. 8: its description says CICS returns it",
+    "REMOTETABLE": "p. 8: its description says CICS returns it",
+    "RLSACCESS": "p. 8: its description says CICS returns it",
+    "TABLE": "p. 8: its description says CICS returns it",
+    "TYPE": "p. 8: its description says CICS returns it",
+    "UPDATE": "p. 8: its description says CICS returns it",
+    "UPDATEMODEL": "p. 8: its description says CICS returns it"
+   },
+   "source": "cics-spr-5.3"
+  },
+  "INQUIRE PROGRAM": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-inquire-program",
+   "page": 401,
+   "identify": [
+    "PROGRAM"
+   ],
+   "options": {
+    "PROGRAM": [
+     "data-value",
+     "both"
+    ],
+    "AT": [
+     "data-value",
+     "sends"
+    ],
+    "APIST": [
+     "cvda",
+     "receives"
+    ],
+    "APPLICATION": [
+     "data-area",
+     "both"
+    ],
+    "APPLMAJORVER": [
+     "data-area",
+     "both"
+    ],
+    "APPLMINORVER": [
+     "data-area",
+     "both"
+    ],
+    "APPLMICROVER": [
+     "data-area",
+     "both"
+    ],
+    "CEDFSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "CHANGEAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "CHANGEAGREL": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGETIME": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGEUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "COBOLTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "COPY": [
+     "cvda",
+     "receives"
+    ],
+    "CONCURRENCY": [
+     "cvda",
+     "receives"
+    ],
+    "DATALOCATION": [
+     "cvda",
+     "receives"
+    ],
+    "DEFINESOURCE": [
+     "data-area",
+     "receives"
+    ],
+    "DEFINETIME": [
+     "data-area",
+     "receives"
+    ],
+    "DYNAMSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "ENTRYPOINT": [
+     "ptr-ref",
+     "receives"
+    ],
+    "EXECKEY": [
+     "cvda",
+     "receives"
+    ],
+    "EXECUTIONSET": [
+     "cvda",
+     "receives"
+    ],
+    "HOLDSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLTIME": [
+     "data-area",
+     "receives"
+    ],
+    "INSTALLUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "JVMCLASS": [
+     "data-area",
+     "receives"
+    ],
+    "JVMPROFILE": [
+     "data-area",
+     "receives"
+    ],
+    "JVMSERVER": [
+     "data-area",
+     "receives"
+    ],
+    "LANGDEDUCED": [
+     "cvda",
+     "receives"
+    ],
+    "LANGUAGE": [
+     "cvda",
+     "receives"
+    ],
+    "LENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "LIBRARY": [
+     "data-area",
+     "receives"
+    ],
+    "LIBRARYDSN": [
+     "data-area",
+     "receives"
+    ],
+    "LOADPOINT": [
+     "ptr-ref",
+     "receives"
+    ],
+    "LPASTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "OPERATION": [
+     "data-area",
+     "receives"
+    ],
+    "PLATFORM": [
+     "data-area",
+     "both"
+    ],
+    "PROGTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "REMOTENAME": [
+     "data-area",
+     "receives"
+    ],
+    "REMOTESYSTEM": [
+     "data-area",
+     "receives"
+    ],
+    "RESIDENCY": [
+     "cvda",
+     "receives"
+    ],
+    "RESCOUNT": [
+     "data-area",
+     "receives"
+    ],
+    "RUNTIME": [
+     "cvda",
+     "receives"
+    ],
+    "SHARESTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "STATUS": [
+     "cvda",
+     "receives"
+    ],
+    "TRANSID": [
+     "data-area",
+     "receives"
+    ],
+    "USECOUNT": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "PROGRAM": "p. 403: the command browses with START, AT, NEXT and END; on NEXT CICS returns the next module's name here (browse rules, p. 23)",
+    "AT": "p. 403: browse option on START, the name the alphabetic browse begins at (syntax p. 22)",
+    "APPLICATION": "p. 405: given on a browse START to pick the application whose private programs are listed; returned on a single inquiry",
+    "APPLMAJORVER": "p. 405: given on a browse START as part of the application context; returned on a single inquiry",
+    "APPLMINORVER": "p. 405: given on a browse START as part of the application context; returned on a single inquiry",
+    "APPLMICROVER": "p. 405: given on a browse START as part of the application context; returned on a single inquiry",
+    "PLATFORM": "p. 412: given on a browse START as part of the application context; returned on a single inquiry",
+    "APIST": "p. 8: its description says CICS returns it",
+    "CEDFSTATUS": "p. 8: its description says CICS returns it",
+    "CHANGEAGENT": "p. 8: its description says CICS returns it",
+    "COBOLTYPE": "p. 8: its description says CICS returns it",
+    "COPY": "p. 8: its description says CICS returns it",
+    "CONCURRENCY": "p. 8: its description says CICS returns it",
+    "DATALOCATION": "p. 8: its description says CICS returns it",
+    "DYNAMSTATUS": "p. 8: its description says CICS returns it",
+    "EXECKEY": "p. 8: its description says CICS returns it",
+    "EXECUTIONSET": "p. 8: its description says CICS returns it",
+    "HOLDSTATUS": "p. 8: its description says CICS returns it",
+    "INSTALLAGENT": "p. 8: its description says CICS returns it",
+    "LANGDEDUCED": "p. 8: its description says CICS returns it",
+    "LANGUAGE": "p. 8: its description says CICS returns it",
+    "LPASTATUS": "p. 8: its description says CICS returns it",
+    "PROGTYPE": "p. 8: its description says CICS returns it",
+    "RESIDENCY": "p. 8: its description says CICS returns it",
+    "RUNTIME": "p. 8: its description says CICS returns it",
+    "SHARESTATUS": "p. 8: its description says CICS returns it",
+    "STATUS": "p. 8: its description says CICS returns it"
+   },
+   "source": "cics-spr-5.3"
+  },
+  "INQUIRE SYSTEM": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-inquire-system",
+   "page": 430,
+   "identify": [
+    "SYSTEM"
+   ],
+   "options": {
+    "ACTOPENTCBS": [
+     "data-area",
+     "receives"
+    ],
+    "MEMLIMIT": [
+     "data-area",
+     "receives"
+    ],
+    "AKP": [
+     "data-area",
+     "receives"
+    ],
+    "MESSAGECASE": [
+     "cvda",
+     "receives"
+    ],
+    "CDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "MQCONN": [
+     "data-area",
+     "receives"
+    ],
+    "CICSSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "MROBATCH": [
+     "data-area",
+     "receives"
+    ],
+    "CICSSYS": [
+     "data-area",
+     "receives"
+    ],
+    "MVSSMFID": [
+     "data-area",
+     "receives"
+    ],
+    "CICSTSLEVEL": [
+     "data-area",
+     "receives"
+    ],
+    "MVSSYSNAME": [
+     "data-area",
+     "receives"
+    ],
+    "CMDPROTECT": [
+     "cvda",
+     "receives"
+    ],
+    "OPREL": [
+     "data-area",
+     "receives"
+    ],
+    "COLDSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "OPSYS": [
+     "data-area",
+     "receives"
+    ],
+    "DB2CONN": [
+     "data-area",
+     "receives"
+    ],
+    "OSLEVEL": [
+     "data-area",
+     "receives"
+    ],
+    "DEBUGTOOL": [
+     "cvda",
+     "receives"
+    ],
+    "PROGAUTOCTLG": [
+     "cvda",
+     "receives"
+    ],
+    "DFLTUSER": [
+     "data-area",
+     "receives"
+    ],
+    "PROGAUTOEXIT": [
+     "data-area",
+     "receives"
+    ],
+    "DSALIMIT": [
+     "data-area",
+     "receives"
+    ],
+    "PROGAUTOINST": [
+     "cvda",
+     "receives"
+    ],
+    "DSRTPROGRAM": [
+     "data-area",
+     "receives"
+    ],
+    "PRTYAGING": [
+     "data-area",
+     "receives"
+    ],
+    "DTRPROGRAM": [
+     "data-area",
+     "receives"
+    ],
+    "RDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "DUMPING": [
+     "cvda",
+     "receives"
+    ],
+    "REENTPROTECT": [
+     "cvda",
+     "receives"
+    ],
+    "ECDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "RELEASE": [
+     "data-area",
+     "receives"
+    ],
+    "EDSALIMIT": [
+     "data-area",
+     "receives"
+    ],
+    "RLSSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "ERDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "RUNAWAY": [
+     "data-area",
+     "receives"
+    ],
+    "ESDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "SCANDELAY": [
+     "data-area",
+     "receives"
+    ],
+    "ETDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "SDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "EUDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "SDTRAN": [
+     "data-area",
+     "receives"
+    ],
+    "FORCEQR": [
+     "cvda",
+     "receives"
+    ],
+    "SECURITYMGR": [
+     "cvda",
+     "receives"
+    ],
+    "GCDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "SHUTSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "GMMTEXT": [
+     "data-area",
+     "receives"
+    ],
+    "GMMLENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "SOSABOVEBAR": [
+     "cvda",
+     "receives"
+    ],
+    "GSDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "SOSABOVELINE": [
+     "cvda",
+     "receives"
+    ],
+    "GUDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "SOSBELOWLINE": [
+     "cvda",
+     "receives"
+    ],
+    "GMMTRANID": [
+     "data-area",
+     "receives"
+    ],
+    "SOSSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "INITSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "STARTUP": [
+     "cvda",
+     "receives"
+    ],
+    "JOBNAME": [
+     "data-area",
+     "receives"
+    ],
+    "STARTUPDATE": [
+     "data-area",
+     "receives"
+    ],
+    "LOGDEFER": [
+     "data-area",
+     "receives"
+    ],
+    "STOREPROTECT": [
+     "cvda",
+     "receives"
+    ],
+    "MAXOPENTCBS": [
+     "data-area",
+     "receives"
+    ],
+    "TIME": [
+     "data-area",
+     "receives"
+    ],
+    "MAXTASKS": [
+     "data-area",
+     "receives"
+    ],
+    "TRANISOLATE": [
+     "cvda",
+     "receives"
+    ],
+    "UDSASIZE": [
+     "data-area",
+     "receives"
+    ],
+    "XRFSTATUS": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "source": "cics-spr-5.3",
+   "notes": {
+    "MESSAGECASE": "p. 8: its description says CICS returns it",
+    "CICSSTATUS": "p. 8: its description says CICS returns it",
+    "CMDPROTECT": "p. 8: its description says CICS returns it",
+    "COLDSTATUS": "p. 8: its description says CICS returns it",
+    "DEBUGTOOL": "p. 8: its description says CICS returns it",
+    "PROGAUTOCTLG": "p. 8: its description says CICS returns it",
+    "PROGAUTOINST": "p. 8: its description says CICS returns it",
+    "DUMPING": "p. 8: its description says CICS returns it",
+    "REENTPROTECT": "p. 8: its description says CICS returns it",
+    "RLSSTATUS": "p. 8: its description says CICS returns it",
+    "FORCEQR": "p. 8: its description says CICS returns it",
+    "SECURITYMGR": "p. 8: its description says CICS returns it",
+    "SHUTSTATUS": "p. 8: its description says CICS returns it",
+    "SOSABOVEBAR": "p. 8: its description says CICS returns it",
+    "SOSABOVELINE": "p. 8: its description says CICS returns it",
+    "SOSBELOWLINE": "p. 8: its description says CICS returns it",
+    "SOSSTATUS": "p. 8: its description says CICS returns it",
+    "INITSTATUS": "p. 8: its description says CICS returns it",
+    "STARTUP": "p. 8: its description says CICS returns it",
+    "STOREPROTECT": "p. 8: its description says CICS returns it",
+    "TRANISOLATE": "p. 8: its description says CICS returns it",
+    "XRFSTATUS": "p. 8: its description says CICS returns it"
+   }
+  },
+  "INQUIRE TERMINAL": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-inquire-terminal",
+   "page": 476,
+   "identify": [
+    "TERMINAL"
+   ],
+   "options": {
+    "TERMINAL": [
+     "data-value",
+     "both"
+    ],
+    "NETNAME": [
+     "data-area",
+     "receives"
+    ],
+    "ACCESSMETHOD": [
+     "cvda",
+     "receives"
+    ],
+    "ACQSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "AIDCOUNT": [
+     "data-area",
+     "receives"
+    ],
+    "ALTPAGEHT": [
+     "data-area",
+     "receives"
+    ],
+    "ALTPAGEWD": [
+     "data-area",
+     "receives"
+    ],
+    "ALTPRINTER": [
+     "data-area",
+     "receives"
+    ],
+    "ALTPRTCOPYST": [
+     "cvda",
+     "receives"
+    ],
+    "ALTSCRNHT": [
+     "data-area",
+     "receives"
+    ],
+    "ALTSCRNWD": [
+     "data-area",
+     "receives"
+    ],
+    "ALTSUFFIX": [
+     "data-area",
+     "receives"
+    ],
+    "APLKYBDST": [
+     "cvda",
+     "receives"
+    ],
+    "APLTEXTST": [
+     "cvda",
+     "receives"
+    ],
+    "ASCII": [
+     "cvda",
+     "receives"
+    ],
+    "ATISTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "AUDALARMST": [
+     "cvda",
+     "receives"
+    ],
+    "AUTOCONNECT": [
+     "cvda",
+     "receives"
+    ],
+    "BACKTRANSST": [
+     "cvda",
+     "receives"
+    ],
+    "COLORST": [
+     "cvda",
+     "receives"
+    ],
+    "CONSOLE": [
+     "data-area",
+     "receives"
+    ],
+    "COPYST": [
+     "cvda",
+     "receives"
+    ],
+    "CORRELID": [
+     "data-area",
+     "receives"
+    ],
+    "CREATESESS": [
+     "cvda",
+     "receives"
+    ],
+    "DATASTREAM": [
+     "cvda",
+     "receives"
+    ],
+    "DEFPAGEHT": [
+     "data-area",
+     "receives"
+    ],
+    "DEFPAGEWD": [
+     "data-area",
+     "receives"
+    ],
+    "DEFSCRNHT": [
+     "data-area",
+     "receives"
+    ],
+    "DEFSCRNWD": [
+     "data-area",
+     "receives"
+    ],
+    "DEVICE": [
+     "cvda",
+     "receives"
+    ],
+    "DISCREQST": [
+     "cvda",
+     "receives"
+    ],
+    "DUALCASEST": [
+     "cvda",
+     "receives"
+    ],
+    "EXITTRACING": [
+     "cvda",
+     "receives"
+    ],
+    "EXTENDEDDSST": [
+     "cvda",
+     "receives"
+    ],
+    "FMHPARMST": [
+     "cvda",
+     "receives"
+    ],
+    "FORMFEEDST": [
+     "cvda",
+     "receives"
+    ],
+    "GCHARS": [
+     "data-area",
+     "receives"
+    ],
+    "GCODES": [
+     "data-area",
+     "receives"
+    ],
+    "HFORMST": [
+     "cvda",
+     "receives"
+    ],
+    "HILIGHTST": [
+     "cvda",
+     "receives"
+    ],
+    "KATAKANAST": [
+     "cvda",
+     "receives"
+    ],
+    "LIGHTPENST": [
+     "cvda",
+     "receives"
+    ],
+    "LINKSYSTEM": [
+     "data-area",
+     "receives"
+    ],
+    "MAPNAME": [
+     "data-area",
+     "receives"
+    ],
+    "MAPSETNAME": [
+     "data-area",
+     "receives"
+    ],
+    "MODENAME": [
+     "data-area",
+     "receives"
+    ],
+    "MSRCONTROLST": [
+     "cvda",
+     "receives"
+    ],
+    "NATLANG": [
+     "data-area",
+     "receives"
+    ],
+    "NATURE": [
+     "cvda",
+     "receives"
+    ],
+    "NEXTTRANSID": [
+     "data-area",
+     "receives"
+    ],
+    "NQNAME": [
+     "data-area",
+     "receives"
+    ],
+    "OBFORMATST": [
+     "cvda",
+     "receives"
+    ],
+    "OBOPERIDST": [
+     "cvda",
+     "receives"
+    ],
+    "OPERID": [
+     "data-area",
+     "receives"
+    ],
+    "OUTLINEST": [
+     "cvda",
+     "receives"
+    ],
+    "PAGEHT": [
+     "data-area",
+     "receives"
+    ],
+    "PAGESTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "PAGEWD": [
+     "data-area",
+     "receives"
+    ],
+    "PARTITIONSST": [
+     "cvda",
+     "receives"
+    ],
+    "PRINTADAPTST": [
+     "cvda",
+     "receives"
+    ],
+    "PRINTER": [
+     "data-area",
+     "receives"
+    ],
+    "PROGSYMBOLST": [
+     "cvda",
+     "receives"
+    ],
+    "PRTCOPYST": [
+     "cvda",
+     "receives"
+    ],
+    "QUERYST": [
+     "cvda",
+     "receives"
+    ],
+    "RELREQST": [
+     "cvda",
+     "receives"
+    ],
+    "REMOTENAME": [
+     "data-area",
+     "receives"
+    ],
+    "REMOTESYSNET": [
+     "data-area",
+     "receives"
+    ],
+    "REMOTESYSTEM": [
+     "data-area",
+     "receives"
+    ],
+    "SCRNHT": [
+     "data-area",
+     "receives"
+    ],
+    "SCRNWD": [
+     "data-area",
+     "receives"
+    ],
+    "SECURITY": [
+     "cvda",
+     "receives"
+    ],
+    "SERVSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "SESSIONTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "SIGNONSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "SOSIST": [
+     "cvda",
+     "receives"
+    ],
+    "TASKID": [
+     "data-area",
+     "receives"
+    ],
+    "TCAMCONTROL": [
+     "data-area",
+     "receives"
+    ],
+    "TERMMODEL": [
+     "data-area",
+     "receives"
+    ],
+    "TERMPRIORITY": [
+     "data-area",
+     "receives"
+    ],
+    "TERMSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "TEXTKYBDST": [
+     "cvda",
+     "receives"
+    ],
+    "TEXTPRINTST": [
+     "cvda",
+     "receives"
+    ],
+    "TRACING": [
+     "cvda",
+     "receives"
+    ],
+    "TRANSACTION": [
+     "data-area",
+     "receives"
+    ],
+    "TTISTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "UCTRANST": [
+     "cvda",
+     "receives"
+    ],
+    "USERAREA": [
+     "ptr-ref",
+     "receives"
+    ],
+    "USERAREALEN": [
+     "data-area",
+     "receives"
+    ],
+    "USERID": [
+     "data-area",
+     "receives"
+    ],
+    "USERNAME": [
+     "data-area",
+     "receives"
+    ],
+    "VALIDATIONST": [
+     "cvda",
+     "receives"
+    ],
+    "VFORMST": [
+     "cvda",
+     "receives"
+    ],
+    "ZCPTRACING": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "TERMINAL": "p. 479: the command browses with START, NEXT and END; on NEXT CICS returns the next terminal's name here (browse rules, p. 23)",
+    "ACCESSMETHOD": "p. 8: its description says CICS returns it",
+    "ACQSTATUS": "p. 8: its description says CICS returns it",
+    "ALTPRTCOPYST": "p. 8: its description says CICS returns it",
+    "APLKYBDST": "p. 8: its description says CICS returns it",
+    "APLTEXTST": "p. 8: its description says CICS returns it",
+    "ASCII": "p. 8: its description says CICS returns it",
+    "ATISTATUS": "p. 8: its description says CICS returns it",
+    "AUDALARMST": "p. 8: its description says CICS returns it",
+    "AUTOCONNECT": "p. 8: its description says CICS returns it",
+    "BACKTRANSST": "p. 8: its description says CICS returns it",
+    "COLORST": "p. 8: its description says CICS returns it",
+    "COPYST": "p. 8: its description says CICS returns it",
+    "CREATESESS": "p. 8: its description says CICS returns it",
+    "DATASTREAM": "p. 8: its description says CICS returns it",
+    "DEVICE": "p. 8: its description says CICS returns it",
+    "DISCREQST": "p. 8: its description says CICS returns it",
+    "DUALCASEST": "p. 8: its description says CICS returns it",
+    "EXITTRACING": "p. 8: its description says CICS returns it",
+    "EXTENDEDDSST": "p. 8: its description says CICS returns it",
+    "FMHPARMST": "p. 8: its description says CICS returns it",
+    "FORMFEEDST": "p. 8: its description says CICS returns it",
+    "HFORMST": "p. 8: its description says CICS returns it",
+    "HILIGHTST": "p. 8: its description says CICS returns it",
+    "KATAKANAST": "p. 8: its description says CICS returns it",
+    "LIGHTPENST": "p. 8: its description says CICS returns it",
+    "MSRCONTROLST": "p. 8: its description says CICS returns it",
+    "NATURE": "p. 8: its description says CICS returns it",
+    "OBFORMATST": "p. 8: its description says CICS returns it",
+    "OBOPERIDST": "p. 8: its description says CICS returns it",
+    "OUTLINEST": "p. 8: its description says CICS returns it",
+    "PAGESTATUS": "p. 8: its description says CICS returns it",
+    "PARTITIONSST": "p. 8: its description says CICS returns it",
+    "PRINTADAPTST": "p. 8: its description says CICS returns it",
+    "PROGSYMBOLST": "p. 8: its description says CICS returns it",
+    "PRTCOPYST": "p. 8: its description says CICS returns it",
+    "QUERYST": "p. 8: its description says CICS returns it",
+    "RELREQST": "p. 8: its description says CICS returns it",
+    "SECURITY": "p. 8: its description says CICS returns it",
+    "SERVSTATUS": "p. 8: its description says CICS returns it",
+    "SESSIONTYPE": "p. 8: its description says CICS returns it",
+    "SIGNONSTATUS": "p. 8: its description says CICS returns it",
+    "SOSIST": "p. 8: its description says CICS returns it",
+    "TERMSTATUS": "p. 8: its description says CICS returns it",
+    "TEXTKYBDST": "p. 8: its description says CICS returns it",
+    "TEXTPRINTST": "p. 8: its description says CICS returns it",
+    "TRACING": "p. 8: its description says CICS returns it",
+    "TTISTATUS": "p. 8: its description says CICS returns it",
+    "UCTRANST": "p. 8: its description says CICS returns it",
+    "VALIDATIONST": "p. 8: its description says CICS returns it",
+    "VFORMST": "p. 8: its description says CICS returns it",
+    "ZCPTRACING": "p. 8: its description says CICS returns it"
+   },
+   "source": "cics-spr-5.3"
+  },
+  "INQUIRE TRANSACTION": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-inquire-transaction",
+   "page": 508,
+   "identify": [
+    "TRANSACTION"
+   ],
+   "options": {
+    "TRANSACTION": [
+     "data-value",
+     "both"
+    ],
+    "AT": [
+     "data-value",
+     "sends"
+    ],
+    "APPLICATION": [
+     "data-value",
+     "receives"
+    ],
+    "APPLMAJORVER": [
+     "data-value",
+     "receives"
+    ],
+    "APPLMICROVER": [
+     "data-value",
+     "receives"
+    ],
+    "AVAILSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "APPLMINORVER": [
+     "data-value",
+     "receives"
+    ],
+    "BREXIT": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGEAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "CHANGEAGREL": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGETIME": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGEUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "CMDSEC": [
+     "cvda",
+     "receives"
+    ],
+    "DEFINESOURCE": [
+     "data-area",
+     "receives"
+    ],
+    "DEFINETIME": [
+     "data-area",
+     "receives"
+    ],
+    "DTIMEOUT": [
+     "data-area",
+     "receives"
+    ],
+    "DUMPING": [
+     "cvda",
+     "receives"
+    ],
+    "FACILITYLIKE": [
+     "data-area",
+     "receives"
+    ],
+    "INDOUBT": [
+     "cvda",
+     "receives"
+    ],
+    "INDOUBTMINS": [
+     "data-area",
+     "receives"
+    ],
+    "INDOUBTWAIT": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLTIME": [
+     "data-area",
+     "receives"
+    ],
+    "INSTALLUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "ISOLATEST": [
+     "cvda",
+     "receives"
+    ],
+    "OPERATION": [
+     "data-value",
+     "receives"
+    ],
+    "OTSTIMEOUT": [
+     "data-area",
+     "receives"
+    ],
+    "PLATFORM": [
+     "data-value",
+     "receives"
+    ],
+    "PRIORITY": [
+     "data-area",
+     "receives"
+    ],
+    "PROFILE": [
+     "data-area",
+     "receives"
+    ],
+    "PROGRAM": [
+     "data-area",
+     "receives"
+    ],
+    "PURGEABILITY": [
+     "cvda",
+     "receives"
+    ],
+    "REMOTENAME": [
+     "data-area",
+     "receives"
+    ],
+    "REMOTESYSTEM": [
+     "data-area",
+     "receives"
+    ],
+    "RESSEC": [
+     "cvda",
+     "receives"
+    ],
+    "ROUTING": [
+     "cvda",
+     "receives"
+    ],
+    "ROUTESTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "RTIMEOUT": [
+     "data-area",
+     "receives"
+    ],
+    "RUNAWAY": [
+     "data-area",
+     "receives"
+    ],
+    "RUNAWAYTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "SCRNSIZE": [
+     "cvda",
+     "receives"
+    ],
+    "SHUTDOWN": [
+     "cvda",
+     "receives"
+    ],
+    "STATUS": [
+     "cvda",
+     "receives"
+    ],
+    "STORAGECLEAR": [
+     "cvda",
+     "receives"
+    ],
+    "TASKDATAKEY": [
+     "cvda",
+     "receives"
+    ],
+    "TASKDATALOC": [
+     "cvda",
+     "receives"
+    ],
+    "TCLASS": [
+     "data-area",
+     "receives"
+    ],
+    "TRANCLASS": [
+     "data-area",
+     "receives"
+    ],
+    "TRACING": [
+     "cvda",
+     "receives"
+    ],
+    "TRPROF": [
+     "data-area",
+     "receives"
+    ],
+    "TWASIZE": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "TRANSACTION": "p. 510: the command browses with START, AT, NEXT and END; on NEXT CICS returns the next transaction's name here (browse rules, p. 23)",
+    "AT": "p. 510: browse option on START, the name the alphabetic browse begins at (syntax p. 22)",
+    "APPLICATION": "p. 510: printed as data-value, but CICS returns the application name in it",
+    "APPLMAJORVER": "p. 510: printed as data-value, but CICS returns the major version in it",
+    "APPLMICROVER": "p. 511: printed as data-value, but CICS returns the micro version in it",
+    "APPLMINORVER": "p. 511: printed as data-value, but CICS returns the minor version in it",
+    "OPERATION": "p. 514: printed as data-value, but CICS returns the operation name in it",
+    "PLATFORM": "p. 514: printed as data-value, but CICS returns the platform name in it",
+    "AVAILSTATUS": "p. 8: its description says CICS returns it",
+    "CHANGEAGENT": "p. 8: its description says CICS returns it",
+    "CMDSEC": "p. 8: its description says CICS returns it",
+    "DUMPING": "p. 8: its description says CICS returns it",
+    "INDOUBT": "p. 8: its description says CICS returns it",
+    "INDOUBTWAIT": "p. 8: its description says CICS returns it",
+    "INSTALLAGENT": "p. 8: its description says CICS returns it",
+    "ISOLATEST": "p. 8: its description says CICS returns it",
+    "PURGEABILITY": "p. 8: its description says CICS returns it",
+    "RESSEC": "p. 8: its description says CICS returns it",
+    "ROUTING": "p. 8: its description says CICS returns it",
+    "ROUTESTATUS": "p. 8: its description says CICS returns it",
+    "RUNAWAYTYPE": "p. 8: its description says CICS returns it",
+    "SCRNSIZE": "p. 8: its description says CICS returns it",
+    "SHUTDOWN": "p. 8: its description says CICS returns it",
+    "STATUS": "p. 8: its description says CICS returns it",
+    "STORAGECLEAR": "p. 8: its description says CICS returns it",
+    "TASKDATAKEY": "p. 8: its description says CICS returns it",
+    "TASKDATALOC": "p. 8: its description says CICS returns it",
+    "TRACING": "p. 8: its description says CICS returns it"
+   },
+   "source": "cics-spr-5.3"
+  },
+  "INQUIRE URIMAP": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-inquire-urimap",
+   "page": 547,
+   "identify": [
+    "URIMAP"
+   ],
+   "options": {
+    "URIMAP": [
+     "data-value",
+     "both"
+    ],
+    "ANALYZERSTAT": [
+     "cvda",
+     "receives"
+    ],
+    "APPLICATION": [
+     "data-value",
+     "receives"
+    ],
+    "APPLMAJORVER": [
+     "data-value",
+     "receives"
+    ],
+    "APPLMINORVER": [
+     "data-value",
+     "receives"
+    ],
+    "APPLMICROVER": [
+     "data-value",
+     "receives"
+    ],
+    "ATOMSERVICE": [
+     "data-area",
+     "receives"
+    ],
+    "AUTHENTICATE": [
+     "cvda",
+     "receives"
+    ],
+    "AVAILSTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "CERTIFICATE": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGEAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "CHANGEAGREL": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGETIME": [
+     "data-area",
+     "receives"
+    ],
+    "CHANGEUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "CHARACTERSET": [
+     "data-area",
+     "receives"
+    ],
+    "CIPHERS": [
+     "data-area",
+     "receives"
+    ],
+    "CONVERTER": [
+     "data-area",
+     "receives"
+    ],
+    "DEFINESOURCE": [
+     "data-area",
+     "receives"
+    ],
+    "DEFINETIME": [
+     "data-area",
+     "receives"
+    ],
+    "ENABLESTATUS": [
+     "cvda",
+     "receives"
+    ],
+    "HFSFILE": [
+     "data-area",
+     "receives"
+    ],
+    "HOST": [
+     "data-area",
+     "receives"
+    ],
+    "HOSTCODEPAGE": [
+     "data-area",
+     "receives"
+    ],
+    "HOSTTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLAGENT": [
+     "cvda",
+     "receives"
+    ],
+    "INSTALLTIME": [
+     "data-area",
+     "receives"
+    ],
+    "INSTALLUSRID": [
+     "data-area",
+     "receives"
+    ],
+    "IPFAMILY": [
+     "cvda",
+     "receives"
+    ],
+    "IPRESOLVED": [
+     "data-area",
+     "receives"
+    ],
+    "LOCATION": [
+     "data-area",
+     "receives"
+    ],
+    "MEDIATYPE": [
+     "data-area",
+     "receives"
+    ],
+    "NUMCIPHERS": [
+     "data-area",
+     "receives"
+    ],
+    "OPERATION": [
+     "data-value",
+     "receives"
+    ],
+    "PATH": [
+     "data-area",
+     "receives"
+    ],
+    "PIPELINE": [
+     "data-area",
+     "receives"
+    ],
+    "PLATFORM": [
+     "data-value",
+     "receives"
+    ],
+    "PORT": [
+     "data-area",
+     "receives"
+    ],
+    "PROGRAM": [
+     "data-area",
+     "receives"
+    ],
+    "REDIRECTTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "SCHEME": [
+     "cvda",
+     "receives"
+    ],
+    "SOCKETCLOSE": [
+     "data-area",
+     "receives"
+    ],
+    "SOCKPOOLSIZE": [
+     "data-area",
+     "receives"
+    ],
+    "TCPIPSERVICE": [
+     "data-area",
+     "receives"
+    ],
+    "TEMPLATENAME": [
+     "data-area",
+     "receives"
+    ],
+    "TRANSACTION": [
+     "data-area",
+     "receives"
+    ],
+    "USAGE": [
+     "cvda",
+     "receives"
+    ],
+    "USERID": [
+     "data-area",
+     "receives"
+    ],
+    "WEBSERVICE": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "URIMAP": "p. 548: the command browses with START, NEXT and END; on NEXT CICS returns the next URIMAP's name here (browse rules, p. 23)",
+    "APPLICATION": "p. 549: printed as data-value, but CICS returns the application name in it",
+    "APPLMAJORVER": "p. 549: printed as data-value, but CICS returns the major version in it",
+    "APPLMINORVER": "p. 549: printed as data-value, but CICS returns the minor version in it",
+    "APPLMICROVER": "p. 549: printed as data-value, but CICS returns the micro version in it",
+    "OPERATION": "p. 553: printed as data-value, but CICS returns the operation name in it",
+    "PLATFORM": "p. 554: printed as data-value, but CICS returns the platform name in it",
+    "ANALYZERSTAT": "p. 8: its description says CICS returns it",
+    "AUTHENTICATE": "p. 8: its description says CICS returns it",
+    "AVAILSTATUS": "p. 8: its description says CICS returns it",
+    "CHANGEAGENT": "p. 8: its description says CICS returns it",
+    "ENABLESTATUS": "p. 8: its description says CICS returns it",
+    "HOSTTYPE": "p. 8: its description says CICS returns it",
+    "INSTALLAGENT": "p. 8: its description says CICS returns it",
+    "IPFAMILY": "p. 8: its description says CICS returns it",
+    "REDIRECTTYPE": "p. 8: its description says CICS returns it",
+    "SCHEME": "p. 8: its description says CICS returns it",
+    "USAGE": "p. 8: its description says CICS returns it"
+   },
+   "source": "cics-spr-5.3"
+  },
+  "ISSUE CONFIRMATION": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-issue-confirmation",
+   "page": 347,
+   "identify": [
+    "CONFIRMATION"
+   ],
+   "options": {
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "STATE": "p. 347: CICS returns the conversation's state"
+   }
   },
   "LINK": {
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-link",
@@ -1477,6 +4276,58 @@
     ]
    }
   },
+  "QUERY SECURITY": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-query-security",
+   "page": 440,
+   "identify": [
+    "SECURITY"
+   ],
+   "options": {
+    "RESTYPE": [
+     "data-value",
+     "sends"
+    ],
+    "RESCLASS": [
+     "data-value",
+     "sends"
+    ],
+    "RESIDLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "RESID": [
+     "data-value",
+     "sends"
+    ],
+    "LOGMESSAGE": [
+     "cvda",
+     "sends"
+    ],
+    "READ": [
+     "cvda",
+     "receives"
+    ],
+    "UPDATE": [
+     "cvda",
+     "receives"
+    ],
+    "CONTROL": [
+     "cvda",
+     "receives"
+    ],
+    "ALTER": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "LOGMESSAGE": "LOG or NOLOG, given to CICS",
+    "READ": "p. 440: CICS returns READABLE or NOTREADABLE",
+    "UPDATE": "p. 442: CICS returns UPDATABLE or NOTUPDATABLE",
+    "CONTROL": "p. 440: CICS returns CTRLABLE or NOTCTRLABLE",
+    "ALTER": "p. 440: CICS returns ALTERABLE or NOTALTERABLE"
+   }
+  },
   "READ": {
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-read",
    "page": 444,
@@ -1512,11 +4363,16 @@
     "LENGTH": [
      "data-area",
      "both"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
     "RIDFLD": "p. 445: names the record to read; a generic read of a CICS-maintained data table that finds nothing clears it",
-    "LENGTH": "p. 447: the length of the INTO area on the way in, the record's length on completion"
+    "LENGTH": "p. 447: the length of the INTO area on the way in, the record's length on completion",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
    }
   },
   "READNEXT": {
@@ -1558,11 +4414,16 @@
     "LENGTH": [
      "data-area",
      "both"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
     "RIDFLD": "p. 456: the browse position on the way in, the key of the record read on completion",
-    "LENGTH": "the length of the INTO area on the way in, the record's length on completion"
+    "LENGTH": "the length of the INTO area on the way in, the record's length on completion",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
    }
   },
   "READPREV": {
@@ -1604,11 +4465,16 @@
     "SYSID": [
      "systemname",
      "sends"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
     "RIDFLD": "p. 467: the browse position on the way in, the key of the record read on completion",
-    "LENGTH": "the length of the INTO area on the way in, the record's length on completion"
+    "LENGTH": "the length of the INTO area on the way in, the record's length on completion",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
    }
   },
   "READQ TD": {
@@ -1716,11 +4582,20 @@
     "MAXFLENGTH": [
      "data-value",
      "sends"
+    ],
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
     ]
    },
    "notes": {
     "LENGTH": "p. 498: the maximum accepted when INTO has no MAXLENGTH; set to the length received",
-    "FLENGTH": "an alternative to LENGTH"
+    "FLENGTH": "an alternative to LENGTH",
+    "STATE": "p. 499: RECEIVE (APPC) returns the conversation's state in it"
    }
   },
   "RECEIVE MAP": {
@@ -1806,10 +4681,15 @@
     "SYSID": [
      "systemname",
      "sends"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
-    "RIDFLD": "the position the browse restarts from"
+    "RIDFLD": "the position the browse restarts from",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
    }
   },
   "RETRIEVE": {
@@ -1925,11 +4805,38 @@
     "LENGTH": [
      "data-value",
      "sends"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
     "FROM": "the record written",
-    "TOKEN": "p. 555: identifies the READ UPDATE this request follows"
+    "TOKEN": "p. 555: identifies the READ UPDATE this request follows",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
+   }
+  },
+  "RUN TRANSID": {
+   "source": "cics-api-6.x",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-run-transid",
+   "page": null,
+   "identify": [
+    "TRANSID"
+   ],
+   "options": {
+    "TRANSID": [
+     "name",
+     "sends"
+    ],
+    "CHANNEL": [
+     "name",
+     "sends"
+    ],
+    "CHILD": [
+     "data-area",
+     "receives"
+    ]
    }
   },
   "SEND": {
@@ -1948,10 +4855,19 @@
     "FLENGTH": [
      "data-value",
      "sends"
+    ],
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
     ]
    },
    "notes": {
-    "FROM": "the data sent"
+    "FROM": "the data sent",
+    "STATE": "p. 589: SEND (APPC) returns the conversation's state in it"
    }
   },
   "SEND CONTROL": {
@@ -2154,6 +5070,401 @@
     "TRAILER": "trailer data placed on each page"
    }
   },
+  "SET FILE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-set-file",
+   "page": 646,
+   "identify": [
+    "FILE",
+    "DATASET"
+   ],
+   "options": {
+    "FILE": [
+     "data-value",
+     "sends"
+    ],
+    "DATASET": [
+     "data-value",
+     "sends"
+    ],
+    "ADD": [
+     "cvda",
+     "sends"
+    ],
+    "BROWSE": [
+     "cvda",
+     "sends"
+    ],
+    "BUSY": [
+     "cvda",
+     "sends"
+    ],
+    "CFDTPOOL": [
+     "data-value",
+     "sends"
+    ],
+    "DELETE": [
+     "cvda",
+     "sends"
+    ],
+    "DISPOSITION": [
+     "cvda",
+     "sends"
+    ],
+    "DSNAME": [
+     "data-value",
+     "sends"
+    ],
+    "OBJECTNAME": [
+     "data-value",
+     "sends"
+    ],
+    "EMPTYSTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "ENABLESTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "OPENSTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "EXCLUSIVE": [
+     "cvda",
+     "sends"
+    ],
+    "KEYLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "LOADTYPE": [
+     "cvda",
+     "sends"
+    ],
+    "LSRPOOLNUM": [
+     "data-value",
+     "sends"
+    ],
+    "MAXNUMRECS": [
+     "data-value",
+     "sends"
+    ],
+    "READ": [
+     "cvda",
+     "sends"
+    ],
+    "RECORDSIZE": [
+     "data-value",
+     "sends"
+    ],
+    "READINTEG": [
+     "cvda",
+     "sends"
+    ],
+    "RLSACCESS": [
+     "cvda",
+     "sends"
+    ],
+    "STRINGS": [
+     "data-value",
+     "sends"
+    ],
+    "TABLE": [
+     "cvda",
+     "sends"
+    ],
+    "TABLENAME": [
+     "data-value",
+     "sends"
+    ],
+    "UPDATE": [
+     "cvda",
+     "sends"
+    ],
+    "UPDATEMODEL": [
+     "cvda",
+     "sends"
+    ]
+   },
+   "source": "cics-spr-5.3",
+   "notes": {
+    "ADD": "p. 8: its description says the program specifies it",
+    "BROWSE": "p. 8: its description says the program specifies it",
+    "BUSY": "p. 8: its description says the program specifies it",
+    "DELETE": "p. 8: its description says the program specifies it",
+    "DISPOSITION": "p. 8: its description says the program specifies it",
+    "EMPTYSTATUS": "p. 8: its description says the program specifies it",
+    "ENABLESTATUS": "p. 8: its description says the program specifies it",
+    "OPENSTATUS": "p. 8: its description says the program specifies it",
+    "EXCLUSIVE": "p. 8: its description says the program specifies it",
+    "LOADTYPE": "p. 8: its description says the program specifies it",
+    "READ": "p. 8: its description says the program specifies it",
+    "READINTEG": "p. 8: its description says the program specifies it",
+    "RLSACCESS": "p. 8: its description says the program specifies it",
+    "TABLE": "p. 8: its description says the program specifies it",
+    "UPDATE": "p. 8: its description says the program specifies it",
+    "UPDATEMODEL": "p. 8: its description says the program specifies it"
+   }
+  },
+  "SET PROGRAM": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=sc-set-program",
+   "page": 689,
+   "identify": [
+    "PROGRAM"
+   ],
+   "options": {
+    "PROGRAM": [
+     "data-value",
+     "sends"
+    ],
+    "CEDFSTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "COPY": [
+     "cvda",
+     "sends"
+    ],
+    "EXECUTIONSET": [
+     "cvda",
+     "sends"
+    ],
+    "JVMCLASS": [
+     "data-value",
+     "sends"
+    ],
+    "JVMPROFILE": [
+     "data-value",
+     "sends"
+    ],
+    "OPERATION": [
+     "data-value",
+     "sends"
+    ],
+    "RUNTIME": [
+     "cvda",
+     "sends"
+    ],
+    "SHARESTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "STATUS": [
+     "cvda",
+     "sends"
+    ],
+    "VERSION": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "VERSION": "p. 693: CICS returns whether the copy found for COPY differs from the current one",
+    "CEDFSTATUS": "p. 8: its description says the program specifies it",
+    "COPY": "p. 8: its description says the program specifies it",
+    "EXECUTIONSET": "p. 8: its description says the program specifies it",
+    "RUNTIME": "p. 8: its description says the program specifies it",
+    "SHARESTATUS": "p. 8: its description says the program specifies it",
+    "STATUS": "p. 8: its description says the program specifies it"
+   },
+   "source": "cics-spr-5.3"
+  },
+  "SET TERMINAL": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-set-terminal",
+   "page": 721,
+   "identify": [
+    "TERMINAL"
+   ],
+   "options": {
+    "TERMINAL": [
+     "data-value",
+     "sends"
+    ],
+    "ACQSTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "TERMSTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "ALTPRINTER": [
+     "data-value",
+     "sends"
+    ],
+    "ALTPRTCOPYST": [
+     "cvda",
+     "sends"
+    ],
+    "ATISTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "CREATESESS": [
+     "cvda",
+     "sends"
+    ],
+    "DISCREQST": [
+     "cvda",
+     "sends"
+    ],
+    "EXITTRACING": [
+     "cvda",
+     "sends"
+    ],
+    "MAPNAME": [
+     "data-value",
+     "sends"
+    ],
+    "MAPSETNAME": [
+     "data-value",
+     "sends"
+    ],
+    "NEXTTRANSID": [
+     "data-value",
+     "sends"
+    ],
+    "OBFORMATST": [
+     "cvda",
+     "sends"
+    ],
+    "OPERID": [
+     "data-value",
+     "sends"
+    ],
+    "PAGESTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "PRINTER": [
+     "data-value",
+     "sends"
+    ],
+    "PRTCOPYST": [
+     "cvda",
+     "sends"
+    ],
+    "PURGETYPE": [
+     "cvda",
+     "sends"
+    ],
+    "RELREQST": [
+     "cvda",
+     "sends"
+    ],
+    "SERVSTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "TCAMCONTROL": [
+     "data-value",
+     "sends"
+    ],
+    "TERMPRIORITY": [
+     "data-value",
+     "sends"
+    ],
+    "TRACING": [
+     "cvda",
+     "sends"
+    ],
+    "TTISTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "UCTRANST": [
+     "cvda",
+     "sends"
+    ],
+    "ZCPTRACING": [
+     "cvda",
+     "sends"
+    ]
+   },
+   "source": "cics-spr-5.3",
+   "notes": {
+    "ACQSTATUS": "p. 8: its description says the program specifies it",
+    "TERMSTATUS": "p. 8: its description says the program specifies it",
+    "ALTPRTCOPYST": "p. 8: its description says the program specifies it",
+    "ATISTATUS": "p. 8: its description says the program specifies it",
+    "CREATESESS": "p. 8: its description says the program specifies it",
+    "DISCREQST": "p. 8: its description says the program specifies it",
+    "EXITTRACING": "p. 8: its description says the program specifies it",
+    "OBFORMATST": "p. 8: its description says the program specifies it",
+    "PAGESTATUS": "p. 8: its description says the program specifies it",
+    "PRTCOPYST": "p. 8: its description says the program specifies it",
+    "PURGETYPE": "p. 8: its description says the program specifies it",
+    "RELREQST": "p. 8: its description says the program specifies it",
+    "SERVSTATUS": "p. 8: its description says the program specifies it",
+    "TRACING": "p. 8: its description says the program specifies it",
+    "TTISTATUS": "p. 8: its description says the program specifies it",
+    "UCTRANST": "p. 8: its description says the program specifies it",
+    "ZCPTRACING": "p. 8: its description says the program specifies it"
+   }
+  },
+  "SET TRANSACTION": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=commands-set-transaction",
+   "page": 744,
+   "identify": [
+    "TRANSACTION"
+   ],
+   "options": {
+    "TRANSACTION": [
+     "data-value",
+     "sends"
+    ],
+    "DUMPING": [
+     "cvda",
+     "sends"
+    ],
+    "PRIORITY": [
+     "data-value",
+     "sends"
+    ],
+    "PURGEABILITY": [
+     "cvda",
+     "receives"
+    ],
+    "RUNAWAY": [
+     "data-value",
+     "sends"
+    ],
+    "RUNAWAYTYPE": [
+     "cvda",
+     "sends"
+    ],
+    "SHUTDOWN": [
+     "cvda",
+     "sends"
+    ],
+    "STATUS": [
+     "cvda",
+     "sends"
+    ],
+    "TCLASS": [
+     "data-value",
+     "sends"
+    ],
+    "TRANCLASS": [
+     "data-value",
+     "sends"
+    ],
+    "TRACING": [
+     "cvda",
+     "sends"
+    ]
+   },
+   "notes": {
+    "PURGEABILITY": "p. 745: described as returning the CVDA, although the diagram (p. 744) lists PURGEABLE and NOTPURGEABLE as values to give and INVREQ RESP2 2 rejects an invalid one",
+    "DUMPING": "p. 8: its description says the program specifies it",
+    "RUNAWAYTYPE": "p. 8: its description says the program specifies it",
+    "SHUTDOWN": "p. 8: its description says the program specifies it",
+    "STATUS": "p. 8: its description says the program specifies it",
+    "TRACING": "p. 8: its description says the program specifies it"
+   },
+   "source": "cics-spr-5.3"
+  },
   "SIGNOFF": {
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-signoff",
    "page": 636,
@@ -2228,6 +5539,111 @@
     "PHRASE": "the password or phrase",
     "NEWPHRASE": "the new password or phrase"
    }
+  },
+  "SOAPFAULT ADD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-soapfault-add",
+   "page": 647,
+   "identify": [
+    "ADD"
+   ],
+   "options": {
+    "FAULTSTRING": [
+     "data-value",
+     "sends"
+    ],
+    "FAULTSTRLEN": [
+     "data-value",
+     "sends"
+    ],
+    "NATLANG": [
+     "data-value",
+     "sends"
+    ],
+    "SUBCODESTR": [
+     "data-value",
+     "sends"
+    ],
+    "SUBCODELEN": [
+     "data-value",
+     "sends"
+    ],
+    "FROMCCSID": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "SOAPFAULT CREATE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-soapfault-create",
+   "page": 650,
+   "identify": [
+    "CREATE"
+   ],
+   "options": {
+    "FAULTCODE": [
+     "cvda",
+     "sends"
+    ],
+    "FAULTCODESTR": [
+     "data-value",
+     "sends"
+    ],
+    "FAULTCODELEN": [
+     "data-value",
+     "sends"
+    ],
+    "FAULTSTRING": [
+     "data-value",
+     "sends"
+    ],
+    "FAULTSTRLEN": [
+     "data-value",
+     "sends"
+    ],
+    "NATLANG": [
+     "data-value",
+     "sends"
+    ],
+    "ROLE": [
+     "data-value",
+     "sends"
+    ],
+    "ROLELENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "FAULTACTOR": [
+     "data-value",
+     "sends"
+    ],
+    "FAULTACTLEN": [
+     "data-value",
+     "sends"
+    ],
+    "DETAIL": [
+     "data-value",
+     "sends"
+    ],
+    "DETAILLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "FROMCCSID": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FAULTCODE": "CLIENT, SERVER, SENDER or RECEIVER"
+   }
+  },
+  "SOAPFAULT DELETE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-soapfault-delete",
+   "page": 654,
+   "identify": [
+    "DELETE"
+   ],
+   "options": {}
   },
   "START": {
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-start",
@@ -2321,10 +5737,44 @@
     "SYSID": [
      "systemname",
      "sends"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
-    "RIDFLD": "the position the browse starts from"
+    "RIDFLD": "the position the browse starts from",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
+   }
+  },
+  "STARTBROWSE CONTAINER": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-startbrowse-container-channel",
+   "page": 701,
+   "identify": [
+    "CONTAINER"
+   ],
+   "options": {
+    "ACTIVITYID": [
+     "data-value",
+     "sends"
+    ],
+    "PROCESS": [
+     "data-value",
+     "sends"
+    ],
+    "PROCESSTYPE": [
+     "data-value",
+     "sends"
+    ],
+    "CHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "BROWSETOKEN": [
+     "data-area",
+     "receives"
+    ]
    }
   },
   "SYNCPOINT": {
@@ -2339,6 +5789,144 @@
     "ROLLBACK"
    ],
    "options": {}
+  },
+  "TRANSFORM DATATOXML": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-transform-datatoxml",
+   "page": 714,
+   "identify": [
+    "DATATOXML"
+   ],
+   "options": {
+    "CHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "DATCONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "ELEMNAME": [
+     "data-area",
+     "both"
+    ],
+    "ELEMNAMELEN": [
+     "data-area",
+     "sends"
+    ],
+    "ELEMNS": [
+     "data-area",
+     "sends"
+    ],
+    "ELEMNSLEN": [
+     "data-area",
+     "sends"
+    ],
+    "TYPENAME": [
+     "data-area",
+     "sends"
+    ],
+    "TYPENAMELEN": [
+     "data-area",
+     "sends"
+    ],
+    "TYPENS": [
+     "data-area",
+     "sends"
+    ],
+    "TYPENSLEN": [
+     "data-area",
+     "sends"
+    ],
+    "XMLCONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "XMLTRANSFORM": [
+     "name",
+     "sends"
+    ]
+   },
+   "notes": {
+    "ELEMNAME": "p. 714: the program names the element to generate, and CICS returns the local name of the element it generated",
+    "ELEMNAMELEN": "p. 714: the program gives the length of ELEMNAME, at most 255",
+    "ELEMNS": "p. 714: the program gives the element's namespace URI",
+    "ELEMNSLEN": "p. 714: the program gives the length of ELEMNS, at most 255",
+    "TYPENAME": "p. 715: the program gives the element's xsi:type",
+    "TYPENAMELEN": "p. 715: the program gives the length of TYPENAME",
+    "TYPENS": "p. 715: the program gives the xsi:type's namespace",
+    "TYPENSLEN": "p. 715: the program gives the length of TYPENS"
+   }
+  },
+  "TRANSFORM XMLTODATA": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-transform-xmltodata",
+   "page": 717,
+   "identify": [
+    "XMLTODATA"
+   ],
+   "options": {
+    "CHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "DATCONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "ELEMNAME": [
+     "data-area",
+     "both"
+    ],
+    "ELEMNAMELEN": [
+     "data-area",
+     "both"
+    ],
+    "ELEMNS": [
+     "data-area",
+     "both"
+    ],
+    "ELEMNSLEN": [
+     "data-area",
+     "both"
+    ],
+    "NSCONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "TYPENAME": [
+     "data-area",
+     "both"
+    ],
+    "TYPENAMELEN": [
+     "data-area",
+     "both"
+    ],
+    "XMLCONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "TYPENS": [
+     "data-area",
+     "both"
+    ],
+    "TYPENSLEN": [
+     "data-area",
+     "both"
+    ],
+    "XMLTRANSFORM": [
+     "name",
+     "sends"
+    ]
+   },
+   "notes": {
+    "ELEMNAME": "p. 717: the program gives an input value and CICS replaces it with the first element's local name",
+    "ELEMNAMELEN": "p. 718: the program gives ELEMNAME's maximum length and CICS replaces it with the name's real length",
+    "ELEMNS": "p. 718: the program gives an input value and CICS replaces it with the first element's namespace URI",
+    "ELEMNSLEN": "p. 718: the program gives ELEMNS's maximum length and CICS replaces it with the URI's real length",
+    "TYPENAME": "p. 718: CICS returns the first tag's xsi:type in it; a value the program puts there overrides the XML's own type",
+    "TYPENAMELEN": "p. 718: an input value the program gives, through which CICS returns the length of TYPENAME",
+    "TYPENS": "p. 718: CICS returns the xsi:type's namespace in it; with TYPENAME the program gives it to name the type",
+    "TYPENSLEN": "p. 718: an input value the program gives, through which CICS returns the length of TYPENS"
+   }
   },
   "UNLOCK": {
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-unlock",
@@ -2355,10 +5943,15 @@
     "SYSID": [
      "systemname",
      "sends"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
-    "TOKEN": "p. 722: identifies the READ UPDATE this request releases"
+    "TOKEN": "p. 722: identifies the READ UPDATE this request releases",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
    }
   },
   "UPDATE COUNTER": {
@@ -2392,6 +5985,960 @@
     ]
    }
   },
+  "WAIT CONVID": {
+   "title": "WAIT CONVID (APPC)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-wait-convid-appc",
+   "page": 739,
+   "identify": [
+    "CONVID"
+   ],
+   "options": {
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "STATE": [
+     "cvda",
+     "receives"
+    ]
+   },
+   "notes": {
+    "STATE": "p. 739: CICS returns the conversation's state"
+   }
+  },
+  "WAIT TERMINAL": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-wait-terminal",
+   "page": 750,
+   "identify": [
+    "TERMINAL"
+   ],
+   "options": {
+    "CONVID": [
+     "name",
+     "sends"
+    ],
+    "SESSION": [
+     "name",
+     "sends"
+    ]
+   }
+  },
+  "WEB CLOSE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-close",
+   "page": 754,
+   "identify": [
+    "CLOSE"
+   ],
+   "options": {
+    "SESSTOKEN": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "WEB CONVERSE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-converse",
+   "page": 757,
+   "identify": [
+    "CONVERSE"
+   ],
+   "options": {
+    "SESSTOKEN": [
+     "data-value",
+     "sends"
+    ],
+    "PATH": [
+     "data-area",
+     "sends"
+    ],
+    "PATHLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "URIMAP": [
+     "data-value",
+     "sends"
+    ],
+    "METHOD": [
+     "cvda",
+     "sends"
+    ],
+    "MEDIATYPE": [
+     "data-area",
+     "both"
+    ],
+    "QUERYSTRING": [
+     "data-area",
+     "sends"
+    ],
+    "QUERYSTRLEN": [
+     "data-value",
+     "sends"
+    ],
+    "ACTION": [
+     "cvda",
+     "sends"
+    ],
+    "CLOSESTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "TOCONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "TOCHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "TOLENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "MAXLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "STATUSCODE": [
+     "data-area",
+     "receives"
+    ],
+    "STATUSTEXT": [
+     "data-area",
+     "receives"
+    ],
+    "STATUSLEN": [
+     "data-value",
+     "sends"
+    ],
+    "BODYCHARSET": [
+     "data-area",
+     "receives"
+    ],
+    "DOCTOKEN": [
+     "data-value",
+     "sends"
+    ],
+    "DOCSTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "FROMLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "CONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "CHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "AUTHENTICATE": [
+     "cvda",
+     "sends"
+    ],
+    "USERNAME": [
+     "data-value",
+     "sends"
+    ],
+    "USERNAMELEN": [
+     "data-value",
+     "sends"
+    ],
+    "PASSWORD": [
+     "data-value",
+     "sends"
+    ],
+    "PASSWORDLEN": [
+     "data-value",
+     "sends"
+    ],
+    "CHARACTERSET": [
+     "data-value",
+     "sends"
+    ],
+    "CLIENTCONV": [
+     "cvda",
+     "sends"
+    ]
+   },
+   "notes": {
+    "PATH": "p. 762: the path of the resource the request asks for",
+    "MEDIATYPE": "p. 762: a value given builds the request's Content-Type; the same field then gets the response's media type",
+    "QUERYSTRING": "p. 763: the query string put on the request",
+    "FROM": "the request body sent",
+    "METHOD": "a value the program gives the command",
+    "ACTION": "a value the program gives the command",
+    "CLOSESTATUS": "a value the program gives the command",
+    "DOCSTATUS": "a value the program gives the command",
+    "AUTHENTICATE": "a value the program gives the command",
+    "CLIENTCONV": "a value the program gives the command"
+   }
+  },
+  "WEB ENDBROWSE FORMFIELD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-endbrowse-formfield",
+   "page": 771,
+   "options": {}
+  },
+  "WEB ENDBROWSE HTTPHEADER": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-endbrowse-httpheader",
+   "page": 772,
+   "options": {
+    "SESSTOKEN": [
+     "data-value",
+     "sends"
+    ]
+   }
+  },
+  "WEB ENDBROWSE QUERYPARM": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-endbrowse-queryparm",
+   "page": 773,
+   "options": {}
+  },
+  "WEB EXTRACT": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-extract",
+   "page": 774,
+   "identify": [
+    "EXTRACT"
+   ],
+   "options": {
+    "SESSTOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "SCHEME": [
+     "cvda",
+     "receives"
+    ],
+    "HOST": [
+     "data-area",
+     "receives"
+    ],
+    "HOSTLENGTH": [
+     "data-value",
+     "both"
+    ],
+    "HOSTTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "HTTPMETHOD": [
+     "data-area",
+     "receives"
+    ],
+    "METHODLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "HTTPVERSION": [
+     "data-area",
+     "receives"
+    ],
+    "VERSIONLEN": [
+     "data-area",
+     "both"
+    ],
+    "PATH": [
+     "data-area",
+     "receives"
+    ],
+    "PATHLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "PORTNUMBER": [
+     "data-area",
+     "receives"
+    ],
+    "QUERYSTRING": [
+     "data-area",
+     "receives"
+    ],
+    "QUERYSTRLEN": [
+     "data-area",
+     "both"
+    ],
+    "REQUESTTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "URIMAP": [
+     "data-area",
+     "receives"
+    ],
+    "REALM": [
+     "data-area",
+     "receives"
+    ],
+    "REALMLEN": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "SESSTOKEN": "p. 777: the token WEB OPEN returned, naming the client connection asked about",
+    "SCHEME": "p. 777: CICS returns the scheme of the request or connection",
+    "HOSTLENGTH": "p. 775: the HOST buffer's length going in, the host name's length on return; the manual prints data-value",
+    "HOSTTYPE": "p. 775: CICS returns the form of the address in HOST",
+    "METHODLENGTH": "p. 776: the HTTPMETHOD buffer's length going in, the method's length on return",
+    "VERSIONLEN": "p. 777: the HTTPVERSION buffer's length going in, the version's length on return",
+    "PATHLENGTH": "p. 776: the PATH buffer's length going in, the path's length on return",
+    "QUERYSTRLEN": "p. 776: the QUERYSTRING buffer's length going in, the query string's length on return",
+    "REQUESTTYPE": "p. 777: CICS returns whether the request was HTTP",
+    "REALMLEN": "p. 777: the REALM buffer's length going in; after a 401 response, the realm name's length"
+   }
+  },
+  "WEB OPEN": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-open",
+   "page": 779,
+   "identify": [
+    "OPEN"
+   ],
+   "options": {
+    "URIMAP": [
+     "data-value",
+     "sends"
+    ],
+    "CERTIFICATE": [
+     "data-value",
+     "sends"
+    ],
+    "SESSTOKEN": [
+     "data-area",
+     "receives"
+    ],
+    "CIPHERS": [
+     "data-value",
+     "sends"
+    ],
+    "NUMCIPHERS": [
+     "data-value",
+     "sends"
+    ],
+    "CODEPAGE": [
+     "data-value",
+     "sends"
+    ],
+    "HTTPVNUM": [
+     "data-area",
+     "receives"
+    ],
+    "HTTPRNUM": [
+     "data-area",
+     "receives"
+    ],
+    "HOST": [
+     "data-value",
+     "sends"
+    ],
+    "HOSTLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "PORTNUMBER": [
+     "data-value",
+     "sends"
+    ],
+    "SCHEME": [
+     "cvda",
+     "sends"
+    ]
+   },
+   "notes": {
+    "SCHEME": "a value the program gives the command"
+   }
+  },
+  "WEB PARSE URL": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-parse-url",
+   "page": 785,
+   "options": {
+    "URL": [
+     "data-value",
+     "sends"
+    ],
+    "URLLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "SCHEMENAME": [
+     "data-area",
+     "receives"
+    ],
+    "HOST": [
+     "data-area",
+     "receives"
+    ],
+    "HOSTLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "PORTNUMBER": [
+     "data-area",
+     "receives"
+    ],
+    "HOSTTYPE": [
+     "cvda",
+     "receives"
+    ],
+    "PATH": [
+     "data-area",
+     "receives"
+    ],
+    "PATHLENGTH": [
+     "data-area",
+     "both"
+    ],
+    "QUERYSTRING": [
+     "data-area",
+     "receives"
+    ],
+    "QUERYSTRLEN": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "HOSTLENGTH": "p. 785: the HOST buffer's length going in, the host's length on return",
+    "HOSTTYPE": "p. 786: CICS returns the form of the address in HOST",
+    "PATHLENGTH": "p. 786: the PATH buffer's length going in, the path's length on return",
+    "QUERYSTRLEN": "p. 786: the QUERYSTRING buffer's length going in, the query string's length on return"
+   }
+  },
+  "WEB READ FORMFIELD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-read-formfield",
+   "page": 788,
+   "options": {
+    "FORMFIELD": [
+     "data-area",
+     "sends"
+    ],
+    "NAMELENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "VALUE": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "VALUELENGTH": [
+     "data-area",
+     "both"
+    ],
+    "CHARACTERSET": [
+     "data-value",
+     "sends"
+    ],
+    "HOSTCODEPAGE": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FORMFIELD": "p. 788: the name of the form field to read",
+    "VALUELENGTH": "p. 789: with VALUE, the most the program accepts; set to the field value's length"
+   }
+  },
+  "WEB READ HTTPHEADER": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-read-httpheader",
+   "page": 791,
+   "options": {
+    "HTTPHEADER": [
+     "data-area",
+     "sends"
+    ],
+    "NAMELENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "SESSTOKEN": [
+     "data-area",
+     "sends"
+    ],
+    "VALUE": [
+     "data-area",
+     "receives"
+    ],
+    "VALUELENGTH": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "HTTPHEADER": "p. 791: the name of the header to read",
+    "SESSTOKEN": "p. 791: the token WEB OPEN returned, naming the client connection",
+    "VALUELENGTH": "p. 791: the VALUE buffer's length going in, the header value's length on return"
+   }
+  },
+  "WEB READ QUERYPARM": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-read-queryparm",
+   "page": 793,
+   "options": {
+    "QUERYPARM": [
+     "data-value",
+     "sends"
+    ],
+    "NAMELENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "VALUE": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "VALUELENGTH": [
+     "data-area",
+     "both"
+    ],
+    "HOSTCODEPAGE": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "VALUELENGTH": "p. 794: with VALUE, the most the program accepts; set to the parameter value's length"
+   }
+  },
+  "WEB READNEXT FORMFIELD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-readnext-formfield",
+   "page": 795,
+   "options": {
+    "FORMFIELD": [
+     "data-area",
+     "receives"
+    ],
+    "NAMELENGTH": [
+     "data-area",
+     "both"
+    ],
+    "VALUE": [
+     "data-area",
+     "receives"
+    ],
+    "VALUELENGTH": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "NAMELENGTH": "p. 795: the FORMFIELD buffer's length going in, the field name's length on return",
+    "VALUELENGTH": "p. 795: the VALUE buffer's length going in, the field value's length on return"
+   }
+  },
+  "WEB READNEXT HTTPHEADER": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-readnext-httpheader",
+   "page": 797,
+   "options": {
+    "HTTPHEADER": [
+     "data-area",
+     "receives"
+    ],
+    "NAMELENGTH": [
+     "data-area",
+     "both"
+    ],
+    "SESSTOKEN": [
+     "data-value",
+     "sends"
+    ],
+    "VALUE": [
+     "data-area",
+     "receives"
+    ],
+    "VALUELENGTH": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "NAMELENGTH": "p. 797: the HTTPHEADER buffer's length going in, the header name's length on return",
+    "VALUELENGTH": "p. 797: the VALUE buffer's length going in, the header value's length on return"
+   }
+  },
+  "WEB READNEXT QUERYPARM": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-readnext-queryparm",
+   "page": 799,
+   "options": {
+    "QUERYPARM": [
+     "data-area",
+     "receives"
+    ],
+    "NAMELENGTH": [
+     "data-area",
+     "both"
+    ],
+    "VALUE": [
+     "data-area",
+     "receives"
+    ],
+    "VALUELENGTH": [
+     "data-area",
+     "both"
+    ]
+   },
+   "notes": {
+    "NAMELENGTH": "p. 799: the QUERYPARM buffer's length going in, the parameter name's length on return",
+    "VALUELENGTH": "p. 799: the VALUE buffer's length going in, the parameter value's length on return"
+   }
+  },
+  "WEB RECEIVE": {
+   "title": "WEB RECEIVE (Server) and WEB RECEIVE (Client)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-receive-server",
+   "page": 801,
+   "identify": [
+    "RECEIVE"
+   ],
+   "options": {
+    "INTO": [
+     "data-area",
+     "receives"
+    ],
+    "SET": [
+     "ptr-ref",
+     "receives"
+    ],
+    "LENGTH": [
+     "data-area",
+     "receives"
+    ],
+    "MAXLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "TYPE": [
+     "cvda",
+     "receives"
+    ],
+    "SERVERCONV": [
+     "cvda",
+     "sends"
+    ],
+    "CHARACTERSET": [
+     "data-value",
+     "sends"
+    ],
+    "HOSTCODEPAGE": [
+     "data-value",
+     "sends"
+    ],
+    "BODYCHARSET": [
+     "data-area",
+     "receives"
+    ],
+    "MEDIATYPE": [
+     "data-area",
+     "both"
+    ],
+    "TOCONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "TOCHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "SESSTOKEN": [
+     "data-value",
+     "sends"
+    ],
+    "STATUSCODE": [
+     "data-value",
+     "receives"
+    ],
+    "STATUSTEXT": [
+     "data-area",
+     "receives"
+    ],
+    "STATUSLEN": [
+     "data-value",
+     "sends"
+    ],
+    "CLIENTCONV": [
+     "cvda",
+     "sends"
+    ]
+   },
+   "notes": {
+    "TYPE": "p. 806: CICS returns whether the request was HTTP",
+    "MEDIATYPE": "p. 801: the server form's diagram prints data-value, which sends; the client form's (p. 808) prints a data-area for the response's media type",
+    "STATUSCODE": "p. 812: CICS returns the server's status code here; the manual prints data-value",
+    "SERVERCONV": "a value the program gives the command",
+    "CLIENTCONV": "a value the program gives the command"
+   }
+  },
+  "WEB RETRIEVE": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-retrieve",
+   "page": 815,
+   "identify": [
+    "RETRIEVE"
+   ],
+   "options": {
+    "DOCTOKEN": [
+     "data-area",
+     "receives"
+    ]
+   },
+   "notes": {
+    "DOCTOKEN": "p. 815: CICS returns the token of the document the last WEB SEND ACTION(EVENTUAL) sent"
+   }
+  },
+  "WEB SEND": {
+   "title": "WEB SEND (Server) and WEB SEND (Client)",
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-send-server",
+   "page": 817,
+   "identify": [
+    "SEND"
+   ],
+   "options": {
+    "DOCTOKEN": [
+     "data-value",
+     "sends"
+    ],
+    "DOCSTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "FROM": [
+     "data-area",
+     "sends"
+    ],
+    "FROMLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "CHUNKING": [
+     "cvda",
+     "sends"
+    ],
+    "HOSTCODEPAGE": [
+     "data-value",
+     "sends"
+    ],
+    "CONTAINER": [
+     "data-value",
+     "sends"
+    ],
+    "CHANNEL": [
+     "data-value",
+     "sends"
+    ],
+    "MEDIATYPE": [
+     "data-value",
+     "sends"
+    ],
+    "SERVERCONV": [
+     "cvda",
+     "sends"
+    ],
+    "CHARACTERSET": [
+     "data-value",
+     "sends"
+    ],
+    "STATUSCODE": [
+     "data-value",
+     "sends"
+    ],
+    "STATUSTEXT": [
+     "data-area",
+     "sends"
+    ],
+    "STATUSLEN": [
+     "data-value",
+     "sends"
+    ],
+    "LENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "ACTION": [
+     "cvda",
+     "sends"
+    ],
+    "CLOSESTATUS": [
+     "cvda",
+     "sends"
+    ],
+    "SESSTOKEN": [
+     "data-value",
+     "sends"
+    ],
+    "METHOD": [
+     "cvda",
+     "sends"
+    ],
+    "PATH": [
+     "data-area",
+     "sends"
+    ],
+    "PATHLENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "URIMAP": [
+     "data-value",
+     "sends"
+    ],
+    "QUERYSTRING": [
+     "data-area",
+     "sends"
+    ],
+    "QUERYSTRLEN": [
+     "data-value",
+     "sends"
+    ],
+    "CLIENTCONV": [
+     "cvda",
+     "sends"
+    ],
+    "AUTHENTICATE": [
+     "cvda",
+     "sends"
+    ],
+    "USERNAME": [
+     "data-value",
+     "sends"
+    ],
+    "USERNAMELEN": [
+     "data-value",
+     "sends"
+    ],
+    "PASSWORD": [
+     "data-value",
+     "sends"
+    ],
+    "PASSWORDLEN": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FROM": "the message body sent, or one chunk of it",
+    "STATUSTEXT": "p. 823: the reason phrase the response carries with its status code",
+    "LENGTH": "p. 821: an older name for STATUSLEN, kept for upgrades",
+    "PATH": "p. 832: the path of the resource the request asks for",
+    "QUERYSTRING": "p. 832: the query string put on the request",
+    "DOCSTATUS": "a value the program gives the command",
+    "CHUNKING": "a value the program gives the command",
+    "SERVERCONV": "a value the program gives the command",
+    "ACTION": "a value the program gives the command",
+    "CLOSESTATUS": "a value the program gives the command",
+    "METHOD": "a value the program gives the command",
+    "CLIENTCONV": "a value the program gives the command",
+    "AUTHENTICATE": "a value the program gives the command"
+   }
+  },
+  "WEB STARTBROWSE FORMFIELD": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-startbrowse-formfield",
+   "page": 836,
+   "options": {
+    "FORMFIELD": [
+     "data-area",
+     "sends"
+    ],
+    "NAMELENGTH": [
+     "data-area",
+     "sends"
+    ],
+    "CHARACTERSET": [
+     "data-value",
+     "sends"
+    ],
+    "HOSTCODEPAGE": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "FORMFIELD": "p. 836: optionally names the form field the browse starts at",
+    "NAMELENGTH": "p. 837: the length of the name given on FORMFIELD"
+   }
+  },
+  "WEB STARTBROWSE HTTPHEADER": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-startbrowse-httpheader",
+   "page": 838,
+   "options": {
+    "SESSTOKEN": [
+     "data-area",
+     "sends"
+    ]
+   },
+   "notes": {
+    "SESSTOKEN": "p. 838: the token WEB OPEN returned, naming the client connection"
+   }
+  },
+  "WEB STARTBROWSE QUERYPARM": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-startbrowse-queryparm",
+   "page": 839,
+   "options": {
+    "QUERYPARM": [
+     "data-area",
+     "sends"
+    ],
+    "NAMELENGTH": [
+     "data-area",
+     "sends"
+    ],
+    "HOSTCODEPAGE": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "QUERYPARM": "p. 839: optionally names the query parameter the browse starts at",
+    "NAMELENGTH": "p. 840: the length of the name given on QUERYPARM"
+   }
+  },
+  "WEB WRITE HTTPHEADER": {
+   "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-web-write-httpheader",
+   "page": 841,
+   "options": {
+    "HTTPHEADER": [
+     "data-area",
+     "sends"
+    ],
+    "NAMELENGTH": [
+     "data-value",
+     "sends"
+    ],
+    "SESSTOKEN": [
+     "data-value",
+     "sends"
+    ],
+    "VALUE": [
+     "data-area",
+     "sends"
+    ],
+    "VALUELENGTH": [
+     "data-value",
+     "sends"
+    ]
+   },
+   "notes": {
+    "HTTPHEADER": "p. 842: the name of the header added",
+    "VALUE": "p. 843: the added header's value"
+   }
+  },
   "WRITE": {
    "doc": "https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-write",
    "page": 844,
@@ -2419,11 +6966,16 @@
     "LENGTH": [
      "data-value",
      "sends"
+    ],
+    "DATASET": [
+     "filename",
+     "sends"
     ]
    },
    "notes": {
     "FROM": "the record written",
-    "RIDFLD": "p. 846: the key of the record written; with RBA or XRBA an output field set to the record's address"
+    "RIDFLD": "p. 846: the key of the record written; with RBA or XRBA an output field set to the record's address",
+    "DATASET": "SC34-7429 p. 647: the translator takes DATASET as a synonym for FILE"
    }
   },
   "WRITE JOURNALNAME": {

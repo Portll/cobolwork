@@ -223,13 +223,27 @@ test('a command is named with the option that tells it from its namesakes, and o
     ...cicsExec("SEND MAP('MAP1') MAPSET('SET1') FROM(WS-REC) ERASE"),
     ...cicsExec("READQ QUEUE('TSQ1') INTO(WS-REC) LENGTH(WS-LEN)"),
     ...cicsExec("WRITEQ TD QUEUE('CSSL') FROM(WS-REC)"),
-    ...cicsExec("INQUIRE FILE('CUSTF') OPENSTATUS(WS-RESP)"),
+    ...cicsExec("SPOOLOPEN OUTPUT NODE('CUSTF') TOKEN(WS-RESP)"),
   ]));
   assert.equal(callFor(r, 'CW-CICS-SEND-MAP'), "CALL 'CW-CICS-SEND-MAP' USING BY CONTENT 'MAP1' 'SET1' WS-REC BY REFERENCE DFHEIBLK");
   assert.equal(callFor(r, 'CW-CICS-READQ-TS'), "CALL 'CW-CICS-READQ-TS' USING BY CONTENT 'TSQ1' BY REFERENCE WS-REC WS-LEN DFHEIBLK");
   assert.equal(callFor(r, 'CW-CICS-WRITEQ-TD'), "CALL 'CW-CICS-WRITEQ-TD' USING BY CONTENT 'CSSL' WS-REC BY REFERENCE DFHEIBLK");
-  assert.equal(callFor(r, 'CW-CICS-INQUIRE'), "CALL 'CW-CICS-INQUIRE' USING BY CONTENT 'CUSTF' BY REFERENCE WS-RESP DFHEIBLK");
+  assert.equal(callFor(r, 'CW-CICS-SPOOLOPEN-OUTPUT'), "CALL 'CW-CICS-SPOOLOPEN-OUTPUT' USING BY CONTENT 'CUSTF' BY REFERENCE WS-RESP DFHEIBLK");
   assert.equal(r.stats.unknown, 1);
+});
+
+test('a command named by its words in order wins over an option that names another, and DATASET is FILE', () => {
+  const r = precompile(cicsProgram(CWS, [
+    ...cicsExec("INQUIRE TRANSACTION(WS-KEY) PROGRAM(WS-PGM)"),
+    ...cicsExec("WEB READ HTTPHEADER(WS-KEY) NAMELENGTH(WS-LEN) VALUE(WS-REC) VALUELENGTH(WS-RESP)"),
+    ...cicsExec("INQUIRE FILE('CUSTF') OPENSTATUS(WS-RESP)"),
+    ...cicsExec("READ DATASET(WS-PGM) INTO(WS-REC) RIDFLD(WS-KEY)"),
+  ]));
+  assert.equal(callFor(r, 'CW-CICS-INQUIRE-TRANSACTION'), "CALL 'CW-CICS-INQUIRE-TRANSACTION' USING BY REFERENCE WS-KEY WS-PGM DFHEIBLK");
+  assert.equal(callFor(r, 'CW-CICS-WEB-READ-HTTPHEADER'), "CALL 'CW-CICS-WEB-READ-HTTPHEADER' USING BY CONTENT WS-KEY WS-LEN BY REFERENCE WS-REC WS-RESP DFHEIBLK");
+  assert.equal(callFor(r, 'CW-CICS-INQUIRE-FILE'), "CALL 'CW-CICS-INQUIRE-FILE' USING BY CONTENT 'CUSTF' BY REFERENCE WS-RESP DFHEIBLK");
+  assert.equal(callFor(r, 'CW-CICS-READ'), "CALL 'CW-CICS-READ' USING BY CONTENT WS-PGM BY REFERENCE WS-REC WS-KEY DFHEIBLK");
+  assert.deepEqual([r.stats.unknown, r.stats.undirected], [0, 0]);
 });
 
 test('RECEIVE MAP without INTO writes the map\'s input record, and SEND MAP without FROM reads its output one', () => {
@@ -356,7 +370,8 @@ test('lib/cics-commands.mjs and the tables ironwork vendors are what provenance/
   const prov = JSON.parse(readFileSync(join(root, 'provenance', 'precompile.json'), 'utf8'));
   for (const [name, c] of Object.entries(prov.commands)) {
     assert.match(c.doc || '', /^https:\/\/www\.ibm\.com\/docs\//, `${name}: no IBM documentation URL`);
-    assert.ok(Number.isInteger(c.page), `${name}: no page in the reference`);
+    if (c.source === 'cics-api-6.x') assert.ok(prov.sources[c.source].topics.some((t) => t.url === c.doc), `${name}: its page is not among the hashed topics`);
+    else assert.ok(Number.isInteger(c.page), `${name}: no page in the reference`);
     for (const [option, [argument, direction]] of Object.entries(c.options)) {
       const plain = prov.argumentTypes.directions[argument];
       if (plain !== direction) assert.ok(c.notes?.[option], `${name} ${option}: a ${argument} that ${direction} needs a note saying why`);

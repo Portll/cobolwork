@@ -2,7 +2,9 @@
 
 A specification for `lib/precompile.mjs`, which translates embedded SQL and CICS into COBOL a compiler
 accepts and the flow engine reads, line for line. Status: step 1 (SQL) built, 2026-09-27; step 3
-(CICS) built, 2026-09-27, with its HANDLE branch unconfirmed until observed. The tables of verbs and
+(CICS) built, 2026-09-27, with its HANDLE branch unconfirmed until observed; step 4 (WEB, DOCUMENT,
+INQUIRE and SET, APPC and the asynchronous API) built and step 6 (`build --precompile`) built,
+2026-10-05. The tables of verbs and
 options are filled from IBM's documentation as each family is built, and nothing here is a copy of
 IBM's text or of another precompiler.
 
@@ -56,9 +58,11 @@ translated.
    A block opens at `EXEC SQL`, or at `EXEC` ending a line with `SQL` opening the next, which Db2's
    coprocessor allows; the corpus has no EXEC CICS split that way. A CICS command is named by the
    words of IBM's command name, `CW-CICS-SEND-MAP`, `CW-CICS-READQ-TS`, `CW-CICS-HANDLE-CONDITION`:
-   an option word tells a command from its namesakes (MAP makes SEND a SEND MAP), and where IBM's
-   syntax makes one the default it is taken (READQ is READQ TS). A command outside the table is named
-   by its verb and a following word that takes no argument, `CW-CICS-WEB-SEND`. Blocks are found
+   the longest name whose words follow the verb in order is taken first (`WEB READ HTTPHEADER`;
+   `INQUIRE TRANSACTION`, though a PROGRAM option follows), then an option word anywhere tells a
+   command from its namesakes (MAP makes SEND a SEND MAP), and where IBM's syntax makes one the
+   default it is taken (READQ is READQ TS). A command outside the table is named by its verb and a
+   following word that takes no argument, `CW-CICS-SPOOLOPEN-OUTPUT`. Blocks are found
    outside literals, and a literal continued onto a fixed-format continuation line resumes after the
    quote there; each program unit's own PROCEDURE DIVISION header says which of its blocks are
    statements.
@@ -79,8 +83,10 @@ translated.
    - Everything else is read, including every CONNECT operand.
 
    For CICS, from one table per command in `provenance/precompile.json`, read from each command's
-   syntax and option descriptions in the CICS TS 5.3 Application Programming Reference (SC34-7402)
-   with the page for each: a data-value, name, filename, systemname, hhmmss or ptr-value is sent, a
+   syntax and option descriptions in the CICS TS 5.3 Application Programming Reference (SC34-7402),
+   the INQUIRE and SET commands from the System Programming Reference (SC34-7429), with the page for
+   each, and the asynchronous API added after 5.3 (RUN TRANSID, FETCH, FREE CHILD) from IBM's CICS TS
+   6.x pages, hashed: a data-value, name, filename, systemname, hhmmss or ptr-value is sent, a
    ptr-ref received, a cvda received by ASSIGN and sent everywhere else it is taken, and a data-area
    received unless its option says it is also sent or only sent.
    - Sent only, though typed data-area: every FROM, TOKEN on REWRITE, DELETE and UNLOCK, RIDFLD on
@@ -93,6 +99,12 @@ translated.
      READNEXT, READPREV, RECEIVE, READQ TS, READQ TD and RETRIEVE, the maximum on the way in and the
      length on completion; FLENGTH on GET CONTAINER; ITEM on WRITEQ TS.
    - RESP and RESP2 receive on every command, and every option of ASSIGN and ADDRESS receives.
+   - INQUIRE returns its options, and the one naming the resource is both, since a browse's NEXT
+     returns the next name in it. SET is given its options. A cvda goes the way its description's
+     verb says (SC34-7429 p. 8): "specifies" sends, "returns" receives.
+   - Where a description says CICS returns a value in an option its syntax types data-value (WEB
+     RECEIVE STATUSCODE, DOCUMENT RETRIEVE LENGTH), the description decides, with a note.
+   - DATASET is the translator's synonym for FILE (SC34-7429 p. 647), and sends as FILE does.
    - RECEIVE MAP without INTO or SET writes the map's input record, `<map>I`, and SEND MAP without
      FROM or MAPONLY reads `<map>O`, as the reference says the name defaults, where the map is named
      by a literal.
@@ -200,7 +212,7 @@ translated.
 | 3 | CICS: file control, program control, RETURN, RESP; HANDLE CONDITION as `GO TO ... DEPENDING`, unconfirmed until observed; and what the probe showed common: BMS and terminal SEND and RECEIVE, TS and TD queues, time, storage, START and RETRIEVE, containers, counters, ASSIGN, ADDRESS, SYNCPOINT, ENQ and DEQ | cobc acceptance; commarea and transfer findings unchanged |
 | 4 | CICS: WEB and DOCUMENT, the system programming commands (INQUIRE, SET), the rest of terminal control | cobc acceptance; web and terminal flow findings unchanged |
 | 5 | The flow engine reads the CALLs instead of re-parsing blocks | every flow finding over the 500 set unchanged or explained |
-| 6 | `cobolwork build` precompiles before cobc | the build scenarios, with a CICS program |
+| 6 | `cobolwork build --precompile` checks each EXEC program's translation with the caller's cobc or gcobol before its compile runs (`build-gate.md` §8b) | the build scenarios B6.12 to B6.15, with a CICS program |
 
 Step 1, measured 2026-09-27 with `diag/precompile-probe.mjs` over the 500-repository set, up to 40
 programs a repository with EXEC SQL and no EXEC CICS or DLI: of 317, cobc accepts 98 translated
@@ -227,6 +239,13 @@ programs hold a command outside the table, the system programming SET and INQUIR
 error the translated CICS and mixed programs still meet the stand-in meets too; the commonest are
 names the program never declares (paragraphs and a KICKS routine), symbolic maps whose REDEFINES
 GnuCOBOL refuses, a DFHCOMMAREA group with no PICTURE, and copybooks no repository holds.
+
+Step 4, measured 2026-10-05 over the same 500 repositories: of 205,951 EXEC CICS blocks in 13,671
+files, the 255 in 34 commands the table lacked are 1, a misspelt ASKTTIME, and the 7,500 or so that
+name a file with DATASET pass it as FILE is passed. Every block a command of step 3 named still names
+it. `diag/precompile-probe.mjs` gives step 3's counts, 413 of 776 CICS programs, 113 of 198 mixed
+and 106 of 317 SQL-only: a command outside the table already compiled, with every name passed BY
+REFERENCE, so what step 4 changes is the direction step 5 reads.
 
 ## 5. Out of scope
 

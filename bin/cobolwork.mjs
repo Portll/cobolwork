@@ -295,7 +295,7 @@ if (opts.copylib && opts._.length && !COPYLIB_COMMANDS.includes(opts._[0])) {
 const notDirs = (opts.copylib || []).filter((d) => { try { return !statSync(d).isDirectory(); } catch { return true; } });
 if (notDirs.length) { process.stderr.write(`cobolwork: --copylib ${notDirs.join(', ')} is not a directory\n`); process.exit(2); }
 const systemDirs = opts.copylib || [];
-if (opts.pdsExport && opts._.length && !['scan', 'diff'].includes(opts._[0])) { process.stderr.write('cobolwork: --pds-export is for scan and diff\n'); process.exit(2); }
+if (opts.pdsExport && opts._.length && !['scan', 'diff', 'build'].includes(opts._[0])) { process.stderr.write('cobolwork: --pds-export is for scan, diff and build\n'); process.exit(2); }
 if (opts.pdsExport && opts.repos) { process.stderr.write('cobolwork: --pds-export reads one export; --repos does not apply\n'); process.exit(2); }
 if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
   process.stderr.write(`cobolwork: --json is for capabilities; every other command writes JSON unless --format says otherwise\n`);
@@ -413,7 +413,7 @@ try {
     if (opts.only || opts.repos) { process.stderr.write('cobolwork: build judges one repository with every rule set; --only and --repos do not apply\n'); process.exit(2); }
     if (opts.baseline) { process.stderr.write('cobolwork: build reads the baseline the change was written against; --baseline does not apply, --no-baseline does\n'); process.exit(2); }
     if (opts.head && !opts.base) { process.stderr.write('cobolwork: build --head needs --base\n'); process.exit(2); }
-    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs, equivalence: opts.equivalence || [], allowedSigners: opts.allowedSigners || null });
+    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs, equivalence: opts.equivalence || [], allowedSigners: opts.allowedSigners || null, pdsExport: opts.pdsExport === true });
     stampRevisions(result.doc.summary, opts.head || null);
     Object.assign(result.report.summary, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });
     Object.assign(result.provenance, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });

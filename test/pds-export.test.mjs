@@ -178,7 +178,7 @@ test('scan --pds-export reads the export, and the flag is refused where it does 
     const report = JSON.parse(r.stdout);
     assert.equal(report.summary.pdsExport.members, 2);
     assert.ok(report.findings.some((f) => f.rule === 'argv-or-env-to-os-command' && f.path === 'IBMUSER.COBOL/PAYCALC'));
-    for (const argv of [['build', dir, '--pds-export'], ['scan', dir, '--pds-export', '--repos']]) {
+    for (const argv of [['gate', dir, '--pds-export', '--base', 'HEAD', '--target', 'x'], ['scan', dir, '--pds-export', '--repos']]) {
       const refused = spawnSync(process.execPath, [CLI, ...argv], { encoding: 'utf8', env });
       assert.equal(refused.status, 2, argv.join(' '));
       assert.match(refused.stderr, /--pds-export/);

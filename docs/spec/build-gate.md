@@ -60,7 +60,7 @@ The terms of [`ruleset-contract.md`](ruleset-contract.md) §2 and
 ## 3. The command
 
 ```
-cobolwork build <repo> [--base <ref> [--head <ref>]] [--policy <file>] [--provenance <file>] [--advisories <file>[,<file>]] [--format json|sarif] [--out <file>] [--ironwork <path> | -- <compiler> <arg>…]
+cobolwork build <repo> [--base <ref> [--head <ref>]] [--policy <file>] [--provenance <file>] [--advisories <file>[,<file>]] [--format json|sarif] [--out <file>] [--pds-export] [--ironwork <path> | -- <compiler> <arg>…]
 ```
 
 `--advisories` loads an estate's own advisory extract, as `scan` does; a feed inside the tree is
@@ -75,6 +75,13 @@ knows about IBM Z only to its customers.
   pipeline whose compile step is elsewhere, which includes every z/OS build.
 - `--ironwork <path>` gives that pipeline a compile check before the mainframe: ironwork's `check`
   runs on every program on a pass (§8a). It and `--` are one or the other.
+- `--pds-export` judges a repository that holds a PDS export, each side read as `scan --pds-export`
+  reads it: findings, waivers and the provenance's source hashes name members as `DATA.SET/MEMBER`,
+  in both modes. The policy, site file and baseline stay files beside the members. Options come
+  from the members' option cards and the export's JCL, and `--ironwork` checks the members written
+  out under those names, every data set that is not JCL or maps a copy library. `--` is refused with
+  it, since a compiler's arguments name files, and equivalence is not run over an export: a policy
+  or `--equivalence` that asks for it leaves the build undecided.
 - The exit status is the verdict, because stopping the build is the command's purpose:
 
   | Exit | Meaning |

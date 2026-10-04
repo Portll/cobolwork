@@ -96,7 +96,8 @@ format"), and the test fixtures are built from them byte by byte, since no corpu
 naming over the revision's blobs in memory, and the working tree through `pdsExportTree`, limited to
 the members whose files git tracks or would track. A finding names the member on both sides, so a
 copybook changed in one data set is a layout change in the programs of another that copy it.
-`summary.pdsExport` holds each side's counts.
+`summary.pdsExport` holds each side's counts. `build --pds-export` reads each side the same way
+(build-gate.md §3), writing members out only for ironwork's check.
 
 One near-miss worth recording. Routing reads through the tree broke `programIds()` in the JCL set —
 a module-level helper with no tree in scope — and its `catch { continue }` **swallowed the

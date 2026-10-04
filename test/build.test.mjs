@@ -998,3 +998,46 @@ test('B9.6 The CI line names the verdict and counts blocking and advisory findin
   const r = cli(['build', repo({ 'P.cbl': OS_COMMAND, 'FTPSEND.jcl': FTP })]);
   assert.match(r.stderr, /^cobolwork build: fail; blocking 1 CRIT; advisory 1 MED$/m);
 });
+
+// A PDS export kept in git: members in directories named for their data sets, as zowe downloads them.
+const CLEAN = program('P', ['01 WS-IN PIC X(8).'], ['ACCEPT WS-IN FROM COMMAND-LINE', 'DISPLAY WS-IN', 'GOBACK.']);
+
+test('build --pds-export judges an export\'s members by their data set names', () => {
+  const root = repo({ 'ibmuser/cobol/oscmd.txt': OS_COMMAND, 'ibmuser/cobol/clean.txt': CLEAN });
+  try {
+    const doc = absolute(root, { pdsExport: true });
+    assert.equal(doc.verdict, 'fail');
+    assert.deepEqual(doc.blocking.map((f) => [f.rule, f.path]), [['argv-or-env-to-os-command', 'IBMUSER.COBOL/OSCMD']]);
+    assert.equal(doc.summary.pdsExport.head.members, 2);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('build --pds-export in ratchet mode reads both sides as exports, and a change to a member introduces what it adds', () => {
+  const root = repo({ 'ibmuser/cobol/pgm.txt': CLEAN });
+  try {
+    patch(root, { 'ibmuser/cobol/pgm.txt': OS_COMMAND });
+    const doc = ratchet(root, { pdsExport: true });
+    assert.deepEqual(doc.blocking.map((f) => [f.rule, f.path, f.introduced]), [['argv-or-env-to-os-command', 'IBMUSER.COBOL/PGM', true]]);
+    assert.deepEqual(Object.keys(doc.summary.pdsExport), ['base', 'head']);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('build --pds-export --ironwork checks the members written out under their names, each data set that is not JCL a copy library', { skip: process.platform === 'win32' && 'the stand-in ironwork is a shell script' }, () => {
+  const bad = program('BADPGM', ['01 WS-A PIC X.'], ['DISPLAY WS-A', 'GOBACK.']).replace('DISPLAY WS-A', 'DISPLAY BADNAME');
+  const root = repo({ 'ibmuser/cobol/badpgm.txt': bad, 'ibmuser/copylib/rec.txt': '       01 REC PIC X(8).\n' });
+  const iw = standInIronwork();
+  try {
+    const doc = absolute(root, { pdsExport: true, ironwork: iw.path });
+    assert.equal(doc.checks.compile, false);
+    assert.deepEqual(doc.compiled.failed.map((d) => d.path), ['IBMUSER.COBOL/BADPGM']);
+    assert.deepEqual(doc.compiled.argv, ['check', '<program>', '-I', 'IBMUSER.COBOL', '-I', 'IBMUSER.COPYLIB']);
+    assert.match(iw.runs()[0], /IBMUSER\.COBOL\/BADPGM -I \S+IBMUSER\.COBOL -I \S+IBMUSER\.COPYLIB/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('build --pds-export takes no compiler after --, whose arguments name files, not members', () => {
+  const root = repo({ 'ibmuser/cobol/clean.txt': CLEAN });
+  try {
+    assert.throws(() => build(root, { pdsExport: true, compiler: ['cobc', '-x'] }), /--ironwork/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});

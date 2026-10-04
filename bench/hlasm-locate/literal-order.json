@@ -1,0 +1,86 @@
+{
+ "z390": "1.8.4.4",
+ "symbols": {
+  "DATA1": {
+   "section": "FIRST",
+   "loc": 75,
+   "len": 1,
+   "type": "REL"
+  },
+  "DATA2": {
+   "section": "FIRST",
+   "loc": 76,
+   "len": 2,
+   "type": "REL"
+  },
+  "DATA3": {
+   "section": "FIRST",
+   "loc": 78,
+   "len": 3,
+   "type": "REL"
+  },
+  "DATA4": {
+   "section": "FIRST",
+   "loc": 84,
+   "len": 4,
+   "type": "REL"
+  },
+  "LA1": {
+   "section": "FIRST",
+   "loc": 0,
+   "len": 4,
+   "type": "REL"
+  },
+  "LA2": {
+   "section": "FIRST",
+   "loc": 4,
+   "len": 4,
+   "type": "REL"
+  },
+  "LA3": {
+   "section": "FIRST",
+   "loc": 8,
+   "len": 4,
+   "type": "REL"
+  },
+  "LA4": {
+   "section": "FIRST",
+   "loc": 12,
+   "len": 4,
+   "type": "REL"
+  },
+  "LA5": {
+   "section": "FIRST",
+   "loc": 16,
+   "len": 4,
+   "type": "REL"
+  },
+  "LA6": {
+   "section": "FIRST",
+   "loc": 20,
+   "len": 4,
+   "type": "REL"
+  },
+  "LA7": {
+   "section": "FIRST",
+   "loc": 24,
+   "len": 4,
+   "type": "REL"
+  },
+  "LENDATA4": {
+   "section": null,
+   "loc": 8,
+   "len": null,
+   "type": "ABS"
+  }
+ },
+ "instructions": {
+  "4": 4,
+  "5": 4,
+  "6": 4,
+  "7": 4,
+  "8": 4,
+  "9": 4,
+  "10": 4
+ }
+}

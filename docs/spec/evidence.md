@@ -24,10 +24,10 @@ digest, would have left both questions open.
 A COBOL estate has the same questions and fewer answers. Nothing records which copybook a program
 was built with, by digest; a copy library is searched by name and the first member found wins. A
 baseline suppression is a line in a file anyone with commit access can add. cobolwork's own reports
-are written and forgotten. PCI DSS v4.0.1 Requirement 10.3.4 asks for change detection on audit
-logs "to ensure that existing log data cannot be changed without generating alerts", and
-Delegated Regulation (EU) 2024/1774 Article 12 for "measures to protect logging systems and log
-information against tampering, deletion, and unauthorised access".
+are written and forgotten. NIST SP 800-53 AU-9 asks that audit information be protected from
+unauthorised modification and deletion, and Delegated Regulation (EU) 2024/1774 Article 12 for
+"measures to protect logging systems and log information against tampering, deletion, and
+unauthorised access".
 
 **cobolwork runs no model and opens no network connection here either.** Sealing, signing and
 anchoring use tools the operator already trusts (OpenSSH, cosign, OpenSSL, git), run as separate
@@ -57,7 +57,9 @@ cryptography.
   its own `ledger.jsonl` must not be able to supply the history its review is judged against.
 - **Refused through a symbolic link** at the directory or at any file cobolwork writes in it, as
   `baseline` refuses one today. Files are created with mode `0600`, the directory `0700`.
-- Layout: `ledger.jsonl`, `runs/<runId>.jsonl`, `seals/<seq>.dsse.json`, `ledger.lock` while held.
+- Layout: `ledger.jsonl`, `runs/<runId>.jsonl`, `seals/<seq>.dsse.json`, `seals/<seq>.tsq` (the RFC 3161
+  request last written for that seal), `ledger.lock` while held, `ledger.lock.break` while a stale
+  lock is broken.
 - `runId` is `<UTC yyyymmddThhmmssZ>-<16 hex random>`; the random half comes from
   `crypto.randomBytes`, never from time or pid.
 
@@ -83,6 +85,11 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
   A secrets finding carries its fingerprint and never its match. A path is relative to the root it
   was read under. The writer refuses a record with a key it does not know for that kind (§5), so
   a new field is a reviewed change to this document, not a silent addition.
+- **The kinds table.** `test/fixtures/evidence/kinds.tsv`, generated from the writer's table by
+  `diag/generate-evidence-kinds.mjs`, lists each kind, the file it belongs in, its fields and the
+  fields it requires. ironwork vendors it and tests the records its run journal writes against it.
+  `sinks.tsv` beside it, from the same script, lists the sink kinds `lib/dataflow.mjs` names. A sink
+  record joins a finding by its kind, so ironwork holds every sink it raises to that list.
 
 ## 5. The run journal
 
@@ -96,10 +103,10 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
 | `witness` | `fingerprint`, `outcome`, `who`, `when`, `system`, `sourceSha256` | once per witness entry applied |
 | `verdict` | `verdict`, `checks`, `relaxed`, `exit` | build and gate |
 | `output` | `name` (`report`, `sarif`, `provenance`, `sbom`, `baseline`), `sha256`, `bytes`, `path` or `stdout` | once per document written |
-| `close` | `exit`, `counts` (`input`, `finding`, `suppressed`, ...), `durationMs` | last |
+| `close` | `exit` (in an ironwork run journal, the program's RETURN-CODE, negative included), `counts` (`input`, `finding`, `suppressed`, ...), `durationMs`, `ledger` | last |
 
 ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence.rs`), with `tool`
-`ironwork` and three kinds of its own, so `evidence verify` reads both tools' journals:
+`ironwork` and kinds of its own, so `evidence verify` reads both tools' journals:
 
 | kind | fields | written |
 |---|---|---|
@@ -107,10 +114,17 @@ ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence
 | `call` | `program`, `from`, `sha256` | a program CALL loaded from a library, with its source's digest |
 | `abend` | `code`, `file`, `line` | the abend a run ended with |
 | `step` | `step`, `pgm`, `outcome` | a job step ironwork ran or bypassed, and how it ended (`RC=0004`, `ABEND S0C7: …`, `BYPASSED: …`, `JCL ERROR: …`) |
-| `sink` | `sink`, `file`, `line`, `marker`, `reached` | an operation an ironwork run with `--trace-marker` reached (ironwork `docs/evidence.md` §1.1): the sink kind as `lib/dataflow.mjs` names it, where it is, the marker, and whether the marker was in its operand; once reached and once not, never the operand |
+| `sink` | `sink`, `file`, `line`, `marker`, `reached`, `input` | an operation an input could steer, reached by an ironwork run: the sink kind as `lib/dataflow.mjs` names it and where it is. With `--trace-marker` (ironwork `docs/evidence.md` §1.1), the marker and whether it was in the operand, once reached and once not, never the operand. With `--trace-input` (§1.3), `input`: true where an input byte may be in the operand, false where none is, and null once the run has done something taint does not follow yet (SORT and MERGE, the Report Writer, XML and JSON, EXEC CICS, object-oriented COBOL, calls through pointers, Language Environment services), so such a sink cannot be cleared; a record for each value it first takes. `marker` and `reached` come together, and a record carries them, `input`, or both |
+| `statement` | `file`, `line`, `capped` | a statement an ironwork run with `--trace-statements` started, each time it started, at a line the trace names; `capped: true` on the hundredth record of one statement, after which it is not recorded again |
 
 A reason is recorded as its digest, not its text: a reason is free prose, and free prose is where a
 secret or a person's name ends up.
+
+`ledger` is `recorded` when the run held the ledger lock as it closed, so that its ledger record
+follows, and `unrecorded` when it did not. The `close` record is part of the tip the ledger records,
+so it is written before the ledger append and cannot report how the append went. Whether a run
+reached the ledger is what the ledger says: `verify` lists a journal no ledger record names as
+`unrecorded`, whatever its `close` says.
 
 A run that dies before `close` leaves a journal with no `close`. `verify` reports it as `open`,
 never as broken and never as complete.
@@ -119,15 +133,24 @@ never as broken and never as complete.
 
 One record per closed run: `{"v":1,"chain":<ledger chain>,"seq":n,"at":...,"kind":"run","run":"<runId>","runChain":"<chain>","runLength":n,"runTip":"<hash>","prev":...,"hash":...}`.
 
-- Appended under `ledger.lock`, taken with `open(O_CREAT|O_EXCL)`. A lock older than 60 seconds
-  whose holder pid is not alive is stale and is broken, and the break is itself a ledger record
-  (`kind: lock-broken`, the holder's pid and age). The wait is bounded at 5 seconds.
+- Appended under `ledger.lock`, taken with `open(O_CREAT|O_EXCL)`, then given the holder's pid and
+  time. A lock older than 60 seconds whose holder pid is not alive is stale and is broken, and the
+  break is itself a ledger record (`kind: lock-broken`, the holder's pid and age). A lock whose pid
+  or time cannot be read was left by a writer that died before writing them: it is aged from its
+  modification time, and broken with a `holderPid` of null. A stale lock is replaced, never
+  removed: the breaker takes `ledger.lock.break` with `open(O_CREAT|O_EXCL)`, gives it its pid and
+  time, checks the lock is still the file it judged stale (the same inode and contents), and
+  renames `ledger.lock.break` over it, so breaking the lock and taking it are one step. One writer
+  breaks at a time, and a lock a peer took after the stale one was read never leaves its path, so
+  no third writer can take the path while it is empty. A `ledger.lock.break` older than 60 seconds
+  whose holder pid is not alive was left by a breaker that died, and is removed. The wait is
+  bounded at 5 seconds.
 - If the lock cannot be had, the run journal stays where it is, its `close` record says
   `ledger: "unrecorded"`, the command's exit status is unchanged, and standard error says so. A
   lost ledger line is reported by `verify` as `unrecorded`; losing the run's own record would not be.
-- The ledger's first record is `kind: genesis` with its `chain` and `createdAt`. Rotation, when a
-  ledger passes 100,000 records, starts a new file whose genesis carries `rotatedFrom` (the old
-  file's name and tip); `verify` walks the rotation.
+- The ledger's first record is `kind: genesis` with its `chain` and `createdAt`. A ledger is one
+  file for its whole life: `verify` reads every record and every run journal a record names, so
+  splitting the file would not shorten a verification.
 
 ## 7. Seals
 
@@ -166,16 +189,23 @@ seal chain, not an absence.
 
 ## 8. Witnesses
 
-cobolwork writes what a witness needs and reads what a witness returns. It does not transport.
+cobolwork writes what a witness needs and reads what a witness returns. Its one transport is the
+git push `evidence anchor --anchor-git <repo> --push` makes when the operator asks for it; an RFC
+3161 request and a transparency-log entry travel by the operator's own tools.
 
 | Witness | Writing | Reading, in `verify` |
 |---|---|---|
-| git | `evidence anchor --git <repo>` copies the envelope to `<repo>/<ledger chain>/<seq>.dsse.json` and commits it there with `git` plumbing (argv, bounded). `--push` pushes the current branch and reports "committed, not pushed" on failure or timeout. | `--anchor-git <repo> [--ref <ref>]` reads `git show <ref>:<path>` for every seal; default ref `@{upstream}`, so a seal nobody pushed does not count. |
-| RFC 3161 | `evidence anchor --tsq <file>` writes a DER `TimeStampReq` over SHA-256 of the envelope, with a random nonce and `certReq` true. The operator posts it (`curl --data-binary @req.tsq -H 'Content-Type: application/timestamp-query' <tsa>`). | `--tsr <file>`: cobolwork checks the `messageImprint` and nonce itself, and the signature with `openssl ts -verify -in <tsr> -data <envelope> -CAfile <ca>`. No OpenSSL on `PATH`: `sealed` is `null` with that reason. |
-| Transparency log | The pipeline runs `cosign attest-blob` or `sign-blob --bundle` on the statement. | `--cosign-bundle <file>` with `--certificate-identity` and `--certificate-oidc-issuer`: `cosign verify-blob`. Keyless verification is never reimplemented here. |
+| git | `evidence anchor --anchor-git <repo>` copies the envelope to `<repo>/<ledger chain>/<seq>.dsse.json` and commits it there with `git` plumbing (argv, bounded). `--push` pushes the current branch and reports "committed, not pushed" on failure or timeout. | `--anchor-git <repo> [--ref <ref>] [--anchor-pin <commit>]` reads `git show <ref>:<path>` for every seal; default ref `@{upstream}`, so a seal nobody pushed does not count. `--anchor-pin` names the commit an earlier verification accepted (`witnessCommit`, kept by the pipeline outside the evidence directory): it must be in the ref's history, and every seal it held must be at the ref unchanged, or `sealed` is false. |
+| RFC 3161 | `evidence anchor --tsq <file>` writes a DER `TimeStampReq` over SHA-256 of the envelope, with a random nonce and `certReq` true, and keeps a copy as `seals/<seq>.tsq`. The operator posts it (`curl --data-binary @req.tsq -H 'Content-Type: application/timestamp-query' <tsa>`). | `--tsr <file> --tsa-ca <file>`: cobolwork reads the response itself, finds the seal its `messageImprint` names and checks the nonce against the kept request, then has OpenSSL check the authority's signature: `openssl ts -verify -in <tsr> -data <envelope> -CAfile <ca>`. An imprint that names no seal, another nonce or a signature OpenSSL refuses is `false`; no `--tsa-ca`, no kept request, or no OpenSSL on `PATH` is `null` with that reason. |
+| Transparency log | The pipeline runs `cosign sign-blob --bundle` on the seal envelope (`seal --out`). | `--cosign-bundle <file>` with `--certificate-identity` and `--certificate-oidc-issuer`, or `--cosign-key <file>` for a key-signed bundle: `cosign verify-blob` against each seal, newest first; `--trusted-root <file>` keeps cosign from fetching Sigstore's root, and `--insecure-ignore-tlog` accepts a bundle with no log entry, which the verdict reports. A bundle that verifies against no seal is `false`. Keyless verification is never reimplemented here. |
 
 Only the digest of an envelope leaves the evidence directory for an RFC 3161 authority or a
 transparency log; the envelope itself names a ledger chain and a length, nothing about the estate.
+
+A git witness is only as fixed as its branch. The anchor repository's branch must refuse force
+pushes and deletion (branch protection on the host), or whoever can push can rewrite it to match a
+cut ledger. A later commit that deletes seals needs no force push, so a pipeline also keeps
+`witnessCommit` from each verification and passes it back as `--anchor-pin`.
 
 ## 9. Verify
 
@@ -190,8 +220,10 @@ The verdict reports these separately and never merges them:
 | `unrecorded` | Run journals in `runs/` no ledger record names. |
 | `open` | Run journals with no `close`. |
 | `anchored` | The newest seal in `seals/` names the ledger at a length and tip the ledger has. `null` with no seal. |
-| `sealed` | `true`: a seal read from a witness names a ledger state this ledger contains, and its signature verifies against `--allowed-signers`. `false`: a witness contradicts the ledger. `null`: undetermined, with the reason. `null` never counts as a pass. |
+| `sealed` | `true`: a seal read from a witness names a ledger state this ledger contains, and its signature verifies against `--allowed-signers`. `false`: a witness contradicts the ledger. `null`: undetermined, with the reason. `null` never counts as a pass. With several witnesses, one that contradicts makes it `false`; otherwise one that confirms makes it `true`, and the newest seal any of them confirms sets `unsealedTail`. |
 | `unsealedTail` | Ledger records after the newest witnessed seal. |
+| `witnessCommit` | The commit the git witness's ref resolved to, for the next verification's `--anchor-pin`. |
+| `timeStamp`, `transparencyLog` | The seal an RFC 3161 response or a cosign bundle names, with the response's `genTime`, or whether the log entry was checked. |
 | `signatures` | Per seal: `keyid`, principal matched in allowed signers, `valid`. |
 
 SSHSIG verification (`ssh-ed25519`, `ecdsa-sha2-nistp256`) is done here with `node:crypto`
@@ -279,6 +311,9 @@ evidence.
    every output byte, the RETURN-CODE, the abend, and the SQL each issued. Its result is an in-toto
    statement, `predicateType ...ironwork/docs/evidence.md#equivalence-v1`, whose subjects are the
    base and head sources by digest, and whose verdict is `equivalent`, `diverged` or `inconclusive`.
+   A program that prints through CALL 'SYSTEM' with lp or lpr is compared with `--dd PRINTER=<file>`:
+   ironwork's virtual printer takes the print in place of the host, so a change that stops the
+   program printing diverges, and one that keeps the print is compared past it.
 3. **Coverage decides inconclusive.** A comparison whose inputs never reached a changed paragraph
    proves nothing about it; ironwork's coverage (E9) names the changed paragraphs the runs reached,
    and one left unreached makes the verdict `inconclusive`, never `equivalent`.
@@ -291,14 +326,20 @@ evidence.
    a program the change edits by the digests of its `base:` and `head:` subjects; a statement that
    matches no edited program fails the build. A program's statement satisfies the check when its
    verdict is `equivalent` or `equivalent-as-declared`, its coverage was measured and reached every
-   changed paragraph, and, with `--allowed-signers`, it is signed by one (`cobolwork evidence sign
-   <statement> --ssh-key <file>` wraps a statement in a DSSE envelope as seals are signed). The policy
+   changed paragraph, and it is signed by one of `--allowed-signers` (`cobolwork evidence sign
+   <statement> --ssh-key <file>` wraps a statement in a DSSE envelope as seals are signed). Where
+   equivalence may be required, a build with no `--allowed-signers` fails the check, since a
+   statement nobody signed could have been written by anyone who can commit; and the signers file,
+   like the policy floor, is refused inside the repository. The policy
    key `requireEquivalence` (`never`, `machineAuthored`, `always`; the stricter of floor and
    repository wins) says when every edited program needs one. `machineAuthored` reads the commits in
    `base..head`: an author, committer or `Co-authored-by`/`Generated-by` trailer naming a code
    assistant or bot makes the change machine-authored; commits that cannot be read leave the check
    undecided. A statement with `coverage: null` (the head did not run), or whose `coverage.unreached`
-   is not a list of paragraph names, is inconclusive under this check. A program whose bytes are
+   is not a list of paragraph names, is inconclusive under this check. cobolwork reads the base and
+   head itself for paragraphs whose own statements changed, positions left out as ironwork leaves
+   them out, and each must be in the statement's `coverage.changed`: a statement that leaves an
+   edited paragraph out of its scope has not held it to coverage. A program whose bytes are
    unchanged but whose copybooks the change edits counts as edited, and its statement's
    `closure.head` must hold each edited copybook's digest, so the statement shows the head run read
    the new copybook. A program the change deletes fails where equivalence is required: no statement
@@ -380,6 +421,65 @@ program no report covers, has no `executed`. The program a finding is in is the 
 or before its line. It annotates and does not re-rank: a paragraph the tests never enter is code
 nobody has seen run, and one they enter is code whose behaviour a change to it would show.
 
+### 13.6 Abends from fuzzing
+
+`COBOLWORK_ABENDS` names fuzz runs ironwork's harness wrote (several, separated as `PATH` is), of a
+batch program, a job or a CICS task (`ironwork fuzz --cics`, whose inputs are a COMMAREA and a
+terminal's screen script). A run
+is a directory: `manifest.json` (`tool: "ironwork-fuzz"`) names the program by its path in the scanned
+tree, the inputs, and each run that ended in an abend with `{ code, file, line, message }` and the
+journal that recorded it; `evidence/` holds those journals and their ledger. The `abend` set reports
+one finding per rule, file and line, with the smallest input that produced it, and only where the
+evidence directory verifies (§9) and the run's own journal records the abend code the manifest gives.
+Where the journal also records the abend's file and line, the finding is placed there, and a manifest
+that places it elsewhere is not believed. The file is named relative to the directory the run read
+it from. Where the manifest lists those directories (`roots`: the program's directory, then each
+library, by path in the scanned tree, numbered as the journal's `input` records number them), the
+finding goes under the one the journal's `input` record for that file names. A CALLed program's
+source has a `call` record instead, naming it by path and digest without its root: the finding goes
+under the root where the scanned tree holds that file with that digest, or the one root holding it
+at all. Without `roots` or either record, it goes under the program's directory. A file whose root
+cannot be told, or lies outside the scanned tree, is in `abendRunProblems`.
+Its rules are `execution` evidence: a run of the program on that input ended this way.
+A manifest's abend may carry `optimized`, whether a run of the same input with the program compiled
+at OPTIMIZE(2) ended in the same abend at the same place (ironwork's docs/evidence.md §5). IBM's
+optimizer may compare an unsigned zoned item with zero by its bytes where OPTIMIZE(0), its default,
+reads it as a number and ends in a data exception, so an abend with `optimized` false holds at
+OPTIMIZE(0) only. The finding's `abend` carries it and its detail says so; its rule and severity do
+not change. That run keeps no journal, so `optimized` rests on the manifest's word.
+
+| Rule | Severity | When |
+|---|---|---|
+| `input-causes-abend-s0c7` | med | the abend is S0C7, a data exception, or ASRA in a CICS task whose message ends `(S0C7, which CICS reports as ASRA)` |
+| `input-causes-abend-s0c4` | high | the abend is S0C4, a protection exception, or ASRA whose message ends `(S0C4, which CICS reports as ASRA)` |
+| `input-causes-abend-subscript-range` | high | the message starts with IGZ0006S, IGZ0007S, IGZ0072S, IGZ0073S or IGZ0074S: a subscript, index, OCCURS DEPENDING ON object or reference modification SSRANGE caught out of range |
+| `input-causes-hang` | med | the abend is S322: fuzz ran a timed-out input again under a statement limit and the run passed it, in a loop the empty input does not run and with ACCEPT not at the end of SYSIN. The run shows the loop passed the limit, not that it would never end, and the rule's CWE is 834 (excessive iteration) rather than 835 |
+| `input-selects-program` | high | the abend is S806, and the run's journal has a `sink` record of kind `dynamic-program-load` at the abend's file and line with `reached` true: the marker fuzz put in place of the called name reached the CALL. An S806 without that record is a problem, not a finding |
+| `input-causes-abend` | med | any other abend |
+
+A manifest's `format` names its shape, apart from the ironwork `version` that wrote it; ironwork's
+docs/fuzz-manifest.schema.json describes it. The set reads `ironwork-fuzz/v1`, and a manifest with no
+`format` as that shape, since ironwork 0.3.0 and earlier wrote none. Keys it does not know are
+skipped, because a key added keeps the format. A manifest in any other format is in
+`abendRunProblems`: its keys may mean something else.
+
+`ironwork-fuzz-interface/v1` is a subprogram fuzzed at its interface (ironwork docs/evidence.md
+§5.2): each input is an argument to a PROCEDURE DIVISION USING item, with its `position` and, for an
+OMITTED one, `omitted`. Its findings keep their rule and severity, and `abend.inputFrom` says
+`interface` (`entry` for every other run), with `abend.callers`, the CALLs its arguments were shaped
+by, from the manifest's `callers`. The detail says the program ran as a subprogram on its first call
+in its initial state, names those CALLs or says no CALL to it is in the scanned tree, and that no
+caller run shows a caller passes the bytes. `summary.byInputFrom` counts findings both ways, a SARIF
+result carries `inputFrom` among its properties, and the build gate warns on an interface finding
+unless the policy's `interface` key says `tier` (build-gate.md §4).
+
+An abend with code `IRONWORK`, `EXEC` (an EXEC statement with no database or region behind it) or
+`JAVA` is something ironwork does not run, counted as `notModelled` and never a finding. ironwork
+exits 244 for these. A manifest that cannot be read, evidence that does not verify, or a journal
+that does not record the claimed abend is in `abendRunProblems` and leaves the set incomplete. A
+program outside the scanned tree is refused, and a finding in a file the scanned tree does not hold
+is listed in `abendRunsElsewhere` instead of reported.
+
 ## 14. Specification (BDD)
 
 ### V1 - Records and journals
@@ -419,6 +519,14 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
     Given a journal of ironwork's open, input, dd, call, abend and close records
     Then  verify reports it verified, and a dd record with an event it does not know as broken
 
+#### V1.10 The kinds table ironwork vendors is the writer's
+    When  diag/generate-evidence-kinds.mjs runs
+    Then  it writes test/fixtures/evidence/kinds.tsv byte for byte, with every kind in the journal or the ledger
+
+#### V1.11 The sink kinds ironwork vendors are the flow engine's
+    When  diag/generate-evidence-kinds.mjs runs
+    Then  it writes test/fixtures/evidence/sinks.tsv byte for byte, listing every sink kind lib/dataflow.mjs names
+
 ### V2 - The ledger
 
 #### V2.1 Each closed run adds one ledger record carrying its tip
@@ -435,6 +543,20 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
 #### V2.4 A ledger whose last line is no record is not extended
     Given ledger.jsonl whose last line lacks a chain, or whose hash does not hold
     Then  the run is unrecorded and the ledger is unchanged
+
+#### V2.5 An empty lock is aged from its modification time
+    Given ledger.lock empty and last modified more than 60 seconds ago
+    Then  the run is recorded after a lock-broken record whose holderPid is null, and a fresh empty lock is waited for
+
+#### V2.6 A lock taken after a stale one was read is left alone
+    Given ledger.lock read as stale, then broken by a peer that took a new lock
+    Then  breaking the stale lock reports no break, and the peer's lock keeps its inode, contents and change time
+
+#### V2.7 A breaker's claim is held while it breaks, and removed once stale
+    Given ledger.lock stale and ledger.lock.break held by a running writer
+    Then  the stale lock is not broken
+    Given ledger.lock.break left more than 60 seconds ago by a writer that is not running
+    Then  the claim is removed, the stale lock is broken and the run is recorded
 
 ### V3 - Verify
 
@@ -508,6 +630,22 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
 
 #### V5.4 A time-stamp response for another digest does not seal
     Then  sealed is false and the reason names the message imprint
+
+#### V5.7 A time-stamp response for the seal and the nonce of its kept request seals
+    Given anchor --tsq, the authority's reply, and its CA certificate
+    Then  sealed is true and timeStamp names the seal; without --tsa-ca it is null, and with another CA false
+
+#### V5.8 A cosign bundle over a seal seals
+    Given a key-signed bundle over the seal envelope
+    Then  sealed is true and transparencyLog names the seal; a bundle over other bytes leaves sealed false
+
+#### V5.5 A witness rewritten past its pinned commit does not seal
+    Given two witnessed seals, the witness reset to drop the newer, and the ledger cut to the older
+    Then  sealed is true without --anchor-pin, and false with the commit that held both
+
+#### V5.6 A seal deleted from the witness after its pinned commit does not seal
+    Given a commit on top of the pinned one that removes the newer seal
+    Then  sealed is false and the reason names the seal
 
 ### V6 - Provenance
 
@@ -647,6 +785,18 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
     Given two statements for one change, one equivalent and one diverged, in either order
     Then  the build fails on equivalence, naming the diverged verdict
 
+#### V10.9 Without allowed signers a required statement does not pass
+    Given requireEquivalence always and an equivalent, measured statement, and no --allowed-signers
+    Then  the build fails on equivalence, saying nothing shows who wrote the statement
+
+#### V10.10 An allowed-signers file inside the repository is refused
+    When  --allowed-signers names a file in the repository being built
+    Then  the build exits 2
+
+#### V10.11 A statement whose coverage leaves out an edited paragraph does not pass
+    Given a change to the statements of paragraph CALC and a statement whose coverage.changed lists only REPORT
+    Then  the build fails on equivalence, naming CALC; listing CALC passes
+
 ### V11 - Execution coverage
 
 #### V11.1 A finding in a paragraph the runs entered says so
@@ -662,7 +812,8 @@ nobody has seen run, and one they enter is code whose behaviour a change to it w
 
 ## 15. Out of scope, deliberately
 
-- Transporting anything to a witness. cobolwork writes requests and reads responses.
+- Transporting to an RFC 3161 authority or a transparency log. cobolwork writes requests and reads
+  responses; the git push of `anchor --push` is the one transport it makes, and only when asked.
 - Keyless (Fulcio, Rekor) verification in-process. `cosign verify-blob` does it and is named.
 - Encrypting the evidence directory. Its records hold digests, fingerprints and paths; the reports
   it digests are the pipeline's to protect, as they are today.

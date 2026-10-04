@@ -1,0 +1,22 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. MAINP.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT IN-FILE ASSIGN TO INDD.
+       DATA DIVISION.
+       FILE SECTION.
+       FD IN-FILE.
+       01 IN-REC.
+          05 IN-QTY           PIC 9(5).
+       WORKING-STORAGE SECTION.
+       01 WS-EOF              PIC X VALUE 'N'.
+       PROCEDURE DIVISION.
+           OPEN INPUT IN-FILE
+           PERFORM UNTIL WS-EOF = 'Y'
+              READ IN-FILE AT END MOVE 'Y' TO WS-EOF
+              NOT AT END CALL 'SUBADD' USING IN-QTY
+              END-READ
+           END-PERFORM
+           CLOSE IN-FILE
+           GOBACK.

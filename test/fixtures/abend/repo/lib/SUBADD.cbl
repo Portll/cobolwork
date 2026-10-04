@@ -1,0 +1,10 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. SUBADD.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-TOTAL            PIC 9(7) VALUE 0.
+       LINKAGE SECTION.
+       01 LK-QTY              PIC 9(5).
+       PROCEDURE DIVISION USING LK-QTY.
+           ADD LK-QTY TO WS-TOTAL
+           GOBACK.

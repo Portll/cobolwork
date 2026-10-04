@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-xctl-by-a-list-entry",
+ "title": "An assembler stub executes a module whose name is read from a list entry provided by the caller",
+ "cwe": "CWE-470",
+ "expect": [
+  {
+   "rule": "hlasm-runtime-module-name",
+   "file": "XCTLBYLIST.asm"
+  }
+ ]
+}

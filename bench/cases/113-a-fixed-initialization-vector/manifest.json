@@ -1,0 +1,11 @@
+{
+ "id": "113-a-fixed-initialization-vector",
+ "title": "A program enciphers under CUSP with an all-zero initialization vector every time",
+ "cwe": "CWE-1204",
+ "expect": [
+  {
+   "rule": "icsf-fixed-initialization-vector",
+   "file": "FIXEDIV.cbl"
+  }
+ ]
+}

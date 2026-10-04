@@ -1,0 +1,9 @@
+{
+ "id": "107-a-client-connection-opened-with-tls",
+ "title": "The same connection opened with HTTPS",
+ "cwe": "CWE-319",
+ "expect": [],
+ "negativeFor": [
+  "web-client-opens-cleartext"
+ ]
+}

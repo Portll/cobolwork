@@ -381,6 +381,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-new-password",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Credential pattern: cics new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-protected-field-to-record-key",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -1070,6 +1083,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "credential-in-source",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A credential is written into the source. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "csd-defines-diagnostic-transaction",
    "framework": "dora",
    "clause": "Article 9(4)(c)",
@@ -1642,6 +1668,201 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "hlasm-calls-security-product",
+   "framework": "dora",
+   "clause": "Article 8(4)",
+   "title": "Identification",
+   "rationale": "The rule reports: Assembler source calls the security product directly. That is an interdependency between assets which no single file records, and mapping it is what this clause asks for.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-cross-memory-service",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Assembler source uses a cross-memory instruction, reaching another address space or another authority. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-executes-built-instruction",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Assembler source runs an instruction whose length or mask comes from a register at run time. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-provides-called-module",
+   "framework": "dora",
+   "clause": "Article 8(4)",
+   "title": "Identification",
+   "rationale": "The rule reports: An assembler CSECT or ENTRY is a module a COBOL program in this tree CALLs. That is an interdependency between assets which no single file records, and mapping it is what this clause asks for.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-supervisor-state-change",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-runtime-module-name",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Assembler source loads or calls a module whose name it reads from storage at run time. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-fixed-initialization-vector",
+   "framework": "dora",
+   "clause": "Article 9(3)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program enciphers through ICSF with an initialization vector that never changes. That risks the loss of data and the impairment of its integrity, which this clause requires be prevented.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "prevent the lack of availability, the impairment of the authenticity and integrity, the breaches of confidentiality and the loss of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-single-length-des-key",
+   "framework": "dora",
+   "clause": "Article 9(3)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program generates a single-length DES key through ICSF. That risks the loss of data and the impairment of its integrity, which this clause requires be prevented.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "prevent the lack of availability, the impairment of the authenticity and integrity, the breaches of confidentiality and the loss of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-weak-hash",
+   "framework": "dora",
+   "clause": "Article 9(3)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program hashes with MD5 or SHA-1 through ICSF. That risks the loss of data and the impairment of its integrity, which this clause requires be prevented.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "prevent the lack of availability, the impairment of the authenticity and integrity, the breaches of confidentiality and the loss of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts ends its run with an abend. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-hang",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is a technical flaw that may hinder business activity, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-selects-program",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts chooses the program a CALL loads. That is a technical flaw permitting unauthorised access, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c4",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts ends its run with a protection exception (S0C4). That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c7",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts ends its run with a data exception (S0C7). That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-subscript-range",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An input the program accepts drives a subscript or reference modification out of range, and the run abends. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "intermediate-result-loses-high-order-digits",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -2097,6 +2318,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-racf-new-password",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Credential pattern: jcl racf new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-racf-password",
    "framework": "dora",
    "clause": "Article 9(4)(d)",
@@ -2292,6 +2526,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "racf-command-new-password",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Credential pattern: racf command new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "racf-command-password",
    "framework": "dora",
    "clause": "Article 9(4)(d)",
@@ -2435,6 +2682,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "tso-logon-new-password",
+   "framework": "dora",
+   "clause": "Article 9(4)(d)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Credential pattern: tso logon new password. That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "tso-logon-password",
    "framework": "dora",
    "clause": "Article 9(4)(d)",
@@ -2461,6 +2721,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "web-client-opens-cleartext",
+   "framework": "dora",
+   "clause": "Article 9(3)(a)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A program opens an outbound HTTP connection without TLS. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "web-cookie-without-secure-attributes",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -2479,6 +2752,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A program writes a link that opens a new window with a handle back to this one. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-receive-length-exceeds-area",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A web receive lets CICS write more bytes than the area it writes into. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

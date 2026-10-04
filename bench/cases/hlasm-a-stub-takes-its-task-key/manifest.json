@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-a-stub-takes-its-task-key",
+ "title": "MODESET EXTKEY=TCB takes the key of the task it runs under, which grants no authority the task lacks",
+ "cwe": "CWE-250",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-supervisor-state-change"
+ ]
+}

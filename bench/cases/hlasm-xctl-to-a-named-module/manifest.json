@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-xctl-to-a-named-module",
+ "title": "An assembler stub executes a module with a fixed name, which is not a runtime module name",
+ "cwe": "CWE-470",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-runtime-module-name"
+ ]
+}

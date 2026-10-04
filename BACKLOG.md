@@ -34,15 +34,22 @@ came from, and what finishing it would show. Items leave this file when they lan
    (input reaching `XML PARSE`, low, since whether a DTD is honoured is the `XMLPARSE` option's and
    that is not read), `*-to-connection-target` (a Db2 location or MQ queue manager from input; one
    CGI program in the 500-repository corpus), and the CSRF rule now counting SQL changes and started
-   transactions. The handoff's `N4`, `N6`, `N8` and `N9` landed with them. Open: the `WEB RECEIVE`
-   half of `N-RECVLIMIT`, which nothing in the corpus reads; `TRANSFORM XMLTODATA`; and the rest of
-   `N-IDENTITY` and `N-CRYPTO`, ordered in section 6 of the design.
+   transactions. The handoff's `N4`, `N6`, `N8` and `N9` landed with them. The `WEB RECEIVE` half of
+   `N-RECVLIMIT` landed as `web-receive-length-exceeds-area`, and `N-CRYPTO`'s client side as
+   `web-client-opens-cleartext`, both measured over the 14 repositories in the 3,185-repository and
+   drive corpora that use `EXEC CICS WEB`. `N-CRYPTO`'s cipher half landed as the crypto set, read
+   from IBM's ICSF parameter lists, over its first witnesses: IBM's own sample in two GenApp forks
+   and an MD5 hash. `TRANSFORM XMLTODATA` and the rest of `N-IDENTITY` were measured and not built:
+   the design's section on each says why.
 
-   Its section 5a is the constraint on all of them: no repository in the 127-repository corpus uses
-   `EXEC CICS WEB` at all, against 42 that use `EXEC CICS` and 34 that send BMS maps, so every rule
-   over the CICS web API - `N-COOKIE`, `N-HEADERS`, `N-CSRF` and `N-XXE` - has a benchmark case and
-   no false-positive rate. That is the same gap already recorded for `BPXWDYN` and `DISPLAY UPON
-   CONSOLE` below, and it wants a practitioner's estate, not more public repositories. `N-BMS` is
+   Its section 5a is the constraint on the rest: no repository in the 127-repository corpus uses
+   `EXEC CICS WEB` at all, against 42 that use `EXEC CICS` and 34 that send BMS maps, so the rules
+   over the CICS web API - `N-COOKIE`, `N-HEADERS`, `N-CSRF` and `N-XXE` - had a benchmark case and
+   no false-positive rate. The 14 repositories that use it now give one: over them the web set
+   reports 21 `web-request-changes-state-without-a-token` in 9 repositories, 4
+   `web-uri-carries-a-credential` in 3, and 4 `cics-listener-accepts-cleartext` in 2, each to be read
+   for precision. Most of the 14 are demonstrations and modernisation projects, so a practitioner's
+   estate is still the better measure, as it is for `BPXWDYN` and `DISPLAY UPON CONSOLE` below. `N-BMS` is
    the opposite case and the best-witnessed rule of the twelve: 31 repositories commit BMS map
    source, 25,701 `DFHMDF` definitions in all, and 34 send maps from COBOL, so its join was measured
    before it was written. In CardDemo, of 362 named fields in the maps its programs receive, 204 are
@@ -62,19 +69,18 @@ A prospective client could not tell from a report which programs an attacker cou
 every path finding now carries an `exploitability` verdict ([`docs/spec/reach.md`](docs/spec/reach.md)
 §9). On `bench/cases` with no site file it labels 23 findings `attacker-driven` and 8 `upstream`, and
 none `exploitable`, because no repository says who may start a transaction. Each carries `fixAt`, a
-test the check model credits placed before the operation. It names the value at the operation, not
-the input before it was folded into a statement, so for a built SQL or command string the test it
-names is on the whole string; naming the input field instead is open. `diag/propose-site.mjs` lists
+test the check model credits placed before the operation, or, for a statement a `STRING` built,
+before the `STRING` on the field folded in. `diag/propose-site.mjs` lists
 the transactions and jobs to classify, with any listener or URI map in front of each; a program a
 server `URIMAP` serves is started by its alias transaction. The estate's own test results, brought
 as `COBOLWORK_WITNESS`, make a verdict `confirmed`. `explain` carries a verification plan per finding
 (reach.md §9.7): the entry, the map and field, a harmless value, and what to watch for; for a sink
 that acts it reads a marker at the operation and ends the task before it runs. What is left:
 
-1. **A measured rate per verdict.** `diag/score-corpus.mjs` gives one from the sealed key, which now
-   records each site's verdict, over the route half a public corpus can witness. The labels are
-   what is missing: the hand-labelled corpus below is not started, and until it is a verdict is a
-   claim over reading and records with no independent precision.
+1. **A narrower rate per verdict.** `bench/precision.mjs` measures precision per verdict from
+   execution labels (under precision, below): `attacker-driven` is 2.3% to 100% over the 500
+   held-out repositories, and every other verdict 0% to 100%. The ranges narrow as fewer findings
+   stay unknown: negatives from coverage (reach.md §9.8), then labels two models agree on.
 
 ## Vulnerability classes, in the order they can be measured
 
@@ -87,9 +93,10 @@ new rule declares an evidence kind and a compliance mapping, or an unmapped entr
 
 All five planned items landed on 2026-09-21. What they left open:
 
-1. **A hand-labelled flow corpus**, as below under precision - still the only thing that would
-   make any of these rules' precision a number with an independent witness. Seeded recall
-   (`bench/seed.mjs`) measures the other direction, against the planter's idea of the bug.
+1. **Precision on real code, narrowed.** These rules' precision comes from machine labels, under
+   precision below: execution labels from ironwork runs, and planted flaws and near-misses from
+   `bench/seed.mjs`, which also give seeded recall against the planter's idea of the bug. Most of
+   the rules are 0% to 100% until fewer of their findings stay unknown.
 
 2. **Bounds from data at rest - measured, and kept out.** Letting file records and database values
    into the bounds sinks produces at least 1,439 subscript findings and 75 reference-modification
@@ -144,26 +151,54 @@ reasons.
 
 ## Precision and coverage, measured
 
-**Execution labels, 2026-10-01 (roadmap 2.1, `bench/label.mjs`).** Over 495 of the 500 held-out
-repositories (5 stopped on the memory guard; rerun with `COBOLWORK_FREE_MEMORY_MB`), 683 path
-findings: 7 confirmed, every one `cics-terminal-to-log` (GenApp's LGSTSQ in five repositories,
-the health-API sample's HCAZERRS in two); the rest unknown, and why is what to build next:
-- 250 `jcl-instream` findings, all in one repository: feed a job's in-stream data through
-  `ironwork job`.
-- 310 sinks ironwork has no trace for: `dynamic-file-path` 160 (ASSIGN to a data item, which
-  ironwork does not run), then the storage sinks (`subscript` 52, `reference-modification` 37,
-  `loop-bound` 23, `occurs-depending-count` 18), witnessed by a range abend under SSRANGE with
-  one-past-the-end as the value; `message-queue` 11 (no MQ in ironwork).
-- 27 `argv-or-env`: GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT, which ironwork refuses as
-  not Enterprise COBOL; 12 `cics-protected-field`, which a terminal cannot type into.
-- 23 in programs ironwork does not compile; 14 BMS maps not in the repository.
-- 14 `cics-terminal-to-arithmetic` that ran through the operation without a data exception, not
-  yet read.
+**Execution labels, 2026-10-02 (roadmap 2.1, `bench/label.mjs`).** Cobolwork a874c0f, ironwork
+de2ee42, over the 500 held-out repositories with `COBOLWORK_FREE_MEMORY_MB=12288` (without it
+repositories stop on the memory guard): 1,896 path findings in 48 repositories, 1,265 of them in
+the research dataset, none incomplete. 34 confirmed, every one `cics-terminal-to-log` and two
+programs underneath (GenApp's LGSTSQ and the health-API sample's HCAZERRS, in 8 repositories'
+copies). The rest are unknown, and why is what to build next:
+- 709 sinks ironwork has no trace for: `dynamic-file-path` 689 (ASSIGN to a data item, which
+  ironwork does not run), `message-queue` 11 (no MQ in ironwork), `connection-target` 5,
+  `dynamic-sql` 4.
+- The storage sinks (`occurs-depending-count` 76, `reference-modification` 66, `subscript` 53,
+  `loop-bound` 23) are labelled by ironwork's SSRANGE abend, U4038, since ironwork 68f83d7. Of the
+  22 whose source the labeller feeds, none is confirmed yet. CardDemo's COMEN01C (7 copies) checks
+  the option against its menu size before the subscript, so nines never reach it. BankDemo's
+  SBANK10P (6) ends at its own ABEND 0001 first. The rest end on a construct ironwork does not run,
+  or their BMS is not in the repository. Of the other 196, 189 come from `argv-or-env`.
+- 551 sources not fed: `argv-or-env` 303, GnuCOBOL's ACCEPT FROM COMMAND-LINE and ENVIRONMENT,
+  which ironwork refuses as not Enterprise COBOL; `jcl-instream` 222, all in one repository,
+  through `ironwork job`; 12 `cics-protected-field`, which a terminal cannot type into;
+  `jcl-parm` 5, `database` 5, `cics-web` 4.
+- 326 in programs ironwork does not compile; 91 BMS maps not in the repository.
+- 109 operations that ran without the marker in the operand, 42 `cics-terminal-to-arithmetic`
+  that ran through without a data exception and 7 subscripts that ran without a range abend,
+  read as 19 distinct sites:
+  - 134 are one APPC program family (bhbandam's WB* programs, copied through the research
+    dataset). Each logs its input only when RECEIVE returns EOC, so from ironwork's 3270 script it
+    takes the error path. That is a limit of the harness, not of the finding.
+  - CardDemo's CSUTLDPY (12): the year is tested numeric in its own paragraph, which sets a flag
+    the caller reads before the DIVIDE. This is item 3's open case, a check through a flag, here
+    with a REDEFINES between the tested item and the one divided.
+  - CardDemo's COMEN01C subscript (7) is likely a true defect the run did not reach. After
+    rejecting an out-of-range option the program goes on to `CDEMO-MENU-OPT-USRTYPE(WS-OPTION)`
+    when the signed-on user is a regular user. The run started the menu with no COMMAREA, so the
+    user type was never set. A harness that starts from sign-on would reach it.
+  - GenApp's LGSTSQ queue name (5) is set from the input only when it begins `Q=`.
 
 Found on the way: `lib/sets/flow.mjs`'s `scan()` given a relative root returns no findings and
-reports its coverage complete (the CLI resolves roots, bench tools must); cobolwork reads no
-symbolic map from a `.bms` where ironwork builds one, so a program that copies a mapset with only
-its BMS source compiles in ironwork and has no terminal source in the scan.
+reports its coverage complete (the CLI resolves roots, bench tools must).
+
+**Precision from the labels, 2026-10-02 (roadmap 2.2, `bench/precision.mjs`).** The execution
+labels above and 225 planted ones (`bench/seed.mjs --per-operator 25 --skip volume`), every
+execution label joined to its finding's verdict by a fresh scan:
+- Execution: `cics-terminal-to-log` 12.6% to 100% (34 right, 236 unknown). Every other rule is 0%
+  to 100%: nothing it reported was confirmed or refuted.
+- By verdict: `attacker-driven` 2.3% to 100% (34 right of 1,507); `upstream` 328, `mitigated` 55
+  and `refuted` 6, all unknown.
+- Planted: `argv-or-env-to-os-command`, `argv-or-env-to-dynamic-program-load` and
+  `cics-commarea-without-length-check` 100% precision and 100% seeded recall, 100 flaws of 100
+  reported and 0 near-misses of 125.
 
 **The 500-repository run, 2026-09-26.** Every set over all 500 held-out repositories, with
 `COBOLWORK_FREE_MEMORY_MB=12288`; without it the same run read 156,184 of 274,087 files, because the
@@ -316,7 +351,11 @@ synthetic cases is not the same evidence. Three things it surfaced:
   makes it a flaw taken away. Every planted program is a label record (`labels` in `--out`, source
   `planted`) for per-rule precision from machine labels. Over the 500-repository corpus, 25 hosts
   per operator, `--skip volume`: 225 labels, 100 flaws and 125 near-misses. The first run found 67
-  flaws and reported 13 near-misses; with the three gaps below fixed, 100 and 1.
+  flaws and reported 13 near-misses; with the three gaps below fixed, 100 and 1; with hosts whose
+  call the analysis holds no facts at skipped (below), 100 and 0. A host whose `DFHCOMMAREA` a
+  copied 01 leaves with no storage is refused for the length check, since the rule rightly passes
+  over such an area; without `--skip volume`, three of volume-10k's generated ZAG programs were
+  taken and their six flaws counted as missed.
 
   | Operator | Variant | Label | First run | Fixed |
   |---|---|---|---|---|
@@ -324,7 +363,7 @@ synthetic cases is not the same evidence. Three things it surfaced:
   | | an EVALUATE lets two commands through (bench 062) | near-miss | 0 of 25 | 0 of 25 |
   | | the command line read, a literal command run (bench 002) | near-miss | 0 of 25 | 0 of 25 |
   | command line to the first literal `CALL` | the target read from the command line | flaw | 25 of 25 | 25 of 25 |
-  | | read, and `GOBACK` unless it names the program the call made | near-miss | 13 of 25 | 1 of 25 |
+  | | read, and `GOBACK` unless it names the program the call made | near-miss | 13 of 25 | 0 of 25 |
   | | the call through a field holding that program's name | near-miss | 0 of 25 | 0 of 25 |
   | `EIBCALEN` check removed | every test of it gone | flaw | 17 of 25 | 25 of 25 |
   | | gone, and `EIBCALEN` copied to a field nothing tests | flaw | 0 of 25 | 25 of 25 |
@@ -355,9 +394,15 @@ synthetic cases is not the same evidence. Three things it surfaced:
     what goes `BY CONTENT` or `BY VALUE`, is no longer written by a call unless it is `EXTERNAL`.
     Over the corpus: 2 findings fewer, both `file-record-to-dynamic-program-load` in
     `pingleware_apac-accounting-code`'s `JOB001`, whose program number is forced into five values
-    before a loop calls it. The one near-miss still reported calls from a paragraph nothing
-    performs (`CGS100`, `S7200-LINK-IG`); the analysis holds no facts where it cannot say the code
-    runs.
+    before a loop calls it.
+
+  The last near-miss reported was `CGS100`'s, whose first literal `CALL` sits in `S7200-LINK-IG`.
+  Nothing performs that paragraph; the program's main line ends by performing a paragraph that ends
+  in `EXIT PROGRAM`. `reached` (`lib/control.mjs`) lets `EXIT PROGRAM` carry on, so it counts the
+  paragraph reached, but the flow analysis's facts end at that `PERFORM` and hold none at the call,
+  so no check before it gets credit. The seeder now skips a host whose first literal `CALL` holds no
+  facts in an analysis that ran to completion (`CGS100` and `CALLDEMO.CBL`, which does `GOBACK`
+  first); `shoryataneja_DevOps-Bonus/token.cob` took `CGS100`'s place, and no near-miss is reported.
 
   Harness faults found on the way, each of which made a plant something other than its label:
   - The rule reports a communication area where it is declared, and a finding in a copybook of the
@@ -375,6 +420,50 @@ synthetic cases is not the same evidence. Three things it surfaced:
     which is not COBOL (`parserjs`). Such a program is no longer a host.
 
   The earlier 25 of 25 for the removed check was over a host set these filters change.
+
+- **Seeded labels for four more sinks: 2026-10-02.** `bench/seed.mjs` has four more operators,
+  each planting into the host's own code where it can: a command-line number used as a subscript
+  of the host's first fixed-size table, and as the start or length of a reference modification of
+  its first alphanumeric field; SQL text from the command line run by `EXECUTE IMMEDIATE` or
+  `PREPARE` in a program that already uses `EXEC SQL`; and terminal input naming the program of
+  the host's own first literal `XCTL` or `LINK`. The command-line operators skip CICS programs,
+  which may not `ACCEPT`, and the transfer operator's source is a terminal `RECEIVE` for the same
+  reason, so it measures `cics-terminal-to-cics-dynamic-transfer`. A transfer the analysis holds
+  no facts at is skipped, as a `CALL` is. Over the 500-repository corpus, 25 hosts per operator,
+  `--skip volume`: 375 new labels, 175 flaws and 200 near-misses. All seven operators together
+  give 600 labels, and with the gap below fixed 275 of 275 flaws and 0 of 325 near-misses are
+  reported.
+
+  | Operator | Variant | Label | First run | Fixed |
+  |---|---|---|---|---|
+  | command line to a subscript | the index read from the command line | flaw | 25 of 25 | 25 of 25 |
+  | | checked against the table's size only, so 0 passes | flaw | 25 of 25 | 25 of 25 |
+  | | checked against 1 and the table's size | near-miss | 0 of 25 | 0 of 25 |
+  | | the command line read, a literal index used | near-miss | 0 of 25 | 0 of 25 |
+  | command line to a reference modification | the start read from the command line | flaw | 25 of 25 | 25 of 25 |
+  | | the length read from the command line | flaw | 25 of 25 | 25 of 25 |
+  | | the start checked against 1 and the field's size | near-miss | 0 of 25 | 0 of 25 |
+  | | the command line read, a literal start used | near-miss | 0 of 25 | 0 of 25 |
+  | command line to dynamic SQL | the text run by `EXECUTE IMMEDIATE` | flaw | 25 of 25 | 25 of 25 |
+  | | the text prepared, then executed | flaw | 25 of 25 | 25 of 25 |
+  | | an `EVALUATE` lets `COMMIT` and `ROLLBACK` through | near-miss | 0 of 25 | 0 of 25 |
+  | | the input a host variable of a static `DELETE` | near-miss | 0 of 25 | 0 of 25 |
+  | terminal to the first literal `XCTL` or `LINK` | the program named by the terminal | flaw | 25 of 25 | 25 of 25 |
+  | | `GOBACK` unless it names the program the transfer named | near-miss | 2 of 25 | 0 of 25 |
+  | | the transfer through a field holding that program's name | near-miss | 0 of 25 | 0 of 25 |
+
+  One rule gap, fixed: the control analysis took every option of an `EXEC CICS` command but `FROM`
+  for a field the command may fill (`writtenBy`, `lib/control.mjs`), so `EXEC CICS LINK
+  PROGRAM(WS-PGM)` wrote the name it was given. Wherever a path through the analysis's graph comes
+  back to the `LINK`, as a loop does, that write removed the check made before it. The two false
+  alarms were Bank of Z's `BNK1CAC` and a copy of GenApp's `lgacdb01.cbl` whose file name starts
+  with a space; over those two repositories
+  alone, all eight `BNK1*` hosts reported the near-miss. The arguments the CICS API documents as
+  data-values - `PROGRAM` of `LINK`, `XCTL`, `LOAD` and `RELEASE`, `TRANSID` of `LINK`, `START`
+  and `RETURN`, `SYSID` of `LINK` and `START` - are no longer taken as written. A name inside the
+  `COMMAREA` the callee may change still is (`test/fixtures/guards/LINKAREA.cbl`). Over the corpus
+  with `COBOLWORK_FREE_MEMORY_MB=12288`, every repository read completely, the flow set gives the
+  same 3,003 findings and checked routes, at the same levels, before and after.
 
 - **The source budget is cumulative across a repository rather than per file**, so a repository
   stops being read partway through and which files survive depends on sort order. At the 64 MB
@@ -405,9 +494,12 @@ synthetic cases is not the same evidence. Three things it surfaced:
   they read the direction from `DISP`, so a step writing a member it opened `SHR` counts as a read.
   The utility table knows better for the utilities it covers, and the rules do not consult it yet.
 
-- **Hand-labelled flow corpus.** Flow precision is measured on benchmark cases this project wrote.
-  Fifty real programs from the 300-repository set, with reachability marked per sink by hand, would
-  make it a number with an independent witness. Not started. It gates any public precision claim.
+- **Machine labels for what stays unknown.** Precision comes from machine labels, not hand labels:
+  execution, negatives from coverage, planted, then two models. Execution and planted labels are in,
+  and each release publishes the table (under precision, above). Refuting a finding by coverage
+  needs a run that records the statements it executes and which operand bytes came from the input
+  (reach.md §9.8). Labels from two models wait on their accuracy, measured against the execution
+  labels.
 
 - **Outbound channels: what is read, and what is not followed.** "feat: data at rest leaving through
   an extrapartition queue or a service call is followed" added the queues the CSD sends to a DD and
@@ -468,11 +560,24 @@ that declares it rather than to whoever merged the findings. What that specifica
   `pdsExportTree` (roadmap 3.2). `diff`, `build` and the other commands do not take it yet, and
   XMIT and IEBCOPY unload files are not read.
 
-- **Scan time on very large programs.** A 1.6 GB repository of 17 MB programs
-  (joe-tingsanchali-sonarsource_cnafbadboy) does not finish a scan in 900 s and reaches 3.9 GB
-  resident, read from disk or from git. One of its programs parses in 1.25 s; there are 156 of them,
-  and more than one rule set parses each. Before this change `diff` refused it outright, because
-  `git cat-file` overflowed a 256 MB buffer.
+- **Scan time on very large repositories.** A scan reads and parses each program once for every
+  rule set (`94d6814`), and the flow engine keeps its graph compactly (`docs/spec/flow-graph.md`):
+  fact sets once per content as the facts they hold, edges as columns, one empty list for nodes with
+  no source or sink, one condition per content. Measured at `8c2664f`, before conditions were
+  shared:
+  - `FabioBonazza_test_unieuro_new`, 3,263 SQL programs: the flow set reads every program, in
+    2,764 s and 8.6 GB, with 62,435 findings. It stopped at the memory reserve after 2,626 before.
+    On one program in ten it takes twice as long since arithmetic intervals (`5d76dbd`), which repeat
+    the fact analysis up to 12 times per program.
+  - `joe-tingsanchali-sonarsource_cnafbadboy`, 156 programs of up to 17 MB: the flow set's time
+    grows faster than the program count, since its graph stays in the heap until every program is
+    read: 52 programs take 2.4 times as long as 26.
+
+  A copy of a program of 256 KiB or more reuses the original's control analysis: cnafbadboy's full
+  scan takes 589 s against 928 s. Call contexts are numbers rather than strings split at every
+  return edge, which took 43% of ACAS's flow time: its flow set takes 62 to 68 s against 83 to 87 s.
+  Open in the spec: workers. Fewer arithmetic rounds on a large program is a separate precision
+  decision.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,
@@ -498,16 +603,11 @@ only one of the five that does.
 - **Compliance.** DORA, NIST SP 800-53 and the FFIEC IT Examination Handbook ship. FFIEC's booklets
   refuse automated requests, so the PDFs were fetched by hand and extracted to `feed/sources/`;
   three of ten booklets are mapped and the other seven place obligations no static analysis can
-  evidence. PCI DSS and COBIT are different: their *text* cannot be redistributed (PCI SSC's terms
-  permit use "solely for your own personal, non-commercial" purposes and forbid preparing derivative
-  works), but a mapping of requirement numbers plus our own rationale is our work and can ship. The
-  blocker there is this project's own gate, which requires a verbatim quote. The way out is to ship
-  those mappings without quotes and have the customer drop their licensed copy into `feed/sources/`,
-  where the gate verifies locally against it.
-  COBIT 2019 now ships that way, as identifiers only (`rules/compliance-cobit2019.json`), on the
-  operator's ruling of 2026-09-30; its practice numbers have not yet been checked against a licensed
-  copy. PCI is still open: its permitted use says non-commercial, so caching it to build a mapping we
-  sell may itself need an arrangement with the Council. Ask them.
+  evidence. COBIT's *text* cannot be redistributed, but a mapping of practice numbers plus our own rationale is
+  our work and ships as identifiers only (`rules/compliance-cobit2019.json`, the operator's ruling
+  of 2026-09-30); its practice numbers have not yet been checked against a licensed copy. PCI DSS is
+  not mapped: PCI SSC's terms permit use "solely for your own personal, non-commercial" purposes and
+  forbid derivative works.
 
 - **Utility knowledge base.** `feed/worklists/utility.json` holds 34 targets and no rows have been
   generated. `feed/generate.mjs` has never been run against a real model. Ten of the targets'
@@ -544,19 +644,35 @@ only one of the five that does.
 
 ## Integration
 
-- **The remediation gate has a caller: commitwork's `cobolwork-remediate`** (commitwork 43217458,
-  `lib/cobolwork-remediation.mjs`). `cobolwork gate` passes a drafted patch only where the engine
-  says why its target left: a check that stops the route, or the statement or source gone and not
-  written back. It fails a patch that adds a finding, moves a layout another program reads, adds a
-  call target or edits the site file or baseline, and leaves a route cut mid-trace, or a scan the
-  memory guard stopped, to a person ([`docs/spec/remediation-gate.md`](docs/spec/remediation-gate.md)).
-  The caller builds each draft through a private index and gates `--head <sha>`, fences `reasons`
-  as untrusted text before a model sees them, stops at three attempts or a repeated draft, and
-  resweeps with `--target-only`. On 2026-09-30 the gate met a real compiler (GnuCOBOL 3.2.0 on
-  PATH): a batch fix that tests the value first passed with `compile` true, the same fix with a
-  misspelt scope terminator failed with `compile` false, and `--target-only` passed the fix on a
-  later revision where someone else had added a finding the full gate fails. No draft has run end to
-  end: commitwork's remediation policy is in report mode until an operator sets `hitl-item`, and its
-  drafter sends Qwen 3.8 no reasoning setting.
-- The mainframe credential rules are ready to offer upstream to gitleaks. The pull request is not
-  drafted, and cobolwork itself only prints their path.
+- **The gate cannot judge a sound fix to a command sink.** The reviewed fix to
+  `file-record-to-os-command` in manuelmrtz_Cobol-Exercises' CH7ASG02 runs a literal command that
+  reads the printer name from a quoted environment variable, and tests the name with a user-defined
+  `CLASS` before setting it. `cobolwork gate` leaves it undecided (`gone-unexplained`): the engine
+  follows the value into the environment and no further, and credits only a list of literals,
+  digits or a bound as a check on a command. Two changes would let it pass: a parameterised command
+  (a literal command reading a quoted variable set from a checked field) as a cut route, and a
+  class test over the field's full length as a restricting check. The fix and its HAZOP are in
+  commitwork-sidecar `evaluations/hazop_2026-10-01_ch7asg02-printer-command.md`.
+- **Four of the mainframe credential rules are offered to Betterleaks in a pull request awaiting
+  review** (betterleaks/betterleaks#379, from the fork Portll/betterleaks, closing issue #378).
+  gitleaks merges no new rules; its author's successor, Betterleaks, does. `jcl-racf-password`,
+  `jcl-racf-new-password`, `cobol-value-credential` and `embedded-sql-connect-password` are in
+  its v2 rule format. Over the 500 held-out repositories they report 23 findings in 9
+  repositories, all literal credentials: 22 COBOL `VALUE` clauses, one of them an API key whose
+  `VALUE` sits on the next line, and one `CONNECT ... USING`. Betterleaks' `generic-password` and
+  `generic-api-key` report none of them; on COBOL files `generic-password` reports field names as
+  values. The TSO, RACF and CICS rules are not in it: the corpus holds no instance of them.
+  Both the pull request (c8a6f66) and `rules/gitleaks-mainframe.toml` read a JCL password in
+  apostrophes, a password phrase, one continued past column 71, a new password in apostrophes, a
+  hexadecimal, national, DBCS, null-terminated, UTF-8 or continued COBOL `VALUE`, and a debugging
+  line (`D` in column 7); they skip a line with `/` in column 7 and a hexadecimal value under four
+  bytes. Each form is from IBM's manuals, not the corpus, which holds none of them: the count stays
+  23 under both Betterleaks and gitleaks. Betterleaks gives a multi-line `VALUE` the data name's
+  line, gitleaks the `VALUE` line.
+- **A gcobol patch is ready to send to GCC, and has not been sent.** In gcobol 16, FUNCTION
+  DISPLAY-OF crashes the compiler, and FUNCTION NATIONAL-OF compiles but does not link, because
+  libgcobol has no `__gg__national_of`. The patch reports both as unimplemented and accepts
+  NATIONAL-OF's one-argument form. Waiting on the operator: a sign-off under a known identity, and
+  the email to gcc-patches. GCC's AI policy caps LLM-written code at about 15 lines per person, so a
+  follow-up is written by hand. The patch, the Bugzilla drafts and the security evidence are kept
+  outside the history, in `.upstream/gcc-cobol/` (excluded by `.git/info/exclude`).

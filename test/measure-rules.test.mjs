@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readdirSync, copyFileSync, readFileSync, writeFileSync, statSync, rmSync, chmodSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, dirname } from 'node:path';
+import { join, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import './pin-machine.mjs';
 
@@ -149,6 +149,45 @@ test('--baseline refuses, before scanning, a file that records no findings', () 
   assert.equal(r.status, 2);
   assert.match(r.stderr, /records no findings/);
   assert.doesNotMatch(r.stderr, /copyA/, 'it stopped before reading any repository');
+}));
+
+// The temporary directory stands in for the drive, and the manifest lists the corpus as it was made.
+function manifestOf(corpus, dir) {
+  const lines = readdirSync(corpus, { recursive: true, withFileTypes: true }).filter((d) => d.isFile())
+    .map((d) => { const p = join(d.parentPath, d.name); return `F\t${p.slice(dir.length + 1).split(sep).join('/')}\t${statSync(p).size}\t0`; });
+  const file = join(dir, 'manifest.tsv');
+  writeFileSync(file, `${lines.join('\n')}\n`);
+  return ['--manifest', file, '--manifest-root', dir];
+}
+
+test('the corpus is checked against the drive manifest first: a difference warns, and --require-manifest refuses the run', () => inCorpus((corpus, dir) => {
+  const drive = manifestOf(corpus, dir);
+  const out = join(dir, 'run.json');
+  const agreed = measure(corpus, '--only', 'flow', ...drive, '--require-manifest', '--out', out);
+  ran(agreed);
+  const m = JSON.parse(readFileSync(out, 'utf8')).manifest;
+  assert.deepEqual([m.under, m.files, m.matched, m.agrees], ['corpus', 9, 9, true]);
+  assert.match(agreed.stdout, /^drive manifest: of the 9 files it lists under corpus, 9 are on disk at its size, 0 missing, 0 of another size; 0 on disk are not in it$/m);
+  assert.doesNotMatch(agreed.stderr, /warning/);
+
+  rmSync(join(corpus, 'copyB', 'P2.cbl'));
+  const warned = measure(corpus, '--only', 'flow', ...drive, '--out', out);
+  ran(warned);
+  assert.match(warned.stderr, /^measure-rules: warning: drive manifest: of the 9 files it lists under corpus, 8 are on disk at its size, 1 missing, .*; the first missing copyB\/P2\.cbl$/m);
+  assert.match(warned.stdout, /^drive manifest: .* 1 missing, .*; the first missing copyB\/P2\.cbl$/m);
+  assert.deepEqual(JSON.parse(readFileSync(out, 'utf8')).manifest.first, { missing: ['copyB/P2.cbl'] });
+
+  const refused = measure(corpus, '--only', 'flow', ...drive, '--require-manifest');
+  assert.equal(refused.status, 2);
+  assert.match(refused.stderr, /--require-manifest: drive manifest: .* 1 missing/);
+  assert.doesNotMatch(refused.stderr, /copyA/, 'it stopped before reading any repository');
+
+  const elsewhere = measure(corpus, '--only', 'flow', '--manifest-root', join(dir, 'none'), '--require-manifest');
+  assert.equal(elsewhere.status, 2);
+  assert.match(elsewhere.stderr, /--require-manifest: drive manifest not checked: the corpus root is not on /);
+  const noted = measure(corpus, '--only', 'flow', '--manifest-root', join(dir, 'none'));
+  ran(noted);
+  assert.match(noted.stdout, /^drive manifest not checked: the corpus root is not on .*none$/m);
 }));
 
 test('--skip naming a repository skips that one alone; a value naming none is a substring', () => inCorpus((corpus, dir) => {

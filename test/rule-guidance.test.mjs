@@ -7,7 +7,7 @@ import './pin-machine.mjs';
 // lets someone do, and the standard fix, the same for every instance. A rule that asserts no defect
 // - coverage, context - carries neither, because a remedy would imply a defect the tool declines to
 // claim. This holds the whole vocabulary to that split.
-const DEFECT = new Set(['path', 'construct', 'tampering', 'advisory', 'exposure']);
+const DEFECT = new Set(['path', 'construct', 'tampering', 'advisory', 'exposure', 'execution']);
 
 test('every defect rule states its impact and its remedy, and no info rule does', () => {
   for (const [id, r] of Object.entries(ALL_RULES)) {

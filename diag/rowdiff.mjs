@@ -14,7 +14,7 @@ mkdirSync(lstDir, { recursive: true });
 const lst = join(lstDir, 'rowdiff.lst');
 spawnSync('cobc', ['-fsyntax-only', '-frelax-syntax-checks', `-fformat=${fmt}`, '-t', lst, '-Xref', '-ftsymbols', ...inc.flatMap(d => ['-I', d]), file], { cwd: dirname(file) });
 const L = readFileSync(lst, 'latin1').split('\n');
-const re = new RegExp(`\\s${group}(\\s|,|$)`, 'i');
+const re = new RegExp(`\\s${group.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\s|,|$)`, 'i');
 const start = L.findIndex(l => /^\d{5,}\s/.test(l) && re.test(l));
 const w = [];
 for (let i = start; i >= 0 && i < L.length && w.length < 600; i++) {

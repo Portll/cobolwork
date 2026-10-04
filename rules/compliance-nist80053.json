@@ -390,6 +390,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: cics new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-protected-field-to-record-key",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -1079,6 +1092,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "credential-in-source",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: A credential is written into the source. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "csd-defines-diagnostic-transaction",
    "framework": "nist-800-53r5",
    "clause": "AC-6",
@@ -1651,6 +1677,201 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "hlasm-calls-security-product",
+   "framework": "nist-800-53r5",
+   "clause": "CM-8",
+   "title": "System Component Inventory",
+   "rationale": "The rule reports: Assembler source calls the security product directly. That is a component the inventory does not accurately account for, which this control requires be documented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Develop and document an inventory of system components"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-cross-memory-service",
+   "framework": "nist-800-53r5",
+   "clause": "AC-6",
+   "title": "Least Privilege",
+   "rationale": "The rule reports: Assembler source uses a cross-memory instruction, reaching another address space or another authority. That is authority granted or exercised beyond what the task requires, which this control exists to prevent.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Employ the principle of least privilege, allowing only authorized accesses for users (or processes acting on behalf of users) that are necessary to accomplish assigned organizational tasks."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-executes-built-instruction",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Assembler source runs an instruction whose length or mask comes from a register at run time. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-provides-called-module",
+   "framework": "nist-800-53r5",
+   "clause": "CM-8",
+   "title": "System Component Inventory",
+   "rationale": "The rule reports: An assembler CSECT or ENTRY is a module a COBOL program in this tree CALLs. That is a component the inventory does not accurately account for, which this control requires be documented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Develop and document an inventory of system components"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-supervisor-state-change",
+   "framework": "nist-800-53r5",
+   "clause": "AC-6",
+   "title": "Least Privilege",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That is authority granted or exercised beyond what the task requires, which this control exists to prevent.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Employ the principle of least privilege, allowing only authorized accesses for users (or processes acting on behalf of users) that are necessary to accomplish assigned organizational tasks."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "hlasm-runtime-module-name",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Assembler source loads or calls a module whose name it reads from storage at run time. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-fixed-initialization-vector",
+   "framework": "nist-800-53r5",
+   "clause": "SC-13",
+   "title": "Cryptographic Protection",
+   "rationale": "The rule reports: A program enciphers through ICSF with an initialization vector that never changes. That is cryptography too weak for the use it is put to, which this control requires be chosen for each use and implemented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Implement the following types of cryptography required for each specified cryptographic use"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-single-length-des-key",
+   "framework": "nist-800-53r5",
+   "clause": "SC-13",
+   "title": "Cryptographic Protection",
+   "rationale": "The rule reports: A program generates a single-length DES key through ICSF. That is cryptography too weak for the use it is put to, which this control requires be chosen for each use and implemented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Implement the following types of cryptography required for each specified cryptographic use"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "icsf-weak-hash",
+   "framework": "nist-800-53r5",
+   "clause": "SC-13",
+   "title": "Cryptographic Protection",
+   "rationale": "The rule reports: A program hashes with MD5 or SHA-1 through ICSF. That is cryptography too weak for the use it is put to, which this control requires be chosen for each use and implemented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Implement the following types of cryptography required for each specified cryptographic use"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts ends its run with an abend. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-hang",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts keeps a loop running past the statement limit that stands in for its time limit (S322). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-selects-program",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts chooses the program a CALL loads. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c4",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts ends its run with a protection exception (S0C4). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-s0c7",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts ends its run with a data exception (S0C7). That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "input-causes-abend-subscript-range",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An input the program accepts drives a subscript or reference modification out of range, and the run abends. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "intermediate-result-loses-high-order-digits",
    "framework": "nist-800-53r5",
    "clause": "SI-2",
@@ -2119,6 +2340,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-racf-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: jcl racf new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "job-loads-from-an-authorised-library",
    "framework": "nist-800-53r5",
    "clause": "AC-6",
@@ -2301,6 +2535,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "racf-command-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: racf command new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "racf-command-password",
    "framework": "nist-800-53r5",
    "clause": "IA-5",
@@ -2418,6 +2665,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "tso-logon-new-password",
+   "framework": "nist-800-53r5",
+   "clause": "IA-5",
+   "title": "Authenticator Management",
+   "rationale": "The rule reports: Credential pattern: tso logon new password. That is authenticator content established in a file rather than managed, which is what this control governs.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Establishing initial authenticator content for any authenticators issued by the organization"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "tso-logon-password",
    "framework": "nist-800-53r5",
    "clause": "IA-5",
@@ -2444,6 +2704,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "web-client-opens-cleartext",
+   "framework": "nist-800-53r5",
+   "clause": "SC-8",
+   "title": "Transmission Confidentiality and Integrity",
+   "rationale": "The rule reports: A program opens an outbound HTTP connection without TLS. That is information crossing a network with nothing protecting it, which this control requires be protected in transit.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Protect the {{ insert: param, sc-08_odp }} of transmitted information."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "web-cookie-without-secure-attributes",
    "framework": "nist-800-53r5",
    "clause": "SC-23",
@@ -2466,6 +2739,19 @@
     "doc": "nist80053",
     "retrieved": "2026-09-20",
     "quote": "Protect the authenticity of communications sessions."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "web-receive-length-exceeds-area",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A web receive lets CICS write more bytes than the area it writes into. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
    }
   },
   {

@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, dirname } from 'node:path';
+import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scan } from '../lib/sets/flow.mjs';
 import { scanAll } from '../lib/scan.mjs';
@@ -89,5 +89,21 @@ test('a scan that left programs unread says nothing about what starts the rest',
     const part = scan(dir, { maxSourceBytes: 1000 });
     assert.ok(part.summary.filesOverBudget > 0, 'the caller was left unread');
     assert.deepEqual(part.findings.filter((f) => f.rule === 'program-without-entry'), []);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('a relative root finds what the absolute root finds', () => {
+  const viaRelative = scan(relative(process.cwd(), FIXTURES));
+  assert.ok(report.findings.length > 0);
+  assert.deepEqual(viaRelative.findings, report.findings);
+  assert.equal(viaRelative.summary.coverageIncomplete, report.summary.coverageIncomplete);
+});
+
+test('a root with no source reports incomplete coverage', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'cw-empty-'));
+  try {
+    const r = scan(dir);
+    assert.equal(r.summary.nosrc, true);
+    assert.equal(r.summary.coverageIncomplete, true);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

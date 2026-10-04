@@ -1,0 +1,1178 @@
+{
+ "_comment": "ICSF callable services as COBOL calls them: each service's parameters in CALL ... USING order, its keywords in this project's words, and the IBM topic each was read from on the retrieved date. lib/sets/crypto.mjs reads the findings section, whose keywords are the ones each rule reports, with the reason each is weak.",
+ "retrieved": "2026-10-02",
+ "document": {
+  "title": "z/OS Cryptographic Services ICSF Application Programmer's Guide",
+  "number": "SC14-7508-60",
+  "edition": "June 2025, z/OS 3.1 (Cryptographic Support for z/OS 3.1, FMID HCR77E0)",
+  "product": "SSLTBW_3.1.0",
+  "library_url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=zos-cryptographic-services",
+  "pdf_url": "https://www.ibm.com/docs/en/SSLTBW_3.1.0/pdf/csfb400_icsf_apg_hcr77e0.pdf",
+  "content_api": "https://www.ibm.com/docs/api/v1/content/SSLTBW_3.1.0/com.ibm.zos.v3r1.csfb400/<page>.htm",
+  "not_consulted": "A z/OS 3.2 edition exists (SSLTBW_3.2.0); it was not read."
+ },
+ "conventions": {
+  "positions": "1-based positions in the COBOL CALL ... USING list; return_code is 1.",
+  "keywords": "Keywords are 8-byte fields, left-justified and blank-padded, unless noted. rule_array is contiguous 8-byte slots; rule_array_count says how many are filled.",
+  "weak_basis": "'ibm' marks a weakness IBM itself states (key size in bits, compliance-mode exclusion, 'strongly discouraged'). 'judgement' marks the analyser's own classification of an algorithm IBM documents neutrally.",
+  "sources": [
+   {
+    "title": "Callable service syntax",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=icsf-callable-service-syntax",
+    "fact": "COBOL form is CALL 'CSNBxxxx' USING return_code, reason_code, exit_data_length, exit_data, parameter_5 ... in the documented order; CSFxxxx names can be used in place of CSNBxxx."
+   },
+   {
+    "title": "Callable services with ALET parameters",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-callable-services-alet-parameters",
+    "fact": "CSNBxxx1 entry points take extra ALET parameters for data-space data; 64-bit ALET forms are CSNExxx1."
+   },
+   {
+    "title": "Resource names for CCA and ICSF entry points",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=zcsiapg-resource-names-cca-icsf-entry-points",
+    "fact": "Maps each CCA name (CSNB/CSNE) to ICSF names (CSF..., CSF...6 for 64-bit)."
+   },
+   {
+    "title": "COBOL",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=examples-cobol",
+    "fact": "IBM's COBOL sample calls CSNBKGN with key_form 'OP', key_length 'SINGLE', key_type_1 'DATA', then CSNBENC/CSNBDEC with rule 'CUSP' and an ICV of LOW-VALUES."
+   },
+   {
+    "title": "Impact of compliance mode on callable services",
+    "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=guide-impact-compliance-mode-callable-services",
+    "fact": "Under PCI-HSM 2016 compliance mode, single-length DES keys cannot be compliant-tagged; default DATA key tokens cannot be compliant-tagged; compliant-tagged keys cannot use the SHA-1 hash method (stated for RSA keys and certificates)."
+   }
+  ]
+ },
+ "services": [
+  {
+   "name": "CSNBKGN",
+   "title": "Key Generate (CSNBKGN and CSNEKGN)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=keys-key-generate-csnbkgn-csnekgn",
+   "entry_points": {
+    "31-bit": [
+     "CSNBKGN",
+     "CSFKGN"
+    ],
+    "64-bit": [
+     "CSNEKGN",
+     "CSFKGN6"
+    ],
+    "alet": null
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "key_form",
+    "key_length",
+    "key_type_1",
+    "key_type_2",
+    "KEK_key_identifier_1",
+    "KEK_key_identifier_2",
+    "generated_key_identifier_1",
+    "generated_key_identifier_2"
+   ],
+   "positions": {
+    "key_form": 5,
+    "key_length": 6,
+    "key_type_1": 7,
+    "key_type_2": 8,
+    "KEK_key_identifier_1": 9,
+    "KEK_key_identifier_2": 10,
+    "generated_key_identifier_1": 11,
+    "generated_key_identifier_2": 12
+   },
+   "keywords": {
+    "key_form": {
+     "_field": "4-byte, left-justified, blank-padded (IBM's COBOL sample declares it PIC X(08)). First two characters describe key 1, last two key 2.",
+     "OP": "One key wrapped under the master key, usable locally. Required form for AES keys.",
+     "IM": "One key wrapped under an importer KEK, to be imported here later.",
+     "EX": "One key wrapped under an exporter KEK, to be sent to another system.",
+     "OPOP": "Two operational keys with the same clear value, normally different control vectors.",
+     "OPIM": "Same clear value: one operational, one importable.",
+     "OPEX": "Same clear value: one operational, one exportable.",
+     "IMIM": "Same clear value: both importable.",
+     "IMEX": "Same clear value: one importable, one exportable.",
+     "EXEX": "Same clear value: both exportable."
+    },
+    "key_length": {
+     "_field": "8-byte, left-justified, blank-padded. Required.",
+     "SINGLE": "DES, 8-byte single-length key (56-bit).",
+     "KEYLN8": "Same as SINGLE: DES single-length 8-byte key.",
+     "SINGLE-R": "DES 16-byte key whose two halves are identical, so it behaves as a single-length key. Needs the 'Key Generate - SINGLE-R' access control point.",
+     "DOUBLE": "DES 16-byte key; the halves are not guaranteed to differ.",
+     "KEYLN16": "With a DES key_type_1: double-length DES key like DOUBLE. With key_type_1 AESDATA or AESTOKEN: 128-bit AES key.",
+     "DOUBLE-O": "DES 16-byte key with halves guaranteed to differ.",
+     "KEYLN24": "With DES key type DATA only: triple-length key in a version 1 token with an all-zero control vector. With AESDATA/AESTOKEN: 192-bit AES key.",
+     "TRIPLE": "DES 24-byte key; the three parts are not guaranteed to differ. For DATA, a version 0 token with a DATA control vector.",
+     "TRIPLE-O": "DES 24-byte key with three distinct parts.",
+     "KEYLN32": "AES only: 256-bit key."
+    },
+    "key_type_1": {
+     "_field": "8-byte, left-justified, blank-padded.",
+     "AESDATA": "Generate an AES DATA key; generated_key_identifier_1 is ignored.",
+     "AESTOKEN": "Generate an AES DATA key using an AES token supplied in generated_key_identifier_1; key_length sets the size.",
+     "TOKEN": "Key type is taken from the control vector of the token in generated_key_identifier_1; for DATA, key_length still sets the length. Not resolvable from the CALL alone.",
+     "_des_types": [
+      "CIPHER",
+      "CIPHERXI",
+      "CIPHERXL",
+      "CIPHERXO",
+      "DATA",
+      "DATAC",
+      "DATAM",
+      "DATAMV",
+      "DECIPHER",
+      "ENCIPHER",
+      "EXPORTER",
+      "IKEYXLAT",
+      "IMPORTER",
+      "IPINENC",
+      "MAC",
+      "MACVER",
+      "OKEYXLAT",
+      "OPINENC",
+      "PINGEN",
+      "PINVER"
+     ],
+     "_token_only_types": [
+      "CVARDEC",
+      "CVARENC",
+      "CVARPINE",
+      "CVARXCVL",
+      "CVARXCVR",
+      "DATAC",
+      "DKYGENKY",
+      "KEYGENKY"
+     ],
+     "_token_only_note": "These types are requested by passing TOKEN with a skeleton token carrying the right control vector."
+    },
+    "key_type_2": {
+     "_field": "8-byte, left-justified, blank-padded. Used only for key pairs and only for DES; ignored when one key is generated.",
+     "_values": [
+      "CIPHER",
+      "CIPHERXI",
+      "CIPHERXL",
+      "CIPHERXO",
+      "DATA",
+      "DATAC",
+      "DATAM",
+      "DATAMV",
+      "DECIPHER",
+      "ENCIPHER",
+      "EXPORTER",
+      "IKEYXLAT",
+      "IMPORTER",
+      "IPINENC",
+      "MAC",
+      "MACVER",
+      "OKEYXLAT",
+      "OPINENC",
+      "PINGEN",
+      "PINVER",
+      "TOKEN"
+     ]
+    }
+   },
+   "single_length_des": {
+    "key_length_keywords": [
+     "SINGLE",
+     "KEYLN8",
+     "SINGLE-R"
+    ],
+    "condition": "key_type_1 is a DES type (anything except AESDATA/AESTOKEN). SINGLE-R gives a 16-byte token whose effective strength is single DES.",
+    "key_types_allowing_single_or_keyln8": [
+     "DATA",
+     "MAC",
+     "MACVER",
+     "CIPHER",
+     "DECIPHER",
+     "ENCIPHER",
+     "CVARDEC",
+     "CVARENC",
+     "CVARPINE",
+     "CVARXCVL",
+     "CVARXCVR"
+    ],
+    "key_types_where_single_is_the_table_default": [
+     "DATA",
+     "MAC",
+     "MACVER",
+     "CIPHER",
+     "DECIPHER",
+     "ENCIPHER"
+    ],
+    "key_types_allowing_single_r": [
+     "DATAC",
+     "DATAM",
+     "DATAMV",
+     "DKYGENKY",
+     "KEYGENKY",
+     "EXPORTER",
+     "IMPORTER",
+     "IKEYXLAT",
+     "OKEYXLAT",
+     "IPINENC",
+     "OPINENC",
+     "PINGEN",
+     "PINVER",
+     "MAC",
+     "MACVER",
+     "CIPHER",
+     "DECIPHER",
+     "ENCIPHER"
+    ]
+   },
+   "weak": {
+    "SINGLE": {
+     "basis": "ibm",
+     "why": "56-bit single DES key; IBM's compliance appendix says single-length keys cannot be compliant-tagged."
+    },
+    "KEYLN8": {
+     "basis": "ibm",
+     "why": "Synonym of SINGLE."
+    },
+    "SINGLE-R": {
+     "basis": "ibm",
+     "why": "IBM: the replicated halves make it effectively a single-length key."
+    },
+    "DOUBLE": {
+     "basis": "judgement",
+     "why": "Two-key triple DES; IBM does not guarantee distinct halves (DOUBLE-O does)."
+    },
+    "KEYLN16": {
+     "basis": "judgement",
+     "why": "Two-key triple DES only when key_type_1 is a DES type; 128-bit AES with AESDATA/AESTOKEN is not weak."
+    }
+   },
+   "notes": "key_length alone does not decide the algorithm: KEYLN16 and KEYLN24 mean DES or AES depending on key_type_1 (AES only with AESDATA/AESTOKEN). A single-DES key generated here makes any later CSNBENC/CSNBDEC/CSNBSYE/CSNBSYD call with that key run single DES, because those services pick DES vs TDES from the key's length. With key_type TOKEN the type comes from a skeleton token at run time. IBM's own COBOL sample generates an OP SINGLE DATA key.",
+   "doc_quirks": [
+    "The AES key-length table spells the keywords KEYLEN16/KEYLEN24/KEYLEN32; the key_length parameter table spells them KEYLN16/KEYLN24/KEYLN32.",
+    "The DES key-length table marks a 'default' length per key type although the key_length text says a value must be supplied."
+   ]
+  },
+  {
+   "name": "CSNBKGN2",
+   "title": "Key Generate2 (CSNBKGN2 and CSNEKGN2)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=keys-key-generate2-csnbkgn2-csnekgn2",
+   "entry_points": {
+    "31-bit": [
+     "CSNBKGN2",
+     "CSFKGN2"
+    ],
+    "64-bit": [
+     "CSNEKGN2",
+     "CSFKGN26"
+    ],
+    "alet": null
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "rule_array_count",
+    "rule_array",
+    "clear_key_bit_length",
+    "key_type_1",
+    "key_type_2",
+    "key_name_1_length",
+    "key_name_1",
+    "key_name_2_length",
+    "key_name_2",
+    "user_associated_data_1_length",
+    "user_associated_data_1",
+    "user_associated_data_2_length",
+    "user_associated_data_2",
+    "key_encrypting_key_identifier_1_length",
+    "key_encrypting_key_identifier_1",
+    "key_encrypting_key_identifier_2_length",
+    "key_encrypting_key_identifier_2",
+    "generated_key_identifier_1_length",
+    "generated_key_identifier_1",
+    "generated_key_identifier_2_length",
+    "generated_key_identifier_2"
+   ],
+   "positions": {
+    "rule_array_count": 5,
+    "rule_array": 6,
+    "clear_key_bit_length": 7,
+    "key_type_1": 8,
+    "key_type_2": 9
+   },
+   "keywords": {
+    "rule_array_count": "2, 3 or 4.",
+    "rule_array": {
+     "HMAC": "Algorithm (required group): generate an HMAC key.",
+     "AES": "Algorithm (required group): generate an AES key.",
+     "OP": "Key form (required group): one operational key.",
+     "IM": "Key form: one importable key.",
+     "EX": "Key form: one exportable key.",
+     "OPOP": "Key form: pair with the same clear value.",
+     "OPIM": "Key form: operational plus importable.",
+     "OPEX": "Key form: operational plus exportable.",
+     "IMIM": "Key form: both importable.",
+     "IMEX": "Key form: importable plus exportable.",
+     "EXEX": "Key form: both exportable.",
+     "V0PYLDK1": "Optional: old variable-length payload format for key 1 (AES CIPHER/EXPORTER/IMPORTER only).",
+     "V1PYLDK1": "Optional: fixed-length payload format for key 1.",
+     "V0PYLDK2": "Optional: old variable-length payload format for key 2.",
+     "V1PYLDK2": "Optional: fixed-length payload format for key 2."
+    },
+    "clear_key_bit_length": "Integer: 80 to 2048 bits for HMAC; 128, 192 or 256 for AES. Overrides the token's length when key_type is TOKEN.",
+    "key_type_1": {
+     "CIPHER": "AES",
+     "EXPORTER": "AES",
+     "IMPORTER": "AES",
+     "MAC": "HMAC",
+     "MACVER": "HMAC",
+     "TOKEN": "Type taken from the associated data of the token in generated_key_identifier_1."
+    },
+    "key_type_2": {
+     "CIPHER": "AES",
+     "EXPORTER": "AES",
+     "IMPORTER": "AES",
+     "MAC": "HMAC",
+     "MACVER": "HMAC",
+     "TOKEN": "Type taken from the token in generated_key_identifier_2; ignored for a single key."
+    }
+   },
+   "can_generate_single_des": false,
+   "weak": {
+    "HMAC with small clear_key_bit_length": {
+     "basis": "judgement",
+     "why": "IBM allows HMAC keys down to 80 bits."
+    }
+   },
+   "notes": "Exists. Generates only AES and HMAC keys in variable-length tokens wrapped with AESKW; the only algorithm keywords are HMAC and AES, so it cannot produce a DES key of any length. A single DES key needs CSNBKGN."
+  },
+  {
+   "name": "CSNBENC",
+   "title": "Encipher (CSNBENC or CSNBENC1 and CSNEENC or CSNEENC1)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=data-encipher-csnbenc-csnbenc1-csneenc-csneenc1",
+   "entry_points": {
+    "31-bit": [
+     "CSNBENC",
+     "CSFENC"
+    ],
+    "64-bit": [
+     "CSNEENC",
+     "CSFENC6"
+    ],
+    "alet": {
+     "31-bit": [
+      "CSNBENC1",
+      "CSFENC1"
+     ],
+     "64-bit": [
+      "CSNEENC1",
+      "CSFENC16"
+     ],
+     "extra_parameters": [
+      "clear_text_id",
+      "cipher_text_id"
+     ]
+    }
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "key_identifier",
+    "text_length",
+    "clear_text",
+    "initialization_vector",
+    "rule_array_count",
+    "rule_array",
+    "pad_character",
+    "chaining_vector",
+    "cipher_text"
+   ],
+   "positions": {
+    "key_identifier": 5,
+    "text_length": 6,
+    "clear_text": 7,
+    "initialization_vector": 8,
+    "rule_array_count": 9,
+    "rule_array": 10,
+    "pad_character": 11,
+    "chaining_vector": 12,
+    "cipher_text": 13
+   },
+   "keywords": {
+    "rule_array_count": "1, 2 or 3.",
+    "rule_array_layout": "Positional: slot 1 processing rule; slot 2 ICV selection; slot 3 algorithm. If the ICV selection is omitted (defaults to INITIAL), the algorithm moves to slot 2.",
+    "processing_rule": {
+     "CBC": "Plain CBC (NIST SP 800-38A); text must be a multiple of 8 bytes; output same length.",
+     "CUSP": "CBC compatible with IBM CUSP/PCF; any length, output same length; a trailing short block is XORed with the re-enciphered previous ciphertext block, and a text under 8 bytes is XORed with the enciphered ICV.",
+     "IPS": "CBC compatible with IBM IPS record chaining; any length, output same length; short blocks are enciphered as in CUSP, but the OCV is built from the ciphertext rather than a re-enciphered block, so it can chain records.",
+     "X9.23": "CBC with ANSI X9.23 padding of 1 to 8 bytes; always pads.",
+     "4700-PAD": "CBC padded with the caller's pad_character plus a one-byte count; output is a multiple of 8."
+    },
+    "icv_selection": {
+     "INITIAL": "Default. ICV comes from initialization_vector.",
+     "CONTINUE": "ICV comes from the OCV saved in chaining_vector by the previous call. Only with CBC, IPS, CUSP."
+    },
+    "algorithm": {
+     "TOKEN": "Default. Use the algorithm marked in the DATA key token.",
+     "DES": "Use DES and ignore the token's marking."
+    },
+    "not_present": [
+     "ECB",
+     "AES"
+    ]
+   },
+   "algorithms": "DES family only. key_identifier is a 64-byte DES token of type DATA, CIPHER or ENCIPHER, a label, or an X9.143 DES/TDES block.",
+   "single_vs_triple_des": "Chosen by the length of the key in key_identifier: single-length gives single DES; double- or triple-length gives triple DES. No rule-array keyword selects it.",
+   "icv": "8-byte initialization_vector. Encipher XORs it into the first 8 bytes of plaintext before encryption; each ciphertext block is then XORed into the next plaintext block. The OCV (first 8 bytes of the 18-byte chaining_vector work area) can be passed as the next call's ICV, or picked up with CONTINUE, to chain records. The same ICV must be used to decipher.",
+   "weak": {
+    "single-length key in key_identifier": {
+     "basis": "ibm",
+     "why": "Runs single DES (56-bit); see CSNBKGN SINGLE/KEYLN8/SINGLE-R."
+    },
+    "any call": {
+     "basis": "judgement",
+     "why": "Only DES/TDES are available; there is no AES path in this service."
+    },
+    "constant or all-zero ICV": {
+     "basis": "judgement",
+     "why": "IBM notes that 8 zero bytes nullify the chaining effect on the first block; IBM's COBOL sample passes LOW-VALUES."
+    }
+   },
+   "notes": "No ECB keyword exists here; every rule is a CBC variant. Weakness is decided by the key (its length, set when it was generated) and by the ICV, not by a keyword. CUSP/IPS short blocks are enciphered stream-fashion from the previous block or the ICV, so with a fixed ICV a message under 8 bytes is XORed with a fixed keystream.",
+   "doc_quirks": [
+    "The overview list names the rules 'ANSI X9.23' and 'IBM 4700'; the keywords are X9.23 and 4700-PAD."
+   ]
+  },
+  {
+   "name": "CSNBDEC",
+   "title": "Decipher (CSNBDEC or CSNBDEC1 and CSNEDEC or CSNEDEC1)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=data-decipher-csnbdec-csnbdec1-csnedec-csnedec1",
+   "entry_points": {
+    "31-bit": [
+     "CSNBDEC",
+     "CSFDEC"
+    ],
+    "64-bit": [
+     "CSNEDEC",
+     "CSFDEC6"
+    ],
+    "alet": {
+     "31-bit": [
+      "CSNBDEC1",
+      "CSFDEC1"
+     ],
+     "64-bit": [
+      "CSNEDEC1",
+      "CSFDEC16"
+     ],
+     "extra_parameters": [
+      "cipher_text_id",
+      "clear_text_id"
+     ]
+    }
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "key_identifier",
+    "text_length",
+    "cipher_text",
+    "initialization_vector",
+    "rule_array_count",
+    "rule_array",
+    "chaining_vector",
+    "clear_text"
+   ],
+   "positions": {
+    "key_identifier": 5,
+    "text_length": 6,
+    "cipher_text": 7,
+    "initialization_vector": 8,
+    "rule_array_count": 9,
+    "rule_array": 10,
+    "chaining_vector": 11,
+    "clear_text": 12
+   },
+   "keywords": {
+    "rule_array_count": "1, 2 or 3.",
+    "rule_array_layout": "Positional: slot 1 processing rule; slot 2 ICV selection; slot 3 algorithm. If the ICV selection is omitted (defaults to INITIAL), the algorithm moves to slot 2.",
+    "processing_rule": {
+     "CBC": "Plain CBC (NIST SP 800-38A); text must be a multiple of 8 bytes; output same length.",
+     "CUSP": "CBC compatible with IBM CUSP/PCF; any length, output same length; a trailing short block is XORed with the re-enciphered previous ciphertext block, and a text under 8 bytes is XORed with the enciphered ICV.",
+     "IPS": "CBC compatible with IBM IPS record chaining; any length, output same length; short blocks are enciphered as in CUSP, but the OCV is built from the ciphertext rather than a re-enciphered block, so it can chain records.",
+     "X9.23": "CBC with ANSI X9.23 padding removed; ciphertext must be a multiple of 8.",
+     "4700-PAD": "CBC with IBM 4700 padding removed; ciphertext must be a multiple of 8."
+    },
+    "icv_selection": {
+     "INITIAL": "Default. ICV comes from initialization_vector.",
+     "CONTINUE": "ICV comes from the OCV saved in chaining_vector by the previous call. Only with CBC, IPS, CUSP."
+    },
+    "algorithm": {
+     "TOKEN": "Default. Use the algorithm marked in the DATA key token.",
+     "DES": "Use DES and ignore the token's marking."
+    },
+    "not_present": [
+     "ECB",
+     "AES"
+    ]
+   },
+   "algorithms": "DES family only. key_identifier is a 64-byte DES token of type DATA, CIPHER or DECIPHER, a label, or an X9.143 DES/TDES block.",
+   "single_vs_triple_des": "Chosen by the length of the key in key_identifier: single-length gives single DES; double- or triple-length gives triple DES.",
+   "icv": "8-byte initialization_vector. Each ciphertext block is deciphered and XORed with the ICV (first block) or the previous ciphertext block. Must equal the ICV used to encipher.",
+   "weak": {
+    "single-length key in key_identifier": {
+     "basis": "ibm",
+     "why": "Runs single DES (56-bit)."
+    },
+    "any call": {
+     "basis": "judgement",
+     "why": "Only DES/TDES are available."
+    }
+   },
+   "notes": "Unlike CSNBENC there is no pad_character, so chaining_vector is position 11 and clear_text position 12. Same rule-array keywords and positional layout as CSNBENC; no ECB."
+  },
+  {
+   "name": "CSNBSYE",
+   "title": "Symmetric Key Encipher (CSNBSYE or CSNBSYE1 and CSNESYE or CSNESYE1)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=data-symmetric-key-encipher-csnbsye-csnbsye1-csnesye-csnesye1",
+   "entry_points": {
+    "31-bit": [
+     "CSNBSYE",
+     "CSFSYE"
+    ],
+    "64-bit": [
+     "CSNESYE",
+     "CSFSYE6"
+    ],
+    "alet": {
+     "31-bit": [
+      "CSNBSYE1",
+      "CSFSYE1"
+     ],
+     "64-bit": [
+      "CSNESYE1",
+      "CSFSYE16"
+     ],
+     "extra_parameters": [
+      "clear_text_id",
+      "cipher_text_id"
+     ]
+    }
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "rule_array_count",
+    "rule_array",
+    "key_identifier_length",
+    "key_identifier",
+    "key_parms_length",
+    "key_parms",
+    "block_size",
+    "initialization_vector_length",
+    "initialization_vector",
+    "chain_data_length",
+    "chain_data",
+    "clear_text_length",
+    "clear_text",
+    "cipher_text_length",
+    "cipher_text",
+    "optional_data_length",
+    "optional_data"
+   ],
+   "positions": {
+    "rule_array_count": 5,
+    "rule_array": 6,
+    "key_identifier_length": 7,
+    "key_identifier": 8,
+    "key_parms_length": 9,
+    "key_parms": 10,
+    "block_size": 11,
+    "initialization_vector_length": 12,
+    "initialization_vector": 13,
+    "chain_data_length": 14,
+    "chain_data": 15,
+    "optional_data_length": 20,
+    "optional_data": 21,
+    "clear_text_length": 16,
+    "clear_text": 17,
+    "cipher_text_length": 18,
+    "cipher_text": 19
+   },
+   "keywords": {
+    "rule_array_count": "1 to 4.",
+    "rule_array_layout": "Not positional: one keyword per group (algorithm required; processing rule, key rule, ICV selection optional).",
+    "rule_array": {
+     "AES": "Algorithm (required): AES, 16-byte block, 16/24/32-byte key. Not with CUSP, IPS or X9.23.",
+     "DES": "Algorithm (required): DES; single DES or TDES chosen by key length (8, 16 or 24 bytes). Not with CTR or GCM.",
+     "CBC": "Mode (default): CBC; text a multiple of the block size.",
+     "CBC-CS": "CBC with ciphertext stealing (CBC-CS1); text at least one block.",
+     "CFB": "Cipher feedback with segment = block size.",
+     "CFB-LCFB": "Cipher feedback with caller-set segment size in key_parms (1 byte).",
+     "CTR": "Counter mode; key_parms gives how many low-order counter bytes increment. AES only.",
+     "CUSP": "CBC compatible with IBM CUSP/PCF; any length. DES only.",
+     "ECB": "Electronic codebook; no ICV; text a multiple of the block size.",
+     "GCM": "Galois/Counter mode; key_parms_length is the tag length, key_parms holds the tag, optional_data holds AAD. AES only.",
+     "GCM-LG": "GCM producing/checking legacy tags (pre-OA46558) for 256 MiB or larger inputs.",
+     "IPS": "CBC compatible with IBM IPS; any length. DES only.",
+     "OFB": "Output feedback.",
+     "PKCS-PAD": "CBC with PKCS padding; always pads.",
+     "X9.23": "CBC with ANSI X9.23 padding. DES only.",
+     "KEY-CLR": "Key rule (default): key_identifier holds the clear key value; key_identifier_length is its byte length.",
+     "KEYIDENT": "Key rule: key_identifier is an internal clear token or a CKDS label (clear or encrypted key); key_identifier_length must be 64.",
+     "INITIAL": "ICV selection (default): ICV from initialization_vector. Not with GCM.",
+     "CONTINUE": "ICV selection: ICV from the OCV in chain_data. Not with ECB, GCM, X9.23.",
+     "FINAL": "ICV selection: ICV from chain_data; last piece of chained data. CBC, CBC-CS, CFB, CFB-LCFB, CTR, OFB.",
+     "ONLY": "ICV selection: ICV from initialization_vector; whole message in one call. CBC, CBC-CS, CFB, CFB-LCFB, CTR, GCM, OFB."
+    }
+   },
+   "algorithms": "AES (128/192/256-bit) and DES (56-, 112- or 168-bit key, by key length). Clear keys, clear tokens, or CKDS labels.",
+   "icv": "initialization_vector, length in initialization_vector_length (block size; NIST-recommended 12 bytes for GCM). Used by every mode except ECB, where it is ignored. The OCV is kept in chain_data (first 8 bytes for DES, first 16 for AES) and can feed the next call.",
+   "weak": {
+    "DES with an 8-byte key": {
+     "basis": "ibm",
+     "why": "Single DES with a 56-bit key; IBM lists 56-, 112- and 168-bit DES key sizes and picks single DES for an 8-byte key. With KEY-CLR a key_identifier_length of 8 shows it; with KEYIDENT the length is inside the token."
+    },
+    "DES": {
+     "basis": "judgement",
+     "why": "Even 16/24-byte keys give TDES with an 8-byte block."
+    },
+    "ECB": {
+     "basis": "judgement",
+     "why": "No chaining; identical blocks give identical ciphertext."
+    },
+    "GCM with key_parms_length 4 or 8": {
+     "basis": "ibm",
+     "why": "IBM: tag lengths of 4 or 8 are strongly discouraged."
+    },
+    "KEY-CLR": {
+     "basis": "judgement",
+     "why": "Not an algorithm weakness: the clear key value sits in program storage. It is the default when no key rule is given."
+    }
+   },
+   "notes": "The algorithm keyword is always present (AES or DES). DES plus an 8-byte key is single DES. ECB is a keyword here, unlike CSNBENC. Default mode when none is given is CBC.",
+   "doc_quirks": [
+    "The introduction mentions 'ICV selection rules FIRST and MIDDLE', which are not in the keyword table (INITIAL, CONTINUE, FINAL, ONLY). Not verified as keywords.",
+    "The CSNBSYE1 format names position 7 'length'; the parameter description calls it key_identifier_length."
+   ]
+  },
+  {
+   "name": "CSNBSYD",
+   "title": "Symmetric Key Decipher (CSNBSYD or CSNBSYD1 and CSNESYD or CSNESYD1)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=data-symmetric-key-decipher-csnbsyd-csnbsyd1-csnesyd-csnesyd1",
+   "entry_points": {
+    "31-bit": [
+     "CSNBSYD",
+     "CSFSYD"
+    ],
+    "64-bit": [
+     "CSNESYD",
+     "CSFSYD6"
+    ],
+    "alet": {
+     "31-bit": [
+      "CSNBSYD1",
+      "CSFSYD1"
+     ],
+     "64-bit": [
+      "CSNESYD1",
+      "CSFSYD16"
+     ],
+     "extra_parameters": [
+      "cipher_text_id",
+      "clear_text_id"
+     ]
+    }
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "rule_array_count",
+    "rule_array",
+    "key_identifier_length",
+    "key_identifier",
+    "key_parms_length",
+    "key_parms",
+    "block_size",
+    "initialization_vector_length",
+    "initialization_vector",
+    "chain_data_length",
+    "chain_data",
+    "cipher_text_length",
+    "cipher_text",
+    "clear_text_length",
+    "clear_text",
+    "optional_data_length",
+    "optional_data"
+   ],
+   "positions": {
+    "rule_array_count": 5,
+    "rule_array": 6,
+    "key_identifier_length": 7,
+    "key_identifier": 8,
+    "key_parms_length": 9,
+    "key_parms": 10,
+    "block_size": 11,
+    "initialization_vector_length": 12,
+    "initialization_vector": 13,
+    "chain_data_length": 14,
+    "chain_data": 15,
+    "optional_data_length": 20,
+    "optional_data": 21,
+    "cipher_text_length": 16,
+    "cipher_text": 17,
+    "clear_text_length": 18,
+    "clear_text": 19
+   },
+   "keywords": {
+    "rule_array_count": "1 to 4.",
+    "rule_array_layout": "Not positional: one keyword per group (algorithm required; processing rule, key rule, ICV selection optional).",
+    "rule_array": {
+     "AES": "Algorithm (required): AES, 16-byte block, 16/24/32-byte key. Not with CUSP, IPS or X9.23.",
+     "DES": "Algorithm (required): DES; single DES or TDES chosen by key length (8, 16 or 24 bytes). Not with CTR or GCM.",
+     "CBC": "Mode (default): CBC; text a multiple of the block size.",
+     "CBC-CS": "CBC with ciphertext stealing (CBC-CS1); text at least one block.",
+     "CFB": "Cipher feedback with segment = block size.",
+     "CFB-LCFB": "Cipher feedback with caller-set segment size in key_parms (1 byte).",
+     "CTR": "Counter mode; key_parms gives how many low-order counter bytes increment. AES only.",
+     "CUSP": "CBC compatible with IBM CUSP/PCF; any length. DES only.",
+     "ECB": "Electronic codebook; no ICV; text a multiple of the block size.",
+     "GCM": "Galois/Counter mode; key_parms_length is the tag length, key_parms holds the tag, optional_data holds AAD. AES only.",
+     "GCM-LG": "GCM producing/checking legacy tags (pre-OA46558) for 256 MiB or larger inputs.",
+     "IPS": "CBC compatible with IBM IPS; any length. DES only.",
+     "OFB": "Output feedback.",
+     "PKCS-PAD": "CBC with PKCS padding; always pads.",
+     "X9.23": "CBC with ANSI X9.23 padding. DES only.",
+     "KEY-CLR": "Key rule (default): key_identifier holds the clear key value; key_identifier_length is its byte length.",
+     "KEYIDENT": "Key rule: key_identifier is an internal clear token or a CKDS label (clear or encrypted key); key_identifier_length must be 64.",
+     "INITIAL": "ICV selection (default): ICV from initialization_vector. Not with GCM.",
+     "CONTINUE": "ICV selection: ICV from the OCV in chain_data. Not with ECB, GCM, X9.23.",
+     "FINAL": "ICV selection: ICV from chain_data; last piece of chained data. CBC, CBC-CS, CFB, CFB-LCFB, CTR, OFB.",
+     "ONLY": "ICV selection: ICV from initialization_vector; whole message in one call. CBC, CBC-CS, CFB, CFB-LCFB, CTR, GCM, OFB."
+    }
+   },
+   "algorithms": "AES and DES, as CSNBSYE.",
+   "icv": "initialization_vector must equal the one used to encipher; ignored for ECB.",
+   "weak": {
+    "DES with an 8-byte key": {
+     "basis": "ibm",
+     "why": "Single DES with a 56-bit key; IBM lists 56-, 112- and 168-bit DES key sizes and picks single DES for an 8-byte key. With KEY-CLR a key_identifier_length of 8 shows it; with KEYIDENT the length is inside the token."
+    },
+    "DES": {
+     "basis": "judgement",
+     "why": "Even 16/24-byte keys give TDES with an 8-byte block."
+    },
+    "ECB": {
+     "basis": "judgement",
+     "why": "No chaining; identical blocks give identical ciphertext."
+    },
+    "GCM with key_parms_length 4 or 8": {
+     "basis": "ibm",
+     "why": "IBM: tag lengths of 4 or 8 are strongly discouraged."
+    },
+    "KEY-CLR": {
+     "basis": "judgement",
+     "why": "Not an algorithm weakness: the clear key value sits in program storage. It is the default when no key rule is given."
+    }
+   },
+   "notes": "Same keywords as CSNBSYE. Positions 16 to 19 are swapped relative to CSNBSYE: cipher_text_length, cipher_text, clear_text_length, clear_text.",
+   "doc_quirks": [
+    "The introduction mentions ICV selection rules FIRST and MIDDLE, which are not in the keyword table."
+   ]
+  },
+  {
+   "name": "CSNBSAE",
+   "title": "Symmetric Algorithm Encipher (CSNBSAE or CSNBSAE1 and CSNESAE or CSNESAE1)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=data-symmetric-algorithm-encipher-csnbsae-csnbsae1-csnesae-csnesae1",
+   "entry_points": {
+    "31-bit": [
+     "CSNBSAE",
+     "CSFSAE"
+    ],
+    "64-bit": [
+     "CSNESAE",
+     "CSFSAE6"
+    ],
+    "alet": {
+     "31-bit": [
+      "CSNBSAE1",
+      "CSFSAE1"
+     ],
+     "64-bit": [
+      "CSNESAE1",
+      "CSFSAE16"
+     ],
+     "extra_parameters": [
+      "clear_text_id",
+      "cipher_text_id"
+     ]
+    }
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "rule_array_count",
+    "rule_array",
+    "key_identifier_length",
+    "key_identifier",
+    "key_parms_length",
+    "key_parms",
+    "block_size",
+    "initialization_vector_length",
+    "initialization_vector",
+    "chain_data_length",
+    "chain_data",
+    "clear_text_length",
+    "clear_text",
+    "cipher_text_length",
+    "cipher_text",
+    "optional_data_length",
+    "optional_data"
+   ],
+   "positions": {
+    "rule_array_count": 5,
+    "rule_array": 6,
+    "key_identifier_length": 7,
+    "key_identifier": 8,
+    "key_parms_length": 9,
+    "key_parms": 10,
+    "block_size": 11,
+    "initialization_vector_length": 12,
+    "initialization_vector": 13,
+    "chain_data_length": 14,
+    "chain_data": 15,
+    "optional_data_length": 20,
+    "optional_data": 21,
+    "clear_text_length": 16,
+    "clear_text": 17,
+    "cipher_text_length": 18,
+    "cipher_text": 19
+   },
+   "keywords": {
+    "rule_array_count": "2 to 5.",
+    "rule_array_layout": "Not positional: one keyword per group.",
+    "rule_array": {
+     "AES": "Algorithm (required group): AES, 16-byte block, 128/192/256-bit key.",
+     "DES": "Algorithm: DES, valid only with the AS2805 rules A28MACGN, A28MACVR, A28OWFEC, A28OWFCL.",
+     "CBC": "AES mode (default): CBC; multiple of 16 bytes.",
+     "ECB": "AES mode: electronic codebook; multiple of 16 bytes; no IV.",
+     "GCM": "AES mode: Galois/Counter; tag length in key_parms_length, tag in key_parms, AAD in optional_data.",
+     "PKCS-PAD": "AES mode: CBC with PKCS padding.",
+     "X9.23PAD": "AES mode: CBC with X9.23 padding.",
+     "A28MACGN": "DES rule: generate an AS2805.5.4 MAC with a double-length DES MAC key.",
+     "A28MACVR": "DES rule: verify an AS2805.5.4 MAC; needs a residue keyword.",
+     "A28OWFCL": "DES rule: AS2805.5.4 one-way function over clear chain_data with a double-length DES CIPHER key.",
+     "A28OWFEC": "DES rule: AS2805.5.4 one-way function over ECB-encrypted chain_data.",
+     "A28RES": "Residue (with A28MACVR): chain_data holds a residue.",
+     "A28NORES": "Residue (with A28MACVR): no residue.",
+     "KEYIDENT": "Key rule (required): key_identifier is a secure key token or CKDS label.",
+     "INITIAL": "ICV selection: IV from initialization_vector; default for CBC and PKCS-PAD; not with GCM.",
+     "CONTINUE": "ICV selection: IV from chain_data; CBC or PKCS-PAD only.",
+     "ONLY": "ICV selection: single request; required for GCM; default for the A28 rules."
+    }
+   },
+   "algorithms": "Data encryption is AES only. DES appears only for AS2805 MAC and one-way-function processing with double-length DES keys.",
+   "icv": "initialization_vector holds the IV for CBC, GCM, PKCS-PAD and X9.23PAD; ignored for ECB and the A28 rules.",
+   "weak": {
+    "ECB": {
+     "basis": "judgement",
+     "why": "No chaining."
+    },
+    "GCM with key_parms_length 4 or 8": {
+     "basis": "ibm",
+     "why": "IBM: tag lengths of 4 or 8 are strongly discouraged."
+    },
+    "DES (A28*)": {
+     "basis": "judgement",
+     "why": "Double-length DES keys for AS2805 MAC/OWF; not data encryption."
+    }
+   },
+   "notes": "Exists. Secure keys only (KEYIDENT is the only key rule). DES cannot be used to encipher data here."
+  },
+  {
+   "name": "CSNBSAD",
+   "title": "Symmetric Algorithm Decipher (CSNBSAD or CSNBSAD1 and CSNESAD or CSNESAD1)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=data-symmetric-algorithm-decipher-csnbsad-csnbsad1-csnesad-csnesad1",
+   "entry_points": {
+    "31-bit": [
+     "CSNBSAD",
+     "CSFSAD"
+    ],
+    "64-bit": [
+     "CSNESAD",
+     "CSFSAD6"
+    ],
+    "alet": {
+     "31-bit": [
+      "CSNBSAD1",
+      "CSFSAD1"
+     ],
+     "64-bit": [
+      "CSNESAD1",
+      "CSFSAD16"
+     ],
+     "extra_parameters": [
+      "cipher_text_id",
+      "clear_text_id"
+     ]
+    }
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "rule_array_count",
+    "rule_array",
+    "key_identifier_length",
+    "key_identifier",
+    "key_parms_length",
+    "key_parms",
+    "block_size",
+    "initialization_vector_length",
+    "initialization_vector",
+    "chain_data_length",
+    "chain_data",
+    "cipher_text_length",
+    "cipher_text",
+    "clear_text_length",
+    "clear_text",
+    "optional_data_length",
+    "optional_data"
+   ],
+   "positions": {
+    "rule_array_count": 5,
+    "rule_array": 6,
+    "key_identifier_length": 7,
+    "key_identifier": 8,
+    "key_parms_length": 9,
+    "key_parms": 10,
+    "block_size": 11,
+    "initialization_vector_length": 12,
+    "initialization_vector": 13,
+    "chain_data_length": 14,
+    "chain_data": 15,
+    "optional_data_length": 20,
+    "optional_data": 21,
+    "cipher_text_length": 16,
+    "cipher_text": 17,
+    "clear_text_length": 18,
+    "clear_text": 19
+   },
+   "keywords": {
+    "rule_array_count": "2 to 4.",
+    "rule_array_layout": "Not positional: one keyword per group.",
+    "rule_array": {
+     "AES": "Algorithm (required): AES only.",
+     "CBC": "Mode (default): CBC.",
+     "ECB": "Mode: electronic codebook; IV ignored.",
+     "GCM": "Mode: Galois/Counter; tag verified before data is returned.",
+     "PKCS-PAD": "Mode: CBC, PKCS padding removed.",
+     "X9.23PAD": "Mode: CBC, padding removed.",
+     "KEYIDENT": "Key rule (required): secure AES key token or CKDS label.",
+     "INITIAL": "ICV selection: default for CBC and PKCS-PAD; not with GCM.",
+     "CONTINUE": "ICV selection: IV from chain_data; CBC or PKCS-PAD only.",
+     "ONLY": "ICV selection: required for GCM."
+    }
+   },
+   "algorithms": "AES only; no DES keyword.",
+   "icv": "initialization_vector must equal the one used to encrypt; ignored for ECB.",
+   "weak": {
+    "ECB": {
+     "basis": "judgement",
+     "why": "No chaining."
+    }
+   },
+   "notes": "Exists. Positions 16 to 19 are cipher_text_length, cipher_text, clear_text_length, clear_text.",
+   "doc_quirks": [
+    "The CSNBSAD1 format names position 7 'key_length'; the CSNBSAD format and parameter description call it key_identifier_length.",
+    "The X9.23PAD description says the cleartext was padded 'according to the PKCS padding scheme'."
+   ]
+  },
+  {
+   "name": "CSNBOWH",
+   "title": "One-Way Hash Generate (CSNBOWH or CSNBOWH1 and CSNEOWH or CSNEOWH1)",
+   "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=vdiam-one-way-hash-generate-csnbowh-csnbowh1-csneowh-csneowh1",
+   "entry_points": {
+    "31-bit": [
+     "CSNBOWH",
+     "CSFOWH"
+    ],
+    "64-bit": [
+     "CSNEOWH",
+     "CSFOWH6"
+    ],
+    "alet": {
+     "31-bit": [
+      "CSNBOWH1",
+      "CSFOWH1"
+     ],
+     "64-bit": [
+      "CSNEOWH1",
+      "CSFOWH16"
+     ],
+     "extra_parameters": [
+      "text_id_in"
+     ]
+    }
+   },
+   "parameters": [
+    "return_code",
+    "reason_code",
+    "exit_data_length",
+    "exit_data",
+    "rule_array_count",
+    "rule_array",
+    "text_length",
+    "text",
+    "chaining_vector_length",
+    "chaining_vector",
+    "hash_length",
+    "hash"
+   ],
+   "positions": {
+    "rule_array_count": 5,
+    "rule_array": 6,
+    "text_length": 7,
+    "text": 8,
+    "chaining_vector_length": 9,
+    "chaining_vector": 10,
+    "hash_length": 11,
+    "hash": 12
+   },
+   "keywords": {
+    "rule_array_count": "1 or 2.",
+    "rule_array_layout": "Not positional: hash method (required) plus a chaining flag or, with BCRYPT, a salt flag.",
+    "rule_array": {
+     "BCRYPT": "bcrypt version 2b password hash (60-byte result); needs GENERATE or VERIFY; no chaining.",
+     "MD5": "MD5, 16-byte digest.",
+     "MD5-LG": "MD5 reproducing legacy values from before APAR OA33657, for checking archived hashes.",
+     "RPMD-160": "RIPEMD-160, 20-byte digest.",
+     "RPMD-LG": "RIPEMD-160 reproducing legacy values from before APAR OA33657.",
+     "SHA-1": "SHA-1, 20-byte digest.",
+     "SHA1LG": "SHA-1 reproducing legacy values (pre-OA43937) for texts of 256 MB or more.",
+     "SHA-224": "SHA-224, 28-byte digest.",
+     "SHA224LG": "SHA-224 legacy variant for very large texts.",
+     "SHA-256": "SHA-256, 32-byte digest.",
+     "SHA256LG": "SHA-256 legacy variant for very large texts.",
+     "SHA-384": "SHA-384, 48-byte digest.",
+     "SHA384LG": "SHA-384 legacy variant for very large texts.",
+     "SHA-512": "SHA-512, 64-byte digest.",
+     "SHA512LG": "SHA-512 legacy variant for very large texts.",
+     "SHA3-224": "SHA3-224.",
+     "SHA3-256": "SHA3-256.",
+     "SHA3-384": "SHA3-384.",
+     "SHA3-512": "SHA3-512.",
+     "SHAKE128": "SHAKE-128 extendable output; hash_length sets output size.",
+     "SHAKE256": "SHAKE-256 extendable output.",
+     "FIRST": "Chaining flag: first of a chained series.",
+     "MIDDLE": "Chaining flag: middle call.",
+     "LAST": "Chaining flag: last call.",
+     "ONLY": "Chaining flag (default): single unchained call.",
+     "GENERATE": "Salt flag (BCRYPT): hash with a random salt; cost in chaining_vector byte 1 (4 to 31).",
+     "VERIFY": "Salt flag (BCRYPT): verify the hash parameter."
+    }
+   },
+   "weak": {
+    "MD5": {
+     "basis": "judgement",
+     "why": "Broken collision resistance."
+    },
+    "MD5-LG": {
+     "basis": "judgement",
+     "why": "MD5 family."
+    },
+    "SHA-1": {
+     "basis": "ibm",
+     "why": "IBM's compliance appendix excludes the SHA-1 hash method for compliant-tagged RSA keys and certificates; SHA-1 is also collision-broken (judgement)."
+    },
+    "SHA1LG": {
+     "basis": "judgement",
+     "why": "SHA-1 family."
+    },
+    "RPMD-160": {
+     "basis": "judgement",
+     "why": "160-bit legacy hash."
+    },
+    "RPMD-LG": {
+     "basis": "judgement",
+     "why": "RIPEMD-160 family."
+    }
+   },
+   "notes": "The hash method is always in the rule array; it never comes from a key. The -LG keywords exist to match hashes computed by older ICSF levels."
+  }
+ ],
+ "variants": {
+  "csne_64bit": "Every service above has an AMODE(64) entry point (CSNEKGN, CSNEKGN2, CSNEENC, CSNEDEC, CSNESYE, CSNESYD, CSNESAE, CSNESAD, CSNEOWH). Each topic prints one format and names the CSNE entry under it; no separate CSNE parameter list is printed, so the same list is implied (for SAE/SAD IBM states the B and E forms 'provide identical functions').",
+  "alet_1": "CSNBENC1, CSNBDEC1, CSNBSYE1, CSNBSYD1, CSNBSAE1, CSNBSAD1, CSNBOWH1 (and CSNExxx1) take the same list plus trailing ALET parameters for data in a data space. There is no CSNBKGN1 or CSNBKGN21.",
+  "csf_aliases": "IBM says CSFxxxx can be used in place of CSNBxxx. 31-bit ICSF names: CSFKGN, CSFKGN2, CSFENC, CSFENC1, CSFDEC, CSFDEC1, CSFSYE, CSFSYE1, CSFSYD, CSFSYD1, CSFSAE, CSFSAE1, CSFSAD, CSFSAD1, CSFOWH, CSFOWH1. 64-bit ICSF names add a trailing 6 (CSFKGN6, CSFENC16, ...)."
+ },
+ "unverified": [
+  "That the CSNE (64-bit) parameter lists are identical: inferred from the single format per topic, not from a separately printed CSNE list.",
+  "Whether FIRST/MIDDLE are accepted as ICV-selection keywords by CSNBSYE/CSNBSYD: mentioned in the introduction only.",
+  "The z/OS 3.2 edition was not compared."
+ ],
+ "findings": {
+  "single-length-des-key": {
+   "services": [
+    "CSNBKGN"
+   ],
+   "parameter": "key_length",
+   "keywords": [
+    "SINGLE",
+    "KEYLN8",
+    "SINGLE-R"
+   ],
+   "basis": "IBM: SINGLE and KEYLN8 generate an 8-byte, 56-bit DES key, and SINGLE-R a 16-byte key with identical halves that behaves as single-length (Key Generate topic). NIST SP 800-131A Rev. 2, Table 1, approves no single-key DES and disallows two-key TDEA for encryption.",
+   "sources": [
+    "https://www.ibm.com/docs/en/zos/3.1.0?topic=keys-key-generate-csnbkgn-csnekgn",
+    "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf"
+   ]
+  },
+  "weak-hash": {
+   "services": [
+    "CSNBOWH"
+   ],
+   "parameter": "rule_array",
+   "keywords": [
+    "MD5",
+    "MD5-LG",
+    "SHA-1",
+    "SHA1LG"
+   ],
+   "basis": "CWE-328 gives CVE-2005-4900 (SHA-1 is not collision-resistant) and CVE-2012-6707 (an MD5-based password hash) among its observed examples. NIST SP 800-131A Rev. 2 restricts SHA-1 for digital signature generation to where protocol guidance allows it.",
+   "sources": [
+    "https://cwe.mitre.org/data/definitions/328.html",
+    "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf"
+   ]
+  },
+  "fixed-initialization-vector": {
+   "services": [
+    "CSNBENC",
+    "CSNBSYE",
+    "CSNBSAE"
+   ],
+   "parameter": "initialization_vector",
+   "withoutVector": [
+    "ECB",
+    "CONTINUE"
+   ],
+   "basis": "CWE-1204. IBM (Encipher): CUSP and IPS encipher a short block from the ICV, so a fixed ICV is a fixed keystream for a message under 8 bytes, and in every CBC rule equal plaintexts give equal ciphertexts. ECB uses no vector, and CONTINUE takes it from the previous call's chaining vector.",
+   "sources": [
+    "https://cwe.mitre.org/data/definitions/1204.html",
+    "https://www.ibm.com/docs/en/zos/3.1.0?topic=data-encipher-csnbenc-csnbenc1-csneenc-csneenc1"
+   ]
+  }
+ }
+}

@@ -161,3 +161,12 @@ test('a protected key the program puts in a field the user may type into is type
   ]);
   assert.equal(keys(scan(estate({ files: { 'cbl/LISTP.cbl': retyped } }))).length, 0);
 });
+
+test('a mapset the tree holds only as BMS source is read through the symbolic map BMS generates from it', () => {
+  const sites = (r) => r.findings.map((f) => `${f.rule} ${f.path}:${f.line}`).sort();
+  const withCopybook = scan(estate());
+  const root = tree({ 'bms/LISTS.bms': MAP, 'cbl/LISTP.cbl': list(), 'cbl/VIEWP.cbl': view() });
+  const fromBms = scan(root);
+  assert.ok(withCopybook.findings.length > 0);
+  assert.deepEqual(sites(fromBms), sites(withCopybook));
+});

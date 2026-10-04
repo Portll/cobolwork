@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-a-module-named-at-run-time",
+ "title": "An assembler stub copies a program name from its caller's parameter and LINKs to whatever it names",
+ "cwe": "CWE-470",
+ "expect": [
+  {
+   "rule": "hlasm-runtime-module-name",
+   "file": "RUNPGM.asm"
+  }
+ ]
+}

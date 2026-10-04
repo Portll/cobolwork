@@ -69,6 +69,7 @@ const FRAMEWORKS = {
       'jcl-parm-is-an-entry-point': '8(2)',
       'jcl-exec-pgm-unresolved': '8(6)',
       'jcl-ftp-cleartext': '9(3)(a)',
+      'web-client-opens-cleartext': '9(3)(a)',
       'jcl-ftp-sends-production-dataset': '9(3)(a)',
       // The name rule maps an interdependency; these two are the job acting on production data.
       'recon-nonproduction-job-writes-production-dataset': '9(3)(c)',
@@ -82,16 +83,24 @@ const FRAMEWORKS = {
       'control-cards-from-dataset': '8(3)',
       'sort-exit-named': '8(4)',
       'tso-batch-runs-program': '8(6)',
+      'hlasm-executes-built-instruction': '9(3)(b)',
+      'hlasm-runtime-module-name': '9(3)(b)',
+      'hlasm-calls-security-product': '8(4)',
+      'hlasm-provides-called-module': '8(4)',
     },
     perSet: {
       flow: '9(3)(b)', cics: '9(3)(b)', hidden: '9(3)(b)', copybook: '8(4)', diff: '8(3)',
-      build: '8(2)', credential: '9(4)(d)', recon: '8(4)', vendor: '9(4)(c)', opaque: '8(4)',
+      build: '8(2)', credential: '9(4)(d)', secrets: '9(4)(d)', recon: '8(4)', vendor: '9(4)(c)', opaque: '8(4)',
       web: '9(3)(b)', priv: '9(4)(c)', log: '9(3)(c)', zowe: '9(4)(d)',
       // 8(6) would be the inventory, but its frame speaks of a job; source nobody can build is a
       // risk found by reading the source, which is 8(2)'s.
       compile: '8(2)',
       // A result that depends on the generated code, or loses digits, is data corrupted by a flaw.
       semantics: '9(3)(b)',
+      // An input that stops the run, or drives an index out of range, is a flaw in validating it.
+      abend: '9(3)(b)',
+      hlasm: '9(4)(c)',
+      crypto: '9(3)(c)',
     },
     exfil: '9(3)(a)',
     frame: {
@@ -140,6 +149,7 @@ const FRAMEWORKS = {
       'jcl-parm-is-an-entry-point': 'DA&M V',
       'jcl-exec-pgm-unresolved': 'DA&M IV',
       'jcl-ftp-cleartext': 'IS II.C.19',
+      'web-client-opens-cleartext': 'IS II.C.19',
       'jcl-ftp-sends-production-dataset': 'IS II.C.19',
       // Unlike the name rule, these are not about disclosure: the booklets do cover a test job
       // reaching production data, and authority exercised beyond the job's necessity.
@@ -152,13 +162,20 @@ const FRAMEWORKS = {
       'control-cards-from-dataset': 'DA&M VII.B.3',
       'sort-exit-named': 'DA&M IV',
       'tso-batch-runs-program': 'DA&M IV',
+      'hlasm-executes-built-instruction': 'DA&M V',
+      'hlasm-runtime-module-name': 'DA&M V',
+      'hlasm-calls-security-product': 'DA&M IV',
+      'hlasm-provides-called-module': 'DA&M IV',
     },
     perSet: {
       flow: 'DA&M V', cics: 'DA&M V', hidden: 'DA&M V', copybook: 'DA&M IV',
-      diff: 'DA&M VII.B.3', build: 'AIO VI.C.3', credential: 'IS II.C.19', vendor: 'IS II.C.7', opaque: 'DA&M IV',
+      diff: 'DA&M VII.B.3', build: 'AIO VI.C.3', credential: 'IS II.C.19', secrets: 'IS II.C.19', vendor: 'IS II.C.7', opaque: 'DA&M IV',
       web: 'DA&M V', priv: 'IS II.C.7', log: 'IS II.C.19', zowe: 'IS II.C.19',
       compile: 'DA&M IV',
       semantics: 'DA&M V',
+      abend: 'DA&M V',
+      hlasm: 'IS II.C.7',
+      crypto: 'IS II.C.19',
     },
     exfil: 'IS II.C.19',
     frame: {
@@ -200,6 +217,7 @@ const FRAMEWORKS = {
       'SI-11': { title: 'Error Handling', quote: 'Generate error messages that provide information necessary for corrective actions without revealing information that could be exploited' },
       'SA-3(2)': { title: 'Use of Live or Operational Data', quote: 'Approve, document, and control the use of live data in preproduction environments for the system, system component, or system service' },
       'IA-5(1)': { title: 'Password-based Authentication', quote: 'Transmit passwords only over cryptographically-protected channels' },
+      'SC-13': { title: 'Cryptographic Protection', quote: 'Implement the following types of cryptography required for each specified cryptographic use' },
     },
     // SA-11(1) is the control this entire tool answers. Mapping it per rule would be padding.
     documentLevel: ['SA-11(1)'],
@@ -216,6 +234,8 @@ const FRAMEWORKS = {
       'jcl-ftp-cleartext': 'IA-5(1)',
       'jcl-ftp-sends-production-dataset': 'SC-7',
       'cics-listener-accepts-cleartext': 'SC-8',
+      'web-client-opens-cleartext': 'SC-8',
+      'web-receive-length-exceeds-area': 'SI-10',
       'recon-nonproduction-job-writes-production-dataset': 'AC-6',
       'recon-nonproduction-job-reads-production-dataset': 'SA-3(2)',
       'zowe-config-tls-verify-off': 'SC-8',
@@ -228,13 +248,20 @@ const FRAMEWORKS = {
       'control-cards-from-dataset': 'CM-3',
       'sort-exit-named': 'CM-8',
       'tso-batch-runs-program': 'CM-8',
+      'hlasm-executes-built-instruction': 'SI-10',
+      'hlasm-runtime-module-name': 'SI-10',
+      'hlasm-calls-security-product': 'CM-8',
+      'hlasm-provides-called-module': 'CM-8',
     },
     perSet: {
       flow: 'SI-10', cics: 'SI-10', hidden: 'SI-10', copybook: 'CM-8', diff: 'CM-3',
-      build: 'SI-2', credential: 'IA-5', vendor: 'AC-6', opaque: 'CM-8',
+      build: 'SI-2', credential: 'IA-5', secrets: 'IA-5', vendor: 'AC-6', opaque: 'CM-8',
       web: 'SC-23', priv: 'AC-6', log: 'SI-11', zowe: 'IA-5',
       compile: 'CM-8',
       semantics: 'SI-2',
+      abend: 'SI-10',
+      hlasm: 'AC-6',
+      crypto: 'SC-13',
     },
     exfil: 'SC-7',
     frame: {
@@ -247,6 +274,7 @@ const FRAMEWORKS = {
       'AC-6': 'That is authority granted or exercised beyond what the task requires, which this control exists to prevent.',
       'SC-23': 'That is a session another origin can frame, keep a handle on or read off a cleartext hop, which is the authenticity of the session this control requires be protected.',
       'SC-8': 'That is information crossing a network with nothing protecting it, which this control requires be protected in transit.',
+      'SC-13': 'That is cryptography too weak for the use it is put to, which this control requires be chosen for each use and implemented.',
       'SI-11': 'That is the system emitting information that could be exploited, to a destination read by people the record was never for, which this control requires it not do.',
       'SA-3(2)': 'That is live data put to use outside production, which this control requires be approved, documented and controlled.',
       'IA-5(1)': 'That is a password sent over a channel with no cryptographic protection, which this control does not allow.',
@@ -271,7 +299,7 @@ const NIST_TO_COBIT = {
   'AC-6': 'DSS05.04', 'IA-5': 'DSS05.04',
   'IA-5(1)': 'DSS05.02', 'SC-7': 'DSS05.02', 'SC-8': 'DSS05.02',
   'SI-2': 'DSS05.07', 'CM-8': 'BAI09.01', 'CM-3': 'BAI06.01',
-  'SI-11': 'DSS06.06', 'SA-3(2)': 'BAI07.04',
+  'SI-11': 'DSS06.06', 'SA-3(2)': 'BAI07.04', 'SC-13': 'DSS06.06',
 };
 const toCobit = (table) => Object.fromEntries(Object.entries(table).map(([k, c]) => [k, NIST_TO_COBIT[c]]));
 FRAMEWORKS.cobit2019 = {

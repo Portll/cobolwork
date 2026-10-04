@@ -5,12 +5,15 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { build, buildSummaryLine } from '../lib/build.mjs';
+import { blockingReason, build, buildSummaryLine } from '../lib/build.mjs';
+import { combinePolicies, DEFAULT_POLICY, validatePolicy } from '../lib/policy.mjs';
 import { scanAll } from '../lib/scan.mjs';
 import { classesOf, classesOfRule, kindsOf } from '../lib/consequence.mjs';
 import { ALL_RULES } from '../lib/kernel/registry.mjs';
 import { SINK_KINDS } from '../lib/dataflow.mjs';
 import { KEV } from '../lib/kev.mjs';
+import { compilerTasks } from '../lib/options.mjs';
+import { SHAPE_RULES } from '../lib/sets/secrets.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -223,6 +226,19 @@ test('B1.7 A MED finding in no consequence class is advisory', { skip }, () => {
 
 // B2 - The modes
 
+test('B1.8 An abend from a subprogram fuzzed at its interface warns unless the policy says tier', () => {
+  const abend = (inputFrom) => ({ rule: 'input-causes-abend-s0c4', sev: 'high', fingerprint: inputFrom, abend: { code: 'S0C4', inputFrom } });
+  const reason = (f, policy) => blockingReason(f, { policy, ratchet: false, introduced: new Set([f]), renewed: new Set() });
+  assert.equal(reason(abend('interface'), DEFAULT_POLICY), null);
+  assert.equal(reason(abend('interface'), { ...DEFAULT_POLICY, interface: 'tier' }), 'tier');
+  assert.equal(reason(abend('entry'), DEFAULT_POLICY), 'tier');
+  assert.deepEqual(validatePolicy({ policyVersion: 1, interface: 'tier' }), []);
+  assert.match(validatePolicy({ policyVersion: 1, interface: 'block' })[0], /interface takes warn, tier/);
+  const combined = combinePolicies({ floor: { policyVersion: 1, interface: 'tier' }, repository: { policyVersion: 1, interface: 'warn' } });
+  assert.equal(combined.policy.interface, 'tier');
+  assert.deepEqual(combined.ignored, ['interface']);
+});
+
 test('B2.1 Ratchet mode passes an old finding and fails a new one', { skip }, () => {
   const root = repo({ 'Q.cbl': dynamicSql('Q') });
   patch(root, { 'R.cbl': dynamicSql('R') });
@@ -433,7 +449,22 @@ test('B5.8 A forbidden GnuCOBOL option is refused, not removed', { skip: skip ||
   assert.equal(cobc.args(), null, 'the compiler did not run');
 });
 
-test('B5.9 A check the pinned GnuCOBOL cannot generate fails', { todo: 'the pinned-version check is not built (spec §15, step 5)' }, () => {});
+const pinsGnucobol = (version) => ({ Dockerfile: `FROM debian:12\nARG GNUCOBOL_VERSION=${version}\n` });
+test('B5.9 A check the pinned GnuCOBOL cannot generate fails', { skip: skip || posix }, () => {
+  const cobc = standInCobc();
+  const pinned = (version, over = {}) => repo({ 'Q0.cbl': QUIET, ...pinsGnucobol(version), 'cobolwork.policy.json': policy({ options: 'block', ...over }) });
+  const argumentLength = (version) => absolute(pinned(version, { checks: ['argument-length'] }), { compiler: [cobc.path, '-debug', 'Q0.cbl'] });
+  const old = argumentLength('3.1');
+  assert.equal(old.checks.options, false);
+  assert.deepEqual(old.reasons.filter((r) => /GnuCOBOL/.test(r)), ['argument-length needs EC-PROGRAM-ARG-MISMATCH, which is in GnuCOBOL 3.2 and later; Dockerfile pins 3.1']);
+  assert.equal(argumentLength('3.2').checks.options, true);
+
+  const before = absolute(pinned('2.2'), { compiler: [cobc.path, '-x', 'Q0.cbl'] });
+  assert.equal(before.checks.options, false);
+  assert.deepEqual(before.optionsAdded, [], 'no -fec is added for a cobc that has none');
+  assert.ok(before.reasons.includes('subscript needs -fec, which is in GnuCOBOL 3.1 and later; Dockerfile pins 2.2'), before.reasons.join('\n'));
+  assert.equal(absolute(pinned('2.2'), { compiler: [cobc.path, '-debug', 'Q0.cbl'] }).checks.options, true);
+});
 
 const NO_SITE = { 'cobolwork.site.json': JSON.stringify({}) };
 
@@ -556,6 +587,13 @@ test('B5.23 A task\'s command line is read command by command, with its argument
   assert.equal(doc.checks.options, false);
   assert.ok(doc.reasons.some((r) => /^\.vscode\/tasks\.json:6: subscript needs/.test(r)), doc.reasons.join('\n'));
   assert.ok(doc.reasons.some((r) => /^\.vscode\/tasks\.json:8: subscript needs/.test(r)), doc.reasons.join('\n'));
+});
+
+test('A task\'s argument keeps its backslashes, quotes and backquotes in the dialect its shell reads', () => {
+  const task = (variant) => JSON.stringify({ version: '2.0.0', tasks: [{ label: 'B', type: 'shell', ...variant }] });
+  const args = (variant) => compilerTasks(task(variant)).map((c) => c.args);
+  assert.deepEqual(args({ command: 'cobc', args: ['-o', 'out dir\\\\', '-DNAME=a \\"b\\"', 'p.cbl'] }), [['-o', 'out dir\\\\', '-DNAME=a \\"b\\"', 'p.cbl']]);
+  assert.deepEqual(args({ windows: { command: 'cobc' }, args: ['-o', 'my `dir "x"', 'p.cbl'] }), [['-o', 'my `dir "x"', 'p.cbl']]);
 });
 
 test('B5.24 A Makefile\'s compiler and options reach the command through the variables it assigns', { skip }, () => {
@@ -816,7 +854,24 @@ test('B8.9 cics-signon-bypassed is unchanged by killable facts', RULE_NOT_BUILT,
 test('B8.10 A STRING of terminal input with no ON OVERFLOW is reported', RULE_NOT_BUILT, () => {});
 test('B8.11 A MOVE of input into fewer integer digits is reported', RULE_NOT_BUILT, () => {});
 test('B8.12 An EVALUATE of input with no WHEN OTHER is reported', RULE_NOT_BUILT, () => {});
-test('B8.13 A password in a VALUE clause is reported, and the gitleaks file holds the same shapes', RULE_NOT_BUILT, () => {});
+const DB_PASSWORD = program('L', ["01 WS-DB-PASSWORD PIC X(12) VALUE 'Zq7r2Lm9Vx4p'."], ["CALL 'DBLOGON' USING WS-DB-PASSWORD", 'GOBACK.']);
+test('B8.13 A password in a VALUE clause is reported, and the gitleaks file holds the same shapes', { skip }, () => {
+  const root = repo({ 'Q0.cbl': QUIET });
+  patch(root, { 'L.cbl': DB_PASSWORD });
+  const doc = ratchet(root);
+  const f = doc.findings.find((x) => x.rule === 'credential-in-source');
+  assert.equal(f.tier, 'high');
+  assert.equal(f.introduced, true);
+  assert.equal(f.blocking, false, 'unmeasured, so it warns under the default policy');
+  assert.equal(doc.verdict, 'pass');
+
+  const named = repo({ 'Q0.cbl': QUIET, 'cobolwork.policy.json': policy({ rules: { 'credential-in-source': 'block' } }) });
+  patch(named, { 'L.cbl': DB_PASSWORD });
+  assert.deepEqual(blockingRules(ratchet(named)), ['credential-in-source']);
+
+  const toml = readFileSync(join(HERE, '..', 'rules', 'gitleaks-mainframe.toml'), 'utf8');
+  for (const s of SHAPE_RULES) assert.ok(toml.includes(`id = "${s.id}"`), `${s.id} is not in the gitleaks file`);
+});
 
 // B9 - Tiers and consequences
 

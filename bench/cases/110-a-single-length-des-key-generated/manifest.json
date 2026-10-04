@@ -1,0 +1,11 @@
+{
+ "id": "110-a-single-length-des-key-generated",
+ "title": "A program generates a 56-bit single-length DES key through ICSF Key Generate",
+ "cwe": "CWE-327",
+ "expect": [
+  {
+   "rule": "icsf-single-length-des-key",
+   "file": "DESKEY.cbl"
+  }
+ ]
+}

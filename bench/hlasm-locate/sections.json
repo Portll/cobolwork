@@ -1,0 +1,150 @@
+{
+ "z390": "1.8.4.4",
+ "symbols": {
+  "A": {
+   "section": "FIRST",
+   "loc": 0,
+   "len": 5,
+   "type": "REL"
+  },
+  "B": {
+   "section": "FIRST",
+   "loc": 6,
+   "len": 2,
+   "type": "REL"
+  },
+  "C": {
+   "section": "FIRST",
+   "loc": 8,
+   "len": 3,
+   "type": "REL"
+  },
+  "D": {
+   "section": "FIRST",
+   "loc": 16,
+   "len": 8,
+   "type": "REL"
+  },
+  "E": {
+   "section": "FIRST",
+   "loc": 16,
+   "len": 4,
+   "type": "REL"
+  },
+  "F": {
+   "section": null,
+   "loc": 16,
+   "len": null,
+   "type": "ABS"
+  },
+  "G": {
+   "section": "SECOND",
+   "loc": 0,
+   "len": 5,
+   "type": "REL"
+  },
+  "H": {
+   "section": "SECOND",
+   "loc": 6,
+   "len": 2,
+   "type": "REL"
+  },
+  "I": {
+   "section": "SECOND",
+   "loc": 8,
+   "len": 3,
+   "type": "REL"
+  },
+  "J": {
+   "section": "SECOND",
+   "loc": 16,
+   "len": 8,
+   "type": "REL"
+  },
+  "K": {
+   "section": "SECOND",
+   "loc": 16,
+   "len": 4,
+   "type": "REL"
+  },
+  "L": {
+   "section": null,
+   "loc": 16,
+   "len": null,
+   "type": "ABS"
+  },
+  "M": {
+   "section": "FIRST",
+   "loc": 32,
+   "len": 7,
+   "type": "REL"
+  },
+  "N": {
+   "section": "FIRST",
+   "loc": 40,
+   "len": 2,
+   "type": "REL"
+  },
+  "O": {
+   "section": "FIRST",
+   "loc": 42,
+   "len": 3,
+   "type": "REL"
+  },
+  "P": {
+   "section": "FIRST",
+   "loc": 48,
+   "len": 8,
+   "type": "REL"
+  },
+  "Q": {
+   "section": "FIRST",
+   "loc": 48,
+   "len": 4,
+   "type": "REL"
+  },
+  "R": {
+   "section": null,
+   "loc": 16,
+   "len": null,
+   "type": "ABS"
+  },
+  "S": {
+   "section": "DATA",
+   "loc": 0,
+   "len": 4,
+   "type": "REL"
+  },
+  "T": {
+   "section": "DATA",
+   "loc": 4,
+   "len": 2,
+   "type": "REL"
+  },
+  "U": {
+   "section": "DATA",
+   "loc": 6,
+   "len": 3,
+   "type": "REL"
+  },
+  "V": {
+   "section": "DATA",
+   "loc": 16,
+   "len": 8,
+   "type": "REL"
+  },
+  "W": {
+   "section": "DATA",
+   "loc": 16,
+   "len": 4,
+   "type": "REL"
+  },
+  "X": {
+   "section": null,
+   "loc": 16,
+   "len": null,
+   "type": "ABS"
+  }
+ },
+ "instructions": {}
+}

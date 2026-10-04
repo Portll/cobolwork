@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-attach-by-a-name-in-storage",
+ "title": "A program attaches a module by a name stored in a variable, which the rule reports as a runtime module name",
+ "cwe": "CWE-470",
+ "expect": [
+  {
+   "rule": "hlasm-runtime-module-name",
+   "file": "ATTACHBYNAME.asm"
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+ "id": "105-an-assembler-stub-returns-to-problem-state",
+ "title": "MODESET returning to the caller's key and problem state, which takes no authority",
+ "cwe": "CWE-250",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-supervisor-state-change"
+ ]
+}

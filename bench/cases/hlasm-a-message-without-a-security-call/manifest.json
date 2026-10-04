@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-a-message-without-a-security-call",
+ "title": "An assembler module writes an operator message and calls no security service",
+ "cwe": "-",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-calls-security-product"
+ ]
+}

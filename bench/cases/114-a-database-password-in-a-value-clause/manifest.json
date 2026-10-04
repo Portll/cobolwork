@@ -1,0 +1,11 @@
+{
+ "id": "114-a-database-password-in-a-value-clause",
+ "title": "A program signs on to its database with a password written into a VALUE clause",
+ "cwe": "CWE-798",
+ "expect": [
+  {
+   "rule": "credential-in-source",
+   "file": "DBLOGIN.cbl"
+  }
+ ]
+}

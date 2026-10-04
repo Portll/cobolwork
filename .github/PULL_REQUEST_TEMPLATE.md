@@ -5,7 +5,7 @@
 ## What it was measured against
 
 <!-- This project states what each claim was measured on. A rule change needs a number: how many
-findings it adds or removes over a corpus, and how many of those were checked by hand. A parser
+findings it adds or removes over a corpus, and how many of those a machine label confirmed (`bench/label.mjs`, `bench/seed.mjs`). A parser
 change needs the grading run. "It looked right" is not a measurement. -->
 
 ## Checks

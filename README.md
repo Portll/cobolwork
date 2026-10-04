@@ -63,6 +63,19 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | JCL | credentials and security commands in in-stream data, destructive statements, `DLM=` tricks, FTP in cleartext or sending production data, production data touched by a test job |
 | The source | names nothing declares (code that cannot compile), shadowed copybooks, payloads hidden in columns 73-80 or aimed at AI readers |
 | The estate | production names outside production jobs, routable addresses, compiler and runtime versions with published advisories |
+| Assembler | a switch to key zero or supervisor state, an instruction run through `EX`, cross-memory calls, a module named at run time, the security product called directly, and the CSECT or ENTRY a COBOL `CALL` or a job step reaches |
+| Cryptography | a single-length DES key, an MD5 or SHA-1 hash, or a fixed initialization vector asked of ICSF, read from IBM's parameter lists; an outbound CICS connection asking for HTTP |
+| Secrets | a credential written into a program or copybook: a literal `VALUE` on an item named for one, or a literal password in `EXEC SQL CONNECT` or `EXEC CICS SIGNON` |
+
+HLASM is read, not assembled. Each statement is parsed by what its operation is: a machine
+instruction against IBM's operand syntax for its mnemonic (`rules/hlasm-instructions.json`, every
+z/Architecture mnemonic with its page in the Principles of Operation), an assembler instruction,
+or a z/OS, Language Environment or HLASM Toolkit macro against the keywords IBM lists. The location
+and length of each symbol is worked out as the assembler would, and nothing after a statement of
+unknown length is placed. Macros are not expanded and conditional assembly is not evaluated, so an
+operation a site macro issues is seen where the macro is defined, and not where it is used. A scan
+names each macro it did not expand, each COPY member the tree does not hold, and each statement it
+could not read.
 
 [docs/rule-sets.md](docs/rule-sets.md) describes each in full, with what it deliberately leaves out.
 Vendor packs for CA ACF2 and Top Secret, Control-M and Connect:Direct load only for estates that
@@ -101,8 +114,20 @@ here can be checked.
 }
 ```
 
-`crossProgram` marks a path that left the file it started in. Findings carry no source text, so a
-report can be stored and passed on without carrying the code with it.
+`crossProgram` marks a path that left the file it started in. A value a CALL writes back through a
+parameter returns only to the call it came in through: in another caller's CALL the parameter is
+that caller's storage. A value the subprogram keeps in its own storage can reach any later caller.
+Findings carry no source text, so a report can be stored and passed on without carrying the code
+with it.
+
+`trace` is one route, the shortest, and sources that reach one sink are merged into one finding,
+counted in `sources`. With `--all-routes`, `scan` and `flow` give each path finding `routes`: every
+source, and every statement on any route from one of them to the sink, by verb, file and line.
+`complete` is false where the walk stopped at its budget or a step has no statement the engine can
+place. It leaves out no statement on a route the engine follows, and may name one no route takes:
+what a reader needs before saying a run covered every route (`docs/spec/reach.md` §9.8). Routes
+through what the engine does not read, such as an unparsed program or a caller written in another
+language, are not in it.
 
 `fingerprint` is what the finding is, rather than where it is printed today: the rule, the program
 and the paragraph or section it sits in (the job, step and DD for JCL), and the flagged statement's
@@ -113,7 +138,7 @@ that only their position tells apart share one, and `summary.identity.shared` co
 ### Findings and Claim Severity
 
 Severity says how urgent a finding is. `evidence` says what the tool actually established, which
-decides who acts on it. Every rule declares one of eight finding types:
+decides who acts on it. Every rule declares one of nine finding types:
 
 | `evidence` | What the finding claims | Who acts |
 |---|---|---|
@@ -123,6 +148,7 @@ decides who acts on it. Every rule declares one of eight finding types:
 | `advisory` | a pinned compiler or runtime matches a published advisory | whoever owns the build |
 | `exposure` | information about the estate is written into source | the owner |
 | `change` | a change moves an interface or adds a call target (`diff` only) | the reviewer of that change |
+| `execution` | a run of the program on a recorded input ended this way, and the run's verified journal is the record | the program's owner |
 | `coverage` | the analysis stopped following here | nobody's code; read more, or accept the limit |
 | `context` | describes the estate (an entry point, a product in use) | nobody; it asserts no defect |
 
@@ -160,8 +186,9 @@ declares its transaction open:
   ],
   "unknown": "whether it reproduces: a test on a system the estate owns, under its own authorisation, is the only confirmation",
   "fixAt": {
-    "program": "INQUIRY", "path": "INQUIRY.cbl", "line": 13, "item": "WS-STMT",
-    "test": "before the operation at INQUIRY.cbl:13, on every route to it, test WS-STMT against a list of the values allowed (...), and let only a value that passes reach it; a static statement with host variables needs no test"
+    "program": "INQUIRY", "path": "INQUIRY.cbl", "line": 11, "item": "WS-ACCT",
+    "builtInto": { "item": "WS-STMT", "path": "INQUIRY.cbl", "line": 13 },
+    "test": "before the STRING at INQUIRY.cbl:11 that builds WS-STMT, on every route to it, test WS-ACCT against a list of the values allowed (...), or WS-ACCT IS NUMERIC where it is a number, and let only a value that passes reach it; a static statement with host variables needs no test"
   }
 }
 ```
@@ -191,6 +218,16 @@ facts behind it may go. [docs/spec/reach.md](docs/spec/reach.md) §9 is the full
 tests. A finding inside a paragraph they cover carries `executed`, the paragraph and how often the
 runs entered it, and `summary.byExecution` counts the findings in paragraphs entered and never
 entered ([docs/spec/evidence.md](docs/spec/evidence.md) §13.5).
+
+`COBOLWORK_ABENDS` names fuzz runs ironwork's harness wrote. Each abend an input caused becomes a
+finding at the line it happened, with the input and the run's journal, once that journal verifies:
+`input-causes-abend-s0c7`, `-s0c4` (in a CICS task, the ASRA whose message names that check),
+`-subscript-range`, `input-causes-hang` for an input that keeps a loop running past the statement limit (S322), `input-selects-program`
+for an S806 whose journal shows the input reaching the CALL, or `input-causes-abend` for any other
+code ([docs/spec/evidence.md](docs/spec/evidence.md) §13.6). It reads manifests in format
+`ironwork-fuzz/v1`, and `ironwork-fuzz-interface/v1` from a subprogram fuzzed with generated
+arguments, whose findings say no caller run shows a caller passes them and warn by default; it
+reports one in any other format as a problem instead of guessing at it.
 
 ### What each finding lets someone do, and the fix
 
@@ -318,11 +355,32 @@ stand-in in `diag/precompiler.mjs`, which rewrites what the parser would otherwi
 tests compare the parser with the compiler's answers kept in `test/fixtures/parser/*.golden.json`,
 so they run without GnuCOBOL.
 
-`bench/cases/` holds 102 CWE-labelled cases, each paired with a near-miss negative: the same shape
+HLASM is graded against z390, an HLASM-compatible assembler, by `diag/hlasm-oracle.mjs` and
+`diag/hlasm-grade-z390.mjs`. Each file is assembled twice, the second time with sixteen bytes after
+every macro call, and only values the two runs agree on are graded. None of them depends on how
+z390's macros, or IBM's, expand. Measured 2026-10-03 over the files z390 assembles:
+
+| Corpus | Files | Symbol locations | Statement locations | Instruction lengths | External names |
+|---|---|---|---|---|---|
+| 12 repositories, dev | 48 | 935 agree of 936, 0 differ | 2,511 of 2,546, 0 differ | 2,273 of 2,273 | 55 of 55 |
+| 17 repositories, held out | 76 | 546 agree of 557, 0 differ | 1,631 of 1,675, 0 differ | 1,710 of 1,710 | 90 of 92 |
+
+A value not agreeing was not placed, never placed differently: it follows a statement of unknown
+length. Two of z390's values are not graded, because it differs from the Language Reference, which
+the reader follows: an EQU's length, where z390 gives 1 and the reference the length of the
+leftmost term; and anything after a literal pool where z390 pads a literal that the reference packs.
+A file with an error that can move a location is not graded either, such as an undefined symbol in
+a statement holding a literal, which z390 then leaves out of the pool. Of the statements outside conditional
+assembly, 99.5% parse on the dev corpus and 99.7% on the held-out one; the rest are counted by
+kind. `bench/hlasm-locate/` holds small programs, one assembler feature each, with z390's answers
+recorded beside them, so the tests check the locator without z390.
+
+`bench/cases/` holds 137 CWE-labelled cases, each paired with a near-miss negative: the same shape
 with the flaw removed. `node bench/run.mjs` scores any scanner's findings against them, by rule and
 file, never by line, and `npm test` fails if any case scores differently from its declaration.
-`--validate` compiles every COBOL case with GnuCOBOL and checks every JCL case against the
-statement grammar, a weaker witness, and says so.
+`--validate` compiles every COBOL case with GnuCOBOL, assembles every HLASM case with z390 when
+`Z390` names a release (stubbing the macros z390 does not ship), and checks every JCL case against
+the statement grammar, a weaker witness, and says so.
 
 ## Coverage on a busy machine
 
@@ -349,10 +407,10 @@ and to a COBIT 2019 practice by identifier alone:
 
 | File | Instrument | Rules mapped |
 |---|---|---|
-| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 203 |
-| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 201, and 2 recorded as unmapped |
-| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 201, and 2 recorded as unmapped |
-| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 201, and 2 recorded as unmapped |
+| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 207 |
+| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 205, and 2 recorded as unmapped |
+| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 205, and 2 recorded as unmapped |
+| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 205, and 2 recorded as unmapped |
 
 A COBIT 2019 row names the objective or practice and gives this project's own rationale; no ISACA
 text is reproduced, so reading what a practice says needs a copy of the framework. The practice is

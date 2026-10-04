@@ -13,17 +13,23 @@ const prov = JSON.parse(readFileSync(provPath, 'utf8'));
 const { dfhaid, dfhbmsca } = JSON.parse(readFileSync(wordsPath, 'utf8')).structured;
 
 const direction = (o) => Object.fromEntries(Object.entries(o).map(([name, [, dir]]) => [name, dir]));
-const commands = Object.entries(prov.commands).map(([name, c]) => {
-  const entry = {
-    ...(c.identify ? { identify: c.identify } : {}),
-    ...(c.default ? { default: true } : {}),
-    ...(c.anyOption ? { anyOption: c.anyOption } : {}),
-    options: direction(c.options),
-    ...(c.defaults ? { defaults: c.defaults } : {}),
-  };
-  return `  ${JSON.stringify(name)}: ${JSON.stringify(entry)},`;
-});
-const wrap = (items, indent) => {
+// A command too long for one line takes one line per field, its options wrapped near 100 columns.
+const entryText = (name, entry) => {
+  const flat = `  ${JSON.stringify(name)}: ${JSON.stringify(entry)},`;
+  if (flat.length <= 100) return flat;
+  const fields = Object.entries(entry).map(([k, v]) => (k === 'options'
+    ? `    "options": {\n${wrap(Object.entries(v).map(([o, d]) => `${JSON.stringify(o)}: ${JSON.stringify(d)},`), '      ')}\n    },`
+    : `    ${JSON.stringify(k)}: ${JSON.stringify(v)},`));
+  return `  ${JSON.stringify(name)}: {\n${fields.join('\n')}\n  },`;
+};
+const commands = Object.entries(prov.commands).map(([name, c]) => entryText(name, {
+  ...(c.identify ? { identify: c.identify } : {}),
+  ...(c.default ? { default: true } : {}),
+  ...(c.anyOption ? { anyOption: c.anyOption } : {}),
+  options: direction(c.options),
+  ...(c.defaults ? { defaults: c.defaults } : {}),
+}));
+function wrap(items, indent) {
   const lines = [];
   let line = '';
   for (const item of items) {
@@ -31,7 +37,7 @@ const wrap = (items, indent) => {
   }
   if (line) lines.push(indent + line);
   return lines.join('\n');
-};
+}
 const numbers = (values) => wrap(Object.entries(values).map(([k, v]) => `${k}: ${v},`), '  ');
 const words = (list) => `\`\n${wrap(list, '')}\`.split(/\\s+/).filter(Boolean)`;
 

@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-cobol-calls-another-module",
+ "title": "A COBOL program calls a name different from the assembler CSECT, so the rule must not report it",
+ "cwe": "-",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-provides-called-module"
+ ]
+}

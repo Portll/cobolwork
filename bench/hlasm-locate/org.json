@@ -1,0 +1,60 @@
+{
+ "z390": "1.8.4.4",
+ "symbols": {
+  "A": {
+   "section": "FIRST",
+   "loc": 0,
+   "len": 3,
+   "type": "REL"
+  },
+  "B": {
+   "section": "FIRST",
+   "loc": 4,
+   "len": 2,
+   "type": "REL"
+  },
+  "C": {
+   "section": "FIRST",
+   "loc": 6,
+   "len": 3,
+   "type": "REL"
+  },
+  "D": {
+   "section": "FIRST",
+   "loc": 16,
+   "len": 8,
+   "type": "REL"
+  },
+  "E": {
+   "section": "FIRST",
+   "loc": 16,
+   "len": 4,
+   "type": "REL"
+  },
+  "F": {
+   "section": null,
+   "loc": 16,
+   "len": null,
+   "type": "ABS"
+  },
+  "G": {
+   "section": "FIRST",
+   "loc": 4,
+   "len": 3,
+   "type": "REL"
+  },
+  "H": {
+   "section": "FIRST",
+   "loc": 32,
+   "len": 1,
+   "type": "REL"
+  },
+  "I": {
+   "section": "FIRST",
+   "loc": 0,
+   "len": 1,
+   "type": "REL"
+  }
+ },
+ "instructions": {}
+}

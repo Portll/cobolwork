@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-a-call-within-the-same-space",
+ "title": "A program calls a routine in its own address space with BALR, which is not a cross-memory service",
+ "cwe": "CWE-668",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-cross-memory-service"
+ ]
+}

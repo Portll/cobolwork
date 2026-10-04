@@ -8,9 +8,9 @@ item on this list paid for out of a compliance budget rather than a tooling budg
 |---|---|
 | Task size | Medium |
 | Client benefit | **Big** |
-| ROI rank | **1 of 6** |
-| Estimate | 20–30h for all five frameworks; **10–12h for DORA + PCI alone** |
-| Start with | DORA and PCI DSS 4.0. Ship those two, charge, fund the rest |
+| ROI rank | **1 of 5** |
+| Estimate | 20–30h for all four frameworks |
+| Start with | DORA. Ship it, charge, fund the rest |
 
 ## What ships
 
@@ -26,21 +26,20 @@ it, and what the absence of findings does and does not demonstrate.
 `kind: "compliance"` in [`../schema.mjs`](../schema.mjs). Fields: `ruleId`, `framework`, `clause`,
 `title`, `rationale`, `source{doc,retrieved,quote}`.
 
-`framework` is one of `dora`, `pci-dss-4`, `ffiec-ais`, `nist-800-53r5`, `sox-itgc`.
+`framework` is one of `dora`, `ffiec`, `nist-800-53r5`, `sox-itgc`.
 
 ## Source material, and its licence
 
 | Framework | Document | May we cache it? | May we redistribute the text? |
 |---|---|---|---|
 | DORA | Regulation (EU) 2022/2554, EUR-Lex | Yes | Yes — EU law, reproduction authorised |
-| PCI DSS 4.0 | PCI SSC | Yes, under their terms | **No** — copyright PCI SSC |
 | FFIEC | IT Examination Handbook | Yes | Yes — US Government work |
 | NIST 800-53r5 | NIST | Yes | Yes — US Government work |
 | SOX ITGC | No canonical text; derive from PCAOB AS 2201 + COBIT mappings | Partly | **No** for COBIT |
 
 This is why `feed/sources/` is gitignored and the feed ships **citations, not text**. Shipping a
 quote of a clause for identification is ordinary fair dealing; shipping the corpus is not. Keep
-quotes short, and never assemble enough of PCI DSS that the feed substitutes for the standard.
+quotes short, and never assemble enough of any standard that the feed substitutes for it.
 
 ## The gate
 
@@ -59,20 +58,20 @@ fact-checking citations.
 ## Worklist
 
 `feed/worklists/compliance.json`, one target per (rule, framework) pair the framework plausibly
-touches — not the full Cartesian product, which would be 265 rows of which most are empty.
+touches — not the full Cartesian product, which would be 212 rows of which most are empty.
 
 Pre-filter by rule set:
 
-| Rule set | Rules | DORA | PCI | FFIEC | NIST | SOX |
-|---|---|---|---|---|---|---|
-| flow | 31 | ✓ | ✓ | ✓ | ✓ | — |
-| cics | 4 | ✓ | ✓ | ✓ | ✓ | — |
-| copybook | 2 | ✓ | — | ✓ | — | ✓ |
-| hidden | 5 | ✓ | — | ✓ | ✓ | ✓ |
-| diff | 5 | ✓ | — | ✓ | — | ✓ |
-| credential | 6 | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Rule set | Rules | DORA | FFIEC | NIST | SOX |
+|---|---|---|---|---|---|
+| flow | 31 | ✓ | ✓ | ✓ | — |
+| cics | 4 | ✓ | ✓ | ✓ | — |
+| copybook | 2 | ✓ | ✓ | — | ✓ |
+| hidden | 5 | ✓ | ✓ | ✓ | ✓ |
+| diff | 5 | ✓ | ✓ | — | ✓ |
+| credential | 6 | ✓ | ✓ | ✓ | ✓ |
 
-≈ 160 targets across five frameworks; **≈ 74 for DORA + PCI**.
+≈ 120 targets across four frameworks.
 
 Each target carries `documentText`: the chunk of the regulation the model may quote from. Chunk by
 article or requirement, not by token count — a clause split across two chunks produces a quote that

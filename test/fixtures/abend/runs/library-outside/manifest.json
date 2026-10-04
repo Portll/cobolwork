@@ -1,0 +1,48 @@
+{
+ "clock": "2026-10-01T00:00:00",
+ "counts": {
+  "abend": 3,
+  "clean": 27,
+  "refused": 0,
+  "runs": 30,
+  "timeout": 0
+ },
+ "entry": "run",
+ "inputs": [
+  {
+   "bytes": "WSlF3HM=",
+   "id": "r0-INDD",
+   "kind": "dd",
+   "minimized": true,
+   "name": "INDD"
+  }
+ ],
+ "program": {
+  "file": "src/LIBADD.cbl",
+  "id": "LIBADD"
+ },
+ "roots": [
+  "src",
+  null
+ ],
+ "runs": [
+  {
+   "abend": {
+    "code": "S0C7",
+    "file": "ADDQTY.cpy",
+    "line": 1,
+    "message": "Data exception"
+   },
+   "coverage": "coverage/0.json",
+   "input": [
+    "r0-INDD"
+   ],
+   "journal": "20261002T124324Z-70f33b8eb60444b3",
+   "outcome": "abend"
+  }
+ ],
+ "seed": 1,
+ "strategy": "fields",
+ "tool": "ironwork-fuzz",
+ "version": "0.2.0"
+}

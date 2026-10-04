@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-a-relative-branch-to-a-subroutine",
+ "title": "BRAS calls a subroutine whose compare has its length written in the source, and nothing is executed indirectly",
+ "cwe": "CWE-119",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-executes-built-instruction"
+ ]
+}

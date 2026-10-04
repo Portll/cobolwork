@@ -1,0 +1,9 @@
+{
+ "id": "hlasm-a-stub-stays-in-problem-state",
+ "title": "An assembler stub stays in problem state throughout, which takes no authority",
+ "cwe": "CWE-250",
+ "expect": [],
+ "negativeFor": [
+  "hlasm-supervisor-state-change"
+ ]
+}

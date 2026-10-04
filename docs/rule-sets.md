@@ -159,6 +159,30 @@ field is `web-request-changes-state-without-a-token` (CWE-352, medium). A token 
 in the finding. A temporary-storage queue is where a web program keeps its own conversation and is
 not counted as a change.
 
+**CICS as an HTTP client.** `WEB OPEN` that asks for HTTP rather than HTTPS - the `HTTP` option,
+`SCHEME(HTTP)`, or a client `URIMAP` the tree's CSD defines with `SCHEME(HTTP)` and no
+`ATTLS(AWARE)` - is `web-client-opens-cleartext` (CWE-319, medium): what the program sends and reads
+crosses the network in the clear unless an AT-TLS policy outside the program encrypts it. A scheme
+held in a field, or a `URIMAP` the tree does not define, is counted as undecided. A `WEB RECEIVE`
+or `WEB CONVERSE` whose `MAXLENGTH` is longer than its `INTO` area is
+`web-receive-length-exceeds-area` (CWE-805, high): CICS copies up to `MAXLENGTH` bytes of a body the
+other end chooses into the area. `MAXLENGTH` is judged as a literal or `LENGTH OF` an item, since a
+field's value can change before the command. With `INTO`, CICS refuses a receive that gives no
+`MAXLENGTH` (`INVREQ`, RESP2 16), so an absent one is not an overflow.
+
+**What a program asks ICSF for.** A COBOL program reaches z/OS cryptography by calling an ICSF
+callable service, and the strength it gets is in the arguments. `rules/icsf-services.json` holds
+each service's parameters in order, from IBM's ICSF Application Programmer's Guide (SC14-7508-60),
+and each argument is judged by the literals that can reach it: its `VALUE`, a `MOVE` or `STRING`
+into it, a hop back through a field those name. A key generated as `SINGLE`, `KEYLN8` or `SINGLE-R`
+(`CSNBKGN`) is `icsf-single-length-des-key` (CWE-327, high): 56 bits, and every encipher with it
+runs single DES. A rule array naming `MD5` or `SHA-1` for `CSNBOWH` is `icsf-weak-hash` (CWE-328,
+medium). An initialization vector nothing but a constant is ever put in, for `CSNBENC`, `CSNBSYE`
+or `CSNBSAE`, is `icsf-fixed-initialization-vector` (CWE-1204, medium); `ECB` and `CONTINUE`, which
+use no vector of the call's, are not judged. Every name a service answers to counts (`CSNB`, `CSNE`,
+`CSF` and the data-space forms). An argument a computation, a read or another program fills is
+counted as undecided, not passed.
+
 **CALL interfaces.** The same size check for `CALL ... USING`: a called program that declares a
 parameter longer than its caller's argument reaches past it on every call. Past the caller's whole
 record is high; inside it, into the fields beside the argument, is low, because that is sometimes
@@ -294,10 +318,57 @@ ignores, comments that instruct their reader to ignore instructions or fetch a s
 runs, and characters that reorder or hide text.
 
 **Mainframe credentials.** `rules/gitleaks-mainframe.toml` extends gitleaks with the shapes it has
-no rules for: a RACF password on a JCL statement, a TSO logon, `ADDUSER` and `ALTUSER`, a credential
-in a COBOL `VALUE` clause, `EXEC SQL CONNECT`, and `EXEC CICS SIGNON`.
+no rules for: a RACF password or password phrase on a JCL statement, plain, in apostrophes, or
+continued past column 71 onto the next statement, a TSO logon, `ADDUSER`, `ALTUSER` and the RACF
+`PASSWORD` and `PHRASE` commands, a credential in a COBOL `VALUE` clause, including hexadecimal,
+national, DBCS, null-terminated and UTF-8 literals, one continued onto the next line, and one on a
+debugging line, `EXEC SQL CONNECT`, and `EXEC CICS SIGNON`, `VERIFY` and `CHANGE`. A continued value
+is reported by its first part. Where a statement changes a password, the new one is a finding of its
+own. Each form is one IBM's manuals define: the z/OS JCL Reference, the RACF Command
+Language Reference, the TSO/E Command Reference, CICS TS 6.x and the Enterprise COBOL Language
+Reference. CICS's `PHRASE` and `NEWPHRASE` take a data area, which cannot be a literal.
 
 gitleaks detect --no-git --source . --config "$(cobolwork --rules-path gitleaks)"
+
+gitleaks reads a file in pieces of about 100 KB, ending each at a blank line within the next 25 KB
+if it finds one. Fixed-format COBOL seldom has blank lines, so in a large program a `VALUE` on the
+line after its data name can fall into the next piece and go unreported. The `secrets` set reads
+each file whole.
+
+The `secrets` set reports the COBOL shapes without gitleaks, reading them from the same file: a
+literal `VALUE` on an item named for a credential, a literal password in `EXEC SQL CONNECT`, and one
+in the `PASSWORD` or `NEWPASSWORD` of `EXEC CICS SIGNON`, `VERIFY` or `CHANGE`. Each is
+`credential-in-source` (CWE-798, high), naming the item or statement and the shape, never the value. A program or copybook the tree
+classifies is read whatever its name, where gitleaks reads only the extensions the file lists.
+The rule's firing rate over the corpus is not yet recorded, so the build gate treats it as a warning
+unless the policy's `rules` names it `block` (build-gate.md §11d).
+
+## Assembler
+
+**What a stub does that COBOL cannot.** HLASM source (`.asm`, `.mac`, `.mlc`, `.hlasm`,
+`.assemble`, or no extension and a section or macro definition with storage) is read as cards by
+`lib/hlasm.mjs`, and each operation is looked up in `rules/hlasm-operations.json`, which cites the
+IBM manual defining it. A `MODESET` that switches to key zero or supervisor state
+(`KEY=ZERO`, `MODE=SUP` or `EXTKEY=ZERO`) is critical; one that returns to the caller's key
+and problem state is not reported. `EX` and `EXRL` run their target with its second byte from a
+register, which for a move is its length, and the cross-memory instructions (`PC`, `PR`, `PT`,
+`SSAR`, `LASP`) reach another address space; both are high. `RACROUTE`, `RACHECK` and `RACINIT`
+called directly are listed as context. `LINK`, `XCTL`, `LOAD` or `ATTACH` given `EPLOC=` or `DE=`
+names its module by the address of the name, so the program that runs is whatever that storage
+holds; that is medium (CWE-470), and `EP=` with a written name is not reported. An `EX` finding
+names the instruction it runs when the target is labelled in the same file. A BMS map or an IMS DBD or PSB in a `.asm` file is counted
+as what it is, and a file with no HLASM operation the reader recognises (x86, 6502 or a copy member
+of `EQU`s) is counted as unrecognised.
+
+**The module a CALL reaches.** A COBOL `CALL 'NAME'` that no COBOL program declares may be an
+assembler module. A `CSECT` or `ENTRY` of that name is reported as the module the call reaches, and
+the JCL rules count it as a defined program, so a step that runs it is not unresolved.
+
+It reads; it does not assemble. Macros are not expanded and conditional assembly is not evaluated,
+so an operation a site macro issues is seen in the macro's definition, not where the macro is used,
+and an operation in a branch `AIF` jumps over is reported as much as any other. The scan names the
+macros it did not expand, each COPY member the tree does not hold and each statement the statement
+reader (`lib/hlasm/read.mjs`) refused, by kind; the last two set `coverageIncomplete`.
 
 ## Change review
 

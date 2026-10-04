@@ -1,0 +1,11 @@
+{
+ "id": "hlasm-a-stub-enters-supervisor-state",
+ "title": "An assembler stub enters supervisor state to copy storage, then returns to problem state",
+ "cwe": "CWE-250",
+ "expect": [
+  {
+   "rule": "hlasm-supervisor-state-change",
+   "file": "STUBSUP.asm"
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "tool": "ironwork-fuzz",
+ "version": "0.1.2",
+ "seed": 1,
+ "strategy": "fixture",
+ "clock": "2026-10-01T00:00:00",
+ "program": { "file": "../ABEND7.cbl", "id": "ABEND7" },
+ "entry": "run",
+ "inputs": [
+  { "id": "i1", "kind": "dd", "name": "INDD", "bytes": "KioqKiogICAgIAo=", "minimized": true }
+ ],
+ "counts": { "runs": 12, "clean": 11, "abend": 1, "timeout": 0, "refused": 0 },
+ "runs": [
+  { "input": ["i1"], "outcome": "abend", "abend": { "code": "S0C7", "file": "ABEND7.cbl", "line": 17, "message": "Data exception" }, "journal": "20260930T165601Z-b79adc04b1a0b792" }
+ ]
+}

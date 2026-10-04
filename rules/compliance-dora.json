@@ -2939,6 +2939,110 @@
     "retrieved": "2026-09-20",
     "quote": "implement policies and protocols for strong authentication mechanisms, based on relevant standards and dedicated control systems, and protection measures of cryptographic keys"
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-exit-routine-declared",
+   "framework": "dora",
+   "clause": "Article 8(4)",
+   "title": "Identification",
+   "rationale": "The rule reports: A table names an exit routine that runs inside Db2. That is an interdependency between assets which no single file records, and mapping it is what this clause asks for.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-external-routine",
+   "framework": "dora",
+   "clause": "Article 8(4)",
+   "title": "Identification",
+   "rationale": "The rule reports: A procedure or function runs an external load module. That is an interdependency between assets which no single file records, and mapping it is what this clause asks for.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-grant-to-public",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A GRANT gives privileges to PUBLIC, every authorization ID. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-grant-with-grant-option",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: WITH GRANT OPTION lets the grantee grant the privilege to others. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-system-authority-granted",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A system or database authority is granted. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-definition-inconsistent",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A DBD or PSB holds what DBDGEN, PSBGEN or ACBGEN refuses. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-pcb-procopt-all",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A database PCB lets the program get, insert, replace and delete its sensitive segments. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-senseg-unknown-segment",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A SENSEG names a segment its PCB's DBD does not define, which ends the program with abend U0914. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
   }
  ]
 }

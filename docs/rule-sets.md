@@ -370,6 +370,35 @@ and an operation in a branch `AIF` jumps over is reported as much as any other. 
 macros it did not expand, each COPY member the tree does not hold and each statement the statement
 reader (`lib/hlasm/read.mjs`) refused, by kind; the last two set `coverageIncomplete`.
 
+## IMS and Db2 definitions
+
+**What a PSB lets a program do.** IMS DBDs and PSBs (`.dbd`, `.psb`, a `.asm` file holding them, or
+no extension and a `DBD` or `PCB` statement with the macros that follow it) are read into a model of
+segments and fields, or PCBs and their sensitive segments, by `lib/ims/model.mjs`. A database PCB
+whose processing options include get, insert, replace and delete on a segment is listed as context
+(`PROCOPT=A` is the default when the PCB omits it, and a SENSEG without its own `PROCOPT` takes the
+PCB's). A SENSEG naming a segment the PCB's DBD does not define ends the program with abend U0914,
+and is low; it is reported only when that DBD is in the tree, read whole, and defined once. What
+DBDGEN or PSBGEN refuses is low and carries the message number IBM gives it (`FLD170` for a field
+past its segment's length, `SEG160` for a SENSEG whose parent no earlier SENSEG defines, and the
+rest), as is a `KEYLEN` shorter than the longest concatenated key along the DBD's physical path
+(`DFS0919I`). That key adds the first sequence field of each segment from the root down, so it
+never overstates IMS's own; a PCB with a secondary processing sequence, or on a logical DBD, is not
+checked.
+
+**What a GRANT opens.** Db2 for z/OS DDL (`.sql`, `.ddl`, `.db2`, or no extension and a `CREATE` or
+`GRANT` statement ending in a semicolon) is read statement by statement by `lib/db2/read.mjs`. A
+GRANT to `PUBLIC` is high, and critical when it grants a write (`INSERT`, `UPDATE`, `DELETE`,
+`ALTER`, `ALL`) or an authority. `WITH GRANT OPTION` is medium, as is a grant of `SYSADM`, `SYSCTRL`,
+`DBADM`, `DBCTRL`, `SECADM`, `ACCESSCTRL` or `DATAACCESS`. A table's `EDITPROC`, `VALIDPROC` or
+`FIELDPROC`, and a procedure or function with `EXTERNAL NAME`, are listed as context, naming the
+program that runs inside Db2 and the authority it runs with.
+
+Both readers refuse what they do not recognise rather than guess: a statement in another SQL
+dialect, a DBD operand the reference does not list. Each refusal is named by kind in the report and
+sets `coverageIncomplete`, because a segment or a grant in a statement nobody read is one no rule
+saw.
+
 ## Change review
 
 **Change review.** `cobolwork diff` compares two revisions the way the compiler sees them. A
@@ -385,6 +414,8 @@ Programs (`.cbl`, `.cob`, `.cobol`, `.sqb`, `.pco`), copybooks (`.cpy`, `.copy`,
 are recognised and decoded, including fixed 80-byte records with no line ends. Symlinks are followed
 while they stay inside the tree. A `COPY` that names a file outside the tree is refused and
 reported; `COBCPY` and `COBOLWORK_COPYPATH` name libraries outside it that may be read.
+
+IMS DBDs and PSBs and Db2 DDL are read by their own sets, described above.
 
 BMS maps (`.bms`, or no extension and a `DFHMSD` macro) are read by `lib/bms.mjs`. Each field gives
 its position, length, pictures, initial value, `OCCURS` and `GRPNAME`, and its `ATTRB` twice: as

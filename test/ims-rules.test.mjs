@@ -25,7 +25,7 @@ test('every rule names a severity, evidence kind, CWE and text', () => {
   for (const [id, r] of Object.entries(IMS_RULES)) {
     assert.match(id, /^ims-/);
     assert.ok(['info', 'low', 'med', 'high', 'crit'].includes(r.sev), id);
-    assert.equal(r.evidence, 'construct');
+    assert.equal(r.evidence, r.sev === 'info' ? 'context' : 'construct', id);
     assert.match(r.cwe, /^CWE-\d+$/);
     assert.ok(r.text.length > 10);
   }

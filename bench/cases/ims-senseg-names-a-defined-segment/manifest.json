@@ -1,0 +1,9 @@
+{
+ "id": "ims-senseg-names-a-defined-segment",
+ "title": "Every SENSEG names a segment the DBD defines",
+ "cwe": "CWE-1076",
+ "expect": [],
+ "negativeFor": [
+  "ims-senseg-unknown-segment"
+ ]
+}

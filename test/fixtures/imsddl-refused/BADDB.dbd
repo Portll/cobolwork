@@ -1,0 +1,3 @@
+         DBD   NAME=BADDB,ACCESS=HIDAM
+         SEGM  NAME=ROOT,BYTES=ABC
+         DBDGEN

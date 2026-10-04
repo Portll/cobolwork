@@ -1,0 +1,11 @@
+{
+ "id": "db2-grant-update-to-public",
+ "title": "UPDATE on a table is granted to PUBLIC, every authorization ID",
+ "cwe": "CWE-732",
+ "expect": [
+  {
+   "rule": "db2-grant-to-public",
+   "file": "GRANTS.sql"
+  }
+ ]
+}

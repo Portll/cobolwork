@@ -1,0 +1,9 @@
+{
+ "id": "db2-grant-update-to-a-named-user",
+ "title": "The same privileges are granted to one named user",
+ "cwe": "CWE-732",
+ "expect": [],
+ "negativeFor": [
+  "db2-grant-to-public"
+ ]
+}

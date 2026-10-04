@@ -2922,6 +2922,110 @@
     "retrieved": "2026-09-20",
     "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-exit-routine-declared",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A table names an exit routine that runs inside Db2. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-external-routine",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A procedure or function runs an external load module. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-grant-to-public",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: A GRANT gives privileges to PUBLIC, every authorization ID. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-grant-with-grant-option",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: WITH GRANT OPTION lets the grantee grant the privilege to others. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-system-authority-granted",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: A system or database authority is granted. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-definition-inconsistent",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A DBD or PSB holds what DBDGEN, PSBGEN or ACBGEN refuses. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-pcb-procopt-all",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: A database PCB lets the program get, insert, replace and delete its sensitive segments. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-senseg-unknown-segment",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A SENSEG names a segment its PCB's DBD does not define, which ends the program with abend U0914. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
   }
  ]
 }

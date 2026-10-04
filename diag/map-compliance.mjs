@@ -87,6 +87,10 @@ const FRAMEWORKS = {
       'hlasm-runtime-module-name': '9(3)(b)',
       'hlasm-calls-security-product': '8(4)',
       'hlasm-provides-called-module': '8(4)',
+      'ims-senseg-unknown-segment': '9(3)(b)',
+      'ims-definition-inconsistent': '9(3)(b)',
+      'db2-exit-routine-declared': '8(4)',
+      'db2-external-routine': '8(4)',
     },
     perSet: {
       flow: '9(3)(b)', cics: '9(3)(b)', hidden: '9(3)(b)', copybook: '8(4)', diff: '8(3)',
@@ -101,6 +105,9 @@ const FRAMEWORKS = {
       abend: '9(3)(b)',
       hlasm: '9(4)(c)',
       crypto: '9(3)(c)',
+      // What a PCB or a GRANT lets a program or a user do is the access this clause limits.
+      ims: '9(4)(c)',
+      ddl: '9(4)(c)',
     },
     exfil: '9(3)(a)',
     frame: {
@@ -166,6 +173,10 @@ const FRAMEWORKS = {
       'hlasm-runtime-module-name': 'DA&M V',
       'hlasm-calls-security-product': 'DA&M IV',
       'hlasm-provides-called-module': 'DA&M IV',
+      'ims-senseg-unknown-segment': 'DA&M V',
+      'ims-definition-inconsistent': 'DA&M V',
+      'db2-exit-routine-declared': 'DA&M IV',
+      'db2-external-routine': 'DA&M IV',
     },
     perSet: {
       flow: 'DA&M V', cics: 'DA&M V', hidden: 'DA&M V', copybook: 'DA&M IV',
@@ -176,6 +187,8 @@ const FRAMEWORKS = {
       abend: 'DA&M V',
       hlasm: 'IS II.C.7',
       crypto: 'IS II.C.19',
+      ims: 'IS II.C.7',
+      ddl: 'IS II.C.7',
     },
     exfil: 'IS II.C.19',
     frame: {
@@ -252,6 +265,10 @@ const FRAMEWORKS = {
       'hlasm-runtime-module-name': 'SI-10',
       'hlasm-calls-security-product': 'CM-8',
       'hlasm-provides-called-module': 'CM-8',
+      'ims-senseg-unknown-segment': 'SI-2',
+      'ims-definition-inconsistent': 'SI-2',
+      'db2-exit-routine-declared': 'CM-8',
+      'db2-external-routine': 'CM-8',
     },
     perSet: {
       flow: 'SI-10', cics: 'SI-10', hidden: 'SI-10', copybook: 'CM-8', diff: 'CM-3',
@@ -262,6 +279,8 @@ const FRAMEWORKS = {
       abend: 'SI-10',
       hlasm: 'AC-6',
       crypto: 'SC-13',
+      ims: 'AC-6',
+      ddl: 'AC-6',
     },
     exfil: 'SC-7',
     frame: {
@@ -314,7 +333,7 @@ FRAMEWORKS.cobit2019 = {
   // Quality assurance is the practice the whole tool serves, so it is claimed once, for the tool.
   documentLevel: ['BAI03.06'],
   prefix: '',
-  perRule: toCobit(FRAMEWORKS.nist80053.perRule),
+  perRule: { ...toCobit(FRAMEWORKS.nist80053.perRule), 'ims-senseg-unknown-segment': 'DSS06.02', 'ims-definition-inconsistent': 'DSS06.02' },
   perSet: { ...toCobit(FRAMEWORKS.nist80053.perSet), semantics: 'DSS06.02' },
   exfil: NIST_TO_COBIT[FRAMEWORKS.nist80053.exfil],
   frame: {

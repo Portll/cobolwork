@@ -2697,6 +2697,102 @@
     "retrieved": "2026-09-20",
     "idsOnly": true
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-exit-routine-declared",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A table names an exit routine that runs inside Db2. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-external-routine",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A procedure or function runs an external load module. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-grant-to-public",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A GRANT gives privileges to PUBLIC, every authorization ID. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-grant-with-grant-option",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: WITH GRANT OPTION lets the grantee grant the privilege to others. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "db2-system-authority-granted",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A system or database authority is granted. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-definition-inconsistent",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A DBD or PSB holds what DBDGEN, PSBGEN or ACBGEN refuses. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-pcb-procopt-all",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A database PCB lets the program get, insert, replace and delete its sensitive segments. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-senseg-unknown-segment",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A SENSEG names a segment its PCB's DBD does not define, which ends the program with abend U0914. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
   }
  ]
 }

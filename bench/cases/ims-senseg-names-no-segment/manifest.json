@@ -1,0 +1,11 @@
+{
+ "id": "ims-senseg-names-no-segment",
+ "title": "A SENSEG names a segment the DBD in the tree does not define",
+ "cwe": "CWE-1076",
+ "expect": [
+  {
+   "rule": "ims-senseg-unknown-segment",
+   "file": "ACCTINQ.psb"
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+ "id": "ims-keylen-holds-the-key",
+ "title": "A PCB KEYLEN holds the longest concatenated key of its sensitive segments",
+ "cwe": "CWE-1076",
+ "expect": [],
+ "negativeFor": [
+  "ims-definition-inconsistent"
+ ]
+}

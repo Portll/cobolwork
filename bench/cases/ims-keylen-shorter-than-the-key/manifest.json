@@ -1,0 +1,11 @@
+{
+ "id": "ims-keylen-shorter-than-the-key",
+ "title": "A PCB KEYLEN holds the root key but not the 37-byte key of the dependent segment it reads",
+ "cwe": "CWE-1076",
+ "expect": [
+  {
+   "rule": "ims-definition-inconsistent",
+   "file": "ACCTINQ.psb"
+  }
+ ]
+}

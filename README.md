@@ -64,6 +64,7 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | The source | names nothing declares (code that cannot compile), shadowed copybooks, payloads hidden in columns 73-80 or aimed at AI readers |
 | The estate | production names outside production jobs, routable addresses, compiler and runtime versions with published advisories |
 | Assembler | a switch to key zero or supervisor state, an instruction run through `EX`, cross-memory calls, a module named at run time, the security product called directly, and the CSECT or ENTRY a COBOL `CALL` or a job step reaches |
+| IMS and Db2 | a PSB letting a program change every segment it reads, a SENSEG naming no segment of its DBD, a `KEYLEN` or field that DBDGEN, PSBGEN or ACBGEN refuses; a GRANT to `PUBLIC`, `WITH GRANT OPTION` or of a system authority, and the exit routines and load modules that run inside Db2 |
 | Cryptography | a single-length DES key, an MD5 or SHA-1 hash, or a fixed initialization vector asked of ICSF, read from IBM's parameter lists; an outbound CICS connection asking for HTTP |
 | Secrets | a credential written into a program or copybook: a literal `VALUE` on an item named for one, or a literal password in `EXEC SQL CONNECT` or `EXEC CICS SIGNON` |
 

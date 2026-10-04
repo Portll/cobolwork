@@ -1,0 +1,2 @@
+-- Grants run from a PDS member with no extension.
+GRANT INSERT ON TABLE PAYROLL.AUDIT TO PUBLIC;

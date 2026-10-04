@@ -560,21 +560,20 @@ that declares it rather than to whoever merged the findings. What that specifica
   `pdsExportTree` (roadmap 3.2). `diff`, `build` and the other commands do not take it yet, and
   XMIT and IEBCOPY unload files are not read.
 
-- **Scan time on very large repositories.** Two repositories of the 3185 corpus take far longer than
-  any other, measured at `8a19f3f` on a machine other jobs shared:
-  - `joe-tingsanchali-sonarsource_cnafbadboy`, 156 programs of up to 17 MB: 1,751 s and 8.9 GB
-    resident, 1,449 s of it in the flow set. Its 26 `Batch` programs alone take about 120 s there.
-    The graph they leave, 1.0 million nodes and 2.2 million edges with no source among them, stays
-    in the heap until every program is read, and collecting over it grows faster than the program
-    count: 52 programs take 2.4 times as long as 26.
-  - `FabioBonazza_test_unieuro_new`, 3,263 SQL programs: 5,445 s and 15.3 GB. The flow set stops
-    at the memory reserve after 2,626 programs, at 3,770 s. On one program in ten it takes 97 s,
-    against 49 s without arithmetic intervals (`5d76dbd`): those repeat the whole fact analysis
-    until no interval changes, up to 12 times, and the sample's 328 programs ran it 1,318 times, 48
-    of them to the cap.
+- **Scan time on very large repositories.** A scan reads and parses each program once for every
+  rule set (`94d6814`): one Unieuro program in ten scans in 131 s against 291 s, and cnafbadboy's 26
+  `Batch` programs in 129 s against 190 s. What remains is the flow set's graph:
+  - `joe-tingsanchali-sonarsource_cnafbadboy`, 156 programs of up to 17 MB: the flow set took
+    1,449 s of a 1,751 s scan at `8a19f3f`. Its graph stays in the heap until every program is
+    read, and collecting over it grows faster than the program count: 52 programs take 2.4 times
+    as long as 26.
+  - `FabioBonazza_test_unieuro_new`, 3,263 SQL programs: the flow set stops at the memory reserve
+    after 2,626 of them. On one program in ten it takes twice as long since arithmetic intervals
+    (`5d76dbd`), which repeat the fact analysis up to 12 times per program.
 
-  Two ways on, neither started: fewer rounds on a large program, which is a precision decision, and
-  a smaller graph per program, which may leave out only what no run can reach.
+  [`docs/spec/flow-graph.md`](docs/spec/flow-graph.md) specifies a graph store that answers both
+  without leaving out a route, and one analysis per byte-identical program. Fewer arithmetic rounds
+  on a large program is a separate precision decision.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

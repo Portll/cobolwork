@@ -93,3 +93,10 @@ test('a COPY member the reader is given is placed where it is copied, and one it
   assert.deepEqual([y.F1.loc, y.F1.file, y.F2.loc, y.B.loc], [4, 'FIELDS', 8, 12]);
   assert.equal(bySymbol(locate(src)).B.loc, null);
 });
+
+test('a literal pool takes its segments in IBM order and pads only an odd literal named by relative address', () => {
+  const pool = (lines) => bySymbol(locate(['PROG     CSECT', ...lines, '         LTORG', 'AFTER    DC    X\'00\'', '         END'].join('\n'))).AFTER.loc;
+  assert.equal(pool(["         LA    1,=X'01'", "         LA    2,=C'ABC'"]), 8 + 1 + 3);
+  assert.equal(pool(["         LA    1,=X'01'", "         LARL  2,=C'ABC'"]), 16 + 1 + 1 + 3);
+  assert.equal(pool(["         LA    1,=XL16'00'", "         LA    2,=D'0'"]), 8 + 16 + 8);
+});

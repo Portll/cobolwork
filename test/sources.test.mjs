@@ -197,6 +197,24 @@ test('--repos keeps each repository in its own graph', () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('--repos adds up what the execution reports say about each repository', () => {
+  const dir = tmp('repos-execution');
+  try {
+    for (const r of ['r1', 'r2']) {
+      mkdirSync(join(dir, 'tree', r), { recursive: true });
+      writeFileSync(join(dir, 'tree', r, `${r.toUpperCase()}.cbl`), program(r.toUpperCase(), '       01 WS-IN PIC X(80).', "           ACCEPT WS-IN FROM COMMAND-LINE\n           CALL 'SYSTEM' USING WS-IN"));
+    }
+    const coverage = join(dir, 'coverage.json');
+    writeFileSync(coverage, JSON.stringify({ programs: ['R1', 'R2'].map((program) => ({ program, detail: [{ name: 'MAIN', line: 7, entered: 1 }] })) }));
+    const one = scanAll(join(dir, 'tree', 'r1'), { executionFeeds: [coverage] });
+    const both = scanAll(join(dir, 'tree'), { repos: ['r1', 'r2'], executionFeeds: [coverage] });
+    assert.ok(one.summary.byExecution, 'a single repository reports what its runs entered');
+    assert.deepEqual(both.summary.executionFeeds, one.summary.executionFeeds);
+    const total = Object.values(both.summary.byExecution).reduce((n, x) => n + x, 0);
+    assert.equal(total, 2 * Object.values(one.summary.byExecution).reduce((n, x) => n + x, 0));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('diff reads the committed tree, not an export: a file marked export-ignore is still there', () => {
   const dir = tmp('exportignore');
   const git = (...a) => { const r = spawnSync('git', ['-C', dir, '-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr); };

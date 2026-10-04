@@ -38,7 +38,7 @@ it:
 | **IMS DBD/PSB** | **None.** z390 ships no IMS emulation at all | Self-consistency against `BYTES=` totals, plus hand-built fixtures |
 | **DB2 DDL** | A mature SQL parser as a differ, not a truth | Every statement type present in the corpus; anything else reported unparsed |
 | **HLASM** | **z390 (GPL v2, HLASM-compatible) — confirmed** | **Not 100%.** See below |
-| **PL/I** | Iron Spring PL/I (licence needs checking) | **Not 100%.** See below |
+| **PL/I** | Iron Spring PL/I, not used until its owner confirms the terms in writing (§6) | **Not 100%.** See below |
 
 ### The z390 question is answered, and two phases lose their oracle
 
@@ -545,14 +545,31 @@ byte-range taint model applies unchanged, and every `*-to-*` rule works. Plus:
 
 1. **A measured parse rate over the corpus**, per statement, published the way the COBOL parser's
    grading table is. Not "100%" unless it is 100%.
-2. Structure offsets checked against a hand-built fixture set with known sizes; against Iron Spring
-   PL/I if its licence permits redistribution of a grading harness — **verify the licence before
-   depending on it**.
+2. Structure offsets checked against a hand-built fixture set with known sizes. Iron Spring PL/I
+   is not used as an oracle until Iron Spring Software confirms in writing that cobolwork may run
+   it to grade offsets and publish what it computes (see *The Iron Spring licence* below).
 3. Every unparsed statement counted and reported; `coverageIncomplete` set when any exist.
 4. An `EXEC SQL` taint path through PL/I demonstrated in `bench/cases/`.
 
 **Effort: 32–44h** for the corpus subset. A full front end is several times that and is not
 recommended.
+
+### The Iron Spring licence
+
+Read on 2026-10-04, for version 1.4.1 (`pli-1.4.1.tgz`, SHA-256
+`1f58a7be72b03158c2e1f97f6faae41a2a60118839c667186199075884e6f878`). Two texts disagree:
+
+- The licence in the distribution (`readme_linux.html`): "Iron Spring Software grants you the
+  right to use and copy the Iron Spring PL/I compiler and library freely. You may distribute
+  programs compiled using the compiler and/or linked with the library under any terms you wish
+  without restriction." The library's source is under the LGPL. The compiler is closed-source.
+- The site's FAQ (`iron-spring.com/faq.html`): "Iron Spring PL/I is free for non-commercial and
+  hobbyiest use. The price of the commercial version has not yet been determined".
+
+cobolwork grants other terms for a fee beside the AGPL (`LICENSING.md`). If the FAQ governs, a
+grading harness is commercial use. A letter from Iron Spring Software settles which text applies
+without counsel. Until one arrives the grade rests on hand-built fixtures, which needs no
+licence, and nothing in the tree was computed by Iron Spring PL/I.
 
 ---
 
@@ -635,7 +652,7 @@ them will be wrong in a way the tests will not catch.
 | Risk | Mitigation |
 |---|---|
 | ~~**z390 does not ship `DFH`/IMS macros**~~ — **CONFIRMED, not a risk any more** | Settled in §0. BMS and IMS have no external oracle; round-trip and `BYTES=` self-consistency are the method, and the README states they are read, not assembled. Budget more hand-built fixtures in phases 1 and 2 accordingly |
-| **Iron Spring PL/I's licence forbids a redistributable harness** | Check before phase 5. Fall back to fixtures with hand-computed offsets |
+| **Iron Spring PL/I's terms are unsettled** | Read 2026-10-04 (§6): the distribution's licence grants free use, the site's FAQ limits free use to non-commercial. Hand-computed fixtures until Iron Spring Software confirms in writing |
 | **Scope creep into a real assembler or PL/I front end** | The definition of done for phases 4 and 5 is a *measured subset*. If a pull request starts implementing conditional assembly, it has left the plan |
 | **Corpus bias** | The corpus is star-ranked public GitHub COBOL: teaching material, vendor demos and tooling. Its manifest says so. A rule quiet here is quiet on *that* population, not on a bank |
 | **Five half-parsers** | Ship after each phase. The project's credibility rests on one parser being genuinely graded; four ungraded ones would cost more than they add |

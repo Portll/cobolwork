@@ -219,6 +219,10 @@ the eight `startedBy` lists, may be open, so it leaves the finding `attacker-dri
   a verdict `confirmed`; only the estate's witness feed does (§9.5).
 - **No payloads.** The verdict names the entry, the field and the missing check - what a defender
   needs to patch and a tester needs to reproduce - and nothing that would run.
+- **No verdict on an abend finding.** The abend set's findings (evidence.md §13.6) carry no
+  `exploitability`: a run already shows the input ends the program. If they join the verdict, a
+  finding from a subprogram fuzzed at its interface, with no caller run shown to pass the input,
+  goes no higher than `caller-dependent`.
 
 ### 9.3 Handling
 

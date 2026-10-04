@@ -84,6 +84,9 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
   A secrets finding carries its fingerprint and never its match. A path is relative to the root it
   was read under. The writer refuses a record with a key it does not know for that kind (§5), so
   a new field is a reviewed change to this document, not a silent addition.
+- **The kinds table.** `test/fixtures/evidence/kinds.tsv`, generated from the writer's table by
+  `diag/generate-evidence-kinds.mjs`, lists each kind, the file it belongs in, its fields and the
+  fields it requires. ironwork vendors it and tests the records its run journal writes against it.
 
 ## 5. The run journal
 
@@ -97,7 +100,7 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
 | `witness` | `fingerprint`, `outcome`, `who`, `when`, `system`, `sourceSha256` | once per witness entry applied |
 | `verdict` | `verdict`, `checks`, `relaxed`, `exit` | build and gate |
 | `output` | `name` (`report`, `sarif`, `provenance`, `sbom`, `baseline`), `sha256`, `bytes`, `path` or `stdout` | once per document written |
-| `close` | `exit` (in an ironwork run journal, the program's RETURN-CODE, negative included), `counts` (`input`, `finding`, `suppressed`, ...), `durationMs` | last |
+| `close` | `exit` (in an ironwork run journal, the program's RETURN-CODE, negative included), `counts` (`input`, `finding`, `suppressed`, ...), `durationMs`, `ledger` | last |
 
 ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence.rs`), with `tool`
 `ironwork` and kinds of its own, so `evidence verify` reads both tools' journals:
@@ -114,6 +117,12 @@ ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence
 A reason is recorded as its digest, not its text: a reason is free prose, and free prose is where a
 secret or a person's name ends up.
 
+`ledger` is `recorded` when the run held the ledger lock as it closed, so that its ledger record
+follows, and `unrecorded` when it did not. The `close` record is part of the tip the ledger records,
+so it is written before the ledger append and cannot report how the append went. Whether a run
+reached the ledger is what the ledger says: `verify` lists a journal no ledger record names as
+`unrecorded`, whatever its `close` says.
+
 A run that dies before `close` leaves a journal with no `close`. `verify` reports it as `open`,
 never as broken and never as complete.
 
@@ -125,7 +134,11 @@ One record per closed run: `{"v":1,"chain":<ledger chain>,"seq":n,"at":...,"kind
   time. A lock older than 60 seconds whose holder pid is not alive is stale and is broken, and the
   break is itself a ledger record (`kind: lock-broken`, the holder's pid and age). A lock whose pid
   or time cannot be read was left by a writer that died before writing them: it is aged from its
-  modification time, and broken with a `holderPid` of null. The wait is bounded at 5 seconds.
+  modification time, and broken with a `holderPid` of null. A stale lock is broken by renaming it
+  to a name of the breaker's own, then checking it is the file that was judged stale: the same
+  inode and contents. When it is not, a peer broke the stale lock and took a new one in between,
+  and the new lock is linked back in place, so of two writers that find one stale lock only one
+  breaks it. The wait is bounded at 5 seconds.
 - If the lock cannot be had, the run journal stays where it is, its `close` record says
   `ledger: "unrecorded"`, the command's exit status is unchanged, and standard error says so. A
   lost ledger line is reported by `verify` as `unrecorded`; losing the run's own record would not be.
@@ -444,6 +457,16 @@ docs/fuzz-manifest.schema.json describes it. The set reads `ironwork-fuzz/v1`, a
 skipped, because a key added keeps the format. A manifest in any other format is in
 `abendRunProblems`: its keys may mean something else.
 
+`ironwork-fuzz-interface/v1` is a subprogram fuzzed at its interface (ironwork docs/evidence.md
+§5.2): each input is an argument to a PROCEDURE DIVISION USING item, with its `position` and, for an
+OMITTED one, `omitted`. Its findings keep their rule and severity, and `abend.inputFrom` says
+`interface` (`entry` for every other run), with `abend.callers`, the CALLs its arguments were shaped
+by, from the manifest's `callers`. The detail says the program ran as a subprogram on its first call
+in its initial state, names those CALLs or says no CALL to it is in the scanned tree, and that no
+caller run shows a caller passes the bytes. `summary.byInputFrom` counts findings both ways, a SARIF
+result carries `inputFrom` among its properties, and the build gate warns on an interface finding
+unless the policy's `interface` key says `tier` (build-gate.md §4).
+
 An abend with code `IRONWORK`, `EXEC` (an EXEC statement with no database or region behind it) or
 `JAVA` is something ironwork does not run, counted as `notModelled` and never a finding. ironwork
 exits 244 for these. A manifest that cannot be read, evidence that does not verify, or a journal
@@ -490,6 +513,10 @@ is listed in `abendRunsElsewhere` instead of reported.
     Given a journal of ironwork's open, input, dd, call, abend and close records
     Then  verify reports it verified, and a dd record with an event it does not know as broken
 
+#### V1.10 The kinds table ironwork vendors is the writer's
+    When  diag/generate-evidence-kinds.mjs runs
+    Then  it writes test/fixtures/evidence/kinds.tsv byte for byte, with every kind in the journal or the ledger
+
 ### V2 - The ledger
 
 #### V2.1 Each closed run adds one ledger record carrying its tip
@@ -510,6 +537,10 @@ is listed in `abendRunsElsewhere` instead of reported.
 #### V2.5 An empty lock is aged from its modification time
     Given ledger.lock empty and last modified more than 60 seconds ago
     Then  the run is recorded after a lock-broken record whose holderPid is null, and a fresh empty lock is waited for
+
+#### V2.6 A lock taken after a stale one was read is put back, not broken
+    Given ledger.lock read as stale, then broken by a peer that took a new lock
+    Then  breaking the stale lock leaves the peer's lock in place and reports no break
 
 ### V3 - Verify
 

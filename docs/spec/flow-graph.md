@@ -120,18 +120,36 @@ Appending a fragment offsets its ids and maps its file table onto the analysis's
 `94d6814` a path reaches `summarise()`'s output only as a field: a node's `file` and the
 `{ file, line }` position on edges, sources and sinks. No string it builds embeds one.
 
-Two programs with the same key build one fragment, appended once per path. The key is the SHA-256
-of the program's text, of each resolved copybook's text, of the parse options (format, dialect,
-defines), and of the program's position within its file.
+Two programs with the same key build one fragment, appended once per path. Linking stays per
+instance and global: a CALL to the nearest holder of a program id, a JCL step, a CSD definition, a
+queue. A copy in another directory links to its own neighbours, as now.
 
-This is exact because location enters the analysis only where programs are linked: a CALL to the
-nearest holder of a program id, a JCL step, a CSD definition, a queue. Linking stays per instance
-and global. A copy in another directory links to its own neighbours, exactly as now.
+Reuse is exact only if location enters the analysis at linking and nowhere else, and only if the
+key covers everything `summarise()` reads. Neither is established yet, and both are gates:
 
-Reach, within one repository, from the 3185 corpus's git blobs: 24,405 of 137,527 program files
-duplicate another in the same repository, in 176 of 3,019 repositories. One repository holds 14,500
-of them (`ezpzresearch-max_Agentic-C0-Bug`, 15,970 programs), and cnafbadboy holds three copies of
-each of its 52.
+- **The key.** At least the program's text, each resolved copybook's text and resolution status
+  (found, missing, system, refused), the parse options (format, dialect, defines), and the
+  program's position within its file. Also every repository-level input `summarise()` reads beside
+  the parse: BMS maps, CSD definitions, the site's estate facts, options such as `hostVariables`.
+  An audit of `summarise()`'s free variables comes before the key, and is repeated when the
+  fragment is built: `lib/dataflow.mjs` changes most days.
+- **Location.** That a path reaches `summarise()`'s output only as a field is checked at `94d6814`,
+  not for the whole analysis. A test copies one program into two directories with different
+  neighbours and requires each copy's findings to follow its own neighbours.
+- **Equivalence.** The run in §5 adds the repositories whose copies sit in different directories:
+  cnafbadboy, `ezpzresearch-max_Agentic-C0-Bug`, `infinityabundance_gnucobol-rs` and
+  `rishalab_COBug`. A wrong key gives wrong findings without an error: a passing test suite is not
+  enough.
+
+What reuse covers, and what it does not:
+
+- Only the flow engine's fragment. Every other set's results carry the program's path, and their
+  cost is mostly the parse, which `94d6814` already reads once.
+- Copies only. The first copy of a program still pays the arithmetic rounds of `5d76dbd`.
+- Few repositories. Within one repository, from the 3185 corpus's git blobs: 24,405 of 137,527
+  program files duplicate another, in 176 of 3,019 repositories. One repository holds 14,500 of
+  them (`ezpzresearch-max_Agentic-C0-Bug`, 15,970 programs), and cnafbadboy holds three copies of
+  each of its 52. Most estates gain nothing.
 
 ### 4.5 Build fragments in parallel (later)
 

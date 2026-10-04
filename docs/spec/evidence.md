@@ -58,7 +58,8 @@ cryptography.
 - **Refused through a symbolic link** at the directory or at any file cobolwork writes in it, as
   `baseline` refuses one today. Files are created with mode `0600`, the directory `0700`.
 - Layout: `ledger.jsonl`, `runs/<runId>.jsonl`, `seals/<seq>.dsse.json`, `seals/<seq>.tsq` (the RFC 3161
-  request last written for that seal), `ledger.lock` while held.
+  request last written for that seal), `ledger.lock` while held, `ledger.lock.break` while a stale
+  lock is broken.
 - `runId` is `<UTC yyyymmddThhmmssZ>-<16 hex random>`; the random half comes from
   `crypto.randomBytes`, never from time or pid.
 
@@ -136,11 +137,14 @@ One record per closed run: `{"v":1,"chain":<ledger chain>,"seq":n,"at":...,"kind
   time. A lock older than 60 seconds whose holder pid is not alive is stale and is broken, and the
   break is itself a ledger record (`kind: lock-broken`, the holder's pid and age). A lock whose pid
   or time cannot be read was left by a writer that died before writing them: it is aged from its
-  modification time, and broken with a `holderPid` of null. A stale lock is broken by renaming it
-  to a name of the breaker's own, then checking it is the file that was judged stale: the same
-  inode and contents. When it is not, a peer broke the stale lock and took a new one in between,
-  and the new lock is linked back in place, so of two writers that find one stale lock only one
-  breaks it. The wait is bounded at 5 seconds.
+  modification time, and broken with a `holderPid` of null. A stale lock is replaced, never
+  removed: the breaker takes `ledger.lock.break` with `open(O_CREAT|O_EXCL)`, gives it its pid and
+  time, checks the lock is still the file it judged stale (the same inode and contents), and
+  renames `ledger.lock.break` over it, so breaking the lock and taking it are one step. One writer
+  breaks at a time, and a lock a peer took after the stale one was read never leaves its path, so
+  no third writer can take the path while it is empty. A `ledger.lock.break` older than 60 seconds
+  whose holder pid is not alive was left by a breaker that died, and is removed. The wait is
+  bounded at 5 seconds.
 - If the lock cannot be had, the run journal stays where it is, its `close` record says
   `ledger: "unrecorded"`, the command's exit status is unchanged, and standard error says so. A
   lost ledger line is reported by `verify` as `unrecorded`; losing the run's own record would not be.
@@ -544,9 +548,15 @@ is listed in `abendRunsElsewhere` instead of reported.
     Given ledger.lock empty and last modified more than 60 seconds ago
     Then  the run is recorded after a lock-broken record whose holderPid is null, and a fresh empty lock is waited for
 
-#### V2.6 A lock taken after a stale one was read is put back, not broken
+#### V2.6 A lock taken after a stale one was read is left alone
     Given ledger.lock read as stale, then broken by a peer that took a new lock
-    Then  breaking the stale lock leaves the peer's lock in place and reports no break
+    Then  breaking the stale lock reports no break, and the peer's lock keeps its inode, contents and change time
+
+#### V2.7 A breaker's claim is held while it breaks, and removed once stale
+    Given ledger.lock stale and ledger.lock.break held by a running writer
+    Then  the stale lock is not broken
+    Given ledger.lock.break left more than 60 seconds ago by a writer that is not running
+    Then  the claim is removed, the stale lock is broken and the run is recorded
 
 ### V3 - Verify
 

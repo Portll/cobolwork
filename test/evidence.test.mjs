@@ -312,7 +312,7 @@ test('V2.5 An empty lock is aged from its modification time', (t) => {
   assert.equal(verifyEvidence(d).verified, true);
 });
 
-test('V2.6 A lock taken after a stale one was read is put back, not broken', (t) => {
+test('V2.6 A lock taken after a stale one was read is left alone', (t) => {
   const d = tmp(t);
   prepareDir(d);
   const lock = join(d, LOCK);
@@ -322,11 +322,31 @@ test('V2.6 A lock taken after a stale one was read is put back, not broken', (t)
   unlinkSync(lock);
   const peer = `${process.pid} ${Date.now()}\n`;
   writeFileSync(lock, peer);
+  // A rename or a link changes a file's ctime, so an unchanged one shows the lock never left its path.
+  const before = statSync(lock, { bigint: true });
   assert.equal(breakStale(lock, seen), false);
+  const after = statSync(lock, { bigint: true });
   assert.equal(readFileSync(lock, 'utf8'), peer);
+  assert.deepEqual([after.ino, after.ctimeNs], [before.ino, before.ctimeNs]);
   assert.deepEqual(readdirSync(d).filter((n) => n.startsWith(LOCK)), [LOCK]);
-  const fresh = { text: peer, ino: statSync(lock).ino };
-  assert.equal(breakStale(lock, fresh), true);
+  assert.equal(breakStale(lock, { text: peer, ino: statSync(lock).ino }), true);
+  assert.match(readFileSync(lock, 'utf8'), new RegExp(`^${process.pid} \\d+\\n$`));
+  assert.deepEqual(readdirSync(d).filter((n) => n.startsWith(LOCK)), [LOCK]);
+});
+
+test("V2.7 A breaker's claim is held while it breaks, and removed once stale", (t) => {
+  const d = tmp(t);
+  prepareDir(d);
+  const dead = spawnSync(process.execPath, ['-e', '0']).pid;
+  const staleText = `${dead} ${Date.now() - 120000}\n`;
+  writeFileSync(join(d, LOCK), staleText);
+  writeFileSync(join(d, `${LOCK}.break`), `${process.pid} ${Date.now()}\n`);
+  const waiting = openJournal(d, { command: 'scan', argv: [], roots: [], toolVersion: '0.0.0', lock: { waitMs: 100 } });
+  assert.equal(waiting.close({ exit: 0 }).ledger, 'unrecorded');
+  assert.equal(readFileSync(join(d, LOCK), 'utf8'), staleText);
+  writeFileSync(join(d, `${LOCK}.break`), `${dead} ${Date.now() - 120000}\n`);
+  assert.equal(run(d).result.ledger, 'recorded');
+  assert.ok(readLines(join(d, LEDGER)).lines.some((l) => JSON.parse(l).kind === 'lock-broken'));
   assert.deepEqual(readdirSync(d).filter((n) => n.startsWith(LOCK)), []);
 });
 

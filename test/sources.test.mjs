@@ -43,6 +43,16 @@ test('an EBCDIC member is recognised, decoded into its 80-byte records, and pars
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('an EBCDIC member of fixed records stays in its records when a constant holds a newline byte', () => {
+  const buf = toEbcdicRecords(['TABLE    CSECT', "         DC    C'AB'", '         END'].join('\n'));
+  buf[80 + 17] = 0x15;
+  const lines = decodeEbcdic(buf).split('\n');
+  assert.equal(lines.length, 3);
+  assert.equal(lines[1].slice(9, 20), "DC    C' B'");
+  const text = Buffer.from(['A', 'B'].map((l) => [...l].map((c) => A2E[c])).flatMap((r) => [...r, 0x15]));
+  assert.deepEqual(decodeEbcdic(text).split('\n').filter(Boolean), ['A', 'B']);
+});
+
 test('symlinks are followed inside the tree, counted and not followed outside it, and a loop is walked once', () => {
   const dir = tmp('links');
   try {

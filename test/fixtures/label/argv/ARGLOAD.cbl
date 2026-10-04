@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ARGLOAD.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  WS-CARD     PIC X(80).
+       01  WS-PGM      PIC X(8).
+       PROCEDURE DIVISION.
+           ACCEPT WS-CARD
+           ACCEPT WS-PGM FROM COMMAND-LINE
+           CALL WS-PGM
+           GOBACK.

@@ -101,6 +101,58 @@ function fileRecordVariants(program, byAbend) {
   return fills(byAbend).map((fill) => ({ name: `records ${fill.name}`, args: holding(fill.text(RECORD)), control }));
 }
 
+// GnuCOBOL's command-line and environment statements, which Enterprise COBOL does not have and
+// ironwork refuses or reads as SYSIN: an ACCEPT from COMMAND-LINE, ARGUMENT-VALUE, ENVIRONMENT-VALUE,
+// ENVIRONMENT and a name, or ARGUMENT-NUMBER, and a DISPLAY UPON one of their names.
+const ARGV_ACCEPT = /\bACCEPT([ \t]+)([A-Z0-9][A-Z0-9_-]*(?:\([^)\n]*\))?)[ \t]+FROM[ \t]+(COMMAND-LINE|ARGUMENT-VALUE|ARGUMENT-NUMBER|ENVIRONMENT-VALUE|ENVIRONMENT(?:[ \t]+(?:'[^'\n]*'|"[^"\n]*"|[A-Z0-9][A-Z0-9_-]*))?)(?![A-Z0-9_-])/gi;
+const ARGV_UPON = /\bUPON[ \t]+(?:ENVIRONMENT-NAME|ENVIRONMENT-VALUE|ARGUMENT-NUMBER|COMMAND-LINE)(?![A-Z0-9_-])/gi;
+const EXCEPTION_PHRASE = /^\s*(?:NOT[ \t\r\n]+)?(?:ON[ \t\r\n]+)?EXCEPTION\b|^\s*END-ACCEPT\b/i;
+
+// The program's text with each command-line or environment ACCEPT made a MOVE of ALL `fill` to its
+// receiver, an argument count made 1, and each DISPLAY UPON their names made a DISPLAY to SYSOUT, every
+// statement padded to the columns it held; or why it cannot be. `fill` is at most eight characters.
+export function argvRewritten(text, fill) {
+  if (!/\bACCEPT\b/i.test(text)) return { why: 'the program has no ACCEPT' };
+  let found = 0;
+  let why = null;
+  const out = text.replace(ARGV_ACCEPT, (span, gap, receiver, from, at, whole) => {
+    found++;
+    if (/^ENVIRONMENT$/i.test(from)) why ??= 'an ACCEPT FROM ENVIRONMENT names its variable on another line';
+    if (EXCEPTION_PHRASE.test(whole.slice(at + span.length))) why ??= 'an ACCEPT of the command line or environment has an EXCEPTION phrase, which a MOVE does not take';
+    const move = /^ARGUMENT-NUMBER$/i.test(from) ? `MOVE 1 TO ${receiver}` : `MOVE ALL '${fill}' TO ${receiver}`;
+    return move.padEnd(span.length);
+  }).replace(ARGV_UPON, (span) => ' '.repeat(span.length));
+  if (why) return { why };
+  if (!found) return { why: 'no ACCEPT of the command line or environment was found to rewrite' };
+  return { text: out };
+}
+
+// The finding's command-line or environment input as the marker at each of the eight rotations, or
+// the input an abend's witness needs, moved into every receiver of a rewritten ACCEPT in a staged
+// copy; every DD the program assigns and SYSIN hold the control, so no other input carries it.
+function argvVariants(program, byAbend) {
+  const text = readSource(program).text;
+  const probe = argvRewritten(text, controlOf(byAbend));
+  if (probe.why) return { why: probe.why };
+  const files = parseFile(program).programs.flatMap((p) => p.files || []);
+  const dds = [...new Set([...files.flatMap((x) => ddNames(x.assign)), 'SYSIN'])];
+  const holding = (fill) => {
+    const rewrite = (source) => argvRewritten(source, fill).text;
+    return {
+      rewrite,
+      args: (dir) => ['run', staged(program, [], dir, rewrite), '-I', dirname(program), ...dds.flatMap((dd) => {
+        const path = join(dir, dd);
+        writeFileSync(path, `${Array(RECORDS).fill(controlOf(byAbend).repeat(RECORD)).join('\n')}\n`);
+        return ['--dd', `${dd}=${path}:text`];
+      })],
+    };
+  };
+  const rotations = byAbend ? [{ name: byAbend.named, fill: byAbend.value }]
+    : [...Array(MARKER.length).keys()].map((k) => ({ name: `rotated ${k}`, fill: MARKER.slice(k) + MARKER.slice(0, k) }));
+  const control = { name: 'the control moved in', ...holding(controlOf(byAbend)) };
+  return { rewrite: control.rewrite, variants: rotations.map((r) => ({ name: `command line or environment ${r.name}`, ...holding(r.fill), control })) };
+}
+
 // The statement that begins at `line`, in the program's code columns, up to END-EXEC.
 function statementAt(program, line) {
   const lines = readSource(program).text.split(/\r?\n/);
@@ -168,11 +220,12 @@ function journalOf(evidence) {
   return { run, records };
 }
 
-// A copy of the program with a CBL card of `options` before its first line, in `dir`.
-function staged(program, options, dir) {
+// A copy of the program in `dir`, its text rewritten where `rewrite` is given, with a CBL card of
+// `options` before its first line where there are any.
+function staged(program, options, dir, rewrite = (text) => text) {
   const path = join(dir, 'staged', basename(program));
   mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, `       CBL ${options.join(',')}\n${readSource(program).text}`);
+  writeFileSync(path, `${options.length ? `       CBL ${options.join(',')}\n` : ''}${rewrite(readSource(program).text)}`);
   return path;
 }
 
@@ -181,7 +234,7 @@ function staged(program, options, dir) {
 function underOptions(program, options, variant) {
   const args = (dir) => {
     const [command, , ...rest] = variant.args(dir);
-    return [command, staged(program, options, dir), '-I', dirname(program), ...rest];
+    return [command, staged(program, options, dir, variant.rewrite), '-I', dirname(program), ...rest];
   };
   return { ...variant, args, lineOffset: 1, control: variant.control && underOptions(program, options, variant.control) };
 }
@@ -194,9 +247,9 @@ const NEEDED = [{ refused: /ARITH\(COMPAT\) allows/, option: 'ARITH(EXTEND)' }];
 
 // Why ironwork refuses the program under `options`, or null where it compiles.
 function refusalUnder(ctx, options) {
-  const dir = options.length ? mkdtempSync(join(tmpdir(), 'cobolwork-label-check-')) : null;
+  const dir = options.length || ctx.rewrite ? mkdtempSync(join(tmpdir(), 'cobolwork-label-check-')) : null;
   try {
-    const program = dir ? staged(ctx.program, options, dir) : ctx.program;
+    const program = dir ? staged(ctx.program, options, dir, ctx.rewrite) : ctx.program;
     const r = spawnSync(ctx.ironwork, ['check', program, ...(dir ? ['-I', dirname(ctx.program)] : []), ...libraries(ctx)], { cwd: tmpdir(), encoding: 'utf8', timeout: ctx.timeout, maxBuffer: 1 << 22, stdio: ['ignore', 'ignore', 'pipe'] });
     if (r.status === 0 || r.status === 4) return null;
     const first = String(r.stderr || '').split('\n').find((l) => l && !/: (warning|informational): /.test(l));
@@ -209,7 +262,8 @@ function refusalUnder(ctx, options) {
 // The options ironwork compiles the program under, or why it does not: a refusal is not the
 // finding's to answer for.
 function compileOptions(ctx) {
-  if (ctx.checked.has(ctx.program)) return ctx.checked.get(ctx.program);
+  const key = ctx.rewrite ? `${ctx.program}\0rewritten` : ctx.program;
+  if (ctx.checked.has(key)) return ctx.checked.get(key);
   const options = [];
   let why = refusalUnder(ctx, options);
   for (const need of NEEDED) {
@@ -218,7 +272,7 @@ function compileOptions(ctx) {
     why = refusalUnder(ctx, options);
   }
   const out = why ? { why: `ironwork does not compile the program: ${why}` } : { options };
-  ctx.checked.set(ctx.program, out);
+  ctx.checked.set(key, out);
   return out;
 }
 
@@ -275,11 +329,13 @@ function runVariant(f, ctx, variant) {
 
 export function labelFinding(f, root, opts) {
   const kinds = kindsOf(f.rule);
-  const base = { source: 'execution', rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line };
+  // Command-line and environment input runs only in a rewritten copy (argvRewritten), so its labels
+  // are their own stratum.
+  const base = { source: 'execution', ...(kinds?.source === 'argv-or-env' ? { labelledOn: 'rewritten' } : {}), rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line };
   const unknown = (why) => ({ ...base, label: 'unknown', why });
   const byAbend = ABENDS[kinds?.sink];
   if (!kinds || (!TRACED[kinds.sink] && !byAbend)) return unknown(`ironwork does not trace the sink ${kinds?.sink ?? '?'}`);
-  if (!FED_BY_DD.has(kinds.source) && kinds.source !== 'cics-terminal') return unknown(`the labeller does not feed the source ${kinds.source} yet`);
+  if (!FED_BY_DD.has(kinds.source) && kinds.source !== 'cics-terminal' && kinds.source !== 'argv-or-env') return unknown(`the labeller does not feed the source ${kinds.source} yet`);
   // The input enters in the program that reads it, which a cross-program finding runs from.
   const candidates = [...(f.related || []).map((r) => r.path), ...(f.trace || []).map((t) => t.file), f.path].filter(Boolean).map((p) => resolve(root, p));
   const program = candidates.find(isProgram);
@@ -288,7 +344,12 @@ export function labelFinding(f, root, opts) {
   let variants;
   try {
     if (FED_BY_DD.has(kinds.source)) variants = fileRecordVariants(program, byAbend);
-    else {
+    else if (kinds.source === 'argv-or-env') {
+      const planned = argvVariants(program, byAbend);
+      if (planned.why) return unknown(planned.why);
+      variants = planned.variants;
+      ctx.rewrite = planned.rewrite;
+    } else {
       const source = (f.related || []).find((r) => resolve(root, r.path) === program);
       const planned = source ? terminalVariants(program, source.line, opts.maps, byAbend) : { why: 'the finding does not say where the input is received' };
       if (planned.why) return unknown(planned.why);

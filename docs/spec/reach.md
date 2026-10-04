@@ -287,7 +287,15 @@ verification plan (§9.7) in ironwork. The marker goes in at the finding's sourc
   SYSIN, with the records shifted through the marker's eight alignments;
 - a RECEIVE MAP: typed into the map's unprotected fields, across the pseudo-conversation the
   program's RETURN TRANSID starts;
-- a RECEIVE without a map: typed on a cleared screen after the transaction's name.
+- a RECEIVE without a map: typed on a cleared screen after the transaction's name;
+- GnuCOBOL's command line or environment (`argv-or-env`), which Enterprise COBOL does not have:
+  in a copy where each ACCEPT FROM COMMAND-LINE, ARGUMENT-VALUE, ENVIRONMENT-VALUE or ENVIRONMENT
+  name is a MOVE of ALL the marker, rotated through its eight alignments, to the same receiver, an
+  ACCEPT FROM ARGUMENT-NUMBER moves 1, and a DISPLAY UPON their names displays to SYSOUT, each
+  in the columns it held. Every DD and SYSIN hold the control, so no other input carries the
+  marker. An ACCEPT with an EXCEPTION phrase, or whose variable is on another line, is not
+  rewritten. These rows record `labelledOn: rewritten` and are their own stratum in
+  `bench/precision.mjs` (`execution-rewritten`), never pooled with execution labels.
 
 ironwork runs with `--trace-marker`. The finding is confirmed where the run's sealed journal has a
 `sink` record at its line with the marker in the operand. Two kinds of finding are confirmed by

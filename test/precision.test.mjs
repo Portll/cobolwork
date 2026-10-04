@@ -83,3 +83,16 @@ test('a verdict is scored from its labels, with the range the unknowns allow and
   assert.equal(wilson(0, 0), null);
   assert.match(report({ labels: 12, sources: [{ file: 'l.json', sources: ['execution'] }] }, rows), /execution\s+12\s+8\s+0\s+4/);
 });
+
+test('labels made on a rewritten copy are their own stratum, never pooled with the source\'s own', () => {
+  const rule = 'argv-or-env-to-dynamic-program-load';
+  const doc = { labels: [
+    { source: 'execution', rule, label: 'confirmed' },
+    { source: 'execution', labelledOn: 'rewritten', rule, label: 'confirmed' },
+    { source: 'execution', labelledOn: 'rewritten', rule, label: 'unknown' },
+  ] };
+  const out = withFiles([doc], (files) => precision(files));
+  assert.deepEqual(out.sources[0].sources, ['execution', 'execution-rewritten']);
+  assert.deepEqual(out.byRule[rule].execution.precision, { low: 1, high: 1 });
+  assert.deepEqual(out.byRule[rule]['execution-rewritten'].precision, { low: 0.5, high: 1 });
+});

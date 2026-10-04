@@ -9,6 +9,7 @@ import { decodeEbcdic, looksEbcdic, readSource, relPath, inScope } from '../lib/
 import { scanAll } from '../lib/scan.mjs';
 import { inventory } from '../lib/inventory.mjs';
 import { diffRefs } from '../lib/diff.mjs';
+import { FLOW_MODEL, TOOL_VERSION } from '../lib/version.mjs';
 import './pin-machine.mjs';
 
 const tmp = (t) => mkdtempSync(join(tmpdir(), `cw-${t}-`));
@@ -191,6 +192,8 @@ test('--repos keeps each repository in its own graph', () => {
     const split = scanAll(dir, { repos: ['r1', 'r2'], only: ['flow'] });
     assert.equal(split.summary.findings, 0, 'as two repositories it does not');
     assert.deepEqual(Object.keys(split.summary.perRepo), ['r1', 'r2']);
+    assert.equal(split.summary.flowModel, FLOW_MODEL, 'the combined report names the model that produced it');
+    assert.equal(split.summary.toolVersion, TOOL_VERSION);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

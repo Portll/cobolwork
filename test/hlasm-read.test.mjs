@@ -104,3 +104,30 @@ test('an operation that is no name is unknown, and any other macro call is split
   assert.deepEqual(r.node.positional, ['A', '']);
   assert.equal(r.node.keywords.get('KEY'), '(X,Y)');
 });
+
+test('a macro the file defines overrides an instruction or library macro of the same name after its definition', () => {
+  const { statements } = readHlasmStatements([
+    'BEFORE   MSG   2,0(3)',
+    '         MACRO',
+    '&NAME    MSG   &TEXT',
+    '&NAME    DC    C&TEXT',
+    '         MEND',
+    'NOMEM    MSG   \' NOT ENOUGH CORE\'',
+    '         LINK  EP=MINE,ANY=VALUE',
+  ].join('\n'));
+  const parsed = statements.map(parseHlasmStatement);
+  assert.equal(parsed[0].kind, 'RXY');
+  assert.equal(parsed[5].kind, 'MACRO CALL');
+  assert.equal(parsed[5].status, 'parsed');
+  assert.equal(parsed[6].kind, 'LINK');
+  assert.equal(parsed[6].status, 'unparsed');
+});
+
+test('CCW, CCW0 and CCW1 read their command code, data address, flags and count', () => {
+  const [ccw, ccw1, short] = readHlasmStatements(['READCCW  CCW   X\'02\',BUFFER,X\'20\',L\'BUFFER', '         CCW1  2,BUF+8,0,80', '         CCW0  2,BUF'].join('\n')).statements;
+  const r = parseHlasmStatement(ccw);
+  assert.equal(r.status, 'parsed');
+  assert.equal(r.node.kind, 'CCW');
+  assert.equal(parseHlasmStatement(ccw1).status, 'parsed');
+  assert.match(parseHlasmStatement(short).reason, /not 2 operands/);
+});

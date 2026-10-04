@@ -174,6 +174,16 @@
     }
    }
   },
+  "precompiled": {
+    "type": "object",
+    "description": "build --precompile: the argument vector the compiler checked each translation with, each program holding EXEC SQL or CICS with whether the compiler accepted its translation and its first errors, and the programs left untranslated with why.",
+    "required": ["argv", "programs", "skipped"],
+    "properties": {
+      "argv": { "type": "array", "items": { "type": "string" } },
+      "programs": { "type": "array", "items": { "type": "object", "required": ["path", "ok"], "properties": { "path": { "type": "string" }, "ok": { "type": "boolean" }, "errors": { "type": "array", "items": { "type": "string" } } } } },
+      "skipped": { "type": "array", "items": { "type": "object", "required": ["path", "why"], "properties": { "path": { "type": "string" }, "why": { "type": "string" } } } }
+    }
+  },
   "compiled": {
    "type": [
     "object",

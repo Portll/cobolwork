@@ -60,7 +60,7 @@ const USAGE = `cobolwork ${VERSION} — COBOL, JCL and CICS security analysis, n
                                what this cobolwork can do: commands and options, the version of every
                                document it writes, its fingerprint version, the file kinds it reads, and
                                the commit it runs from
-  cobolwork build <repo> [--base <ref>] [--policy <file>] [--provenance <file>] [--ironwork <path> | -- <compiler> <arg>...]
+  cobolwork build <repo> [--base <ref>] [--policy <file>] [--provenance <file>] [--ironwork <path> | [--precompile] -- <compiler> <arg>...]
                                the build gate: every finding ranked LOW to KNOWN-EXPLOITABLE, the
                                policy's blocking findings and compiler options checked, and the
                                compiler run only on a pass. Exits 0 pass, 1 fail, 3 undecided, 4 the
@@ -114,6 +114,9 @@ Options
   --ironwork <path>     build: after a pass, run ironwork check on every program, for an estate that
                         compiles with IBM Enterprise COBOL; a program ironwork rejects exits 4, one it
                         does not model yet leaves the build undecided
+  --precompile          build -- <compiler>: after a pass, translate each program the compiler command
+                        names that holds EXEC SQL or EXEC CICS and run the compiler on it with
+                        -fsyntax-only; one it refuses exits 4 and the command after -- does not run
   --evidence <dir>      scan, flow, diff, gate, build, baseline, inventory: record this run in a
                         hash-chained journal and ledger there (or COBOLWORK_EVIDENCE); never inside
                         the tree being read
@@ -169,6 +172,7 @@ function parseArgs(argv) {
     else if (a === '--rule') opts.rule = list();
     else if (a === '--advisories') opts.advisoryFeeds = [...new Set(list().map(x => resolve(x)))];
     else if (a === '--pds-export') opts.pdsExport = true;
+    else if (a === '--precompile') opts.precompile = true;
     else if (a === '--copylib') opts.copylib = [...new Set(list().map(x => resolve(x)))];
     else if (a === '--report') opts.report = value();
     else if (a === '--keys') opts.keys = value();
@@ -413,7 +417,7 @@ try {
     if (opts.only || opts.repos) { process.stderr.write('cobolwork: build judges one repository with every rule set; --only and --repos do not apply\n'); process.exit(2); }
     if (opts.baseline) { process.stderr.write('cobolwork: build reads the baseline the change was written against; --baseline does not apply, --no-baseline does\n'); process.exit(2); }
     if (opts.head && !opts.base) { process.stderr.write('cobolwork: build --head needs --base\n'); process.exit(2); }
-    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs, equivalence: opts.equivalence || [], allowedSigners: opts.allowedSigners || null, pdsExport: opts.pdsExport === true });
+    const result = build(root, { base: opts.base || null, head: opts.head || null, policy: opts.policy || null, noBaseline: opts.noBaseline === true, compiler: compilerArgv, ironwork: opts.ironwork || null, advisoryFeeds: opts.advisoryFeeds || null, copylibs: systemDirs, equivalence: opts.equivalence || [], allowedSigners: opts.allowedSigners || null, pdsExport: opts.pdsExport === true, precompile: opts.precompile === true });
     stampRevisions(result.doc.summary, opts.head || null);
     Object.assign(result.report.summary, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });
     Object.assign(result.provenance, { toolRevision: result.doc.summary.toolRevision, revision: result.doc.summary.revision });

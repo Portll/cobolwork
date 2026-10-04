@@ -6,15 +6,15 @@
 // members the program copies, from the directories cobc searches. One line per program: its kind,
 // which of the two cobc accepted, and the first error of each.
 //   node diag/precompile-probe.mjs <corpus-root> [--out rows.ndjson] [--per-repo n]
-import { appendFileSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
-import { basename, dirname, extname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { directoryTree } from '../lib/kernel/source-tree.mjs';
-import { isBms, isProgram, readSource } from '../lib/sources.mjs';
+import { isProgram, readSource } from '../lib/sources.mjs';
 import { detectFormat, parseSource } from '../lib/parser.mjs';
-import { parseBms } from '../lib/bms.mjs';
 import { precompile } from '../lib/precompile.mjs';
+import { copybookIn, repositoryBms } from '../lib/precompile-check.mjs';
 import { prepareForWitness, writeStandInCopybooks, writeStandInMaps } from './precompiler.mjs';
 
 const args = process.argv.slice(2);
@@ -37,33 +37,6 @@ function compiles(text, format, includeDirs, stubs) {
     return { ok: r.status === 0, error: error ? error.replace(/^.*?error:\s*/, '').slice(0, 160) : null, in: where ? basename(where[1]) : null };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
-
-// The BMS files under a repository, and the member names its other files supply.
-function repositoryBms(repoRoot) {
-  const files = [];
-  const walk = (d) => {
-    let es; try { es = readdirSync(d, { withFileTypes: true }); } catch { return; }
-    for (const e of es) { if (e.name === '.git' || e.name.startsWith('._')) continue; const p = join(d, e.name); if (e.isDirectory()) walk(p); else files.push(p); }
-  };
-  walk(repoRoot);
-  const bms = files.filter(isBms);
-  const members = new Set(files.filter((f) => !bms.includes(f)).map((f) => basename(f, extname(f)).toUpperCase()));
-  const mapsets = bms.flatMap((f) => { try { return parseBms(readFileSync(f, 'latin1')).mapsets; } catch { return []; } })
-    .filter((ms) => ms.name && !members.has(ms.name.toUpperCase()));
-  return { bms, has: (n) => members.has(n.toUpperCase()), mapsets };
-}
-
-// A COPY member's text from the first directory holding it, as cobc searches them.
-const COPY_EXTENSIONS = ['', '.cpy', '.CPY', '.cbl', '.CBL', '.cob', '.COB'];
-const copybookIn = (dirs) => (name) => {
-  for (const d of dirs) {
-    for (const ext of COPY_EXTENSIONS) {
-      const p = join(d, name + ext);
-      try { if (statSync(p).isFile()) return readSource(p).text; } catch { /* not here */ }
-    }
-  }
-  return null;
-};
 
 const kindOf = (src) => {
   if (/EXEC\s+DLI/i.test(src)) return null;

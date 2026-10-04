@@ -53,7 +53,7 @@ the table leaves that out.
 | `diff` | `--out`; a temporary directory holding the compared revisions, removed afterwards | `git` | none |
 | `baseline` | `cobolwork.baseline.json` in the tree, or `--out` | none | none |
 | `gate` | `--out`; a temporary directory as for `diff` | `git`; `cobc` (`--cobc`, or the first on `PATH` outside the repository) to syntax-check the patch | none |
-| `build` | `--out`, `--provenance`; a temporary directory as for `diff` | `git`; the compiler named after `--` (or `cobc`), only on a pass; `ironwork` with `--ironwork` | none from cobolwork; the compiler's own |
+| `build` | `--out`, `--provenance`; a temporary directory as for `diff`; with `--precompile`, a temporary directory per translated program, removed after the check | `git`; the compiler named after `--` (or `cobc`), only on a pass, and with `--precompile` first with `-fsyntax-only` on each translation; `ironwork` with `--ironwork` | none from cobolwork; the compiler's own |
 | `evidence verify` | none | `git` against `--anchor-git`; `openssl` with `--tsr`; `cosign` with `--cosign-bundle` | `cosign` contacts the transparency log unless `--insecure-ignore-tlog` is given |
 | `evidence seal` | a seal in the evidence directory | `ssh-keygen` with `--ssh-key`, or the program named by `--signer` | none from cobolwork; the signer's own |
 | `evidence anchor` | the seal copied into the `--anchor-git` repository and committed there; `--tsq` and a kept copy beside the seal | `git` | `git push` to the anchor repository's remote with `--push` |

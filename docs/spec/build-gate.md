@@ -60,7 +60,7 @@ The terms of [`ruleset-contract.md`](ruleset-contract.md) §2 and
 ## 3. The command
 
 ```
-cobolwork build <repo> [--base <ref> [--head <ref>]] [--policy <file>] [--provenance <file>] [--advisories <file>[,<file>]] [--format json|sarif] [--out <file>] [--pds-export] [--ironwork <path> | -- <compiler> <arg>…]
+cobolwork build <repo> [--base <ref> [--head <ref>]] [--policy <file>] [--provenance <file>] [--advisories <file>[,<file>]] [--format json|sarif] [--out <file>] [--pds-export] [--ironwork <path> | [--precompile] -- <compiler> <arg>…]
 ```
 
 `--advisories` loads an estate's own advisory extract, as `scan` does; a feed inside the tree is
@@ -75,6 +75,9 @@ knows about IBM Z only to its customers.
   pipeline whose compile step is elsewhere, which includes every z/OS build.
 - `--ironwork <path>` gives that pipeline a compile check before the mainframe: ironwork's `check`
   runs on every program on a pass (§8a). It and `--` are one or the other.
+- `--precompile` checks, on a pass and before the compiler runs, that each program the compiler
+  command names compiles once its EXEC SQL and EXEC CICS are translated (§8b). It needs `--` and a
+  `cobc` or `gcobol`; anything else is refused with exit 2.
 - `--pds-export` judges a repository that holds a PDS export, each side read as `scan --pds-export`
   reads it: findings, waivers and the provenance's source hashes name members as `DATA.SET/MEMBER`,
   in both modes. The policy, site file and baseline stay files beside the members. Options come
@@ -431,6 +434,32 @@ stops after the front end and exits with IBM's highest return code: 0 clean, 4 w
   document records the ironwork version, the argument vector with `<program>` for the program and
   copy directories relative to the tree, and the counts; the provenance record carries the same with
   the binary's SHA-256.
+
+## 8b. Precompiling
+
+GnuCOBOL has no Db2 or CICS precompiler, so a program with EXEC SQL or EXEC CICS in it does not
+compile under `cobc` or `gcobol` as written. With `--precompile`, on a pass and before the compiler
+command runs, each argument after `--` that names a COBOL program holding EXEC SQL or EXEC CICS is
+translated by `lib/precompile.mjs` (`precompile.md`) into a directory of its own, with the stand-in
+copybooks and translated members it needs, and the same compiler checks the translation.
+
+- The check's arguments are the caller's, with every program and `-o` and its value taken out,
+  `-fsyntax-only` and `-I <the translation's directory>` put first and the translated program last.
+  The translation's directory comes ahead of the caller's copy directories, so a translated member
+  is the one copied. The translator reads members from the program's directory, the `-I`
+  directories, `COBCPY` and every `--copylib`, and a CICS program's symbolic maps from the mapsets
+  the repository holds as BMS source and holds no copybook for.
+- A program holding EXEC DLI is not translated (`precompile.md` §5): it is named in
+  `precompiled.skipped`, and the compiler command decides it.
+- `precompile` is `false` when the compiler refuses any translation: the gate exits 4, and the
+  compiler command does not run. Each refused program's first three errors are named by the line of
+  the program they came from, through the translation's line map, and every quoted literal is
+  replaced by `'…'`, as for ironwork (§8a).
+- When every translation compiles, the compiler command runs unchanged (§8). The translation is a
+  check, not the artifact: its CALLs name routines nothing implements, so a program built from it
+  would stop at its first EXEC statement.
+- Nothing the check writes outlives it. The document records the check's argument vector, with
+  `<translation>` and `<program>` in place of the paths, and each program's result.
 
 ## 9. Provenance
 
@@ -1123,6 +1152,25 @@ are about what the default, `warn`, does with them.
 #### B6.10 A copybook no library holds leaves the program unresolved, not failed
     Given a program ironwork reports copying a member the copy libraries do not hold
     Then  compile is null and unresolved names the program
+
+#### B6.12 --precompile checks a CICS program's translation before the compiler runs
+    Given a CICS program and a cobc that runs -fsyntax-only and records every other run
+    When  the build passes with --precompile
+    Then  the gate exits 0, precompile is true, precompiled names the program as accepted
+    And   the compiler then ran with the caller's arguments unchanged
+
+#### B6.13 A translation the compiler refuses exits 4 and the compiler command does not run
+    Given a CICS program that names an item it never declares
+    Then  the gate exits 4, precompile is false, the error names the program's own line and quotes no literal
+    And   the compiler command did not run
+
+#### B6.14 --precompile needs a cobc or gcobol after --
+    Given --precompile with no compiler, or with a compiler that is neither cobc nor gcobol
+    Then  the gate exits 2
+
+#### B6.15 A program holding EXEC DLI is not translated, and is named
+    Given a program holding EXEC DLI among the compiler's arguments
+    Then  precompiled.skipped names it, and the compiler command runs
 
 ### B7 - What the gate emits
 

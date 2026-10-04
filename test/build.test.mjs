@@ -788,6 +788,65 @@ test('B6.10 A copybook no library holds leaves the program unresolved, not faile
 
 // B7 - What the gate emits
 
+// A cobc that hands -fsyntax-only runs to the installed GnuCOBOL and records every other run, so a
+// test sees both the translation's check and the caller's command.
+const realCobc = spawnSync('cobc', ['--version']).status === 0;
+function checkingCobc() {
+  const dir = mkdtempSync(join(tmpdir(), 'cw-cobc-'));
+  const path = join(dir, 'cobc');
+  writeFileSync(path, '#!/bin/sh\nfor a in "$@"; do [ "$a" = "-fsyntax-only" ] && exec cobc "$@"; done\nprintf "%s\\n" "$@" > "$0.args"\nexit 0\n');
+  chmodSync(path, 0o755);
+  return { path, args: () => (existsSync(`${path}.args`) ? readFileSync(`${path}.args`, 'utf8').trim().split('\n') : null) };
+}
+const CICS_READ = ['01 WS-REC PIC X(80).', '01 WS-KEY PIC X(8).', '01 WS-RESP PIC S9(8) COMP.'];
+const cicsRead = (after = []) => program('C', CICS_READ,
+  ["EXEC CICS READ FILE('CUSTF') INTO(WS-REC) RIDFLD(WS-KEY)", '     RESP(WS-RESP) END-EXEC', ...after, 'EXEC CICS RETURN END-EXEC.']);
+const noCobc = !realCobc && 'GnuCOBOL is not installed';
+
+test('B6.12 --precompile checks a CICS program\'s translation before the compiler runs', { skip: skip || posix || noCobc }, () => {
+  const root = repo({ 'C.cbl': cicsRead() });
+  const cobc = checkingCobc();
+  const r = build(root, { compiler: [cobc.path, '-x', join(root, 'C.cbl')], precompile: true });
+  assert.equal(r.exit, 0, r.doc.reasons.join('; '));
+  assert.equal(r.doc.checks.precompile, true);
+  assert.deepEqual(r.doc.precompiled.programs, [{ path: 'C.cbl', ok: true }]);
+  assert.deepEqual(r.doc.precompiled.argv, ['-fsyntax-only', '-I', '<translation>', '-x', '<program>']);
+  assert.deepEqual(cobc.args().slice(0, 2), ['-x', join(root, 'C.cbl')]);
+});
+
+test('B6.13 A translation the compiler refuses exits 4 and the compiler command does not run', { skip: skip || posix || noCobc }, () => {
+  const source = cicsRead(['ADD WS-REC TO WS-KEY']);
+  const root = repo({ 'C.cbl': source });
+  const cobc = checkingCobc();
+  const r = build(root, { compiler: [cobc.path, '-x', join(root, 'C.cbl')], precompile: true });
+  assert.equal(r.exit, 4);
+  assert.equal(r.doc.checks.precompile, false);
+  const [p] = r.doc.precompiled.programs;
+  assert.equal(p.ok, false);
+  const line = source.split('\n').findIndex((l) => l.includes('ADD WS-REC')) + 1;
+  assert.match(p.errors[0], new RegExp(`^C\\.cbl:${line}: `));
+  assert.ok(!/WS-REC|WS-KEY/.test(JSON.stringify(r.doc.precompiled)), 'no name or literal of the program is quoted');
+  assert.equal(cobc.args(), null, 'the compiler command did not run');
+});
+
+test('B6.14 --precompile needs a cobc or gcobol after --', { skip: skip || posix }, () => {
+  const root = repo({ 'C.cbl': cicsRead() });
+  assert.equal(cli(['build', root, '--precompile']).status, 2);
+  const other = standInCobc('mycc');
+  assert.equal(cli(['build', root, '--precompile', '--', other.path, join(root, 'C.cbl')]).status, 2);
+  assert.equal(other.args(), null);
+});
+
+test('B6.15 A program holding EXEC DLI is not translated, and is named', { skip: skip || posix }, () => {
+  const dli = program('D', ['01 WS-REC PIC X(80).'], ['EXEC DLI GU USING PCB(1) SEGMENT(CUST) INTO(WS-REC)', '     END-EXEC', 'GOBACK.']);
+  const root = repo({ 'D.cbl': dli });
+  const cobc = standInCobc();
+  const r = build(root, { compiler: [cobc.path, join(root, 'D.cbl')], precompile: true });
+  assert.deepEqual(r.doc.precompiled.skipped, [{ path: 'D.cbl', why: 'EXEC DLI is not translated' }]);
+  assert.deepEqual(r.doc.precompiled.programs, []);
+  assert.equal(cobc.args()[0], join(root, 'D.cbl'), 'the compiler command ran');
+});
+
 test('B7.1 No output carries source text', { skip }, () => {
   const MARK = 'ZQXMARKER77';
   const root = repo({ 'P.cbl': program('P', ['01 WS-IN PIC X(8).', '01 WS-CMD PIC X(80).'],

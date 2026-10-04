@@ -1,0 +1,116 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-site.schema.json",
+ "title": "cobolwork site file",
+ "description": "cobolwork.site.json: the facts about an estate that no repository holds. lib/site.mjs reads it; a key it does not read is reported under summary.siteWarnings, and a key opening with an underscore is a note for people.",
+ "type": "object",
+ "additionalProperties": false,
+ "patternProperties": {
+  "^_": {}
+ },
+ "properties": {
+  "$schema": {
+   "type": "string"
+  },
+  "version": {
+   "description": "The site file version. A file without one is read as version 0, which holds the same keys as version 1.",
+   "type": "integer",
+   "minimum": 0,
+   "maximum": 1
+  },
+  "productionQualifiers": {
+   "$ref": "#/$defs/names",
+   "description": "Dataset qualifiers that name production data, matched as whole leading components."
+  },
+  "productionJobPaths": {
+   "$ref": "#/$defs/names",
+   "description": "Paths of jobs allowed to touch production."
+  },
+  "nonProductionJobPaths": {
+   "$ref": "#/$defs/names",
+   "description": "Paths of jobs that are not production jobs."
+  },
+  "systemNames": {
+   "$ref": "#/$defs/names",
+   "description": "Names of production systems, which the recon rules look for in source."
+  },
+  "vendorPacks": {
+   "$ref": "#/$defs/names",
+   "description": "Vendor rule packs to load, by name."
+  },
+  "allowUnvalidatedPacks": {
+   "type": "boolean",
+   "description": "Load a vendor pack that has not been validated."
+  },
+  "runtimeVersions": {
+   "type": "object",
+   "description": "The version of each runtime the estate runs, by product, so an advisory against it can be matched.",
+   "additionalProperties": {
+    "type": [
+     "string",
+     "number"
+    ]
+   }
+  },
+  "internalReaderDds": {
+   "$ref": "#/$defs/names",
+   "description": "DDs in the CICS region's JCL that are SYSOUT=(class,INTRDR)."
+  },
+  "internalReaderQueues": {
+   "$ref": "#/$defs/names",
+   "description": "Transient-data queues that reach the internal reader."
+  },
+  "compilerOptions": {
+   "$ref": "#/$defs/names",
+   "description": "The estate's default compiler options, as its compile procedure sets them."
+  },
+  "apfLibraries": {
+   "$ref": "#/$defs/names",
+   "description": "APF-authorised libraries."
+  },
+  "restrictedDatasets": {
+   "$ref": "#/$defs/names",
+   "description": "Dataset prefixes only a privileged user may read."
+  },
+  "surrogateUsers": {
+   "$ref": "#/$defs/names",
+   "description": "Users a job may legitimately run as."
+  },
+  "superuserIds": {
+   "$ref": "#/$defs/names",
+   "description": "Ids privileged in UNIX System Services: UID 0, or a holder of BPX.SUPERUSER."
+  },
+  "openTransactions": {
+   "$ref": "#/$defs/names",
+   "description": "Transactions any user can start. A COBOLWORK_REACH extract overrides it."
+  },
+  "restrictedTransactions": {
+   "$ref": "#/$defs/names",
+   "description": "Transactions a control restricts. A COBOLWORK_REACH extract overrides it."
+  },
+  "openJobs": {
+   "$ref": "#/$defs/names",
+   "description": "Jobs any user can submit. A COBOLWORK_REACH extract overrides it."
+  },
+  "restrictedJobs": {
+   "$ref": "#/$defs/names",
+   "description": "Jobs a control restricts. A COBOLWORK_REACH extract overrides it."
+  },
+  "privilegedTransactions": {
+   "$ref": "#/$defs/names",
+   "description": "Transactions that run with elevated authority. A COBOLWORK_REACH extract overrides it."
+  },
+  "privilegedJobs": {
+   "$ref": "#/$defs/names",
+   "description": "Jobs that run with elevated authority. A COBOLWORK_REACH extract overrides it."
+  }
+ },
+ "$defs": {
+  "names": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  }
+ }
+}

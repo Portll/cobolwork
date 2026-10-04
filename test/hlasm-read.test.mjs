@@ -148,3 +148,21 @@ test("a repository's own macro overrides a macro the reader knows by name, never
   assert.equal(msg.kind, 'RXY');
   assert.notEqual(parseHlasmStatement(readHlasmStatements(src).statements[0]).kind, 'MACRO CALL');
 });
+
+test('a line after a statement or comment that runs into column 72 is refused, as the assembler reads it as part of that one', () => {
+  const comment = '* Perform complex calculation (For example: ((Base + Interest) * (1-Tax)) rounded special way)';
+  const remark = "         MVI   12(13),X'FF'            *ML purpose of this? - can we remove it?";
+  const [zap, , , sr] = readHlasmStatements([comment, '         ZAP   WORKFLD1,BASEAMT    COPY BASE', '         LR    1,2', remark, '         SR    15,15'].join('\n')).statements;
+  assert.match(parseHlasmStatement(zap).reason, /comment above runs into column 72/);
+  assert.match(parseHlasmStatement(sr).reason, /does not leave columns 1 to 15 blank/);
+  assert.equal(parseHlasmStatement(readHlasmStatements('         LR    1,2').statements[0]).status, 'parsed');
+});
+
+test('an explicit length larger than its length field holds is refused', () => {
+  const parse = (src) => parseHlasmStatement(readHlasmStatements(src).statements[0]);
+  assert.match(parse('         UNPK  HEXWORK(33),HEXIN(17)').reason, /length 33, and L1 holds 0 to 16/);
+  assert.equal(parse('         UNPK  HEXWORK(16),HEXIN(8)').status, 'parsed');
+  assert.match(parse('         MVC   0(257,R1),FIELD').reason, /L holds 0 to 256/);
+  assert.equal(parse("         MVC   0(X'100',R1),FIELD").status, 'parsed');
+  assert.equal(parse('         MVC   0(LEN,R1),FIELD').status, 'parsed');
+});

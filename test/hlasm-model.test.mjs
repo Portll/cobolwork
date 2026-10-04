@@ -56,3 +56,11 @@ test('a variable that may carry a quoted value or a number is read that way when
   const [, , noType] = definition('&L       MYMAC &S', '&N       DC    &STRING');
   assert.match(parseHlasmStatement(noType).reason, /no nominal value|type/);
 });
+
+test('a variable that names an option reads as one', () => {
+  const [open] = readHlasmStatements('         PRINT &GEN').statements;
+  const r = parseHlasmStatement(open);
+  assert.equal(r.status, 'parsed');
+  assert.equal(r.node.exact, false);
+  assert.equal(parseHlasmStatement(readHlasmStatements('         AMODE &MODE').statements[0]).status, 'parsed');
+});

@@ -18,6 +18,7 @@ import { scanJcl } from '../lib/sets/jcl.mjs';
 import { applyEstateFacts } from '../lib/scan.mjs';
 import { machineAuthored } from '../lib/equivalence.mjs';
 import { slsaStatement } from '../lib/evidence/slsa.mjs';
+import { SINK_KINDS } from '../lib/dataflow.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -220,14 +221,24 @@ test('V1.9 An ironwork run journal verifies with the same verifier', (t) => {
   assert.throws(() => makeRecord({ chain, prev, kind: 'statement', fields: { file: 'A.cbl', line: 1, capped: false }, at }), TypeError);
 });
 
-test("V1.10 The kinds table ironwork vendors is the writer's", (t) => {
+// The tables diag/generate-evidence-kinds.mjs writes, each against the committed copy.
+function generatedTables(t) {
   const d = tmp(t);
-  const out = join(d, 'kinds.tsv');
-  const gen = spawnSync(process.execPath, [join(HERE, '..', 'diag', 'generate-evidence-kinds.mjs'), out], { encoding: 'utf8' });
+  const gen = spawnSync(process.execPath, [join(HERE, '..', 'diag', 'generate-evidence-kinds.mjs'), d], { encoding: 'utf8' });
   assert.equal(gen.status, 0, gen.stderr);
   const lf = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
-  assert.equal(lf(join(HERE, 'fixtures', 'evidence', 'kinds.tsv')), lf(out), 'regenerate test/fixtures/evidence/kinds.tsv with diag/generate-evidence-kinds.mjs');
+  return (name) => [lf(join(HERE, 'fixtures', 'evidence', name)), lf(join(d, name)), `regenerate test/fixtures/evidence/${name} with diag/generate-evidence-kinds.mjs`];
+}
+
+test("V1.10 The kinds table ironwork vendors is the writer's", (t) => {
+  assert.equal(...generatedTables(t)('kinds.tsv'));
   for (const kind of Object.keys(KINDS)) assert.ok(JOURNAL_KINDS.has(kind) !== LEDGER_KINDS.has(kind), kind);
+});
+
+test("V1.11 The sink kinds ironwork vendors are the flow engine's", (t) => {
+  const [committed, generated, message] = generatedTables(t)('sinks.tsv');
+  assert.equal(committed, generated, message);
+  assert.deepEqual(committed.split('\n').filter((l) => l && !l.startsWith('#')), Object.keys(SINK_KINDS).sort());
 });
 
 // V2 - The ledger

@@ -87,6 +87,8 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
 - **The kinds table.** `test/fixtures/evidence/kinds.tsv`, generated from the writer's table by
   `diag/generate-evidence-kinds.mjs`, lists each kind, the file it belongs in, its fields and the
   fields it requires. ironwork vendors it and tests the records its run journal writes against it.
+  `sinks.tsv` beside it, from the same script, lists the sink kinds `lib/dataflow.mjs` names. A sink
+  record joins a finding by its kind, so ironwork holds every sink it raises to that list.
 
 ## 5. The run journal
 
@@ -516,6 +518,10 @@ is listed in `abendRunsElsewhere` instead of reported.
 #### V1.10 The kinds table ironwork vendors is the writer's
     When  diag/generate-evidence-kinds.mjs runs
     Then  it writes test/fixtures/evidence/kinds.tsv byte for byte, with every kind in the journal or the ledger
+
+#### V1.11 The sink kinds ironwork vendors are the flow engine's
+    When  diag/generate-evidence-kinds.mjs runs
+    Then  it writes test/fixtures/evidence/sinks.tsv byte for byte, listing every sink kind lib/dataflow.mjs names
 
 ### V2 - The ledger
 

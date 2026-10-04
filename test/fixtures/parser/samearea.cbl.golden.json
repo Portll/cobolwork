@@ -1,0 +1,118 @@
+{
+ "case": {
+  "file": "samearea.cbl",
+  "note": "files sharing a record area each list the area's records in the listing, which are declared once"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "OUT-FILE",
+    "size": 300
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "OUT-RECORD",
+    "size": 300,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "IN-RECORD",
+    "size": 300,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "88",
+    "name": "DELETED-RECORD",
+    "size": null,
+    "type": "CONDITIONAL"
+   },
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "IN-FILE",
+    "size": 300
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-COUNT",
+    "size": 4,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "OUT-FILE",
+    "line": 6,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "OUT-RECORD",
+    "line": 13,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "IN-RECORD",
+    "line": 15,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DELETED-RECORD",
+    "line": 16,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "IN-FILE",
+    "line": 7,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "OUT-RECORD",
+    "line": 13,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "IN-RECORD",
+    "line": 15,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DELETED-RECORD",
+    "line": 16,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-COUNT",
+    "line": 18,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

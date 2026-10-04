@@ -9,6 +9,8 @@
 //   - section headers repeat on every page, and a program's block is headed PROGRAM or FUNCTION
 //   - a size wider than the five-column field shifts every later column
 //   - index names and level-78 constants never appear
+//   - files that share a record area (SAME RECORD AREA) each list every record of the area, so the
+//     records print once under each of those files though they are declared once
 export const SPECIAL_REGISTERS = new Set(['RETURN-CODE', 'SORT-RETURN', 'NUMBER-OF-CALL-PARAMETERS', 'TALLY', 'COB-CRT-STATUS',
   'LINAGE-COUNTER', 'XML-CODE', 'JSON-CODE', 'SORT-MESSAGE', 'SORT-CORE-SIZE', 'SORT-FILE-SIZE', 'SORT-MODE-SIZE']);
 
@@ -17,6 +19,8 @@ export function parseListing(text) {
   let mode = null;
   let prog = '';
   let last = null;
+  let fdGroup = null;
+  const fdGroups = [];
   for (const raw of text.split('\n')) {
     const line = raw.replace(/\f/g, '').trimEnd();
     if (!line.trim()) continue;
@@ -34,10 +38,16 @@ export function parseListing(text) {
       const lvl = wide ? (wide[3] || '') : line.slice(21, 26).trim();
       const name = ((wide ? wide[4] : line.slice(26).trim().split(/\s+/)[0]) || '').toUpperCase().replace(/,$/, '');
       if (type === 'PROGRAM' || type === 'FUNCTION') { prog = name; out.programs.add(name); continue; }
-      if (!lvl && /SECTION$/.test(line.trim())) continue;
+      if (/^[A-Z-]+ SECTION$/.test(line.trim())) { fdGroup = null; continue; }
       const sz = /^\d+$/.test(size) ? Number(size) : null;
-      if (type === 'FILE') { out.symbols.push({ prog, lvl: 'FD', name, size: sz }); continue; }
-      if (/^\d+$/.test(lvl)) { if (!(lvl === '77' && SPECIAL_REGISTERS.has(name))) out.symbols.push({ prog, lvl: String(Number(lvl)), name, size: sz, type }); }
+      if (type === 'FILE') { out.symbols.push({ prog, lvl: 'FD', name, size: sz }); fdGroup = { prog, entries: [] }; fdGroups.push(fdGroup); continue; }
+      if (/^\d+$/.test(lvl)) {
+        if (!(lvl === '77' && SPECIAL_REGISTERS.has(name))) {
+          const sym = { prog, lvl: String(Number(lvl)), name, size: sz, type };
+          out.symbols.push(sym);
+          if (fdGroup) fdGroup.entries.push(sym);
+        }
+      }
       else out.unparsedSym = (out.unparsedSym || 0) + 1;
       continue;
     }
@@ -67,7 +77,23 @@ export function parseListing(text) {
     }
   }
   out.programs = [...out.programs];
+  dropSharedAreaRepeats(out, fdGroups);
   return out;
+}
+
+// A file whose records repeat, item for item, those another file of the program already listed is
+// the shared record area printed again; its copies are dropped.
+function dropSharedAreaRepeats(out, groups) {
+  const sig = (g) => g.entries.map((e) => `${e.lvl}|${e.name}|${e.size}`).join(';');
+  const seen = new Set();
+  const drop = new Set();
+  for (const g of groups) {
+    if (!g.entries.length) continue;
+    const key = `${g.prog}#${sig(g)}`;
+    if (seen.has(key)) for (const e of g.entries) drop.add(e);
+    else seen.add(key);
+  }
+  if (drop.size) out.symbols = out.symbols.filter((e) => !drop.has(e));
 }
 
 // A listing produced under the wrong source format is a degenerate witness: the compiler accepts

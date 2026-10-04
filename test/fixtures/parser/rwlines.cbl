@@ -1,0 +1,24 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. RWLINES.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT RPT ASSIGN TO "R".
+       DATA DIVISION.
+       FILE SECTION.
+       FD  RPT
+           REPORT IS R1.
+       WORKING-STORAGE SECTION.
+       01  PC                  PIC 999.
+       REPORT SECTION.
+       RD  R1
+           PAGE LIMIT IS 66.
+       01  H1 TYPE REPORT HEADING.
+           05 LINE 1 COLUMN 44 PIC X(21) VALUE "Customer Order Report".
+           05 LINE 2.
+              10 COLUMN 100 PIC X(4) VALUE "PAGE".
+              10 COLUMN 105 PIC ZZ9 SOURCE PC.
+       01  D1 TYPE DETAIL LINE PLUS 1.
+           05 COLUMN 4 PIC 9(6) SOURCE PC.
+       PROCEDURE DIVISION.
+           STOP RUN.

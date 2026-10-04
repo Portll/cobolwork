@@ -1,0 +1,234 @@
+{
+ "case": {
+  "file": "debugmode.cbl",
+  "note": "debugging lines are source under WITH DEBUGGING MODE, and DEBUG-CONTENTS is as long as the item USE FOR DEBUGGING names"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "DEBUG-ITEM",
+    "size": 151,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-LINE",
+    "size": 6,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-NAME",
+    "size": 30,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-SUB-1",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-SUB-2",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-SUB-3",
+    "size": 5,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "3",
+    "name": "DEBUG-CONTENTS",
+    "size": 95,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-DEBUG-AREA",
+    "size": 92,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "WS-DEBUG-MSG",
+    "size": 80,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "WS-DEBUG-COUNTER",
+    "size": 6,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "WS-ALWAYS",
+    "size": 6,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-BIG",
+    "size": 95,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "DEBUG-ITEM",
+    "line": 5,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-LINE",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-NAME",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-SUB-1",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-SUB-2",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-SUB-3",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "DEBUG-CONTENTS",
+    "line": 5,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-DEBUG-AREA",
+    "line": 8,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-DEBUG-MSG",
+    "line": 9,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-DEBUG-COUNTER",
+    "line": 10,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "WS-ALWAYS",
+    "line": 11,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-BIG",
+    "line": 12,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [
+   {
+    "prog": "",
+    "kind": "S",
+    "name": "DBG"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "DBG-1"
+   },
+   {
+    "prog": "",
+    "kind": "P",
+    "name": "MAIN-LINE"
+   }
+  ],
+  "calls": []
+ }
+}

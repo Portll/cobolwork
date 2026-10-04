@@ -33,7 +33,9 @@ export function factsFromParse(parsed) {
     }
     for (const l of p.labels) facts.labels.push({ prog, kind: l.kind, name: n28(l.name) });
     for (const c of p.calls) {
-      const name = n28(c.kind === 'L' ? c.name : n30(c.name)).toUpperCase();
+      // The listing prints a hexadecimal call target, Micro Focus's call by number, as its bytes.
+      const literal = c.hex ? Buffer.from(c.name, 'hex').toString('latin1') : c.name;
+      const name = n28(c.kind === 'L' ? literal : n30(c.name)).toUpperCase();
       if (!facts.calls.some(x => x.prog === prog && x.kind === c.kind && x.name === name)) facts.calls.push({ prog, kind: c.kind, name });
     }
   }

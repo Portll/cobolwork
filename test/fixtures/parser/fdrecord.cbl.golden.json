@@ -1,0 +1,442 @@
+{
+ "case": {
+  "file": "fdrecord.cbl",
+  "note": "an FD is as long as its RECORD clause allows, read past LABEL RECORD, or its longest record, one occurrence of an OCCURS record, and a line-sequential file by its records alone"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "VARFILE",
+    "size": 20
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "VAR-REC",
+    "size": 16,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "VAR-NAME",
+    "size": 8,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "VAR-REST",
+    "size": 8,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "RANGEFILE",
+    "size": 100
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "RANGE-SHORT",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "RANGE-LONG",
+    "size": 31,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "RANGE-KEY",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "RANGE-TEXT",
+    "size": 29,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "FIXEDFILE",
+    "size": 80
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "FIXED-REC",
+    "size": 33,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FIXED-NAME",
+    "size": 30,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FIXED-RATE",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "TABLEFILE",
+    "size": 29
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "TABLE-ONE",
+    "size": 29,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "TABLE-ID",
+    "size": 9,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "TABLE-NAME",
+    "size": 20,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "TABLE-ROWS",
+    "size": 290,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "ROW-ID",
+    "size": 9,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "ROW-NAME",
+    "size": 20,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "TEXTFILE",
+    "size": 219
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "TEXT-LINE",
+    "size": 219,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "LINEVAR",
+    "size": 10
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "LINEVAR-REC",
+    "size": 4,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "LINEVAR-ACTION",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "LINEVAR-COUNT",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "SORTWORK",
+    "size": 100
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "SORT-REC",
+    "size": 21,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "SORT-KEY",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "SORT-STATION",
+    "size": 18,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "VAR-LEN",
+    "size": 2,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "VARFILE",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "VAR-REC",
+    "line": 22,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "VAR-NAME",
+    "line": 23,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "VAR-REST",
+    "line": 24,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "RANGEFILE",
+    "line": 7,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "RANGE-SHORT",
+    "line": 27,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "RANGE-LONG",
+    "line": 28,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "RANGE-KEY",
+    "line": 29,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "RANGE-TEXT",
+    "line": 30,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FIXEDFILE",
+    "line": 8,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FIXED-REC",
+    "line": 33,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FIXED-NAME",
+    "line": 34,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "FIXED-RATE",
+    "line": 35,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TABLEFILE",
+    "line": 9,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TABLE-ONE",
+    "line": 37,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TABLE-ID",
+    "line": 38,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TABLE-NAME",
+    "line": 39,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TABLE-ROWS",
+    "line": 40,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "ROW-ID",
+    "line": 41,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "ROW-NAME",
+    "line": 42,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TEXTFILE",
+    "line": 10,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "TEXT-LINE",
+    "line": 45,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "LINEVAR",
+    "line": 12,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "LINEVAR-REC",
+    "line": 49,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "LINEVAR-ACTION",
+    "line": 50,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "LINEVAR-COUNT",
+    "line": 51,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SORTWORK",
+    "line": 14,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SORT-REC",
+    "line": 54,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SORT-KEY",
+    "line": 55,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "SORT-STATION",
+    "line": 56,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "VAR-LEN",
+    "line": 58,
+    "state": "refs",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

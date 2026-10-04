@@ -1,0 +1,57 @@
+{
+ "case": {
+  "file": "utf8pic.cbl",
+  "note": "a U picture symbol is a UTF-8 character of four bytes"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "U-THREE",
+    "size": 12,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "U-TEN",
+    "size": 40,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "U-AFTER",
+    "size": 3,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "U-THREE",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "U-TEN",
+    "line": 6,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "U-AFTER",
+    "line": 7,
+    "state": "refs",
+    "receiving": true
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

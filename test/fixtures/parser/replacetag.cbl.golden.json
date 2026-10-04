@@ -1,0 +1,99 @@
+{
+ "case": {
+  "file": "replacetag.cbl",
+  "note": "REPLACE replaces a colon-delimited tag inside a picture and a name, and pseudo-text that ends a picture with a period"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-BUFFER",
+    "size": 40,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "PAY-REC",
+    "size": 9,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "PAY-WEEK",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "PAY-GROSS",
+    "size": 7,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "NEW-ITEM",
+    "size": 4,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-AFTER",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-BUFFER",
+    "line": 6,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "PAY-REC",
+    "line": 8,
+    "state": "child",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "PAY-WEEK",
+    "line": 9,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "PAY-GROSS",
+    "line": 10,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "NEW-ITEM",
+    "line": 13,
+    "state": "refs",
+    "receiving": true
+   },
+   {
+    "prog": "",
+    "name": "WS-AFTER",
+    "line": 15,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

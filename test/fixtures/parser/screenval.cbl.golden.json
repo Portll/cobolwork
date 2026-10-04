@@ -1,0 +1,106 @@
+{
+ "case": {
+  "file": "screenval.cbl",
+  "note": "a screen item shows its numeric VALUE as written and, where a missing period runs entries together, the later VALUE"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "WS-BET",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "BOARD",
+    "size": 11,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 1,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 1,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 2,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "RUNON",
+    "size": 15,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 13,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 2,
+    "type": "ALPHANUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "WS-BET",
+    "line": 5,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "BOARD",
+    "line": 7,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "RUNON",
+    "line": 13,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

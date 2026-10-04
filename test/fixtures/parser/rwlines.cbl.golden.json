@@ -1,0 +1,105 @@
+{
+ "case": {
+  "file": "rwlines.cbl",
+  "note": "a report group is as large as its items end to end or its rightmost column, and every group of a report as large as the largest"
+ },
+ "programs": [],
+ "witness": {
+  "symbols": [
+   {
+    "prog": "",
+    "lvl": "FD",
+    "name": "RPT",
+    "size": 128
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "PC",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "H1",
+    "size": 128,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 21,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 107,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "FILLER",
+    "size": 4,
+    "type": "ALPHANUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "10",
+    "name": "FILLER",
+    "size": 3,
+    "type": "NUMERIC"
+   },
+   {
+    "prog": "",
+    "lvl": "1",
+    "name": "D1",
+    "size": 128,
+    "type": "GROUP"
+   },
+   {
+    "prog": "",
+    "lvl": "5",
+    "name": "FILLER",
+    "size": 6,
+    "type": "NUMERIC"
+   }
+  ],
+  "xref": [
+   {
+    "prog": "",
+    "name": "RPT",
+    "line": 6,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "PC",
+    "line": 12,
+    "state": "refs",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "H1",
+    "line": 16,
+    "state": "none",
+    "receiving": false
+   },
+   {
+    "prog": "",
+    "name": "D1",
+    "line": 21,
+    "state": "none",
+    "receiving": false
+   }
+  ],
+  "labels": [],
+  "calls": []
+ }
+}

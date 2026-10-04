@@ -1,0 +1,62 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. FDRECORD.
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT VARFILE ASSIGN TO "V".
+           SELECT RANGEFILE ASSIGN TO "R".
+           SELECT FIXEDFILE ASSIGN TO "F".
+           SELECT TABLEFILE ASSIGN TO "T".
+           SELECT TEXTFILE ASSIGN TO "X"
+               ORGANIZATION IS LINE SEQUENTIAL.
+           SELECT LINEVAR ASSIGN TO "L"
+               ORGANIZATION IS LINE SEQUENTIAL.
+           SELECT SORTWORK ASSIGN TO "S"
+               ORGANIZATION IS LINE SEQUENTIAL.
+       DATA DIVISION.
+       FILE SECTION.
+       FD  VARFILE
+           LABEL RECORD STANDARD
+           RECORD IS VARYING IN SIZE FROM 16 TO 20
+           DEPENDING ON VAR-LEN.
+       01  VAR-REC.
+           05 VAR-NAME         PIC X(8).
+           05 VAR-REST         PIC X(8).
+       FD  RANGEFILE
+           RECORD CONTAINS 2 TO 100 CHARACTERS.
+       01  RANGE-SHORT         PIC X(2).
+       01  RANGE-LONG.
+           05 RANGE-KEY        PIC 9(2).
+           05 RANGE-TEXT       PIC X(29).
+       FD  FIXEDFILE
+           RECORD CONTAINS 80 CHARACTERS.
+       01  FIXED-REC.
+           05 FIXED-NAME       PIC X(30).
+           05 FIXED-RATE       PIC 9(3).
+       FD  TABLEFILE.
+       01  TABLE-ONE.
+           05 TABLE-ID         PIC X(9).
+           05 TABLE-NAME       PIC X(20).
+       01  TABLE-ROWS OCCURS 10.
+           05 ROW-ID           PIC X(9).
+           05 ROW-NAME         PIC X(20).
+       FD  TEXTFILE
+           RECORD CONTAINS 1 TO 1000 CHARACTERS.
+       01  TEXT-LINE           PIC X(219).
+       FD  LINEVAR
+           RECORD IS VARYING IN SIZE FROM 1 TO 10
+           DEPENDING ON VAR-LEN.
+       01  LINEVAR-REC.
+           05 LINEVAR-ACTION   PIC X.
+           05 LINEVAR-COUNT    PIC 9(3).
+       SD  SORTWORK
+           RECORD CONTAINS 21 TO 100 CHARACTERS.
+       01  SORT-REC.
+           05 SORT-KEY         PIC X(3).
+           05 SORT-STATION     PIC X(18).
+       WORKING-STORAGE SECTION.
+       01  VAR-LEN             PIC 9(4) COMP.
+       PROCEDURE DIVISION.
+           OPEN INPUT VARFILE RANGEFILE FIXEDFILE TABLEFILE TEXTFILE
+               LINEVAR
+           STOP RUN.

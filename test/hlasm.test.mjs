@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { readHlasm, OPERATIONS } from '../lib/hlasm.mjs';
 import { scanHlasm, HLASM_RULES } from '../lib/sets/hlasm.mjs';
 import { scanJcl } from '../lib/sets/jcl.mjs';
-import { isAssembler } from '../lib/sources.mjs';
+import { isAssembler, kindOfBytes } from '../lib/sources.mjs';
 import './pin-machine.mjs';
 
 const tree = (files) => {
@@ -185,6 +185,32 @@ test('an extensionless member is assembler only when it defines a section and de
   const root = tree({ ASMMEM: STUB, NOTES: '    START the batch at nine\n' });
   assert.equal(isAssembler(join(root, 'ASMMEM')), true);
   assert.equal(isAssembler(join(root, 'NOTES')), false);
+});
+
+test('an extensionless member is assembler when its section comes after a long prologue or a macro makes it', () => {
+  const prologue = Array.from({ length: 80 }, (_, i) => `* PROLOGUE LINE ${i}`.padEnd(71, ' ') + '*').join('\n');
+  const generated = asm(
+    card('CBT1892', 'SAVEALL', 'REG=2'),
+    card('', 'OPEN', '(INPUT,(INPUT))'),
+    card('READ', 'GET', 'INPUT,AREA'),
+    card('', 'LA', '2,AREA'),
+    card('', 'L', '3,0(2)'),
+    card('', 'ST', '3,SAVE'),
+    card('', 'MVC', 'OUT(8),AREA'),
+    card('', 'CLC', 'AREA(4),EOF'),
+    card('', 'LTR', '15,15'),
+    card('', 'B', 'READ'),
+  );
+  const clist = Array.from({ length: 300 }, (_, i) => `  CONTROL NOLIST${i % 2 ? '' : ' NOMSG'}\n  ALLOC F(IN${i}) DA(&DSN) SHR`).join('\n');
+  const manual = Array.from({ length: 120 }, () => 'you can start the job, print the report and save the output when it ends.').join('\n');
+  const root = tree({ LONGPRO: `${prologue}\n${STUB}`, NOSECT: generated, CLIST: clist, MANUAL: manual });
+  assert.ok(prologue.length > 4096);
+  assert.equal(isAssembler(join(root, 'LONGPRO')), true);
+  assert.equal(isAssembler(join(root, 'NOSECT')), true);
+  assert.equal(isAssembler(join(root, 'CLIST')), false);
+  assert.equal(isAssembler(join(root, 'MANUAL')), false);
+  assert.equal(kindOfBytes(Buffer.from(`${prologue}\n${STUB}`)), 'hlasm');
+  assert.equal(kindOfBytes(Buffer.from(clist)), null);
 });
 
 test('the defects are graded, and the inventory rules assert none', () => {

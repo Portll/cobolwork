@@ -90,3 +90,19 @@ test('LINK and XCTL read their list and execute forms', () => {
   assert.equal(xexec.node.param, '(A,B)');
   assert.match(parse('         XCTL  EP=PROGB,PARAM=(A)').reason, /PARAM and VL only with MF=\(E,addr\)/);
 });
+
+test('LOAD and ATTACH read their list and execute forms and authorized keywords, and addresses as HLASM writes them', () => {
+  assert.equal(parse("         LOAD  EPLOC==CL8'IKJEFF02'").status, 'parsed');
+  assert.equal(parse('         LOAD  EP=CROSSMEM,GLOBAL=YES,SF=L').node.sf, 'L');
+  assert.equal(parse('         LOAD  DE=(R1),DCB=DCB').status, 'parsed');
+  const attach = parse('         ATTACH EPLOC=(R6),ECB=(R7),SZERO=NO,JSTCB=YES,SF=(E,ATTACHD)');
+  assert.equal(attach.status, 'parsed');
+  assert.deepEqual(attach.node.sf, { form: 'E', list: 'ATTACHD' });
+  assert.equal(parse('         ATTACH DE=0,SF=L').status, 'parsed');
+  assert.match(parse('         ATTACH EP=X,HIARCHY=0').reason, /unknown keyword HIARCHY/);
+  assert.equal(parse('         XCTL  (2,12),DE=(R8),MF=(E,(1)),SF=(E,(15))').status, 'parsed');
+  assert.equal(parse('         LINK  ,SF=(E,PARSLINK)').status, 'parsed');
+  assert.equal(parse('         LINK  EP=ASMA90,PARAM=((R3),DDNLIST),VL=1').status, 'parsed');
+  assert.equal(parse('         LINK  SF=(E,LP),MF=(E,CP),PARAM=(,,(3)),VL=1').status, 'parsed');
+  assert.match(parse('         LINK  EP=X,PARAM=(,A)').reason, /invalid PARAM address/);
+});

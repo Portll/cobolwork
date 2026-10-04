@@ -101,7 +101,7 @@ test('READ parses with MF=L keyword', () => {
 test('READ refuses invalid type', () => {
   const r = parse('         READ  DECB,XX,DCB,AREA');
   assert.equal(r.status, 'unparsed');
-  assert.match(r.reason, /type XX is not SF, SB, SF64, or SF64P/);
+  assert.match(r.reason, /type XX is not one the access methods define/);
 });
 
 test('WRITE parses standard form with all positional operands', () => {
@@ -122,16 +122,38 @@ test('WRITE parses with length value', () => {
   assert.equal(r.node.length, '100');
 });
 
-test('WRITE parses with MF=(M,addr) keyword', () => {
+test('WRITE refuses MF=(M,addr), which its list and execute forms do not define', () => {
   const r = parse('         WRITE DECB,SF,DCB,AREA,MF=(M,ADDR)');
-  assert.equal(r.status, 'parsed');
-  assert.equal(r.node.kind, 'WRITE');
-  assert.equal(r.node.mf, '(M,ADDR)');
-  assert.equal(r.node.keywords.MF, '(M,ADDR)');
+  assert.equal(r.status, 'unparsed');
+  assert.match(r.reason, /MF= value \(M,ADDR\) is not L or E/);
 });
 
 test('WRITE refuses invalid type', () => {
   const r = parse('         WRITE DECB,SB,DCB,AREA');
   assert.equal(r.status, 'unparsed');
-  assert.match(r.reason, /type SB is not SF, SF64, or SF64P/);
+  assert.match(r.reason, /type SB is not one the access methods define/);
+});
+
+test('READ and WRITE read the BDAM and BSAM forms and their list and execute forms', () => {
+  const bdam = parse("         READ  RDECB4,DI,BDAMIN,0,'S',0,BDAMTTR");
+  assert.equal(bdam.status, 'parsed');
+  assert.equal(bdam.node.key, '0');
+  assert.equal(bdam.node.block, 'BDAMTTR');
+  assert.equal(parse("         READ  HDECB2,DKFRU,(R3),(R2),'S','S',BLK,NXT").status, 'parsed');
+  assert.equal(parse('         READ  DECB1,SF,MF=L').status, 'parsed');
+  const exec = parse("         READ  DECB,SF,VTOC,DSCB,'S',MF=E");
+  assert.equal(exec.node.mf, 'E');
+  assert.equal(parse("         READ  DYNDECB,SF,,(R2),'S',MF=E").node.dcb, null);
+  assert.equal(parse('         WRITE (R9),SF,(R5),(R6),MF=E').node.decb, '(R9)');
+  assert.equal(parse('         WRITE WDECB3,SZ,BDAMOUT').status, 'unparsed');
+  assert.equal(parse('         WRITE WDECB3,SZ,BDAMOUT,AREA').status, 'parsed');
+  assert.equal(parse("         WRITE DECBMODW,DK,0,'S','S',0,0,MF=L").status, 'parsed');
+  assert.match(parse('         READ  DECB,SF,DCB,AREA,MF=(E,LIST)').reason, /MF= value \(E,LIST\) is not L or E/);
+  assert.match(parse('         READ  DECB,SF,,AREA').reason, /dcb address is missing/);
+});
+
+test('GET and PUT read the VSAM form, which names a request parameter list', () => {
+  assert.deepEqual(parse('         GET   RPL=GETRPL').node, { kind: 'GET', rpl: 'GETRPL' });
+  assert.equal(parse('         PUT   RPL=(R5)').node.rpl, '(R5)');
+  assert.match(parse('         GET   INDCB,RPL=GETRPL').reason, /RPL= takes no positional operands/);
 });

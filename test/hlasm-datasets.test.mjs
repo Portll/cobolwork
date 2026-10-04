@@ -29,3 +29,18 @@ test('DCB keeps its keywords and names the DD statement it reads', () => {
   assert.equal(parse('BAD      DCB   DDNAME=X,COLOUR=RED').status, 'unparsed');
   assert.equal(parse('BAD      DCB   X').status, 'unparsed');
 });
+
+test('OPEN and CLOSE read their list and execute forms, with DCB slots left to the other form', () => {
+  const list = parse('OPENL    OPEN  (,),MF=L');
+  assert.equal(list.status, 'parsed');
+  assert.equal(list.node.mf, 'L');
+  assert.equal(list.node.dcbs[0].dcb, null);
+  assert.equal(parse('CLOSEL   CLOSE (,DISP),MF=L').status, 'parsed');
+  const exec = parse('         OPEN  TYPE=J,MF=(E,OPENLIST)');
+  assert.equal(exec.status, 'parsed');
+  assert.deepEqual(exec.node.mf, { form: 'E', list: 'OPENLIST' });
+  assert.equal(parse('         CLOSE MF=(E,(10))').status, 'parsed');
+  assert.equal(parse('         OPEN  (INDCB,(INPUT)),MF=(E,OPENLIST)').status, 'parsed');
+  assert.match(parse('         OPEN  (,)').reason, /empty dcb address/);
+  assert.match(parse('         CLOSE TYPE=T').reason, /exactly one positional operand/);
+});

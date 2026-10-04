@@ -99,3 +99,13 @@ test('WTOR: no operands and no TEXT is refused', () => {
   assert.equal(r.status, 'unparsed');
   assert.match(r.reason, /no positional operands and no TEXT/);
 });
+
+test('WTO and WTOR read their list and execute forms, multiple-line messages and authorized keywords', () => {
+  assert.equal(parse('         WTO   ,MF=(E,(1))').status, 'parsed');
+  assert.equal(parse('         WTO   MF=(E,DSAWTO),LINKAGE=BRANCH').status, 'parsed');
+  assert.equal(parse("         WTO   ('LINE ONE',C),('LINE TWO',L),(,E)").status, 'parsed');
+  assert.equal(parse("WTORL    WTOR  ' REPLY ?',ROUTCDE=(1,2),MF=L").status, 'parsed');
+  assert.equal(parse('         WTOR  ,WTOANS1,50,WTORECB1,MF=(E,WTORL1)').status, 'parsed');
+  assert.equal(parse('         WTOR  MF=(E,PROMPT)').status, 'parsed');
+  assert.match(parse('         WTOR  ,ANS,50,ECB').reason, /first positional operand/);
+});

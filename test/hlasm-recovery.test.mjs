@@ -96,3 +96,11 @@ test('SNAP refuses unknown keyword', () => {
   assert.equal(r.status, 'unparsed');
   assert.match(r.reason, /unknown keyword FOO/);
 });
+
+test('ESTAE reads its list and execute forms and authorized keywords', () => {
+  assert.equal(parse('         ESTAE MF=(E,ESTAEON)').status, 'parsed');
+  assert.equal(parse('         ESTAE (R3),TOKEN=XWTOKEN,MF=(E,XWLIST)').status, 'parsed');
+  assert.equal(parse('         ESTAE 0,BRANCH=YES,SVEAREA=(R13)').status, 'parsed');
+  assert.equal(parse('         ESTAE ,,,ASYNCH=YES,PURGE=NONE,MF=L').status, 'parsed');
+  assert.match(parse('         ESTAE ,OV,XCTL=NO,ESTAR=NO,MF=L').reason, /unknown keyword ESTAR/);
+});

@@ -131,3 +131,10 @@ test('CCW, CCW0 and CCW1 read their command code, data address, flags and count'
   assert.equal(parseHlasmStatement(ccw1).status, 'parsed');
   assert.match(parseHlasmStatement(short).reason, /not 2 operands/);
 });
+
+test('a length attribute of the location counter or a literal opens no string before the remarks', () => {
+  const [counter, literal] = readHlasmStatements(["         JNE   *+L'*+10            WELL, IT'S NOT THIS DSCB", "         LA    1,L'=F'1'           IT'S ONE"].join('\n')).statements;
+  assert.equal(counter.field, "*+L'*+10");
+  assert.equal(parseHlasmStatement(counter).status, 'parsed');
+  assert.equal(literal.field, "1,L'=F'1'");
+});

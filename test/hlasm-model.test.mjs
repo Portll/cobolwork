@@ -43,3 +43,16 @@ test('an operation that is a variable symbol is refused, and open-code statement
   assert.equal(r.kind, 'SUBSTITUTED');
   assert.equal(r.node.as, 'DS');
 });
+
+test('a variable that may carry a quoted value or a number is read that way when a symbol does not fit', () => {
+  const [, , message, literal, factor, symbol] = definition('&L       MYMAC &MSG,&T,&R', '&L       DC    C&MSG', '         LA    &R,=C&LIST',
+    '&W       DC    &T.F\'0\'', '&L       LA    &R,0(&R)');
+  for (const st of [message, literal, factor]) {
+    const r = parseHlasmStatement(st);
+    assert.equal(r.status, 'parsed', st.field);
+    assert.equal(r.node.exact, false);
+  }
+  assert.equal(parseHlasmStatement(symbol).node.exact, true);
+  const [, , noType] = definition('&L       MYMAC &S', '&N       DC    &STRING');
+  assert.match(parseHlasmStatement(noType).reason, /no nominal value|type/);
+});

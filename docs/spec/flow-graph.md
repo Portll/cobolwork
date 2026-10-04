@@ -5,8 +5,9 @@ memory, without leaving out a single route.
 
 Status: 4.1 and 4.3's edges are built (`2e512f7`, `b23399b`), with two smaller steps the heap
 showed next: one empty list for nodes with no source or sink (`8c2664f`) and one condition per
-content (`09041b9`). 4.2 is dropped: measured, it frees a few megabytes and would renumber nodes.
-Node columns, 4.4 and 4.5 are open.
+content (`09041b9`). 4.4 is built as reuse of the control analysis for large copied programs.
+4.2 is dropped: measured, it frees a few megabytes and would renumber nodes. Node columns and 4.5
+are open.
 Written for an engineer coming to it cold. It assumes the codebase, not the discussion that produced
 it, and it is measured against `94d6814`, where one pass reads and parses each program for every
 rule set (`lib/kernel/shared-pass.mjs`).
@@ -114,45 +115,62 @@ Expected: the JavaScript objects the graph holds fall from millions to the few t
 maps, which is what collection pays for. The bytes per node drop from about a kilobyte to a few
 dozen plus its share of edges.
 
-### 4.4 One analysis per distinct program
+### 4.4 One control analysis per distinct program
 
-`summarise()` produces a **fragment**: node and edge arrays with ids local to the program, file
-references as indices into the fragment's own table (the main file first, then each copybook by
-resolved path), the program's interned facts, and its call sites, parameters and entries.
-Appending a fragment offsets its ids and maps its file table onto the analysis's own. At
-`94d6814` a path reaches `summarise()`'s output only as a field: a node's `file` and the
-`{ file, line }` position on edges, sources and sinks. No string it builds embeds one.
+A program whose text another program file in the repository repeats keeps its control analysis,
+`buildControl`'s result, for the copies (`lib/control-reuse.mjs`). `summarise()` still runs for
+every copy: the copy's nodes, edges, sinks, `pk` and paths are its own, built as they always were.
+Only the control analysis, the expensive and pure part, is not repeated.
 
-Two programs with the same key build one fragment, appended once per path. Linking stays per
-instance and global: a CALL to the nearest holder of a program id, a JCL step, a CSD definition, a
-queue. A copy in another directory links to its own neighbours, as now.
+Not the whole fragment. `summarise()` writes identifiers into text, a sink's group is the string
+`${pk}|${key}`, and paths into fields. A replayed fragment would need every such field rewritten,
+and the list of them goes stale as `lib/dataflow.mjs` changes.
 
-Reuse is exact only if location enters the analysis at linking and nowhere else, and only if the
-key covers everything `summarise()` reads. Neither is established yet, and both are gates:
+How a kept analysis is carried to a copy:
 
-- **The key.** At least the program's text, each resolved copybook's text and resolution status
-  (found, missing, system, refused), the parse options (format, dialect, defines), and the
-  program's position within its file. Also every repository-level input `summarise()` reads beside
-  the parse: BMS maps, CSD definitions, the site's estate facts, options such as `hostVariables`.
-  An audit of `summarise()`'s free variables comes before the key, and is repeated when the
-  fragment is built: `lib/dataflow.mjs` changes most days.
-- **Location.** That a path reaches `summarise()`'s output only as a field is checked at `94d6814`,
-  not for the whole analysis. A test copies one program into two directories with different
-  neighbours and requires each copy's findings to follow its own neighbours.
+- It refers to objects of the program's parse: statements, items, tokens. Each reference is kept as
+  the object's position in a walk of the parse that visits it in one fixed order, breadth first over
+  array elements, Map entries, Set values and own properties. The copy's parse, walked the same way,
+  supplies the copy's objects.
+- A string equal to one of the program's files, its own or a copybook it resolved, is kept as that
+  file's place in the list and becomes the copy's file. A path inside a longer string, or a value
+  that is not plain data, means the analysis is not kept, and the copy is analysed afresh.
+- The key is the program's text, its position in its file, and each copybook's resolution status
+  and text. It holds within one repository's analysis, where the BMS maps and the site's facts that
+  `summarise()` reads are fixed. Found by an audit of `summarise()`'s free variables with a
+  JavaScript parser at `150a9c4`: it reads the graph it builds, constants, pure helpers, and three
+  repository-level inputs: `site.compilerOptions`, `bmsMaps` and `rel`, which only fills `file`
+  fields.
+
+Gates, and how each is met:
+
+- **Equal to the program's own.** `COBOLWORK_VERIFY_REUSE=1` computes every reused analysis afresh
+  as well and stops the flow set if the two differ, objects of the parse compared as themselves.
+  The tests and the equivalence run use it.
+- **Location.** A test puts one caller in two directories, each beside a different callee, and
+  requires each copy's findings to follow its own callee. A second puts copies of a caller and its
+  callee in two directories and requires each finding to carry its own paths.
 - **Equivalence.** The run in §5 adds the repositories whose copies sit in different directories:
   cnafbadboy, `ezpzresearch-max_Agentic-C0-Bug`, `infinityabundance_gnucobol-rs` and
-  `rishalab_COBug`. A wrong key gives wrong findings without an error: a passing test suite is not
-  enough.
+  `rishalab_COBug`. A wrong key gives wrong findings without an error: the verify run matters
+  more than the test suite.
 
 What reuse covers, and what it does not:
 
-- Only the flow engine's fragment. Every other set's results carry the program's path, and their
-  cost is mostly the parse, which `94d6814` already reads once.
+- The flow engine's control analysis only. Every other set's results carry the program's path, and
+  their cost is mostly the parse, which `94d6814` already reads once.
 - Copies only. The first copy of a program still pays the arithmetic rounds of `5d76dbd`.
 - Few repositories. Within one repository, from the 3185 corpus's git blobs: 24,405 of 137,527
   program files duplicate another, in 176 of 3,019 repositories. One repository holds 14,500 of
   them (`ezpzresearch-max_Agentic-C0-Bug`, 15,970 programs), and cnafbadboy holds three copies of
   each of its 52. Most estates gain nothing.
+- Large programs only, 256 KiB of text and more (`reuseMinBytes`). On
+  `ezpzresearch-max_Agentic-C0-Bug`, 14,500 copies of small programs, keeping and restoring took
+  longer than analysing: 140 s against 85 s for the whole scan. With the bound it does not engage
+  there. On cnafbadboy, three copies of each of 52 programs of up to 17 MB, a full scan took 589 s
+  against 928 s.
+- Every program file is read once more before the pass, to find the copies. Every repository pays
+  that read, copies or not.
 
 ### 4.5 Build fragments in parallel (later)
 

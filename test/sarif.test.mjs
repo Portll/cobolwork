@@ -227,3 +227,13 @@ test('every location points by index at the one artifact holding its file', () =
   }
   assert.deepEqual([...named].sort(), uris, 'every artifact is named by some location');
 });
+
+test('an advisory a finding rests on is not given as a related location', () => {
+  const run = sarifOf({
+    findings: [{ rule: 'build-pins-vulnerable-compiler', path: 'Dockerfile', line: 2, sev: 'high', evidence: 'advisory', detail: 'x',
+      related: [{ id: 'CVE-2019-14468', url: 'https://nvd.nist.gov/vuln/detail/CVE-2019-14468' }, { path: 'A.cbl', line: 3, detail: 'y' }] }],
+    ruleText: {}, ruleCwe: {}, summary: {},
+  });
+  assert.deepEqual(run.artifacts.map((a) => a.location.uri), ['A.cbl', 'Dockerfile']);
+  assert.deepEqual(run.results[0].relatedLocations.map((l) => l.physicalLocation.artifactLocation.uri), ['A.cbl']);
+});

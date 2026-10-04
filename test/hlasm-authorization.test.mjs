@@ -118,3 +118,19 @@ test('RACROUTE refuses invalid REQUEST value', () => {
   assert.equal(res.status, 'unparsed');
   assert.match(res.reason, /invalid REQUEST/);
 });
+
+test('MODESET reads its list and execute forms', () => {
+  const list = parse('LIST     MODESET KEY=ZERO,MODE=SUP,MF=L');
+  assert.equal(list.status, 'parsed');
+  assert.equal(list.node.mf, 'L');
+  assert.equal(list.node.key, 'ZERO');
+  const exec = parse('         MODESET MF=(E,LIST)');
+  assert.equal(exec.status, 'parsed');
+  assert.equal(exec.node.mf, 'E');
+  assert.equal(exec.node.list, 'LIST');
+  assert.equal(parse('         MODESET MF=(E,(1))').node.list, '(1)');
+  assert.match(parse('         MODESET MF=L').reason, /needs KEY or MODE/);
+  assert.match(parse('         MODESET KEY=ZERO,MF=(E,LIST)').reason, /execute form does not take KEY/);
+  assert.match(parse('         MODESET EXTKEY=ZERO,MF=L').reason, /list form does not take EXTKEY/);
+  assert.match(parse('         MODESET KEY=ZERO,MF=X').reason, /not L or \(E,addr\)/);
+});

@@ -93,3 +93,23 @@ test('FREEMAIN refuses unknown keyword', () => {
   assert.equal(res.status, 'unparsed');
   assert.match(res.reason, /FREEMAIN does not accept keyword FOO/);
 });
+
+test('GETMAIN and FREEMAIN read their list and execute forms and branch entry', () => {
+  const list = parse('GMLIST   GETMAIN EU,LV=4096,A=AREA,MF=L');
+  assert.equal(list.status, 'parsed');
+  assert.equal(list.node.mf, 'L');
+  const exec = parse('         GETMAIN EU,LV=4096,A=AREA,MF=(E,GMLIST)');
+  assert.deepEqual(exec.node.mf, { form: 'E', list: 'GMLIST' });
+  assert.match(parse('         GETMAIN R,LV=100,MF=L').reason, /GETMAIN R has no list or execute form/);
+  const branch = parse('         GETMAIN RU,LV=100,SP=231,BRANCH=(YES,GLOBAL),KEY=0');
+  assert.equal(branch.status, 'parsed');
+  assert.equal(branch.node.branch, 'GLOBAL');
+  assert.equal(parse('         GETMAIN R,LV=100,BRANCH=YES').node.branch, 'YES');
+  assert.match(parse('         GETMAIN EU,LV=100,A=X,BRANCH=(YES,GLOBAL)').reason, /only with RC, RU, VRC, VRU/);
+  assert.match(parse('         GETMAIN RU,LV=100,OWNER=NOBODY').reason, /OWNER must be one of/);
+  const free = parse('         FREEMAIN RU,LV=100,A=(1),SP=231,BRANCH=YES');
+  assert.equal(free.status, 'parsed');
+  assert.equal(free.node.branch, 'YES');
+  assert.deepEqual(parse('         FREEMAIN E,LV=100,A=AREA,MF=(E,FMLIST)').node.mf, { form: 'E', list: 'FMLIST' });
+  assert.match(parse('         FREEMAIN R,LV=100,A=X,BRANCH=(YES,GLOBAL)').reason, /only with RC, RU/);
+});

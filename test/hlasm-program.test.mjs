@@ -68,3 +68,25 @@ test('ATTACH refuses unknown keyword', () => {
   assert.equal(res.status, 'unparsed');
   assert.match(res.reason, /unknown keyword/);
 });
+
+test('LINK and XCTL read their list and execute forms', () => {
+  const list = parse('LINKLST  LINK  EP=PROGA,SF=L');
+  assert.equal(list.status, 'parsed');
+  assert.equal(list.node.sf, 'L');
+  const bare = parse('LINKLST  LINK  SF=L');
+  assert.equal(bare.status, 'parsed');
+  assert.equal(bare.node.ep, null);
+  const exec = parse('         LINK  EP=PROGA,PARAM=(P1,P2),VL=1,MF=(E,PL),SF=(E,LL)');
+  assert.equal(exec.status, 'parsed');
+  assert.deepEqual(exec.node.mf, { form: 'E', list: 'PL' });
+  assert.deepEqual(exec.node.sf, { form: 'E', list: 'LL' });
+  assert.match(parse('         LINK  EP=PROGA,MF=L').reason, /MF only as \(E,addr\)/);
+  assert.match(parse('         LINK  EP=PROGA,PARAM=(A),SF=L').reason, /list form of LINK takes no MF or PARAM/);
+  assert.match(parse('         LINK  PARAM=(A),MF=(E,PLIST)').reason, /missing EP, EPLOC, or DE/);
+  const xlist = parse('XCTLLST  XCTL  EP=PROGB,SF=L');
+  assert.equal(xlist.node.sf, 'L');
+  const xexec = parse('         XCTL  (2,12),EP=PROGB,PARAM=(A,B),VL=1,MF=(E,XP),SF=(E,XL)');
+  assert.equal(xexec.status, 'parsed');
+  assert.equal(xexec.node.param, '(A,B)');
+  assert.match(parse('         XCTL  EP=PROGB,PARAM=(A)').reason, /PARAM and VL only with MF=\(E,addr\)/);
+});

@@ -4,7 +4,7 @@
 //
 // Every row carries provenance. A row whose claim cannot be traced to a document is not a feed
 // row, it is a guess, and the gate in verify.mjs refuses it.
-import { CATALOGUE } from './catalogue.mjs';
+import { CATALOGUE, EVIDENCE } from './catalogue.mjs';
 import { advisoryProblems } from '../lib/advisories.mjs';
 
 const SEVERITIES = ['crit', 'high', 'med', 'low', 'info'];
@@ -38,6 +38,17 @@ const KINDS = {
     if (!str(row.title)) problems.push('title: missing');
     if (!str(row.rationale)) problems.push('rationale: missing');
     else if (row.rationale.length < 60) problems.push('rationale: too short to say why the rule satisfies the clause');
+    checkSource(row, problems);
+  },
+
+  // One kind of evidence the tools write, one framework clause it answers.
+  evidence(row, problems) {
+    if (!EVIDENCE.has(row.evidenceId)) problems.push("evidenceId: '" + row.evidenceId + "' is not evidence the tools write");
+    if (!FRAMEWORKS.includes(row.framework)) problems.push('framework: not one of ' + FRAMEWORKS.join(', '));
+    if (!str(row.clause)) problems.push('clause: missing');
+    if (!str(row.title)) problems.push('title: missing');
+    if (!str(row.rationale)) problems.push('rationale: missing');
+    else if (row.rationale.length < 60) problems.push('rationale: too short to say why the evidence answers the clause');
     checkSource(row, problems);
   },
 

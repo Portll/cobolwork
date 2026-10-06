@@ -1,5 +1,6 @@
-// Maps every rule this engine reports to the clause of each framework that makes it an obligation,
-// and refuses to write a framework's file unless every row passes the feed gate.
+// Maps every rule this engine reports, and each kind of evidence it and ironwork write
+// (feed/catalogue.mjs EVIDENCE), to the clause of each framework that makes it an obligation, and
+// refuses to write a framework's file unless every row passes the feed gate.
 //
 //   node diag/map-compliance.mjs [--write] [--framework dora|ffiec|nist80053|cobit2019]
 //
@@ -18,7 +19,7 @@
 import { writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CATALOGUE } from '../feed/catalogue.mjs';
+import { CATALOGUE, EVIDENCE } from '../feed/catalogue.mjs';
 import { verifyRow } from '../feed/verify.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -122,6 +123,14 @@ const FRAMEWORKS = {
       '9(4)(d)': 'That exposes an authentication secret in a file, defeating the authentication mechanisms and key protection this clause requires.',
     },
     unmapped: {},
+    perEvidence: {},
+    unmappedEvidence: {
+      'journal-records': 'The Regulation places no obligation to record a program\'s runs. Article 11(8) asks for records of activities during a disruption, which a run journal is not, and its logging requirements sit in delegated acts this mapping does not read.',
+      'journal-chain': 'As above: with no record-keeping obligation for runs, there is nothing whose integrity the chain evidences.',
+      'provenance': 'No article of the Regulation asks for the provenance of a program\'s output. Article 8(4) maps the configuration of assets and their interdependencies, not where one run\'s output came from.',
+      'options-in-force': 'Article 9(4)(e) asks for documented policies for ICT change management, not for the settings a single run used. Mapping to it would be a near miss.',
+      'assumptions-register': 'No article concerns how a compiler resolves what its language leaves open.',
+    },
   },
 
   ffiec: {
@@ -207,6 +216,16 @@ const FRAMEWORKS = {
       'recon-production-name-outside-production': 'No FFIEC booklet covers the disclosure of internal system naming in source. DA&M IV concerns maintaining an inventory of components, not where the names of those components appear; IS II.C.19 concerns encrypting sensitive data, not naming conventions. Mapping to either would be a near miss.',
       'recon-routable-address-committed': 'As above. The nearest candidates govern the network boundary or the inventory, not the disclosure of an address inside a repository.',
     },
+    // The booklets' sections on logging have not been fetched, and they refuse automated
+    // requests; nothing is mapped to a section number nobody has read.
+    perEvidence: {},
+    unmappedEvidence: {
+      'journal-records': 'None of the sections fetched from the three booklets concerns logging. The Information Security booklet\'s treatment of logs has to be fetched by hand before a run journal can be mapped to it.',
+      'journal-chain': 'None of the sections fetched concerns protecting logs from change; the Information Security booklet has to be fetched by hand first.',
+      'provenance': 'None of the sections fetched concerns the provenance of an output. DA&M IV inventories components, not where one run\'s output came from.',
+      'options-in-force': 'None of the sections fetched concerns recording the settings a run used.',
+      'assumptions-register': 'No booklet concerns how a compiler resolves what its language leaves open.',
+    },
   },
 
   nist80053: {
@@ -231,6 +250,10 @@ const FRAMEWORKS = {
       'SA-3(2)': { title: 'Use of Live or Operational Data', quote: 'Approve, document, and control the use of live data in preproduction environments for the system, system component, or system service' },
       'IA-5(1)': { title: 'Password-based Authentication', quote: 'Transmit passwords only over cryptographically-protected channels' },
       'SC-13': { title: 'Cryptographic Protection', quote: 'Implement the following types of cryptography required for each specified cryptographic use' },
+      'AU-3': { title: 'Content of Audit Records', quote: 'Ensure that audit records contain information that establishes the following:' },
+      'AU-9(3)': { title: 'Cryptographic Protection', quote: 'Implement cryptographic mechanisms to protect the integrity of audit information and audit tools.' },
+      'SR-4': { title: 'Provenance', quote: 'Document, monitor, and maintain valid provenance of the following systems, system components, and associated data' },
+      'CM-6': { title: 'Configuration Settings', quote: 'Establish and document configuration settings for components employed within the system that reflect the most restrictive mode consistent with operational requirements' },
     },
     // SA-11(1) is the control this entire tool answers. Mapping it per rule would be padding.
     documentLevel: ['SA-11(1)'],
@@ -305,6 +328,23 @@ const FRAMEWORKS = {
       'recon-production-name-outside-production': 'No control in SP 800-53 covers the disclosure of internal system naming in source. CM-8 is about maintaining an inventory, not about where its contents appear; SC-7 is about interfaces. Mapping to either would be a near miss.',
       'recon-routable-address-committed': 'As above. The nearest control, SC-7, governs the interface rather than the disclosure of its address in a repository.',
     },
+    // Evidence the tools write about their own runs, not a finding: what an assessor can show
+    // for the controls on audit records and provenance.
+    perEvidence: {
+      'journal-records': 'AU-3',
+      'journal-chain': 'AU-9(3)',
+      'provenance': 'SR-4',
+      'options-in-force': 'CM-6',
+    },
+    evidenceFrame: {
+      'AU-3': 'Each record establishes what kind of event occurred, when, where and with what outcome, which is the content this control requires of an audit record.',
+      'AU-9(3)': 'That is a cryptographic mechanism over the audit records, through which a change to one after it was written is detected, which is the integrity this enhancement requires.',
+      'SR-4': 'That documents the provenance of the output, the sources it came from and the tool that made it, which this control requires be kept valid.',
+      'CM-6': 'That documents the configuration settings in force for each compile and run, against which the settings an organisation established can be checked.',
+    },
+    unmappedEvidence: {
+      'assumptions-register': 'The register records how a compiler resolves what its language leaves open. SA-5 asks for administrator documentation of secure configuration and use, and CM-6 for settings an organisation chooses; neither is about an implementation\'s own design choices, and mapping to either would be a near miss.',
+    },
   },
 };
 
@@ -319,6 +359,7 @@ const NIST_TO_COBIT = {
   'IA-5(1)': 'DSS05.02', 'SC-7': 'DSS05.02', 'SC-8': 'DSS05.02',
   'SI-2': 'DSS05.07', 'CM-8': 'BAI09.01', 'CM-3': 'BAI06.01',
   'SI-11': 'DSS06.06', 'SA-3(2)': 'BAI07.04', 'SC-13': 'DSS06.06',
+  'AU-3': 'DSS06.05', 'AU-9(3)': 'DSS06.05', 'SR-4': 'DSS06.05', 'CM-6': 'BAI10.04',
 };
 const toCobit = (table) => Object.fromEntries(Object.entries(table).map(([k, c]) => [k, NIST_TO_COBIT[c]]));
 FRAMEWORKS.cobit2019 = {
@@ -345,6 +386,14 @@ FRAMEWORKS.cobit2019 = {
     'BAI06.01': 'That is a change whose impact has to be assessed before it is authorised, which this practice requires.',
     'DSS06.06': 'That is information released to people it was never meant for, which this practice requires be secured.',
     'BAI07.04': 'That is live data put to use outside production, where the test environment this practice requires should not reach it.',
+  },
+  perEvidence: toCobit(FRAMEWORKS.nist80053.perEvidence),
+  evidenceFrame: {
+    'DSS06.05': 'That makes the events of a run traceable afterwards, to what ran, on what and with what result, which this practice requires of information events.',
+    'BAI10.04': 'That reports the configuration each compile and run used, which this practice requires be produced.',
+  },
+  unmappedEvidence: {
+    'assumptions-register': 'No COBIT 2019 practice is about how a compiler resolves what its language leaves open, for the reason NIST declines it.',
   },
   unmapped: {
     'recon-production-name-outside-production': 'No COBIT 2019 practice is about disclosing internal system names in source. DSS06.06 secures information assets in general, and mapping to it would be the same near miss NIST declines.',
@@ -386,19 +435,39 @@ for (const key of Object.keys(FRAMEWORKS)) {
     });
   }
 
+  const evidence = [];
+  const unmappedEvidence = [];
+  for (const e of EVIDENCE.values()) {
+    if (F.unmappedEvidence[e.id]) { unmappedEvidence.push({ evidenceId: e.id, why: F.unmappedEvidence[e.id] }); continue; }
+    const clause = F.perEvidence[e.id];
+    if (!clause) { unmappedEvidence.push({ evidenceId: e.id, why: 'no clause decided for this evidence' }); continue; }
+    const c = F.clauses[clause];
+    if (!c) { console.error(`${key}: evidence ${e.id} maps to ${clause}, which is not declared`); anyBad++; continue; }
+    evidence.push({
+      kind: 'evidence',
+      evidenceId: e.id,
+      tools: e.tools,
+      framework: F.id,
+      clause: F.prefix + clause,
+      ...(F.idsOnly ? {} : { title: c.title }),
+      rationale: `The evidence is ${e.text}. ${F.evidenceFrame[clause]}`,
+      source: F.idsOnly ? { doc: F.doc, retrieved: RETRIEVED, idsOnly: true } : { doc: F.doc, retrieved: RETRIEVED, quote: c.quote },
+    });
+  }
+
   // A clause declared and never used is the shape of a mapping intended and then forgotten - it
   // happened once with the channel sinks, which sat under the wrong clause while the one written
   // for them went unused. Declaring one now costs a failure, not a silence.
-  const used = new Set([...rows.map((r) => r.clause.replace(F.prefix, '')), ...F.documentLevel]);
+  const used = new Set([...rows, ...evidence].map((r) => r.clause.replace(F.prefix, '')).concat(F.documentLevel));
   const orphans = Object.keys(F.clauses).filter((c) => !used.has(c));
   if (orphans.length) { console.error(`${key}: clause(s) declared but mapped to nothing: ${orphans.join(', ')}`); anyBad++; continue; }
 
   let bad = 0;
-  for (const row of rows) {
+  for (const row of [...rows, ...evidence]) {
     const problems = F.idsOnly
       ? (COBIT_OBJECTIVE.test(row.clause) ? [] : [`${row.clause} is not a COBIT 2019 objective or practice identifier`])
       : verifyRow(row, { sourcesDir: SOURCES });
-    if (problems.length) { bad++; console.error(`${key}: REJECTED ${row.ruleId}: ${problems.join('; ')}`); }
+    if (problems.length) { bad++; console.error(`${key}: REJECTED ${row.ruleId || row.evidenceId}: ${problems.join('; ')}`); }
   }
 
   const byClause = {};
@@ -406,6 +475,8 @@ for (const key of Object.keys(FRAMEWORKS)) {
   console.log(`\n${key} (${F.instrument}): ${rows.length} rows, ${rows.length - bad} pass the gate, ${unmapped.length} deliberately unmapped`);
   for (const [c, n] of Object.entries(byClause).sort()) console.log(`  ${c.padEnd(20)} ${n}`);
   for (const u of unmapped) console.log(`  unmapped: ${u.ruleId}`);
+  for (const r of evidence) console.log(`  evidence ${r.evidenceId.padEnd(21)} ${r.clause}`);
+  for (const u of unmappedEvidence) console.log(`  evidence unmapped: ${u.evidenceId}`);
 
   if (bad) { anyBad += bad; continue; }
 
@@ -425,6 +496,9 @@ for (const key of Object.keys(FRAMEWORKS)) {
       // reader to assume it has none.
       unmapped,
       rows,
+      // The tools' own evidence, each kind with the clause it answers or the reason none does.
+      evidence,
+      unmappedEvidence,
     };
     writeFileSync(join(HERE, '..', 'rules', F.out), JSON.stringify(doc, null, 1) + '\n');
     console.log(`  wrote rules/${F.out}`);

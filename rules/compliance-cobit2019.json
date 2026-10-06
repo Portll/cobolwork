@@ -2794,5 +2794,76 @@
     "idsOnly": true
    }
   }
+ ],
+ "evidence": [
+  {
+   "kind": "evidence",
+   "evidenceId": "journal-records",
+   "tools": [
+    "cobolwork",
+    "ironwork"
+   ],
+   "framework": "cobit-2019",
+   "clause": "DSS06.05",
+   "rationale": "The evidence is a run journal's records, one per event: what ran and with which arguments, the inputs and DD files it read, the programs it called, where data left it, and how and when it ended. That makes the events of a run traceable afterwards, to what ran, on what and with what result, which this practice requires of information events.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "evidence",
+   "evidenceId": "journal-chain",
+   "tools": [
+    "cobolwork",
+    "ironwork"
+   ],
+   "framework": "cobit-2019",
+   "clause": "DSS06.05",
+   "rationale": "The evidence is the SHA-256 chain through each run journal and the ledger that names every run, which `cobolwork evidence verify` recomputes, so a record changed, removed or reordered after it was written is found. That makes the events of a run traceable afterwards, to what ran, on what and with what result, which this practice requires of information events.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "evidence",
+   "evidenceId": "provenance",
+   "tools": [
+    "cobolwork",
+    "ironwork"
+   ],
+   "framework": "cobit-2019",
+   "clause": "DSS06.05",
+   "rationale": "The evidence is the in-toto SLSA provenance statement of a run, naming its output and the sources it was built from by digest, the tool, and the tip of its journal. That makes the events of a run traceable afterwards, to what ran, on what and with what result, which this practice requires of information events.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "evidence",
+   "evidenceId": "options-in-force",
+   "tools": [
+    "ironwork"
+   ],
+   "framework": "cobit-2019",
+   "clause": "BAI10.04",
+   "rationale": "The evidence is the options a compile or run used, its compliance level and dialect among them, in the provenance statement's optionsInForce and the journal's open record. That reports the configuration each compile and run used, which this practice requires be produced.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  }
+ ],
+ "unmappedEvidence": [
+  {
+   "evidenceId": "assumptions-register",
+   "why": "No COBIT 2019 practice is about how a compiler resolves what its language leaves open, for the reason NIST declines it."
+  }
  ]
 }

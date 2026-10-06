@@ -91,6 +91,35 @@
    ],
    "description": "verify: the exit status the command ends with."
   },
+  "compliance": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "evidenceId",
+     "framework",
+     "clause"
+    ],
+    "properties": {
+     "evidenceId": {
+      "enum": [
+       "journal-records",
+       "journal-chain"
+      ]
+     },
+     "framework": {
+      "type": "string"
+     },
+     "clause": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     }
+    }
+   },
+   "description": "verify: each framework clause the verified evidence answers (rules/compliance-*.json evidence): journal-records when a run journal is present, journal-chain when the chain verifies too."
+  },
   "seq": {
    "type": "integer",
    "minimum": 0,

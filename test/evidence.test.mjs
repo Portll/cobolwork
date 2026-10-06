@@ -477,6 +477,30 @@ test('V3.9 No witness leaves sealed null and the exit status 3', (t) => {
   assert.equal(v.exit, 3);
 });
 
+test('V3.10 Verify names the clauses a run journal and its chain answer', (t) => {
+  const d = tmp(t);
+  run(d);
+  const r = cli(['evidence', 'verify', '--evidence', d]);
+  const answered = JSON.parse(r.stdout).compliance.map((c) => `${c.evidenceId} ${c.framework} ${c.clause}`);
+  assert.deepEqual(answered, [
+    'journal-records nist-800-53r5 AU-3',
+    'journal-records cobit-2019 DSS06.05',
+    'journal-chain nist-800-53r5 AU-9(3)',
+    'journal-chain cobit-2019 DSS06.05',
+  ]);
+});
+
+test('V3.11 A broken chain answers no clause for the chain', (t) => {
+  const d = tmp(t);
+  const j = run(d);
+  const lines = readLines(j.path).lines;
+  const i = lines.findIndex((l) => JSON.parse(l).kind === 'finding');
+  lines[i] = canonical({ ...JSON.parse(lines[i]), line: 11 });
+  writeFileSync(j.path, `${lines.join('\n')}\n`);
+  const r = cli(['evidence', 'verify', '--evidence', d]);
+  assert.deepEqual([...new Set(JSON.parse(r.stdout).compliance.map((c) => c.evidenceId))], ['journal-records']);
+});
+
 // V4 - Seals and signatures
 
 test('V4.1 A seal is an in-toto statement over the ledger tip in a DSSE envelope', (t) => {

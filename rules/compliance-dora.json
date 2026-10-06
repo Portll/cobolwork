@@ -3044,5 +3044,28 @@
     "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
    }
   }
+ ],
+ "evidence": [],
+ "unmappedEvidence": [
+  {
+   "evidenceId": "journal-records",
+   "why": "The Regulation places no obligation to record a program's runs. Article 11(8) asks for records of activities during a disruption, which a run journal is not, and its logging requirements sit in delegated acts this mapping does not read."
+  },
+  {
+   "evidenceId": "journal-chain",
+   "why": "As above: with no record-keeping obligation for runs, there is nothing whose integrity the chain evidences."
+  },
+  {
+   "evidenceId": "provenance",
+   "why": "No article of the Regulation asks for the provenance of a program's output. Article 8(4) maps the configuration of assets and their interdependencies, not where one run's output came from."
+  },
+  {
+   "evidenceId": "options-in-force",
+   "why": "Article 9(4)(e) asks for documented policies for ICT change management, not for the settings a single run used. Mapping to it would be a near miss."
+  },
+  {
+   "evidenceId": "assumptions-register",
+   "why": "No article concerns how a compiler resolves what its language leaves open."
+  }
  ]
 }

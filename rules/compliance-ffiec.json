@@ -3027,5 +3027,28 @@
     "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
    }
   }
+ ],
+ "evidence": [],
+ "unmappedEvidence": [
+  {
+   "evidenceId": "journal-records",
+   "why": "None of the sections fetched from the three booklets concerns logging. The Information Security booklet's treatment of logs has to be fetched by hand before a run journal can be mapped to it."
+  },
+  {
+   "evidenceId": "journal-chain",
+   "why": "None of the sections fetched concerns protecting logs from change; the Information Security booklet has to be fetched by hand first."
+  },
+  {
+   "evidenceId": "provenance",
+   "why": "None of the sections fetched concerns the provenance of an output. DA&M IV inventories components, not where one run's output came from."
+  },
+  {
+   "evidenceId": "options-in-force",
+   "why": "None of the sections fetched concerns recording the settings a run used."
+  },
+  {
+   "evidenceId": "assumptions-register",
+   "why": "No booklet concerns how a compiler resolves what its language leaves open."
+  }
  ]
 }

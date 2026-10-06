@@ -27,6 +27,17 @@ function credentialRules() {
 export const CATALOGUE = new Map([...TABLES, ['credential', credentialRules()]]
   .flatMap(([set, t]) => Object.entries(t).map(([id, r]) => [id, { ...r, set, id }])));
 
+// What the two tools' evidence holds, for the compliance mapping (diag/map-compliance.mjs): the
+// run journal and its chain are one format both write and `evidence verify` reads; the options in
+// force and the assumptions register are ironwork's alone.
+export const EVIDENCE = new Map([
+  { id: 'journal-records', tools: ['cobolwork', 'ironwork'], text: "a run journal's records, one per event: what ran and with which arguments, the inputs and DD files it read, the programs it called, where data left it, and how and when it ended" },
+  { id: 'journal-chain', tools: ['cobolwork', 'ironwork'], text: 'the SHA-256 chain through each run journal and the ledger that names every run, which `cobolwork evidence verify` recomputes, so a record changed, removed or reordered after it was written is found' },
+  { id: 'provenance', tools: ['cobolwork', 'ironwork'], text: 'the in-toto SLSA provenance statement of a run, naming its output and the sources it was built from by digest, the tool, and the tip of its journal' },
+  { id: 'options-in-force', tools: ['ironwork'], text: "the options a compile or run used, its compliance level and dialect among them, in the provenance statement's optionsInForce and the journal's open record" },
+  { id: 'assumptions-register', tools: ['ironwork'], text: "ironwork's assumptions register: for each behaviour the language leaves to the implementation, the choice made, its basis and the oracle that checks it" },
+].map((e) => [e.id, e]));
+
 export const setsOf = () => {
   const counts = new Map();
   for (const r of CATALOGUE.values()) counts.set(r.set, (counts.get(r.set) || 0) + 1);

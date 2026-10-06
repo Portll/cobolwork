@@ -225,6 +225,17 @@ The verdict reports these separately and never merges them:
 | `witnessCommit` | The commit the git witness's ref resolved to, for the next verification's `--anchor-pin`. |
 | `timeStamp`, `transparencyLog` | The seal an RFC 3161 response or a cosign bundle names, with the response's `genTime`, or whether the log entry was checked. |
 | `signatures` | Per seal: `keyid`, principal matched in allowed signers, `valid`. |
+| `compliance` | Each framework clause the evidence answers, from the `evidence` rows of `rules/compliance-*.json`: `journal-records` when a run journal is present, and `journal-chain` too when `verified`. |
+
+Each `rules/compliance-*.json` holds, besides its rule rows, an `evidence` row for each kind of
+evidence the two tools write that a clause of the framework covers, and an `unmappedEvidence` entry
+with the reason for each it declines (`diag/map-compliance.mjs`, `feed/catalogue.mjs` `EVIDENCE`).
+NIST SP 800-53 takes a run journal's records under AU-3, the chain under AU-9(3), the provenance
+statement under SR-4 and ironwork's options in force under CM-6; COBIT 2019 follows NIST at the
+control (DSS06.05, and BAI10.04 for the options). DORA and the three FFIEC booklets read here hold
+no clause on keeping or protecting a program's run records, and decline each. No framework covers
+ironwork's assumptions register. `compliance` in the verdict names only what verify checked: the
+journal and its chain. Provenance and the options in force are the statement's (§10).
 
 SSHSIG verification (`ssh-ed25519`, `ecdsa-sha2-nistp256`) is done here with `node:crypto`
 against an OpenSSH `allowed_signers` file, honouring a line's `namespaces=` option. Any other key
@@ -590,6 +601,14 @@ is listed in `abendRunsElsewhere` instead of reported.
 
 #### V3.9 No witness leaves sealed null and the exit status 3
     Then  sealed is null with a reason, and the exit status is 3
+
+#### V3.10 Verify names the clauses a run journal and its chain answer
+    Given an evidence directory with one closed run
+    Then  compliance names AU-3 and DSS06.05 for journal-records, and AU-9(3) and DSS06.05 for journal-chain
+
+#### V3.11 A broken chain answers no clause for the chain
+    Given a run journal with an edited record
+    Then  compliance names journal-records only
 
 ### V4 - Seals and signatures
 

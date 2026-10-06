@@ -149,6 +149,9 @@ test('the abend code and IBM message id choose the rule', () => {
   assert.equal(abendRule({ code: 'U4038', message: 'IGZ0007S The length of group WS-T exceeded its maximum' }), 'input-causes-abend-subscript-range');
   assert.equal(abendRule({ code: 'U4038', message: 'subscript out of range (SSRANGE)' }), 'input-causes-abend');
   assert.equal(abendRule({ code: 'S0CB' }), 'input-causes-abend');
+  assert.equal(abendRule({ code: 'U4038', message: 'CEE3501S The module @#$@#$ was not found.' }), 'input-selects-program');
+  assert.equal(abendRule({ code: 'S806', message: 'CALL X: no such program in the run unit or its program libraries' }), 'input-selects-program');
+  assert.equal(abendRule({ code: 'U4038', message: 'IGZ0035S There was an unsuccessful OPEN or CLOSE of file F in program P.' }), 'input-causes-abend');
 });
 
 test('an abend says whether the same input gives it compiled with OPTIMIZE(2), and its rule stays', () => {

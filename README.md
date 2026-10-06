@@ -227,7 +227,7 @@ entered ([docs/spec/evidence.md](docs/spec/evidence.md) §13.5).
 finding at the line it happened, with the input and the run's journal, once that journal verifies:
 `input-causes-abend-s0c7`, `-s0c4` (in a CICS task, the ASRA whose message names that check),
 `-subscript-range`, `input-causes-hang` for an input that keeps a loop running past the statement limit (S322), `input-selects-program`
-for an S806 whose journal shows the input reaching the CALL, or `input-causes-abend` for any other
+for a CALL of a missing program (U4038 with CEE3501S, or S806 from earlier ironwork releases) whose journal shows the input reaching the CALL, or `input-causes-abend` for any other
 code ([docs/spec/evidence.md](docs/spec/evidence.md) §13.6). It reads manifests in format
 `ironwork-fuzz/v1`, and `ironwork-fuzz-interface/v1` from a subprogram fuzzed with generated
 arguments, whose findings say no caller run shows a caller passes them and warn by default; it

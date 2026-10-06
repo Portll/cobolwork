@@ -106,3 +106,8 @@ test('LOAD and ATTACH read their list and execute forms and authorized keywords,
   assert.equal(parse('         LINK  SF=(E,LP),MF=(E,CP),PARAM=(,,(3)),VL=1').status, 'parsed');
   assert.match(parse('         LINK  EP=X,PARAM=(,A)').reason, /invalid PARAM address/);
 });
+
+test('a list form may leave keyword values for its execute form', () => {
+  assert.equal(parse('LOADL    LOAD  EPLOC=,DCB=,LSEARCH=,SF=L').status, 'parsed');
+  assert.match(parse('         LOAD  EPLOC=,DCB=').reason, /missing EP, EPLOC, or DE|invalid/);
+});

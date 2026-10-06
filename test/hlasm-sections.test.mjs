@@ -11,9 +11,9 @@ test('CSECT parses with and without a name', () => {
   assert.equal(parse('LAB401   CSECT                    Back to our CSECT').node.name, 'LAB401');
 });
 
-test('DSECT requires a name', () => {
+test('DSECT takes a name, or none for an unnamed dummy section', () => {
   assert.deepEqual(parse('DFHEISTG DSECT').node, { kind: 'DSECT', name: 'DFHEISTG' });
-  assert.equal(parse('         DSECT').status, 'unparsed');
+  assert.equal(parse('         DSECT').status, 'parsed');
 });
 
 test('RSECT and COM parse with and without a name', () => {

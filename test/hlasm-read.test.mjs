@@ -166,3 +166,14 @@ test('an explicit length larger than its length field holds is refused', () => {
   assert.equal(parse("         MVC   0(X'100',R1),FIELD").status, 'parsed');
   assert.equal(parse('         MVC   0(LEN,R1),FIELD').status, 'parsed');
 });
+
+test('an unnamed DSECT is read, and an attribute reference split across a continuation keeps the remarks out', () => {
+  assert.equal(parseHlasmStatement(readHlasmStatements('         DSECT').statements[0]).status, 'parsed');
+  const card = (text, more = false) => (more ? `${text.padEnd(71)}+` : text);
+  const first = "         MVC   UCB_List_Ent_UCB-UCB_List_Ent(L'UCB_List_Ent_UCB,R4),=(L";
+  assert.equal(first.length, 71);
+  const src = [card(first, true), card("               'UCB_List_Ent_UCB)C'*'   Initialize field")].join('\n');
+  const [st] = readHlasmStatements(src).statements;
+  assert.equal(st.field, "UCB_List_Ent_UCB-UCB_List_Ent(L'UCB_List_Ent_UCB,R4),=(L'UCB_List_Ent_UCB)C'*'");
+  assert.equal(parseHlasmStatement(st).status, 'parsed');
+});

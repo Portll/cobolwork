@@ -5,7 +5,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync, readFileSyn
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { buildFileIndex, parseSource } from '../lib/parser.mjs';
-import { decodeEbcdic, looksEbcdic, readSource, relPath, inScope } from '../lib/sources.mjs';
+import { decodeEbcdic, decodeSource, looksEbcdic, readSource, relPath, inScope } from '../lib/sources.mjs';
 import { scanAll } from '../lib/scan.mjs';
 import { inventory } from '../lib/inventory.mjs';
 import { diffRefs } from '../lib/diff.mjs';
@@ -51,6 +51,18 @@ test('an EBCDIC member of fixed records stays in its records when a constant hol
   assert.equal(lines[1].slice(9, 20), "DC    C' B'");
   const text = Buffer.from(['A', 'B'].map((l) => [...l].map((c) => A2E[c])).flatMap((r) => [...r, 0x15]));
   assert.deepEqual(decodeEbcdic(text).split('\n').filter(Boolean), ['A', 'B']);
+});
+
+test('a UTF-8 file is read a character to a column, and a byte that is not UTF-8 stays one character', () => {
+  const line = `${"         DC    X'00'    \u00a2.<(+|".padEnd(72)}CFK*JAN02`;
+  const utf8 = decodeSource(Buffer.from(line, 'utf8'));
+  assert.equal(utf8.encoding, 'utf-8');
+  assert.equal(utf8.text.indexOf('CFK'), 72);
+  assert.equal(Buffer.from(line, 'utf8').toString('latin1').indexOf('CFK'), 73, 'read a byte at a time, the ident moves into column 74');
+  const latin1 = decodeSource(Buffer.from([0x41, 0xac, 0x42]));
+  assert.equal(latin1.encoding, 'latin1');
+  assert.equal(latin1.text, 'A\u00acB');
+  assert.equal(decodeSource(Buffer.from('PLAIN')).encoding, 'latin1');
 });
 
 test('symlinks are followed inside the tree, counted and not followed outside it, and a loop is walked once', () => {

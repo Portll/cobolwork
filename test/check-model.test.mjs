@@ -134,6 +134,12 @@ test('an XCTL with RESP can come back; one without cannot', () => {
   assert.deepEqual(found('XCTLDONE.cbl').map((f) => [f.rule, f.sev, f.unreached]), [['cics-terminal-to-subscript', 'info', true]]);
 });
 
+test('a bound holds across a CICS command that is given the index, and not across one that fills it', () => {
+  assert.deepEqual(found('CICSREADS.cbl'), []);
+  assert.equal(stopped('CICSREADS.cbl')[0].rule, 'cics-terminal-to-subscript');
+  assert.deepEqual(found('CICSFILLS.cbl').map((f) => [f.rule, f.line]), [['cics-terminal-to-subscript', 18]]);
+});
+
 // Every way into code the graph once lacked, each found by reading the branch adversarially.
 test('code a run can reach is never called unreached', () => {
   const cases = {

@@ -8,7 +8,7 @@ baseline-write	journal	added removed who expires reasonSha256 path sha256	added 
 witness	journal	fingerprint outcome who when system sourceSha256	fingerprint outcome
 verdict	journal	verdict checks relaxed exit	verdict
 output	journal	name sha256 bytes path stdout	name sha256
-close	journal	exit counts durationMs ledger	exit
+close	journal	exit counts durationMs ledger executor	exit
 dd	journal	dd event mode sha256 bytes	dd event
 call	journal	program from sha256	program
 abend	journal	code file line	code

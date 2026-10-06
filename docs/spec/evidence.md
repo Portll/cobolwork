@@ -103,7 +103,7 @@ Every record is one JSON object on one line, UTF-8, `\n`-terminated:
 | `witness` | `fingerprint`, `outcome`, `who`, `when`, `system`, `sourceSha256` | once per witness entry applied |
 | `verdict` | `verdict`, `checks`, `relaxed`, `exit` | build and gate |
 | `output` | `name` (`report`, `sarif`, `provenance`, `sbom`, `baseline`), `sha256`, `bytes`, `path` or `stdout` | once per document written |
-| `close` | `exit` (in an ironwork run journal, the program's RETURN-CODE, negative included), `counts` (`input`, `finding`, `suppressed`, ...), `durationMs`, `ledger` | last |
+| `close` | `exit` (in an ironwork run journal, the program's RETURN-CODE, negative included), `counts` (`input`, `finding`, `suppressed`, ...), `durationMs`, `ledger`, `executor` (in an ironwork run journal, `vm` or `interpreter`: which ran the program) | last |
 
 ironwork writes its run journal in this format (ironwork `crates/rt/src/evidence.rs`), with `tool`
 `ironwork` and kinds of its own, so `evidence verify` reads both tools' journals:

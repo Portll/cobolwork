@@ -74,3 +74,11 @@ test('copies of a caller and its callee each report under their own paths', () =
   assert.deepEqual(traceOf(both, 'a'), traceOf(alone, 'a'));
   assert.deepEqual(traceOf(both, 'b'), traceOf(alone, 'a').map((s) => s.replace(/^a\//, 'b/')));
 });
+
+test('copies of a program with no procedure division are counted as its first is, not as unordered', () => {
+  const DATA_ONLY = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. P3.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
+    '       01 WS-X             PIC X(8).', ''].join('\n');
+  const root = tree({ 'a/P1.cbl': CALLER, 'a/P3.cbl': DATA_ONLY, 'b/P3.cbl': DATA_ONLY, 'c/P3.cbl': DATA_ONLY });
+  const unordered = (r) => r.summary.programsUnordered || 0;
+  assert.equal(unordered(withVerify(() => scan(root, { reuseMinBytes: 0, controlWorkers: 0 }))), unordered(scan(root, { reuseMinBytes: Infinity, controlWorkers: 0 })));
+});

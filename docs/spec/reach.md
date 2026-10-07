@@ -291,7 +291,10 @@ unmatched only where no repository's finding carries it.
 Labels are made by machine, execution first. `bench/label.mjs` runs each path finding's
 verification plan (§9.7) in ironwork. The marker goes in at the finding's source:
 - a batch program reading a file's records or a job's in-stream data: every DD it assigns, and
-  SYSIN, with the records shifted through the marker's eight alignments;
+  SYSIN, with the records shifted through the marker's eight alignments, each as long as its file's
+  fixed record. A DD is named as ASSIGN writes it and as IBM reads it, after the label (`UT-S-`,
+  `DA-`). An indexed or relative file is empty unless it is the finding's source, whose records
+  then carry the keys 1, 2 and 3 at the record key, in order (operator 2026-10-07);
 - a RECEIVE MAP: typed into the map's unprotected fields, across the pseudo-conversation the
   program's RETURN TRANSID starts;
 - a RECEIVE without a map: typed on a cleared screen after the transaction's name;
@@ -323,7 +326,10 @@ A subscript, reference modification, loop bound or `OCCURS DEPENDING` count need
 range abend, U4038, where nines went in, with ones as the control. That run is of a copy with a
 `CBL SSRANGE` card before its first line. A program ironwork refuses for a PICTURE of more than 18
 digits runs as a copy with `CBL ARITH(EXTEND)`, the only option it compiles under.
-Anything else is unknown, with its reason. A run that did not carry the marker to the operation
+Anything else is unknown, with its reason. A run that called an assembler program the repository
+holds names it, and one that ended with a data exception on a WORKING-STORAGE item with no VALUE
+names the item: ironwork runs no assembler and leaves storage without a VALUE as IBM does, and the
+labeller supplies no stub and no initial value (operator 2026-10-07). A run that did not carry the marker to the operation
 shows only that these inputs did not, so refuting a finding needs every route to its sink covered
 (§9.8).
 `bench/seed.mjs` adds planted labels: a flaw or a near-miss put into a real program, labelled by

@@ -18,7 +18,7 @@
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { parseBms } from '../lib/bms.mjs';
 import { kindsOf } from '../lib/consequence.mjs';
 import { stampFingerprints } from '../lib/kernel/identity.mjs';
@@ -26,7 +26,7 @@ import { stoppedBecause } from '../lib/kernel/memory.mjs';
 import { directoryTree } from '../lib/kernel/source-tree.mjs';
 import { buildFileIndex, parseFile } from '../lib/parser.mjs';
 import { scan as scanFlow } from '../lib/sets/flow.mjs';
-import { isProgram, readSource } from '../lib/sources.mjs';
+import { isAssembler, isProgram, readSource } from '../lib/sources.mjs';
 import { MARKER } from '../lib/verify.mjs';
 import { RUN_ENDINGS } from '../lib/ironwork-ids.mjs';
 
@@ -79,12 +79,14 @@ const RECORDS = 3;
 // field of eight bytes or more holds the whole marker in one of them.
 export const shifted = (shift) => (MARKER.repeat(Math.ceil(RECORD / MARKER.length) + 1)).slice(shift, shift + RECORD);
 
-// The DD names a SELECT's ASSIGN can mean: as written, and without IBM's class prefix (UT-S-, S-).
+// The DD names a SELECT's ASSIGN can mean: as written, which is how ironwork looked it up before it
+// read IBM's label prefix, and the name after IBM's label and organization (UT-S-, DA-, AS-),
+// which documents the device and is not part of the DD name.
 function ddNames(assign) {
   if (!assign?.v || assign.t !== 'word' && assign.t !== 'string') return [];
   const name = String(assign.v).toUpperCase();
-  const bare = name.replace(/^(?:[A-Z]{2}-)?[A-Z]-(?=[A-Z0-9@#$])/, '');
-  return [...new Set([name, bare])].filter((n) => /^[A-Z0-9@#$-]{1,8}$/.test(n));
+  const bare = name.slice(name.lastIndexOf('-') + 1);
+  return [...new Set([name, bare])].filter((n) => /^[A-Z0-9@#$-]{1,44}$/.test(n) && (n === name || /^[A-Z@#$][A-Z0-9@#$]{0,7}$/.test(n)));
 }
 
 // The inputs to try: the marker at each of the eight shifts, or the input an abend's witness needs.
@@ -99,20 +101,46 @@ const FED_BY_DD = new Set(['file-record', 'jcl-instream']);
 // Every DD the program assigns, and SYSIN, holding each fill. A DD's records are as long as its
 // file's fixed record: a longer line is a length conflict (FILE STATUS 04), which a program that
 // checks its status takes as a fatal error before it reaches anything it does with the record.
-function fileRecordVariants(program, byAbend) {
-  const programs = parseFile(program).programs;
-  const lengthOf = new Map();
+// An indexed or relative file is empty unless it is the finding's source, whose records then have
+// distinct ascending keys at the record key, as a REPRO unload holds them (operator 2026-10-07).
+function fileRecordVariants(program, byAbend, { copyDirs = [], sourceFile = null } = {}) {
+  const programs = parseFile(program, { includeDirs: copyDirs }).programs;
+  const shapes = new Map();
   for (const p of programs) {
     for (const f of p.files || []) {
       const fd = (p.fds || []).find((d) => d.name === f.name);
-      const length = fd?.fixedLength || null;
-      for (const dd of ddNames(f.assign)) if (length && !lengthOf.has(dd)) lengthOf.set(dd, length);
+      const words = (f.envRefs || []).map((t) => t.u);
+      const keyed = words.includes('INDEXED') || words.includes('RELATIVE');
+      const at = words.findIndex((w, i) => w === 'KEY' && words[i - 1] === 'RECORD');
+      const keyName = at >= 0 ? words[at + (words[at + 1] === 'IS' ? 2 : 1)] : null;
+      const key = keyName ? p.items.find((it) => it.name === keyName && it.offset != null && it.size) : null;
+      const recordOf = key ? (it) => { let top = it; while (top.parent) top = top.parent; return top; } : null;
+      const shape = {
+        length: fd?.fixedLength || (keyed ? fd?.size : null) || null,
+        keyed,
+        source: sourceFile === f.name,
+        key: key ? { offset: key.offset - (recordOf(key).offset || 0), size: key.size } : null,
+      };
+      for (const dd of ddNames(f.assign)) if (!shapes.has(dd)) shapes.set(dd, shape);
     }
   }
+  const unplaced = [...shapes.values()].find((x) => x.keyed && x.source && !x.key);
+  if (unplaced) return { why: 'the finding\'s source is an indexed file whose record key the labeller cannot place' };
   const dds = [...new Set([...programs.flatMap((p) => p.files || []).flatMap((x) => ddNames(x.assign)), 'SYSIN'])];
+  const recordsFor = (shape, record) => {
+    const length = shape?.length || RECORD;
+    if (shape?.keyed && !shape.source) return [];
+    if (!shape?.keyed) return Array(RECORDS).fill(record(length));
+    return Array.from({ length: RECORDS }, (_, n) => {
+      const text = record(length).padEnd(length, ' ');
+      const key = String(n + 1).padStart(shape.key.size, '0').slice(-shape.key.size);
+      return text.slice(0, shape.key.offset) + key + text.slice(shape.key.offset + shape.key.size);
+    });
+  };
   const holding = (record) => (dir) => ['run', program, ...dds.flatMap((dd) => {
     const path = join(dir, dd);
-    writeFileSync(path, `${Array(RECORDS).fill(record(lengthOf.get(dd) || RECORD)).join('\n')}\n`);
+    const lines = recordsFor(shapes.get(dd), record);
+    writeFileSync(path, lines.length ? `${lines.join('\n')}\n` : '');
     return ['--dd', `${dd}=${path}:text`];
   })];
   const control = { name: 'records of the control', args: holding((n) => controlOf(byAbend).repeat(n)) };
@@ -321,6 +349,40 @@ const IRONWORK_ENDED = {
   internal: 'failed',
 };
 
+// A run that ended at a CALL no library could resolve: an assembler program the repository holds,
+// which ironwork does not run, or a program it does not hold at all (operator 2026-10-07: named,
+// never stubbed).
+function calledAway(stderr, ctx) {
+  const m = /CALL (\S+): IEW2456E SYMBOL \S+ UNRESOLVED/.exec(String(stderr || ''));
+  if (!m) return null;
+  const asm = ctx.assemblers?.get(m[1].toUpperCase());
+  return asm ? `the run called ${m[1]}, an assembler program (${asm}) ironwork does not run` : `the run called ${m[1]}, which no program library holds`;
+}
+
+const DATA_EXCEPTION = new Set(['S0C7', 'ASRA']);
+
+// The numeric WORKING-STORAGE items with no VALUE that the statement at `line` of `file` uses: a
+// data exception there is the program's own uninitialised storage, which ironwork leaves as IBM
+// does (operator 2026-10-07: named, never zeroed).
+function withoutValue(file, line, ctx) {
+  const path = [ctx.program, ...ctx.programDirs.map((d) => join(d, basename(file)))].find((p) => basename(p) === basename(file));
+  if (!path) return [];
+  ctx.parsed ||= new Map();
+  if (!ctx.parsed.has(path)) {
+    try { ctx.parsed.set(path, parseFile(path, { includeDirs: ctx.copyDirs }).programs); } catch { ctx.parsed.set(path, []); }
+  }
+  const names = new Set();
+  for (const p of ctx.parsed.get(path)) {
+    for (const st of p.statements.filter((x) => x.line === line)) {
+      for (const t of [...st.targets, ...st.sources]) {
+        const it = p.items.find((i) => i.name === t.u && i.section === 'WORKING-STORAGE' && i.picture && /9/.test(i.picture) && !(i.values || []).length && !i.redefines);
+        if (it) names.add(it.name);
+      }
+    }
+  }
+  return [...names];
+}
+
 // One run of one input variant, read back from its journal.
 function runVariant(f, ctx, variant) {
   const data = mkdtempSync(join(tmpdir(), 'cobolwork-label-run-'));
@@ -333,9 +395,9 @@ function runVariant(f, ctx, variant) {
     try { journal = journalOf(ctx.evidence); } catch { journal = null; }
     const why = IRONWORK_ENDED[RUN_ENDINGS[r.status]];
     const ended = why && `ironwork ${why} (exit ${r.status})`;
-    if (!journal || journal.run === ctx.runs) return { outcome: ended || `ironwork kept no journal (exit ${r.status})` };
+    if (!journal || journal.run === ctx.runs) return { outcome: calledAway(r.stderr, ctx) || ended || `ironwork kept no journal (exit ${r.status})` };
     ctx.runs = journal.run;
-    if (ended) return { outcome: ended };
+    if (ended) return { outcome: calledAway(r.stderr, ctx) || ended };
     // A record in the program itself names the program; one in a COPY member or a called program
     // names that, and only the program's own lines moved for a staged card.
     const lineOf = (x) => x.line - (!x.file || basename(x.file) === basename(ctx.program) ? variant.lineOffset || 0 : 0);
@@ -350,6 +412,7 @@ function runVariant(f, ctx, variant) {
       ran: true,
       abend: abend ? `${abend.code}${abend.line ? ` at ${abend.file || basename(ctx.program)}:${lineOf(abend)}` : ''}` : null,
       abendAtOperation: atOperation ? abend.code : null,
+      noValue: abend && !atOperation && DATA_EXCEPTION.has(abend.code) ? withoutValue(abend.file || ctx.program, lineOf(abend), ctx) : [],
       assumptions: journal.records.find((x) => x.kind === 'close')?.assumptions || [],
     };
   } finally {
@@ -357,11 +420,25 @@ function runVariant(f, ctx, variant) {
   }
 }
 
+const abendText = (r) => `${r.abend}${r.noValue?.length ? `, where ${r.noValue.join(', ')} ${r.noValue.length > 1 ? 'have' : 'has'} no VALUE` : ''}`;
+
 // The ironwork assumptions a label's runs could have rested on, as their journals' close records
 // name them.
 export function restedOn(...runs) {
   const ids = [...new Set(runs.flatMap((r) => r?.assumptions || []))].sort();
   return ids.length ? { assumptions: ids } : {};
+}
+
+// The file a file-record finding's input is read from: the FD its record belongs to, or the file a
+// READ ... INTO names.
+function sourceFileOf(f, root, program) {
+  const src = (f.related || [])[0];
+  if (!src) return null;
+  const named = /record of file (\S+)/.exec(src.detail || '');
+  if (named) return named[1].toUpperCase();
+  if (!/^READ\b/.test(src.detail || '') || resolve(root, src.path) !== program) return null;
+  const st = parseFile(program).programs.flatMap((p) => p.statements).find((x) => x.verb === 'READ' && x.line === src.line);
+  return st?.sources[0]?.u || null;
 }
 
 export function labelFinding(f, root, opts) {
@@ -385,7 +462,11 @@ export function labelFinding(f, root, opts) {
   const ctx = { ...opts, program, sink: kinds.sink, runs: null, extended };
   let variants;
   try {
-    if (FED_BY_DD.has(kinds.source)) variants = fileRecordVariants(program, byAbend);
+    if (FED_BY_DD.has(kinds.source)) {
+      const planned = fileRecordVariants(program, byAbend, { copyDirs: opts.copyDirs, sourceFile: sourceFileOf(f, root, program) });
+      if (planned.why) return unknown(planned.why);
+      variants = planned;
+    }
     else if (kinds.source === 'argv-or-env') {
       const planned = argvVariants(program, byAbend);
       if (planned.why) return unknown(planned.why);
@@ -423,10 +504,10 @@ export function labelFinding(f, root, opts) {
     }
   }
   const why = byAbend ? (seen.some((r) => r.controlAbended) ? `the run with ${byAbend.controlNamed} abended at the operation too`
-    : seen.find((r) => r.abend) ? `the run did not end at the operation: ABEND ${seen.find((r) => r.abend).abend}`
+    : seen.find((r) => r.abend) ? `the run did not end at the operation: ABEND ${abendText(seen.find((r) => r.abend))}`
       : 'the run did not abend at the operation')
     : seen.some((r) => r.atSink) ? 'the operation ran without the marker in its operand'
-    : seen.find((r) => r.abend) ? `the run ended before the operation: ABEND ${seen.find((r) => r.abend).abend}`
+    : seen.find((r) => r.abend) ? `the run ended before the operation: ABEND ${abendText(seen.find((r) => r.abend))}`
       : 'the run did not reach the operation';
   const atSink = seen.filter((r) => r.atSink);
   return { ...unknown(why), runs: seen.map((r) => r.run), ...restedOn(...seen), ...(opts.traceInput && atSink.length ? { inputAtSink: combined(atSink.map((r) => r.input)) } : {}) };
@@ -463,8 +544,10 @@ export function labelRepository(root, opts) {
   stampFingerprints(findings, { root });
   const { maps, dirs } = mapsOf(root);
   const copyDirs = [...new Set([...buildFileIndex(root).copyDirs, ...dirs])];
-  const programDirs = [...new Set(directoryTree(root).list().filter(isProgram).map((p) => dirname(p)))];
-  const context = { ...opts, copyDirs, programDirs, maps };
+  const listed = directoryTree(root).list();
+  const programDirs = [...new Set(listed.filter(isProgram).map((p) => dirname(p)))];
+  const assemblers = new Map(listed.filter((p) => isAssembler(p)).map((p) => [basename(p).replace(/\.[^.]*$/, '').toUpperCase(), relative(root, p)]));
+  const context = { ...opts, copyDirs, programDirs, maps, assemblers };
   return { labels: findings.filter((f) => f.evidence === 'path' && kindsOf(f.rule)).map((f) => labelFinding(f, root, context)) };
 }
 

@@ -1941,7 +1941,7 @@
    "framework": "nist-800-53r5",
    "clause": "AC-6",
    "title": "Least Privilege",
-   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That is authority granted or exercised beyond what the task requires, which this control exists to prevent.",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero, another system key, or supervisor state. That is authority granted or exercised beyond what the task requires, which this control exists to prevent.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",

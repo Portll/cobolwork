@@ -1941,7 +1941,7 @@
    "framework": "ffiec",
    "clause": "IS II.C.7",
    "title": "User Security Controls",
-   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero, another system key, or supervisor state. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",

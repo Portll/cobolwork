@@ -1932,7 +1932,7 @@
    "framework": "dora",
    "clause": "Article 9(4)(c)",
    "title": "Protection and prevention",
-   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero, another system key, or supervisor state. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

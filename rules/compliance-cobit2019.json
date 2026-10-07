@@ -1791,7 +1791,7 @@
    "ruleId": "hlasm-supervisor-state-change",
    "framework": "cobit-2019",
    "clause": "DSS05.04",
-   "rationale": "The rule reports: Assembler source switches to PSW key zero or supervisor state. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "rationale": "The rule reports: Assembler source switches to PSW key zero, another system key, or supervisor state. That is access or authentication handled outside the managed identity and logical access this practice requires.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",

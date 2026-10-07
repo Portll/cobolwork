@@ -15,6 +15,8 @@ import { KEV } from '../lib/kev.mjs';
 import { compilerTasks } from '../lib/options.mjs';
 import { SHAPE_RULES } from '../lib/sets/secrets.mjs';
 import { picDigits } from '../lib/layout.mjs';
+import { uncheckedStatuses } from '../lib/sets/errors.mjs';
+import { parseSource } from '../lib/parser.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -998,6 +1000,9 @@ test('B8.8 An untested RESP is reported and a command without RESP is not', () =
   assert.deepEqual(resp(respRead('RESP(WS-RESP)')), ['cics-response-unchecked']);
   assert.deepEqual(resp(respRead('NOHANDLE')), ['cics-response-unchecked']);
   assert.deepEqual(resp(respRead('')), []);
+  const unordered = parseSource(respRead('RESP(WS-RESP)'), 'CUSTCICS.cbl').programs[0];
+  unordered.proc = null;
+  assert.equal(uncheckedStatuses(unordered, HERE, 'CUSTCICS.cbl'), null, 'a program whose order cannot be read is not judged');
   assert.deepEqual(resp(program('CUSTCICS', CICS_WS, ["EXEC CICS READ FILE('CUST') INTO(WS-REC) RIDFLD(WS-KEY)", '    RESP(WS-RESP) END-EXEC',
     'IF WS-RESP NOT = DFHRESP(NORMAL)', '    GOBACK', 'END-IF', 'MOVE WS-REC TO WS-OUT', 'GOBACK.'])), []);
 });

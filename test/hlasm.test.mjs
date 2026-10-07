@@ -245,3 +245,39 @@ test('a source macro one program of a batch defines is not the next program\'s',
   const calls = readHlasmStatements(src).statements.filter((s) => s.operation === 'LOCAL' && !s.prototype);
   assert.deepEqual(calls.map((s) => [s.line, !!s.sourceMacro]), [[5, true], [8, false]]);
 });
+
+test('a disassembler\'s listing is counted as a listing, not read as source', () => {
+  const pad = (s, n) => s.padEnd(n);
+  const line = (src, obj, chars, off) => `${pad(src, 39)}${pad(obj, 17)}${pad(chars, 11)}${off}`;
+  const listing = asm(
+    'PACK     CSECT                                                     00000',
+    line('         L     R15,8(R15)', '58FF 0008', '*....*', '00000'),
+    line('         BR    R15', '07FF', '*..*', '00004'),
+    line("         DC    C'ZZ'", 'E9E9', '*ZZ*', '00006'),
+    line('         DC    VL4($A68INIT)', '00000000', '*....*', '00008'),
+    line('         LR    R3,R15', '183F', '*..*', '0000E'),
+  );
+  assert.equal(readHlasm(listing).kind, 'listing');
+  const r = scanHlasm(tree({ 'asm/PACK.asm': listing }));
+  assert.equal(r.summary.listingFiles, 1);
+  assert.equal(r.summary.statementsNotRead, undefined);
+});
+
+test('a document saved as assembler source is counted as a document, and its refusals are not coverage', () => {
+  const doc = asm(
+    'Table Processing: A New Approach',
+    '',
+    'The intent of this article is to present a new approach to the',
+    'old subject of table processing.  Many programmers have written',
+    'search routines.  The binary search requires a table with entries',
+    'of a fixed length and unique keys, and the serial search does not.',
+    'A short example follows, with the macro it uses.',
+    card('TABLE', 'DS', '0F'),
+    card('', 'USING', 'TABLE,R12'),
+    'It is used as follows in the program that searches the table.',
+  );
+  const r = scanHlasm(tree({ 'asm/ARTICLE.asm': doc }));
+  assert.equal(r.summary.documentFiles, 1);
+  assert.equal(r.summary.assemblerFiles, 0);
+  assert.equal(r.summary.statementsNotRead, undefined);
+});

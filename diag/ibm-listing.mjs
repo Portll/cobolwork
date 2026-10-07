@@ -165,9 +165,16 @@ export function sourceText(unit) {
 export function unexpandedCopies(unit) {
   const cards = unit.source;
   const names = [];
+  // The IDENTIFICATION DIVISION's comment-entries are prose with no indicator; the scan starts at
+  // the next division.
+  let scanning = false;
   for (let i = 0; i < cards.length; i++) {
     const { card, copied } = cards[i];
     if (copied || card[6] === '*' || card[6] === '/') continue;
+    if (!scanning) {
+      scanning = /^\s*(ENVIRONMENT|DATA|PROCEDURE)\s+DIVISION/i.test(card.slice(7, 72));
+      continue;
+    }
     const m = /^\s*(?:EXEC\s+SQL\s+)?(?:COPY|INCLUDE)\s+([A-Z0-9][A-Z0-9-]*)/i.exec(card.slice(7, 72));
     if (!m) continue;
     let end = i;

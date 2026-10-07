@@ -66,6 +66,20 @@ test('in-stream data is labelled by running its job, with the data set an earlie
   assert.equal(verifyEvidence(evidence).verified, true);
 });
 
+test('a job runs only through the finding\'s step, and a job ironwork refuses before that step falls back to the program alone, saying why', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
+  const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
+  t.after(() => rmSync(evidence, { recursive: true, force: true }));
+  // LATER.jcl's STEP020 runs IEBCOPY, which ironwork refuses, after the finding's step and inside
+  // an IF; REFUSED.jcl's own step names a symbol with no value.
+  const out = label(join(import.meta.dirname, 'fixtures', 'label', 'jobfallback'), { ironwork: IRONWORK, evidence });
+  const jobs = out.labels.filter((l) => l.rule.startsWith('jcl-instream'));
+  assert.deepEqual(jobs.map((l) => [l.path, l.labelledOn, l.label, l.variant, l.jobNotRun]).sort(), [
+    ['LATERPGM.cbl', 'job', 'confirmed', 'in-stream shifted 0', undefined],
+    ['REFPGM.cbl', undefined, 'confirmed', 'records shifted 0', 'ironwork refuses the job: REFUSED.jcl:6: IWJ0006-S symbolic parameter &HLQ has no value'],
+  ]);
+  assert.equal(verifyEvidence(evidence).verified, true);
+});
+
 test('a program ironwork reads only under --compliance extended runs there, and its label says so', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
   const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
   t.after(() => rmSync(evidence, { recursive: true, force: true }));

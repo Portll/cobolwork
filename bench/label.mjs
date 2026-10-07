@@ -16,7 +16,7 @@
 // `cobolwork evidence verify` checks them. No operation a finding names runs: ironwork runs no
 // operating-system command, and a program named by the marker does not exist.
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { parseBms } from '../lib/bms.mjs';
@@ -374,7 +374,7 @@ const DATA_EXCEPTION = new Set(['S0C7', 'ASRA']);
 // data exception there is the program's own uninitialised storage, which ironwork leaves as IBM
 // does (operator 2026-10-07: named, never zeroed).
 function withoutValue(file, line, ctx) {
-  const path = [ctx.program, ...ctx.programDirs.map((d) => join(d, basename(file)))].find((p) => basename(p) === basename(file));
+  const path = [ctx.program, ...ctx.programDirs.map((d) => join(d, basename(file)))].find((p) => basename(p) === basename(file) && existsSync(p));
   if (!path) return [];
   ctx.parsed ||= new Map();
   if (!ctx.parsed.has(path)) {
@@ -457,7 +457,8 @@ export function labelFinding(f, root, opts) {
   // own strata.
   const extended = kinds?.sink === 'dynamic-file-path' && assignsFromItem(f, root);
   const strata = (ext) => [kinds?.source === 'argv-or-env' && 'rewritten', ext && 'extended'].filter(Boolean).join('+');
-  const stamped = (labelledOn) => ({ source: 'execution', ...(labelledOn ? { labelledOn } : {}), rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line });
+  let jobNotRun = null;
+  const stamped = (labelledOn) => ({ source: 'execution', ...(labelledOn ? { labelledOn } : {}), rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line, ...(jobNotRun ? { jobNotRun } : {}) });
   let base = stamped(strata(extended));
   const unknown = (why) => ({ ...base, label: 'unknown', why });
   const byAbend = ABENDS[kinds?.sink];
@@ -468,9 +469,15 @@ export function labelFinding(f, root, opts) {
   const candidates = [...(f.related || []).map((r) => r.path), ...(f.trace || []).map((t) => t.file), f.path].filter(Boolean).map((p) => resolve(root, p));
   const program = candidates.find(isProgram);
   if (!program) return unknown('no program source on the finding');
-  // In-stream data in a JCL file the repository holds is labelled by running its job.
+  // In-stream data in a JCL file the repository holds is labelled by running its job, and by
+  // running the program alone where the job does not reach the finding's step.
   const job = kinds.source === 'jcl-instream' ? inStreamJob(f, root) : null;
-  if (job) return labelByJob(f, root, { ...opts, program, sink: kinds.sink, runs: null, extended }, job, (ext) => stamped(['job', strata(ext)].filter(Boolean).join('+')));
+  const byJob = job && labelByJob(f, root, { ...opts, program, sink: kinds.sink, runs: null, extended }, job, (ext) => stamped(['job', strata(ext)].filter(Boolean).join('+')));
+  if (byJob?.label) return byJob;
+  if (byJob) {
+    jobNotRun = byJob.jobNotRun;
+    base = stamped(strata(extended));
+  }
   const ctx = { ...opts, program, sink: kinds.sink, runs: null, extended };
   let variants;
   try {

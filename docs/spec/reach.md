@@ -295,23 +295,29 @@ verification plan (§9.7) in ironwork. The marker goes in at the finding's sourc
   fixed record. A DD is named as ASSIGN writes it and as IBM reads it, after the label (`UT-S-`,
   `DA-`). An indexed or relative file is empty unless it is the finding's source, whose records
   then carry the keys 1, 2 and 3 at the record key, in order (operator 2026-10-07);
-- a job's in-stream data, where the JCL file is in the repository: the whole job, run by `ironwork
-  job` (`bench/label-job.mjs`) from a copy of the JCL in which each line of that DD's in-stream data
+- a job's in-stream data, where the JCL file is in the repository: the job through the finding's
+  step, run by `ironwork job` (`bench/label-job.mjs`) from a copy of the JCL that keeps the job
+  card and every statement through that step, closes any IF left open with ENDIF, and leaves the
+  later steps out, which cannot change the label. In the copy each line of that DD's in-stream data
   is an 80-byte record of the fill, every other byte as it was. Every other DD holds what the job
-  gives it. A data set the job reads before any step creates it is the repository's file of that
-  name where the repository holds it as text, a member the file of the member's name in a
-  directory named after the data set's last qualifier, and otherwise empty. A generation data
-  group the job names and does not define gets its base, made by an IDCAMS DEFINE GDG run through
-  ironwork, and as many empty generations as its (0) and (-n) references read back. An indexed or
-  relative data set a step's program reads gets an empty cluster, made by DEFINE CLUSTER with the
-  program's record key and length. Each program the job runs up to the finding's step, and the
+  gives it. Data sets hold z/OS records (`--datasets DIR`); in-stream data stays lines. A data set
+  the steps read before any of them creates it is the repository's file of that name, copied as
+  its bytes, where its length is a whole number of the records the step reads (its program's FD,
+  or the DD's LRECL); a member is the file of the member's name in a directory named after the data
+  set's last qualifier. Any other is empty. A generation data group the steps name and do not define
+  gets its base, made by an IDCAMS DEFINE GDG run through ironwork, and as generations the
+  repository's files named for them, or as many empty ones as its (0) and (-n) references read
+  back. An indexed or relative data set a step's program reads gets an empty cluster, made by
+  DEFINE CLUSTER with the program's record key and length. Each program the steps run, and the
   program the finding is in, runs from a copy carrying the options it compiles under. The finding
   is confirmed where the operation at its line, in any step, sees the marker, or for an abend sink
-  ends as below while the job with the control in the in-stream data gets past it. A job ironwork
-  refuses, a step whose program the repository does not hold, or a job that stops or bypasses the
-  finding's step leaves the label unknown with that reason. `ironwork job` takes no
-  `--trace-input`, so these labels carry no `inputAtSink`. They record `labelledOn: job`
-  (`job+extended` under `--compliance extended`) and are their own stratum (operator 2026-10-07);
+  ends as below while the job with the control in the in-stream data gets past it. These labels
+  record `labelledOn: job` (`job+extended` under `--compliance extended`) and are their own
+  stratum. Where the job cannot be prepared (a step whose program the repository does not hold or
+  ironwork does not compile), ironwork refuses it, or a run ends before the finding's step starts,
+  the finding is labelled as a file's records are, in the program's own stratum, with the reason in
+  `jobNotRun`. `ironwork job` takes no `--trace-input`, so job labels carry no `inputAtSink`
+  (operator 2026-10-07);
 - a RECEIVE MAP: typed into the map's unprotected fields, across the pseudo-conversation the
   program's RETURN TRANSID starts;
 - a RECEIVE without a map: typed on a cleared screen after the transaction's name;

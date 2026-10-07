@@ -170,6 +170,15 @@ test('INCLUDE opening a sentence is a COPY: its member is read, and a missing on
   assert.deepEqual(found.summary.undecidedBecause || {}, {});
 });
 
+test('the names a CD\'s clauses declare are declared, and the program is decided', () => {
+  const src = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. P.', '       DATA DIVISION.', '       COMMUNICATION SECTION.',
+    '       CD IN-CD FOR INPUT', '           SYMBOLIC QUEUE IS IN-Q  STATUS KEY IS IN-STAT.', '       PROCEDURE DIVISION.',
+    '           MOVE "ORDERS" TO IN-Q', '           DISPLAY IN-STAT WS-INVENTED', '           STOP RUN.', ''].join('\n');
+  const r = scanCompile(tree({ 'P.cbl': src }));
+  assert.deepEqual(r.findings.filter((f) => f.rule === 'compile-undefined-name').map((f) => f.names), [['WS-INVENTED']]);
+  assert.equal(r.summary.programsUndecided, 0);
+});
+
 test('a compiler listing kept as a program is not read as one', () => {
   const listing = ['1PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.3.0 P220314       IC102A    Date 06/04/2022  Page 1',
     '   000001         000100 IDENTIFICATION DIVISION.', '   000002         000200 PROGRAM-ID. IC102A.',

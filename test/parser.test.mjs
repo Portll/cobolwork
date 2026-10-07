@@ -133,6 +133,31 @@ test('>>SET CONSTANT names a value as $SET CONSTANT does, and a CD declares its 
   assert.deepEqual(p.unresolvedRefs.map((r) => r.name), []);
 });
 
+test('a CD declares the data-names of its clauses, of a list in their fixed order, and of its destination table', () => {
+  const src = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. Q.', '       DATA DIVISION.', '       COMMUNICATION SECTION.',
+    '       CD IN-CD FOR INITIAL INPUT', '           SYMBOLIC QUEUE IS IN-Q  SUB-QUEUE-1 IS IN-S1', '           MESSAGE DATE IS IN-DATE  TIME IN-TIME',
+    '           TEXT LENGTH IS IN-LEN  END KEY IS IN-END', '           STATUS KEY IS IN-STAT  COUNT IS IN-COUNT.',
+    '       CD TERM-CD FOR I-O', '           T-DATE, T-TIME, T-TERM, FILLER, T-END, T-STAT.',
+    '       CD OUT-CD FOR OUTPUT', '           DESTINATION COUNT IS OUT-COUNT  TEXT LENGTH IS OUT-LEN',
+    '           STATUS KEY IS OUT-STAT',
+    '           DESTINATION TABLE OCCURS 3 TIMES INDEXED BY OUT-IX', '           ERROR KEY IS OUT-ERR  SYMBOLIC DESTINATION IS OUT-DEST.',
+    '       PROCEDURE DIVISION.',
+    '           MOVE IN-Q TO IN-S1 IN-DATE IN-TIME IN-LEN IN-END',
+    '               IN-STAT IN-COUNT.',
+    '           MOVE T-DATE TO T-TIME T-TERM T-END T-STAT OUT-COUNT',
+    '               OUT-LEN OUT-STAT.',
+    '           MOVE OUT-ERR (OUT-IX) TO OUT-DEST (OUT-IX) T-LEN.', '           STOP RUN.', ''].join('\n');
+  const [p] = parseSource(src, 'Q.cbl', { format: 'fixed' }).programs;
+  assert.deepEqual(p.unresolvedRefs.map((r) => r.name), ['T-LEN'], 'FILLER holds the I-O text length\'s place');
+  assert.deepEqual(p.cds.map((c) => [c.name, c.kind]), [['IN-CD', 'INITIAL INPUT'], ['TERM-CD', 'I-O'], ['OUT-CD', 'OUTPUT']]);
+  assert.deepEqual(p.cds[0].fields.filter((f) => /QUEUE|COUNT|TIME/.test(f.clause)), [
+    { clause: 'SYMBOLIC QUEUE', name: 'IN-Q' }, { clause: 'SYMBOLIC SUB-QUEUE-1', name: 'IN-S1' },
+    { clause: 'MESSAGE TIME', name: 'IN-TIME' }, { clause: 'MESSAGE COUNT', name: 'IN-COUNT' }]);
+  assert.deepEqual(p.cds[1].fields.map((f) => f.clause), ['MESSAGE DATE', 'MESSAGE TIME', 'SYMBOLIC TERMINAL', 'END KEY', 'STATUS KEY']);
+  assert.deepEqual(p.cds[2].indexNames, ['OUT-IX']);
+  assert.deepEqual(p.communicationSection.line, 4);
+});
+
 test('SEARCH moves nothing from its table into its index', () => {
   const src = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. S.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
     '       01 T.', '          05 E PIC X OCCURS 5 INDEXED BY IX.', '       01 K PIC X.', '       PROCEDURE DIVISION.',

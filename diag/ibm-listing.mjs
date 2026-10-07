@@ -160,6 +160,23 @@ export function sourceText(unit) {
   return cards.map((s) => s.card.replace(/\s+$/, "")).join("\n") + "\n";
 }
 
+// The COPY and EXEC SQL INCLUDE statements no expansion follows: the member was suppressed from
+// the listing, or the build left it out. Their member names, upper case.
+export function unexpandedCopies(unit) {
+  const cards = unit.source;
+  const names = [];
+  for (let i = 0; i < cards.length; i++) {
+    const { card, copied } = cards[i];
+    if (copied || card[6] === '*' || card[6] === '/') continue;
+    const m = /^\s*(?:EXEC\s+SQL\s+)?(?:COPY|INCLUDE)\s+([A-Z0-9][A-Z0-9-]*)/i.exec(card.slice(7, 72));
+    if (!m) continue;
+    let end = i;
+    while (end < cards.length && !cards[end].copied && !/\.\s*$|END-EXEC/i.test(cards[end].card.slice(7, 72))) end++;
+    if (!cards[end + 1]?.copied) names.push(m[1].toUpperCase());
+  }
+  return names;
+}
+
 function withoutCarriageControl(line) {
   return /^[10+-]/.test(line) ? line.slice(1) : line;
 }

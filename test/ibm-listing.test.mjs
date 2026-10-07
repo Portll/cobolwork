@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { bytesOf, parseIbmListing, sourceText } from '../diag/ibm-listing.mjs';
+import { bytesOf, parseIbmListing, sourceText, unexpandedCopies } from '../diag/ibm-listing.mjs';
 import './pin-machine.mjs';
 
 const LISTING_6 = [
@@ -129,6 +129,29 @@ test('a page header spliced onto a source line by a form feed does not take the 
     assert.deepEqual(r.units[0].source.map((s) => s.line), [1, 2, 3, 4, 5, 6]);
     assert.match(r.units[0].source[4].card, /01  EM-TIME PIC X\(6\)\./);
   }
+});
+
+test('a COPY or INCLUDE with no expansion after it names an unexpanded member', () => {
+  const line = (n, code, copied = false) => '   ' + String(n).padStart(6, '0') + (copied ? 'C' : ' ') + '        ' + String(n * 100).padStart(6, '0') + code;
+  const listing = [
+    '   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8',
+    line(1, ' IDENTIFICATION DIVISION.'),
+    line(2, ' PROGRAM-ID. GAPS.'),
+    line(3, ' DATA DIVISION.'),
+    line(4, ' WORKING-STORAGE SECTION.'),
+    line(5, '     COPY SHOWN.'),
+    line(6, ' 01  A PIC X.', true),
+    line(7, '     COPY HIDDEN SUPPRESS.'),
+    line(8, '     EXEC SQL'),
+    line(9, '         INCLUDE SQLCA'),
+    line(10, '     END-EXEC.'),
+    line(11, ' 01  SQLCA.', true),
+    line(12, '     EXEC SQL INCLUDE LGCMAREA END-EXEC.'),
+    line(13, ' PROCEDURE DIVISION.'),
+    line(14, '     DISPLAY \x27COPY ME\x27.'),
+    'End of compilation 1,  program GAPS,  no statements flagged.',
+  ].join('\n');
+  assert.deepEqual(unexpandedCopies(parseIbmListing(listing).units[0]), ['HIDDEN', 'LGCMAREA']);
 });
 
 test('a 4.2 map gives displacements within the record from the block displacement', () => {

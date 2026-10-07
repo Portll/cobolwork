@@ -2,14 +2,16 @@
 // carry their source: each unit's COPY-expanded source goes through `ironwork check`, the two
 // return codes are set against each other, and where both refuse, the lines of the severe
 // messages are compared. A unit IBM refused only because EXEC CICS or EXEC SQL met NOCICS or
-// NOSQL is counted apart: ironwork reads both without an option.
+// NOSQL is counted apart: ironwork reads both without an option. A unit whose listing shows a COPY
+// or INCLUDE with no expansion, and no -I directory holds the member, is counted as
+// source-incomplete and sent to neither compiler.
 //
 //   node diag/refusals-against-ibm.mjs <listing-or-dir>... --ironwork <bin> [-I <dir>]... [--out <file>] [--samples <n>]
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join } from 'node:path';
-import { parseIbmListing, sourceText } from './ibm-listing.mjs';
+import { parseIbmListing, sourceText, unexpandedCopies } from './ibm-listing.mjs';
 
 const SEVERITY_RC = { I: 0, W: 4, E: 8, S: 12, U: 16 };
 const OPTION_REFUSALS = new Set(['IGYPS0228-S', 'IGYDS0225-S', 'IGYPS0225-S']);
@@ -34,7 +36,7 @@ function walk(dir, out) {
 const files = roots.flatMap((r) => (statSync(r).isDirectory() ? walk(r, []) : [r]));
 const tmp = mkdtempSync(join(tmpdir(), 'cobolwork-refusals-'));
 const total = {
-  units: 0, timeouts: 0,
+  units: 0, timeouts: 0, sourceIncomplete: 0,
   matrix: { bothAccept: 0, bothRefuse: 0, bothRefuseSameLine: 0, ibmOnly: 0, ibmOnlyOption: 0, ironworkOnly: 0 },
   ironworkOnlyIds: {}, ibmOnlyIds: {},
   samples: { ironworkOnly: [], ibmOnly: [], bothRefuseOtherLine: [] },
@@ -50,6 +52,12 @@ for (const file of files) {
   for (const unit of parseIbmListing(text).units) {
     if (!unit.source.length) continue;
     total.units++;
+    const missing = unexpandedCopies(unit).filter((name) => !includes.some((dir) => readdirSync(dir).some((f) => f.replace(/\.[^.]+$/, '').toUpperCase() === name)));
+    if (missing.length) {
+      total.sourceIncomplete++;
+      total.rows.push({ listing: basename(file), unit: unit.name, incomplete: missing });
+      continue;
+    }
     const source = join(tmp, `${unit.name || 'UNIT'}-${++n}.cbl`);
     writeFileSync(source, sourceText(unit));
     const run = spawnSync(bin, ['check', source, ...includes.flatMap((d) => ['-I', d])], { encoding: 'utf8', timeout: 30000 });
@@ -87,7 +95,7 @@ rmSync(tmp, { recursive: true, force: true });
 
 if (OUT) writeFileSync(OUT, JSON.stringify(total, null, 2) + '\n');
 const m = total.matrix;
-console.log(`${total.units} units with source; ${total.timeouts} timed out`);
+console.log(`${total.units} units with source; ${total.sourceIncomplete} source-incomplete (a COPY or INCLUDE with no expansion), left out; ${total.timeouts} timed out`);
 console.log(`both accept ${m.bothAccept}; both refuse ${m.bothRefuse} (${m.bothRefuseSameLine} on a common line); IBM refuses and ironwork accepts ${m.ibmOnly} (+${m.ibmOnlyOption} for EXEC without the option); ironwork refuses and IBM accepts ${m.ironworkOnly}`);
 const top = (map) => Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([k, v]) => `${k} ${v}`).join(', ');
 console.log(`ironwork-only ids: ${top(total.ironworkOnlyIds)}`);

@@ -4,6 +4,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { inventoryOf, markdown } from '../diag/mine-ibm-output.mjs';
+import './pin-machine.mjs';
 
 const LISTING = [
   '1PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P231130            Date 10/07/2026  Time 09:00:00   Page     1',

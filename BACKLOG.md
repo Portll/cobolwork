@@ -583,10 +583,10 @@ that declares it rather than to whoever merged the findings. What that specifica
   thread's wait falls from 16 s of an 87 s flow loop to about 1 s. Fewer arithmetic rounds on a
   large program is a separate precision decision.
 
-  Still measured but not built: whole-tree reads outside the shared pass, where one pass over one
-  Unieuro program in ten (31,520 files) costs 15 to 23 s: web's listener and URIMAP definitions,
-  read before its loop, and compile's search of every copybook answering to a copied name. ACAS's
-  walk is 131 s of 190, most of it edges crossed rather than any one step.
+  Still measured but not built: compile's search of every copybook answering to a copied name reads
+  outside the shared pass, where one pass over one Unieuro program in ten (31,520 files) costs 15 to
+  23 s; which names it wants is known only once its loop ends. ACAS's walk is 131 s of 190, most of
+  it edges crossed rather than any one step.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

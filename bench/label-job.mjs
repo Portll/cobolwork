@@ -17,7 +17,7 @@ import { isProgram, readSource } from '../lib/sources.mjs';
 import { MARKER } from '../lib/verify.mjs';
 import { RUN_ENDINGS } from '../lib/ironwork-ids.mjs';
 import {
-  ABENDS, abendText, calledAway, compileOptions, compliance, controlOf, DATA_EXCEPTION, fileShapes, fills,
+  ABENDS, abendText, calledAway, combined, compileOptions, compliance, controlOf, DATA_EXCEPTION, fileShapes, fills,
   IRONWORK_ENDED, journalOf, libraries, restedOn, TRACED, withoutValue,
 } from './label.mjs';
 
@@ -272,7 +272,7 @@ function runJob(f, ctx, plan, record) {
     cpSync(plan.datasets, join(dir, 'datasets'), { recursive: true });
     const args = ['job', jcl, '--datasets', join(dir, 'datasets'), '-L', plan.staging, ...plan.copyDirs.flatMap((d) => ['-I', d]), ...libraries(ctx),
       ...(plan.procs ? ['--proclib', plan.procs] : []), ...compliance(ctx), '--user', USER,
-      '--evidence', ctx.evidence, '--trace-marker', MARKER, '--clock', '2026-01-01T00:00:00'];
+      '--evidence', ctx.evidence, '--trace-marker', MARKER, ...(ctx.traceInput ? ['--trace-input'] : []), '--clock', '2026-01-01T00:00:00'];
     // Each step gets the time one program's run has.
     const timeout = ctx.timeout * Math.max(1, plan.job.parsed.steps.length);
     const r = spawnSync(ctx.ironwork, args, { cwd: dir, encoding: 'utf8', timeout, maxBuffer: 1 << 24, stdio: ['ignore', 'ignore', 'pipe'] });
@@ -297,6 +297,7 @@ function runJob(f, ctx, plan, record) {
       ran: true,
       reached: at.some((x) => x.reached),
       atSink: at.length > 0,
+      input: combined(at.map((x) => x.input ?? null)),
       abend: abend ? `${abend.code}${abend.line ? ` at ${fileOf(abend)}:${lineOf(abend)}` : ''}` : null,
       abendAtOperation: atOperation ? atOperation.code : null,
       noValue: abend?.line && !atOperation && DATA_EXCEPTION.has(abend.code) ? withoutValue(fileOf(abend), lineOf(abend), { ...ctx, program: plan.paths.get(fileOf(abend)) || ctx.program }) : [],
@@ -430,7 +431,8 @@ export function labelByJob(f, root, ctx, job, stamped) {
         r.controlAbended = true;
       }
     }
-    return unknown(whyNot(seen, byAbend, plan), { runs: seen.map((r) => r.run), ...restedOn(...seen) });
+    const atSink = seen.filter((r) => r.atSink);
+    return unknown(whyNot(seen, byAbend, plan), { runs: seen.map((r) => r.run), ...restedOn(...seen), ...(ctx.traceInput && atSink.length ? { inputAtSink: combined(atSink.map((r) => r.input)) } : {}) });
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

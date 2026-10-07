@@ -344,7 +344,7 @@ function compileOptions(ctx) {
 
 // What taint found over several answers: input where any found it, unknown where any could not
 // say, and none only where every one found none.
-const combined = (answers) => (answers.includes(true) ? true : answers.includes(null) ? null : false);
+export const combined = (answers) => (answers.includes(true) ? true : answers.includes(null) ? null : false);
 
 // How ironwork ended a run itself rather than the program, by the ending its exit status names; an
 // abend is read from the journal instead.

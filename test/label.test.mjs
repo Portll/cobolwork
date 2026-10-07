@@ -88,6 +88,16 @@ test('a program ironwork reads only under --compliance extended runs there, and 
   assert.equal(verifyEvidence(evidence).verified, true);
 });
 
+test('a job run records taint\'s answer at an operation the marker missed, as a program\'s run does', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
+  const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
+  t.after(() => rmSync(evidence, { recursive: true, force: true }));
+  const out = label(join(import.meta.dirname, 'fixtures', 'label', 'joboverwritten'), { ironwork: IRONWORK, evidence, traceInput: true });
+  assert.deepEqual(out.labels.map((l) => [l.rule, l.label, l.labelledOn, l.inputAtSink]).sort(), [
+    ['file-record-to-dynamic-program-load', 'unknown', undefined, false],
+    ['jcl-instream-to-dynamic-program-load', 'unknown', 'job', false],
+  ]);
+});
+
 test('taint\'s answer at an operation the marker missed is recorded, and the finding stays unknown', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
   const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
   t.after(() => rmSync(evidence, { recursive: true, force: true }));

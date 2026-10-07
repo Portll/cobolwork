@@ -316,8 +316,8 @@ verification plan (§9.7) in ironwork. The marker goes in at the finding's sourc
   stratum. Where the job cannot be prepared (a step whose program the repository does not hold or
   ironwork does not compile), ironwork refuses it, or a run ends before the finding's step starts,
   the finding is labelled as a file's records are, in the program's own stratum, with the reason in
-  `jobNotRun`. `ironwork job` takes no `--trace-input`, so job labels carry no `inputAtSink`
-  (operator 2026-10-07);
+  `jobNotRun`. With `--trace-input` the job's steps are traced by taint as a program's run is,
+  which needs ironwork after 756097a9 (operator 2026-10-07);
 - a RECEIVE MAP: typed into the map's unprotected fields, across the pseudo-conversation the
   program's RETURN TRANSID starts;
 - a RECEIVE without a map: typed on a cleared screen after the transaction's name;

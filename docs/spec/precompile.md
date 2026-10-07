@@ -217,8 +217,12 @@ translated.
      are `cics-web`. An item READQ TS or READQ TD returns, and the data a START passed that RETRIEVE
      returns, are `cics-queue`: stored by another task, whoever can write the queue or start the
      transaction controls it, and it is data at rest as a file record is. Its 16 rules mirror the file
-     record's and warn in the build gate until their precision is measured. What ASSIGN, INQUIRE
-     and QUERY SECURITY return describes CICS itself and is no source.
+     record's and warn in the build gate until their precision is measured. What CICS returns about
+     itself is no input and reaches only what a web caller is sent: ASSIGN's abend detail (ABCODE,
+     ABPROGRAM, the ASRA fields) is `system-response`, as RESP is, and what ASSIGN returns about the
+     region (APPLID, SYSID, NETNAME, QNAME) and INQUIRE about a resource is `cics-system-info`
+     (CWE-497), whose two rules warn until measured. The task's own user and QUERY SECURITY's access
+     decision are no source.
 
 ## 4. Order of work
 

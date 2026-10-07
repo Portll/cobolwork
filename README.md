@@ -433,10 +433,10 @@ and to a COBIT 2019 practice by identifier alone:
 
 | File | Instrument | Rules mapped |
 |---|---|---|
-| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 249 |
-| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 247, and 2 recorded as unmapped |
-| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 247, and 2 recorded as unmapped |
-| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 247, and 2 recorded as unmapped |
+| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 257 |
+| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 255, and 2 recorded as unmapped |
+| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 255, and 2 recorded as unmapped |
+| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 255, and 2 recorded as unmapped |
 
 A COBIT 2019 row names the objective or practice and gives this project's own rationale; no ISACA
 text is reproduced, so reading what a practice says needs a copy of the framework. The practice is

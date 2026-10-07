@@ -2842,7 +2842,20 @@
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
-   "rationale": "The rule reports: A response code or SQL error the system set is sent in a response header. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "rationale": "The rule reports: A response code, abend code or SQL error the system set is sent in a response header. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-system-info-to-http-header",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: What CICS says about the region or its resources is sent in a response header. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -2868,7 +2881,20 @@
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
-   "rationale": "The rule reports: A response code or SQL error the system set is sent in a web response. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "rationale": "The rule reports: A response code, abend code or SQL error the system set is sent in a web response. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-system-info-to-web-response",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: What CICS says about the region or its resources is sent in a web response. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

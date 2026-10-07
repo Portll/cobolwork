@@ -2825,7 +2825,20 @@
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
-   "rationale": "The rule reports: A response code or SQL error the system set is sent in a response header. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "rationale": "The rule reports: A response code, abend code or SQL error the system set is sent in a response header. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-system-info-to-http-header",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: What CICS says about the region or its resources is sent in a response header. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -2851,7 +2864,20 @@
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
-   "rationale": "The rule reports: A response code or SQL error the system set is sent in a web response. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "rationale": "The rule reports: A response code, abend code or SQL error the system set is sent in a web response. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-system-info-to-web-response",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: What CICS says about the region or its resources is sent in a web response. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",

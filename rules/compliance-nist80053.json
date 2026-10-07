@@ -2825,7 +2825,20 @@
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
-   "rationale": "The rule reports: A response code or SQL error the system set is sent in a response header. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "rationale": "The rule reports: A response code, abend code or SQL error the system set is sent in a response header. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-system-info-to-http-header",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: What CICS says about the region or its resources is sent in a response header. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -2851,7 +2864,20 @@
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
-   "rationale": "The rule reports: A response code or SQL error the system set is sent in a web response. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "rationale": "The rule reports: A response code, abend code or SQL error the system set is sent in a web response. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-system-info-to-web-response",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: What CICS says about the region or its resources is sent in a web response. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",

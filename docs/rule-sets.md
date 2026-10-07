@@ -87,6 +87,14 @@ file record is, to the same sinks at the same severities. A web request's form f
 parameters and headers, which `WEB READ`, `WEB READNEXT` and `WEB EXTRACT` return in options other
 than `INTO`, are web input.
 
+**What CICS says about itself.** What `EXEC CICS ASSIGN` returns about an abend (`ABCODE`, `ABPROGRAM`,
+the `ASRA` fields) is error detail, as `RESP` is, and what `ASSIGN` returns about the region
+(`APPLID`, `SYSID`, `NETNAME`, `QNAME`) and every `INQUIRE` returns about a resource describes the
+system (`cics-system-info`, CWE-497). Neither is input, so each is reported only where it reaches
+what a web caller is sent, at low severity, and not on a terminal's screen, where a code is ordinary.
+The task's own user (`USERID`, `USERNAME`, `OPID`) and `QUERY SECURITY`'s access decision are no
+source.
+
 **Screen fields a modified terminal can change.** A map's `PROT`, `ASKIP`, `DRK` and `NUM` are
 enforced by the 3270 emulator, not by CICS, so a modified client writes a protected field and reads
 a dark one, as a browser does a hidden form field. Each `RECEIVE MAP` is read against its map - a

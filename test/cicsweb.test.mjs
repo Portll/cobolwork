@@ -34,6 +34,14 @@ test('a queue item and the data a START passed are stored by another task, and c
   assert.match(f.detail, /READQ TS INTO/);
 });
 
+test('what CICS says about the region or an abend reaches only a web caller; the user\'s id and an access decision never', () => {
+  assert.deepEqual(of('SYSINFO.cbl'), [
+    ['cics-system-info-to-web-response', 18, 'low'],
+    ['cics-system-info-to-web-response', 19, 'low'],
+    ['system-response-to-web-response', 20, 'low'],
+  ]);
+});
+
 test('a fixed page, and a queue the program names itself, are not reported', () => {
   assert.deepEqual(of('WEBSTATIC.cbl'), []);
 });

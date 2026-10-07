@@ -2607,7 +2607,19 @@
    "ruleId": "system-response-to-http-header",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
-   "rationale": "The rule reports: A response code or SQL error the system set is sent in a response header. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "rationale": "The rule reports: A response code, abend code or SQL error the system set is sent in a response header. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-system-info-to-http-header",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: What CICS says about the region or its resources is sent in a response header. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",
@@ -2631,7 +2643,19 @@
    "ruleId": "system-response-to-web-response",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
-   "rationale": "The rule reports: A response code or SQL error the system set is sent in a web response. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "rationale": "The rule reports: A response code, abend code or SQL error the system set is sent in a web response. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-system-info-to-web-response",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: What CICS says about the region or its resources is sent in a web response. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",

@@ -4,5 +4,6 @@
  "cwe": "CWE-1127",
  "expect": [
   { "rule": "compile-undefined-name", "file": "CUSTTOT.cbl" }
- ]
+ ],
+ "alsoExpected": ["io-status-unchecked"]
 }

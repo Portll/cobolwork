@@ -1,0 +1,11 @@
+{
+ "id": "120-a-cics-read-whose-resp-is-never-tested",
+ "title": "A record is sent after an EXEC CICS READ whose RESP nobody tests",
+ "cwe": "CWE-252",
+ "expect": [
+  {
+   "rule": "cics-response-unchecked",
+   "file": "CUSTINQ.cbl"
+  }
+ ]
+}

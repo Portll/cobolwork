@@ -31,7 +31,7 @@ test('a quote is compared with whitespace collapsed and punctuation folded', () 
 });
 
 test('the catalogue holds every rule the engine can report', () => {
-  assert.equal(CATALOGUE.size, 258);
+  assert.equal(CATALOGUE.size, 261);
   assert.equal(CATALOGUE.get('ims-procopt-broader-than-used').set, 'ims');
   assert.equal(CATALOGUE.get('compile-communication-feature').set, 'compile');
   assert.equal(CATALOGUE.get('pli-error-condition-ignored').set, 'pli');

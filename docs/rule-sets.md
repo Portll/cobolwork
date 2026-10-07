@@ -324,6 +324,20 @@ C1 in its register, which no Enterprise COBOL compile has settled yet, and every
 program with no `TRUNC(OPT)` anywhere is not judged by the first, and one that declares its own
 `PROGRAM COLLATING SEQUENCE` is not judged by the third.
 
+**Carrying on after a failure.** Declaring a `FILE STATUS`, giving a CICS command `RESP` or
+`NOHANDLE`, and every `EXEC SQL` tell the runtime the program handles a failure itself, so nothing
+stops the run when the program does not look. The `errors` set follows each statement that sets a
+status through the control-flow graph and reports it where a route from it reaches the next statement
+on the same file, the next `EXEC SQL` or `EXEC CICS`, or a read of what it wrote, without a test of
+the status: `io-status-unchecked`, `sql-status-unchecked` and `cics-response-unchecked` (CWE-252).
+Any condition naming the status field, a condition-name under it, `SQLCODE`, `SQLSTATE`, `EIBRESP`
+or a field the status was moved into counts as a test, on either outcome, as does a `CALL` handed the
+status; `AT END` and `INVALID KEY` do not, since they handle one condition and not a failed device. A
+file a `USE AFTER ERROR` declarative covers is not reported, nor an `EXEC SQL` after `WHENEVER
+SQLERROR GO TO` (by position in the source, as the precompiler applies it), nor a `RETURN` or `XCTL`,
+which comes back only when it failed. A program whose order could not be read is counted as
+`programsUnordered`. The rules warn until their firing rate is recorded.
+
 **Copybook shadowing.** Two copybooks answering to one name with different layouts, with the
 programs that resolve each; a repository copy of a system copybook (`SQLCA`, `DFHAID`, …), which the
 search path finds before the system's own.

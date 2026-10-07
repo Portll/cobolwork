@@ -1,0 +1,9 @@
+{
+ "id": "121-a-cics-read-whose-resp-is-tested",
+ "title": "The same READ with its RESP tested before the record is sent",
+ "cwe": "CWE-252",
+ "expect": [],
+ "negativeFor": [
+  "cics-response-unchecked"
+ ]
+}

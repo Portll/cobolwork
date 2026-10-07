@@ -1,0 +1,11 @@
+{
+ "id": "118-a-select-whose-sqlcode-is-never-tested",
+ "title": "A host variable is used after a SELECT whose SQLCODE nobody tests",
+ "cwe": "CWE-252",
+ "expect": [
+  {
+   "rule": "sql-status-unchecked",
+   "file": "CUSTSQL.cbl"
+  }
+ ]
+}

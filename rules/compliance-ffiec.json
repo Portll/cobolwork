@@ -1872,6 +1872,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-response-unchecked",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS command given RESP or NOHANDLE is not tested before the program relies on it. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "hidden-payload-in-identification-area",
    "framework": "ffiec",
    "clause": "DA&M V",
@@ -2098,6 +2111,19 @@
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A COMPUTE has an intermediate result wider than the compiler carries, so high-order digits can be lost. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "io-status-unchecked",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A file I/O statement's FILE STATUS is not tested before the program relies on it. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -2830,6 +2856,19 @@
     "doc": "ffiec",
     "retrieved": "2026-09-20",
     "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "sql-status-unchecked",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: An EXEC SQL statement's SQLCODE is not tested before the program relies on it. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
    }
   },
   {

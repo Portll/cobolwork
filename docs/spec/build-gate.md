@@ -555,18 +555,22 @@ The rules pose one question: at the statement that relies on the result, has the
 on every route since the statement that set it? The control-flow graph answers "does this fact hold
 on every route to Z" (`lib/control.mjs`) and not "on every route after Y", so each rule asks it at Z:
 the next statement that reads what Y wrote, or the next statement on the same file, cursor or CICS
-resource. Four changes to the graph come first, and each has its own bench cases:
+resource. Each Y has a fact of its own. It holds wherever the program is entered, Y kills it, and a
+test of the status makes it again; where it does not hold at Z, a route from Y reached Z untested.
+Four things make that answer right:
 
-1. A file I/O statement writes its file's status field. Today a `READ` kills facts about the file's
-   records and not about its status, so a status test made before a `READ` still counts after it.
-2. A fact a rule adds through the `extra` hook is killed by a write to the field it names, as a
-   built-in check is. Today such facts are never killed. `cics-signon-bypassed`, the one rule that
-   uses the hook, must give the same bench results afterwards.
-3. `SQLCODE` and `SQLSTATE` resolve to items written by every `EXEC SQL` when the program includes
-   `SQLCA` and the tree does not hold it. Today they resolve only when a real `SQLCA` copybook is in
-   the tree, and `INCLUDE SQLCA` declares nothing.
-4. For a status field only, a comparison with a constant counts as a test. Today equality is not a
-   restricting test, which is right for taint and wrong here: `IF WS-FS = '00'` is exactly the check.
+1. A file I/O statement writes its file's status field, and an executable `EXEC SQL` writes
+   `SQLCODE` and `SQLSTATE` where they resolve, so a test made before the statement does not count
+   after it, for these rules and for every check the graph credits.
+2. Only Y kills Y's fact. A `MOVE` into the status field is the program, not the runtime, setting it:
+   killing the fact on any write of the field would report a `MOVE '00' TO WS-FS` before the `OPEN`.
+   `cics-signon-bypassed`, the other rule that adds facts of its own, gives the bench results it gave.
+3. `SQLCODE`, `SQLSTATE` and `SQLCA` are recognised by name, so a test counts whether or not the tree
+   holds the `SQLCA` copybook.
+4. For a status field, any condition naming it counts as a test on both outcomes, equality included:
+   `IF WS-FS = '00'` is exactly the check. So does a condition-name under it, a field a `MOVE` copied
+   it into, and a `CALL` handed it. The taint checks keep their own reading, where equality restricts
+   nothing.
 
 | Rule | Set | Sev | CWE | Reported when |
 |---|---|---|---|---|

@@ -1,0 +1,9 @@
+{
+ "id": "117-a-read-whose-file-status-is-tested",
+ "title": "The same READ with its FILE STATUS tested before the record is used",
+ "cwe": "CWE-252",
+ "expect": [],
+ "negativeFor": [
+  "io-status-unchecked"
+ ]
+}

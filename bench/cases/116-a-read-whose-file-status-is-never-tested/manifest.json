@@ -1,0 +1,11 @@
+{
+ "id": "116-a-read-whose-file-status-is-never-tested",
+ "title": "A record is used after a READ whose FILE STATUS nobody tests",
+ "cwe": "CWE-252",
+ "expect": [
+  {
+   "rule": "io-status-unchecked",
+   "file": "CUSTRD.cbl"
+  }
+ ]
+}

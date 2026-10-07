@@ -898,18 +898,116 @@ test('B7.5 The spec and the suite name the same scenarios', () => {
   assert.deepEqual(testIds.filter((id) => !specIds.includes(id)), [], 'every test has a scenario');
 });
 
-// B8 - The new rules, each a todo until its rule lands (spec §11)
+// B8 - The new rules (spec §11)
+
+const rulesIn = (files, only) => {
+  const root = mkdtempSync(join(tmpdir(), 'cw-b8-'));
+  patch(root, files);
+  return scanAll(root, { only }).findings.map((f) => f.rule);
+};
+const fileProgram = (body, { status = true, declarative = false } = {}) => cobol([
+  '       IDENTIFICATION DIVISION.',
+  '       PROGRAM-ID. CUSTRD.',
+  '       ENVIRONMENT DIVISION.',
+  '       INPUT-OUTPUT SECTION.',
+  '       FILE-CONTROL.',
+  '           SELECT CUSTFILE ASSIGN TO CUSTDD',
+  status ? '               FILE STATUS IS WS-FS.' : '               ORGANIZATION IS SEQUENTIAL.',
+  '       DATA DIVISION.',
+  '       FILE SECTION.',
+  '       FD CUSTFILE.',
+  '       01 CUST-REC.',
+  '          05 CUST-ID    PIC X(8).',
+  '          05 CUST-NAME  PIC X(30).',
+  '       WORKING-STORAGE SECTION.',
+  '       01 WS-FS         PIC XX.',
+  "          88 WS-FS-OK   VALUE '00'.",
+  '       01 WS-NAME       PIC X(30).',
+  '       PROCEDURE DIVISION.',
+  ...(declarative ? ['       DECLARATIVES.', '       IO-ERR SECTION.', '           USE AFTER STANDARD ERROR PROCEDURE ON CUSTFILE.',
+    '       IO-ERR-PARA.', '           DISPLAY WS-FS', '           STOP RUN.', '       END DECLARATIVES.', '       MAIN SECTION.'] : []),
+  '       MAIN-PARA.',
+  ...body.map((l) => `           ${l}`),
+]);
+const OPENED = ['OPEN INPUT CUSTFILE', 'IF NOT WS-FS-OK', '    STOP RUN', 'END-IF'];
+const READ_AND_USE = ['READ CUSTFILE', 'MOVE CUST-NAME TO WS-NAME', 'GOBACK.'];
+const FS_TEST = ["IF WS-FS NOT = '00'", '    STOP RUN', 'END-IF'];
+const io = (src) => rulesIn({ 'CUSTRD.cbl': src }, ['errors']).filter((r) => r === 'io-status-unchecked');
+
+test('B8.1 A FILE STATUS never tested before the record is read is reported', { skip }, () => {
+  const root = repo({ 'Q0.cbl': QUIET });
+  patch(root, { 'CUSTRD.cbl': fileProgram([...OPENED, ...READ_AND_USE]) });
+  const doc = ratchet(root);
+  const f = doc.findings.find((x) => x.rule === 'io-status-unchecked');
+  assert.ok(f, JSON.stringify(doc.findings.map((x) => x.rule)));
+  assert.equal(f.line, 24);
+  assert.equal(f.blocking, false, 'unmeasured, so it warns under the default policy');
+  assert.equal(doc.verdict, 'pass');
+  const named = repo({ 'Q0.cbl': QUIET, 'cobolwork.policy.json': policy({ rules: { 'io-status-unchecked': 'block' } }) });
+  patch(named, { 'CUSTRD.cbl': fileProgram([...OPENED, ...READ_AND_USE]) });
+  assert.deepEqual(blockingRules(ratchet(named)), ['io-status-unchecked']);
+});
+
+test('B8.2 A FILE STATUS tested on every route is not', () => {
+  assert.deepEqual(io(fileProgram([...OPENED, 'READ CUSTFILE', ...FS_TEST, 'MOVE CUST-NAME TO WS-NAME', 'GOBACK.'])), []);
+  assert.deepEqual(io(fileProgram([...OPENED, 'PERFORM READ-IT', 'MOVE CUST-NAME TO WS-NAME', 'GOBACK.', 'READ-IT.', '    READ CUSTFILE',
+    '    PERFORM CHECK-FS.', 'CHECK-FS.', "    IF WS-FS NOT = '00' STOP RUN END-IF."])), [], 'a test in a performed paragraph counts');
+  assert.deepEqual(io(fileProgram(["MOVE '00' TO WS-FS", ...OPENED, 'READ CUSTFILE', ...FS_TEST, 'MOVE CUST-NAME TO WS-NAME', 'GOBACK.'])), [],
+    'a MOVE into the status field is not an I/O');
+});
+
+test('B8.3 A status test made before the I/O does not count after it', () => {
+  assert.deepEqual(io(fileProgram(['OPEN INPUT CUSTFILE', ...FS_TEST, ...READ_AND_USE])), ['io-status-unchecked']);
+  assert.deepEqual(io(fileProgram(['OPEN INPUT CUSTFILE', 'READ CUSTFILE', ...FS_TEST, 'MOVE CUST-NAME TO WS-NAME', 'GOBACK.'])), ['io-status-unchecked'],
+    'the OPEN goes untested into the READ');
+});
+
+test('B8.4 A file with no FILE STATUS is not reported', () => {
+  assert.deepEqual(io(fileProgram(['OPEN INPUT CUSTFILE', ...READ_AND_USE], { status: false })), []);
+});
+
+test('B8.5 A USE AFTER ERROR declarative covers its file', () => {
+  assert.deepEqual(io(fileProgram(['OPEN INPUT CUSTFILE', ...READ_AND_USE], { declarative: true })), []);
+});
+
+const SQL_WS = ['    EXEC SQL INCLUDE SQLCA END-EXEC.', '01 WS-NAME PIC X(30).', '01 WS-OUT PIC X(30).', '01 WS-ID PIC X(8).'];
+const SELECT = ['EXEC SQL SELECT NAME INTO :WS-NAME FROM CUST', '    WHERE ID = :WS-ID END-EXEC'];
+const SQLCA = cobol(['       01 SQLCA.', '          05 SQLCAID  PIC X(8).', '          05 SQLCODE  PIC S9(9) COMP-5.', '          05 SQLSTATE PIC X(5).']);
+const sql = (files) => rulesIn(files, ['errors']).filter((r) => r === 'sql-status-unchecked');
+
+test('B8.6 An EXEC SQL whose SQLCODE is never tested is reported', () => {
+  const p = program('CUSTSQL', SQL_WS, [...SELECT, 'MOVE WS-NAME TO WS-OUT', 'GOBACK.']);
+  assert.deepEqual(sql({ 'CUSTSQL.cbl': p }), ['sql-status-unchecked'], 'SQLCA not in the tree');
+  assert.deepEqual(sql({ 'CUSTSQL.cbl': p, 'SQLCA.cpy': SQLCA }), ['sql-status-unchecked'], 'SQLCA in the tree');
+  assert.deepEqual(sql({ 'CUSTSQL.cbl': program('CUSTSQL', SQL_WS, [...SELECT, 'IF SQLCODE NOT = 0', '    GOBACK', 'END-IF', 'MOVE WS-NAME TO WS-OUT', 'GOBACK.']) }), []);
+});
+
+test('B8.7 WHENEVER SQLERROR GO TO covers what follows it, and CONTINUE does not', () => {
+  const after = (whenever) => sql({ 'CUSTSQL.cbl': program('CUSTSQL', SQL_WS, [`EXEC SQL WHENEVER SQLERROR ${whenever} END-EXEC`, ...SELECT,
+    'MOVE WS-NAME TO WS-OUT', 'GOBACK.', 'SQL-ERR.', '    GOBACK.']) });
+  assert.deepEqual(after('GO TO SQL-ERR'), []);
+  assert.deepEqual(after('CONTINUE'), ['sql-status-unchecked']);
+});
+
+const CICS_WS = ['01 WS-RESP PIC S9(8) COMP.', '01 WS-REC PIC X(80).', '01 WS-OUT PIC X(80).', '01 WS-KEY PIC X(8).'];
+const respRead = (option) => program('CUSTCICS', CICS_WS, ["EXEC CICS READ FILE('CUST') INTO(WS-REC) RIDFLD(WS-KEY)", `    ${option} END-EXEC`, 'MOVE WS-REC TO WS-OUT', 'GOBACK.']);
+const resp = (src) => rulesIn({ 'CUSTCICS.cbl': src }, ['errors']).filter((r) => r === 'cics-response-unchecked');
+
+test('B8.8 An untested RESP is reported and a command without RESP is not', () => {
+  assert.deepEqual(resp(respRead('RESP(WS-RESP)')), ['cics-response-unchecked']);
+  assert.deepEqual(resp(respRead('NOHANDLE')), ['cics-response-unchecked']);
+  assert.deepEqual(resp(respRead('')), []);
+  assert.deepEqual(resp(program('CUSTCICS', CICS_WS, ["EXEC CICS READ FILE('CUST') INTO(WS-REC) RIDFLD(WS-KEY)", '    RESP(WS-RESP) END-EXEC',
+    'IF WS-RESP NOT = DFHRESP(NORMAL)', '    GOBACK', 'END-IF', 'MOVE WS-REC TO WS-OUT', 'GOBACK.'])), []);
+});
+
+test('B8.9 cics-signon-bypassed is unchanged by killable facts', () => {
+  const bench = (id) => scanAll(join(HERE, '..', 'bench', 'cases', id), { only: ['cics'] }).findings.filter((f) => f.rule === 'cics-signon-bypassed').length;
+  assert.equal(bench('069-pf-key-bypasses-signon'), 1);
+  assert.equal(bench('070-menu-only-past-the-password'), 0);
+});
 
 const RULE_NOT_BUILT = { todo: 'the rule is specified in §11 and not built yet' };
-test('B8.1 A FILE STATUS never tested before the record is read is reported', RULE_NOT_BUILT, () => {});
-test('B8.2 A FILE STATUS tested on every route is not', RULE_NOT_BUILT, () => {});
-test('B8.3 A status test made before the I/O does not count after it', RULE_NOT_BUILT, () => {});
-test('B8.4 A file with no FILE STATUS is not reported', RULE_NOT_BUILT, () => {});
-test('B8.5 A USE AFTER ERROR declarative covers its file', RULE_NOT_BUILT, () => {});
-test('B8.6 An EXEC SQL whose SQLCODE is never tested is reported', RULE_NOT_BUILT, () => {});
-test('B8.7 WHENEVER SQLERROR GO TO covers what follows it, and CONTINUE does not', RULE_NOT_BUILT, () => {});
-test('B8.8 An untested RESP is reported and a command without RESP is not', RULE_NOT_BUILT, () => {});
-test('B8.9 cics-signon-bypassed is unchanged by killable facts', RULE_NOT_BUILT, () => {});
 test('B8.10 A STRING of terminal input with no ON OVERFLOW is reported', RULE_NOT_BUILT, () => {});
 test('B8.11 A MOVE of input into fewer integer digits is reported', RULE_NOT_BUILT, () => {});
 test('B8.12 An EVALUATE of input with no WHEN OTHER is reported', RULE_NOT_BUILT, () => {});

@@ -4,5 +4,6 @@
  "cwe": "CWE-201",
  "expect": [
   { "rule": "database-to-message-queue", "file": "X5.cbl" }
- ]
+ ],
+ "alsoExpected": ["sql-status-unchecked"]
 }

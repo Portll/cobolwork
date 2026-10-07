@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CUSTSQL.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+           EXEC SQL INCLUDE SQLCA END-EXEC.
+       01 WS-ID              PIC X(8).
+       01 WS-NAME            PIC X(30).
+       PROCEDURE DIVISION.
+           MOVE "C0000001" TO WS-ID
+           EXEC SQL SELECT NAME INTO :WS-NAME FROM CUST
+               WHERE ID = :WS-ID END-EXEC
+           IF SQLCODE NOT = 0
+               GOBACK
+           END-IF
+           DISPLAY WS-NAME
+           GOBACK.

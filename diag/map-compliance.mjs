@@ -104,6 +104,8 @@ const FRAMEWORKS = {
       compile: '8(2)',
       // A result that depends on the generated code, or loses digits, is data corrupted by a flaw.
       semantics: '9(3)(b)',
+      // Carrying on after a failure the program never tested goes on with data it never got.
+      errors: '9(3)(b)',
       // An input that stops the run, or drives an index out of range, is a flaw in validating it.
       abend: '9(3)(b)',
       hlasm: '9(4)(c)',
@@ -199,6 +201,7 @@ const FRAMEWORKS = {
       web: 'DA&M V', priv: 'IS II.C.7', log: 'IS II.C.19', zowe: 'IS II.C.19',
       compile: 'DA&M IV',
       semantics: 'DA&M V',
+      errors: 'DA&M V',
       abend: 'DA&M V',
       hlasm: 'IS II.C.7',
       crypto: 'IS II.C.19',
@@ -310,6 +313,7 @@ const FRAMEWORKS = {
       web: 'SC-23', priv: 'AC-6', log: 'SI-11', zowe: 'IA-5',
       compile: 'CM-8',
       semantics: 'SI-2',
+      errors: 'SI-2',
       abend: 'SI-10',
       hlasm: 'AC-6',
       crypto: 'SC-13',
@@ -389,7 +393,7 @@ FRAMEWORKS.cobit2019 = {
   documentLevel: ['BAI03.06'],
   prefix: '',
   perRule: { ...toCobit(FRAMEWORKS.nist80053.perRule), 'ims-senseg-unknown-segment': 'DSS06.02', 'ims-definition-inconsistent': 'DSS06.02' },
-  perSet: { ...toCobit(FRAMEWORKS.nist80053.perSet), semantics: 'DSS06.02' },
+  perSet: { ...toCobit(FRAMEWORKS.nist80053.perSet), semantics: 'DSS06.02', errors: 'DSS06.02' },
   exfil: NIST_TO_COBIT[FRAMEWORKS.nist80053.exfil],
   frame: {
     'DSS06.02': 'That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.',

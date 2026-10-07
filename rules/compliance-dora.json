@@ -1863,6 +1863,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-response-unchecked",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS command given RESP or NOHANDLE is not tested before the program relies on it. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "hidden-payload-in-identification-area",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -2089,6 +2102,19 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A COMPUTE has an intermediate result wider than the compiler carries, so high-order digits can be lost. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "io-status-unchecked",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A file I/O statement's FILE STATUS is not tested before the program relies on it. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -2847,6 +2873,19 @@
     "doc": "dora",
     "retrieved": "2026-09-20",
     "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "sql-status-unchecked",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An EXEC SQL statement's SQLCODE is not tested before the program relies on it. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
    }
   },
   {

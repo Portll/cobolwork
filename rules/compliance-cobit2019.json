@@ -1728,6 +1728,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-response-unchecked",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A CICS command given RESP or NOHANDLE is not tested before the program relies on it. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "hidden-payload-in-identification-area",
    "framework": "cobit-2019",
    "clause": "DSS06.02",
@@ -1936,6 +1948,18 @@
    "framework": "cobit-2019",
    "clause": "DSS06.02",
    "rationale": "The rule reports: A COMPUTE has an intermediate result wider than the compiler carries, so high-order digits can be lost. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "io-status-unchecked",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A file I/O statement's FILE STATUS is not tested before the program relies on it. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",
@@ -2608,6 +2632,18 @@
    "framework": "cobit-2019",
    "clause": "BAI09.01",
    "rationale": "The rule reports: A DFSORT or ICETOOL step names an exit routine on a MODS statement, a load module the sort loads and runs. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "sql-status-unchecked",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An EXEC SQL statement's SQLCODE is not tested before the program relies on it. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
    "source": {
     "doc": "cobit2019",
     "retrieved": "2026-09-20",

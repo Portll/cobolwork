@@ -1,0 +1,9 @@
+{
+ "id": "119-a-select-whose-sqlcode-is-tested",
+ "title": "The same SELECT with SQLCODE tested before the host variable is used",
+ "cwe": "CWE-252",
+ "expect": [],
+ "negativeFor": [
+  "sql-status-unchecked"
+ ]
+}

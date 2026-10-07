@@ -5,5 +5,8 @@
  "expect": [],
  "negativeFor": [
   "database-to-outbound-http"
+ ],
+ "alsoExpected": [
+  "sql-status-unchecked"
  ]
 }

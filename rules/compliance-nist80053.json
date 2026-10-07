@@ -1872,6 +1872,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-response-unchecked",
+   "framework": "nist-800-53r5",
+   "clause": "SI-2",
+   "title": "Flaw Remediation",
+   "rationale": "The rule reports: A CICS command given RESP or NOHANDLE is not tested before the program relies on it. That is a known system flaw present in the build, which this control requires be identified, reported and corrected.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Identify, report, and correct system flaws"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "hidden-payload-in-identification-area",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -2098,6 +2111,19 @@
    "clause": "SI-2",
    "title": "Flaw Remediation",
    "rationale": "The rule reports: A COMPUTE has an intermediate result wider than the compiler carries, so high-order digits can be lost. That is a known system flaw present in the build, which this control requires be identified, reported and corrected.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Identify, report, and correct system flaws"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "io-status-unchecked",
+   "framework": "nist-800-53r5",
+   "clause": "SI-2",
+   "title": "Flaw Remediation",
+   "rationale": "The rule reports: A file I/O statement's FILE STATUS is not tested before the program relies on it. That is a known system flaw present in the build, which this control requires be identified, reported and corrected.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -2830,6 +2856,19 @@
     "doc": "nist80053",
     "retrieved": "2026-09-20",
     "quote": "Develop and document an inventory of system components"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "sql-status-unchecked",
+   "framework": "nist-800-53r5",
+   "clause": "SI-2",
+   "title": "Flaw Remediation",
+   "rationale": "The rule reports: An EXEC SQL statement's SQLCODE is not tested before the program relies on it. That is a known system flaw present in the build, which this control requires be identified, reported and corrected.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Identify, report, and correct system flaws"
    }
   },
   {

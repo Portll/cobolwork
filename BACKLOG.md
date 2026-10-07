@@ -598,12 +598,13 @@ that declares it rather than to whoever merged the findings. What that specifica
   one state per context: one Unieuro walk holds 32,107 contexts over 6,857 nodes.
 
   A node with eight or more return edges holds them by call site, and a state with a call context
-  looks only at its own call's return. With the bounds lifted, ACAS's flow set takes 264 s against
-  410 s and reports the same. It needs 79 million edges for its largest walk and 2.0 billion in all;
-  under today's bounds it walks every source but cuts 82 walks, with 120 findings of the 185 a walk
-  without bounds reports. Unieuro walks about 320 sources before the bound. Walking every Unieuro
-  source needs the walk to share work across call contexts or across sources, which today's walk,
-  one breadth-first search per source with its first route kept, cannot do exactly.
+  looks only at its own call's return. The bounds are what ACAS needs with a margin, 79 million
+  edges for one walk and 2.1 billion in all (operator, 2026-10-07): its flow set takes about 265 to
+  290 s at 3.8 GB, walks every source and reports 185 findings, where the earlier bounds of 5
+  million and 500 million cut 82 walks and gave 120. Unieuro walks about 320 of its 166,586 sources
+  before the total bound. Walking every Unieuro source needs the walk to share work across call
+  contexts or across sources, which today's walk, one breadth-first search per source with its
+  first route kept, cannot do exactly.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

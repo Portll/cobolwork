@@ -58,6 +58,19 @@ test('a message id is kept apart from the message, and an IWR id is undecided at
   assert.equal(run(8, 'P.cbl:3:8: IWR0001-S XML PARSE VALIDATING WITH FILE S').failed.length, 1);
 });
 
+test('at 12 the id decides before the words: IWS, IWC and IGY fail the program though they say "not supported", IWR does not', posix, () => {
+  const iws = run(12, 'P.cbl:3:8: IWS0102-S the Communication feature (COMMUNICATION SECTION) is not supported by Enterprise COBOL');
+  assert.deepEqual([iws.failed.length, iws.failed[0].id], [1, 'IWS0102']);
+  assert.equal(ironworkVerdict(iws), false);
+  assert.equal(run(12, 'P.cbl:3:8: IWC0107-S FUNCTION F: a user-defined function is not supported here yet').failed.length, 1);
+  assert.equal(run(12, 'P.cbl:3:8: IGYPS2121-S X is not supported here').failed.length, 1);
+  const iwr = run(12, 'P.cbl:3:8: IWR0006-S the COMMUNICATION SECTION is not supported yet');
+  assert.equal(iwr.notModelled.length, 1);
+  assert.equal(ironworkVerdict(iwr), null);
+  assert.equal(run(12, 'P.cbl:3:8: IWC0001-S DIBSTAT is not defined').notModelled.length, 1);
+  assert.equal(run(12, 'P.cbl:3:8: IWC0001-S SQLCODE is not defined').notModelled.length, 1);
+});
+
 test('an informational line is not an error, with a position or without', posix, () => {
   assert.equal(run(12, 'P.cbl:3:8: informational: a note').failed.length, 0);
   assert.equal(run(12, 'P.cbl: informational: a note').failed.length, 0);

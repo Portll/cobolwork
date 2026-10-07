@@ -30,8 +30,13 @@ the check failed and the program carried on reaches the index out of range. Wher
 leaves is safe for the sink, the route is not a finding at
 all: a value that can only be one of a list of literals, digits where a command, a statement or a
 job is built, a bound at both ends where a subscript or reference modification indexes a table
-(at least 1 and at most the table's size). Such routes are listed under `checked`, with the
-check that stops them. A buffer tested for one prompt and used for another, or tested in a paragraph
+(at least 1 and at most the table's size). A program that sets an environment variable by name
+(`DISPLAY ... UPON ENVIRONMENT-NAME` and `ENVIRONMENT-VALUE`, or `SET ENVIRONMENT`) passes the value
+on to a literal command that reads the variable. Where the command reads it only inside double
+quotes, as an argument of a program that does not run its arguments, the value is safe after a test
+of the whole field against a SPECIAL-NAMES class with no shell syntax in it, and with no leading `-`
+([remediation-gate.md](spec/remediation-gate.md) §5b). Such routes are listed under `checked`, with
+the check that stops them. A buffer tested for one prompt and used for another, or tested in a paragraph
 performed after the use, keeps its full severity and says where the check it did not get is
 (`checkElsewhere`). Equality counts only where it pins the value: inside `IF X = 'A'`, or after an
 `EVALUATE` whose `WHEN OTHER` ends the run or leaves; `IF X = SPACES` before a use, and an

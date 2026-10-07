@@ -152,6 +152,32 @@ The kinds come from the rule. A path rule's id is its source kind and its sink k
 source and 22 sink kinds. A test holds every path rule to that. A rule that spelled none would have
 no listing outcome, and could only be `gone-unexplained`.
 
+### 5b. A command that reads a variable
+
+A fix to an `os-command` sink can stop building the command from the input and run a fixed command
+that reads the value from an environment variable, as the reviewed fix to CH7ASG02 does (commitwork-sidecar
+`evaluations/hazop_2026-10-01_ch7asg02-printer-command.md`). The flow engine follows the value into
+the variable and on to the command, and credits it only where all of these hold (operator ruling,
+2026-10-07):
+
+- The program sets the variable by name: `DISPLAY 'NAME' UPON ENVIRONMENT-NAME` then `DISPLAY value
+  UPON ENVIRONMENT-VALUE` in the same paragraph, or `SET ENVIRONMENT 'NAME' TO value`.
+- The command is a literal, and every place it reads the variable is inside double quotes, as an
+  argument of a simple command whose program is literal text, outside any command substitution and
+  not a redirection's target (`lib/shell-command.mjs`). The shell expands such a reference to one
+  word and never reads it as syntax. A program that runs its arguments - a shell, `eval`, `env`,
+  `xargs`, `sudo`, an interpreter and the like - does not count.
+- On every route, before the value is set, the whole field passed a test against a class
+  SPECIAL-NAMES defines, and none of the class's characters is one a shell reads as syntax or a
+  control character. A space may be in it: the field is padded with spaces, and the quotes keep them.
+  A range is read in both ASCII and EBCDIC, so `'A' THRU 'Z'` also holds `}` and `\`, and is written
+  `'A' THRU 'I' 'J' THRU 'R' 'S' THRU 'Z'` instead.
+- The value cannot be read as an option: the class has no `-`, or a test `X(1:1) NOT = '-'` holds.
+
+The route is then in `checked` with a guard that stops it, and the outcome is `cleared-by-check`. A
+reference that fails any of these leaves the finding reported at the command, lowered where a check
+ran.
+
 ## 6. Pairing
 
 A finding in the head is paired with one in the base when they agree on:
@@ -290,6 +316,18 @@ applies the patch to the working tree or a second commit.
 #### G1.8 A route cut between its ends is undecided
     When  the patch deletes the MOVE that carried the value from the ACCEPT to the CALL
     Then  the outcome is gone-unexplained, the verdict is undecided, and a reason says a person decides
+
+#### G1.10 A fixed command reading the checked field as one quoted argument passes
+    Given a program that passes command-line input to CALL 'SYSTEM'
+    When  the patch tests the field against a class with no shell syntax and for a leading '-',
+          sets it in an environment variable, and runs a literal command that reads the variable
+          as one quoted argument
+    Then  the outcome is cleared-by-check and the verdict is pass
+
+#### G1.11 A command reading the variable any other way, or a weaker check, is not a pass
+    When  the command reads the variable unquoted, or through sh -c, or the class is one EBCDIC
+          range, or holds a shell metacharacter, or nothing tests the first character
+    Then  the outcome is still-reported or lowered-by-check, and the verdict is not pass
 
 #### G1.9 An unknown fingerprint is refused
     When  the target names a fingerprint the base does not hold

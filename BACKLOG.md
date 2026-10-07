@@ -653,15 +653,6 @@ only one of the five that does.
 
 ## Integration
 
-- **The gate cannot judge a sound fix to a command sink.** The reviewed fix to
-  `file-record-to-os-command` in manuelmrtz_Cobol-Exercises' CH7ASG02 runs a literal command that
-  reads the printer name from a quoted environment variable, and tests the name with a user-defined
-  `CLASS` before setting it. `cobolwork gate` leaves it undecided (`gone-unexplained`): the engine
-  follows the value into the environment and no further, and credits only a list of literals,
-  digits or a bound as a check on a command. Two changes would let it pass: a parameterised command
-  (a literal command reading a quoted variable set from a checked field) as a cut route, and a
-  class test over the field's full length as a restricting check. The fix and its HAZOP are in
-  commitwork-sidecar `evaluations/hazop_2026-10-01_ch7asg02-printer-command.md`.
 - **Four of the mainframe credential rules are offered to Betterleaks in a pull request awaiting
   review** (betterleaks/betterleaks#379, from the fork Portll/betterleaks, closing issue #378).
   gitleaks merges no new rules; its author's successor, Betterleaks, does. `jcl-racf-password`,

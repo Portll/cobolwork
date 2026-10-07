@@ -156,6 +156,59 @@ test('G1.8 A route cut between its ends is undecided', { skip }, () => {
   assert.match(doc.reasons[0], /a person decides/);
 });
 
+// The reviewed fix to CH7ASG02 in miniature: the name is checked against a class over the whole
+// field and for a leading '-', set in the environment, and read by a fixed command as one quoted
+// argument (docs/spec/remediation-gate.md §5b).
+const QUOTED = `CALL 'SYSTEM' USING 'lp -d "$CW_QUEUE" report.txt'`;
+const SAFE_CLASS = ["'A' THRU 'I' 'J' THRU 'R' 'S' THRU 'Z'", "'0' THRU '9' '-' '_' SPACE."];
+const CHECKED = "IF WS-IN IS QUEUE-CHAR AND WS-IN(1:1) NOT = '-'";
+const parameterised = ({ classLines = SAFE_CLASS, check = CHECKED, call = QUOTED } = {}) => cobol([
+  '       IDENTIFICATION DIVISION.',
+  '       PROGRAM-ID. P.',
+  '       ENVIRONMENT DIVISION.',
+  '       CONFIGURATION SECTION.',
+  '       SPECIAL-NAMES.',
+  `           CLASS QUEUE-CHAR IS ${classLines[0]}`,
+  ...classLines.slice(1).map((l) => `               ${l}`),
+  '       DATA DIVISION.',
+  '       WORKING-STORAGE SECTION.',
+  '       01 WS-IN               PIC X(8).',
+  "       01 WS-ERR              PIC X VALUE 'N'.",
+  "          88 ERR-ON           VALUE 'Y'.",
+  '       01 WS-CMD              PIC X(80).',
+  '       01 WS-OTHER            PIC X(80).',
+  '       PROCEDURE DIVISION.',
+  `           ${ACCEPT}`,
+  `           ${MOVE}`,
+  `           ${check}`,
+  "              DISPLAY 'CW_QUEUE' UPON ENVIRONMENT-NAME",
+  '              DISPLAY WS-IN UPON ENVIRONMENT-VALUE',
+  `              ${call}`,
+  '           END-IF',
+  '           GOBACK.',
+]);
+
+test('G1.10 A fixed command reading the checked field as one quoted argument passes', { skip }, () => {
+  const { doc } = gated({ 'P.cbl': BASE }, { 'P.cbl': parameterised() });
+  assert.equal(doc.outcome, 'cleared-by-check');
+  assert.equal(doc.verdict, 'pass');
+});
+
+test('G1.11 A command reading the variable any other way, or a weaker check, is not a pass', { skip }, () => {
+  const cases = {
+    unquoted: { call: "CALL 'SYSTEM' USING 'lp -d $CW_QUEUE report.txt'" },
+    'run by a shell': { call: `CALL 'SYSTEM' USING 'sh -c "$CW_QUEUE"'` },
+    'one EBCDIC range': { classLines: ["'A' THRU 'Z' '0' THRU '9'", "'-' '_' SPACE."] },
+    'a class with a metacharacter': { classLines: SAFE_CLASS.map((l, i) => (i ? `';' ${l}` : l)) },
+    'no first-character check': { check: 'IF WS-IN IS QUEUE-CHAR' },
+  };
+  for (const [name, parts] of Object.entries(cases)) {
+    const { doc } = gated({ 'P.cbl': BASE }, { 'P.cbl': parameterised(parts) });
+    assert.notEqual(doc.verdict, 'pass', name);
+    assert.ok(['still-reported', 'lowered-by-check'].includes(doc.outcome), `${name}: ${doc.outcome}`);
+  }
+});
+
 test('G1.9 An unknown fingerprint is refused', { skip }, () => {
   const root = repo({ 'P.cbl': BASE });
   assert.throws(() => gate(root, '0'.repeat(32)), (e) => e.code === 'EGATETARGET');

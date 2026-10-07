@@ -379,7 +379,9 @@ as what it is, and a file with no HLASM operation the reader recognises (x86, 65
 of `EQU`s) is counted as unrecognised. A disassembler's listing, its object code, characters and offset
 to the right of each line, is counted as a listing, and a manual or article saved as `.asm`, whose
 statements read as English and are mostly refused, as a document; neither is read for findings or
-counted against coverage.
+counted against coverage. A file is read past its first `END`, each program after it in turn, as
+HLASM's default `BATCH` option assembles them; JCL, SMP/E and IEBUPDTE cards and an end-of-file mark,
+which begin no assembler statement, are set aside wherever they stand rather than refused.
 
 **The module a CALL reaches.** A COBOL `CALL 'NAME'` that no COBOL program declares may be an
 assembler module. A `CSECT` or `ENTRY` of that name is reported as the module the call reaches, and

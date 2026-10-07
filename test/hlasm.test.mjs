@@ -240,6 +240,13 @@ test('a file holding several programs is read to its end, as HLASM assembles a b
   assert.deepEqual(readHlasm(batch).defines.map((d) => d.name), ['FIRST', 'SECOND']);
 });
 
+test('JCL and SMP/E cards in an SMP/E package are set aside, not refused, wherever they stand', () => {
+  const pkg = asm('         MACRO', '         $TQE', '         MEND', '++JCLIN.', "//STEPASM  EXEC PGM=ASMA90,PARM='DECK'", '//SYSLIB   DD   DISP=SHR,DSN=SYS1.SMPMTS', card('P', 'CSECT'), card('', 'BR', '14'), card('', 'END'));
+  const r = scanHlasm(tree({ 'asm/PKG.asm': pkg }));
+  assert.equal(r.summary.statementsNotRead, undefined);
+  assert.equal(r.summary.assemblerFiles, 1);
+});
+
 test('a source macro one program of a batch defines is not the next program\'s', () => {
   const src = asm('         MACRO', '         LOCAL', '         MEND', card('A', 'CSECT'), card('', 'LOCAL'), card('', 'END'), card('B', 'CSECT'), card('', 'LOCAL'), card('', 'END'));
   const calls = readHlasmStatements(src).statements.filter((s) => s.operation === 'LOCAL' && !s.prototype);

@@ -414,10 +414,10 @@ and to a COBIT 2019 practice by identifier alone:
 
 | File | Instrument | Rules mapped |
 |---|---|---|
-| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 207 |
-| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 205, and 2 recorded as unmapped |
-| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 205, and 2 recorded as unmapped |
-| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 205, and 2 recorded as unmapped |
+| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 233 |
+| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 231, and 2 recorded as unmapped |
+| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 231, and 2 recorded as unmapped |
+| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 231, and 2 recorded as unmapped |
 
 A COBIT 2019 row names the objective or practice and gives this project's own rationale; no ISACA
 text is reproduced, so reading what a practice says needs a copy of the framework. The practice is
@@ -425,11 +425,16 @@ chosen at the NIST control, through a crosswalk in `diag/map-compliance.mjs`, so
 from the rule's NIST clause.
 
 `node diag/map-compliance.mjs` refuses to write a quote the cached instrument does not contain, and
-every scan carries the mapping as `ruleCompliance`. The clause choice is a judgement that no
+every scan carries the mapping as `ruleCompliance`, and SARIF on each rule descriptor as `properties.compliance`. The clause choice is a judgement that no
 qualified assessor has reviewed. Where no control genuinely covers a rule, as for committing an LPAR
 name to a repository, the rule is recorded as unmapped with a reason rather than mapped to the
 nearest control that reads plausibly. What else the mapping does not claim is in
 [docs/rule-sets.md](docs/rule-sets.md#compliance).
+
+The same files map the evidence cobolwork and ironwork write: a run journal's records, its chain,
+the provenance statement and ironwork's options in force, each to its NIST control and COBIT
+practice, and `evidence verify` names the clauses of what it checked
+([docs/spec/evidence.md](docs/spec/evidence.md) §9).
 
 ## Tests
 

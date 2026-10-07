@@ -183,6 +183,13 @@ test('an incomplete set says whether it is a configuration gap or a coverage gap
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('a rule descriptor carries the framework clauses the scan maps its rule to', () => {
+  const report = scanAll(CASES, { repos: null });
+  const rule = sarifOf(report).tool.extensions.flatMap((e) => e.rules).find((d) => d.id === 'argv-or-env-to-os-command');
+  assert.deepEqual(rule.properties.compliance, report.ruleCompliance['argv-or-env-to-os-command']);
+  assert.deepEqual(rule.properties.compliance.map((c) => c.framework).sort(), ['cobit-2019', 'dora', 'ffiec', 'nist-800-53r5']);
+});
+
 test('each rule that names a CWE is related to that taxon in the run\'s CWE taxonomy', () => {
   const report = scanAll(CASES, { repos: null });
   const run = sarifOf(report);

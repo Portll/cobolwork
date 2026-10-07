@@ -1,0 +1,9 @@
+{
+ "id": "128-a-read-whose-at-end-phrase-handles-it",
+ "title": "A READ whose AT END phrase handles its status, after a tested OPEN",
+ "cwe": "CWE-252",
+ "expect": [],
+ "negativeFor": [
+  "io-status-unchecked"
+ ]
+}

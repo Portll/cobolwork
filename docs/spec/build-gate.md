@@ -572,10 +572,22 @@ Four things make that answer right:
    it into, and a `CALL` handed it. The taint checks keep their own reading, where equality restricts
    nothing.
 
+Three narrowings are the reading the operator chose on 2026-10-07, after the first corpus run
+reported 33,215, 22,483 and 6,950 findings:
+
+- A file statement with an `AT END`, `INVALID KEY` or `EXCEPTION` phrase, or the `NOT` form of one,
+  handles its own status. It is not reported, though a route into it from an earlier statement on the
+  file still relies on that statement.
+- `CLOSE` sets no status that is reported, for a file or a cursor. It still relies on the statement
+  before it.
+- A cursor is judged by its `FETCH`. An `OPEN` or `FETCH` of a cursor is reported only where no
+  later statement of the same cursor, in the source, has its status tested on every route, or is
+  covered by `WHENEVER SQLERROR GO TO`.
+
 | Rule | Set | Sev | CWE | Reported when |
 |---|---|---|---|---|
-| `io-status-unchecked` | `errors` | med | CWE-252 | a file declares `FILE STATUS`, no `USE AFTER ERROR` declarative covers it, and a route from an I/O statement on it reaches a read of its record, or the next I/O statement on it, without testing the status |
-| `sql-status-unchecked` | `errors` | med | CWE-252 | a route from an `EXEC SQL` reaches a read of a host variable it wrote, or the next `EXEC SQL`, without testing `SQLCODE` or `SQLSTATE`, and no `WHENEVER SQLERROR GO TO` precedes it in the source. `WHENEVER` applies by position in the source, as the precompiler applies it, not by route |
+| `io-status-unchecked` | `errors` | med | CWE-252 | a file declares `FILE STATUS`, no `USE AFTER ERROR` declarative covers it, and a route from an I/O statement on it other than `CLOSE`, with no `AT END`, `INVALID KEY` or `EXCEPTION` phrase, reaches a read of its record, or the next I/O statement on it, without testing the status |
+| `sql-status-unchecked` | `errors` | med | CWE-252 | a route from an `EXEC SQL` reaches a read of a host variable it wrote, or the next `EXEC SQL`, without testing `SQLCODE` or `SQLSTATE`, and no `WHENEVER SQLERROR GO TO` precedes it in the source. `WHENEVER` applies by position in the source, as the precompiler applies it, not by route. A `CLOSE` is not reported, nor a cursor's `OPEN` or `FETCH` that a later statement of the cursor answers for |
 | `cics-response-unchecked` | `errors` | med | CWE-252 | a command with `RESP(x)` or `NOHANDLE` and a route from it to a read of what it wrote, or the next `EXEC CICS`, that does not test `x`, `EIBRESP` or `EIBRCODE` |
 
 ### 11b. Losing data without an abend

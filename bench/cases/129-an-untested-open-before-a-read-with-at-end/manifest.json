@@ -1,0 +1,11 @@
+{
+ "id": "129-an-untested-open-before-a-read-with-at-end",
+ "title": "The same READ after an OPEN whose status nobody tests",
+ "cwe": "CWE-252",
+ "expect": [
+  {
+   "rule": "io-status-unchecked",
+   "file": "CUSTRD.cbl"
+  }
+ ]
+}

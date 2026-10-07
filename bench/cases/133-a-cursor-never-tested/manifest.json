@@ -1,0 +1,15 @@
+{
+ "id": "133-a-cursor-never-tested",
+ "title": "The same cursor fetched once and used, with SQLCODE never tested: the OPEN and the FETCH",
+ "cwe": "CWE-252",
+ "expect": [
+  {
+   "rule": "sql-status-unchecked",
+   "file": "CUSTCUR.cbl"
+  },
+  {
+   "rule": "sql-status-unchecked",
+   "file": "CUSTCUR.cbl"
+  }
+ ]
+}

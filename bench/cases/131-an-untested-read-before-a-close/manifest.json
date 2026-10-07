@@ -1,0 +1,11 @@
+{
+ "id": "131-an-untested-read-before-a-close",
+ "title": "A READ with no phrase and no status test, followed by the CLOSE",
+ "cwe": "CWE-252",
+ "expect": [
+  {
+   "rule": "io-status-unchecked",
+   "file": "CUSTRD.cbl"
+  }
+ ]
+}

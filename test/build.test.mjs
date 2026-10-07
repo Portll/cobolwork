@@ -957,6 +957,13 @@ test('B8.2 A FILE STATUS tested on every route is not', () => {
     '    PERFORM CHECK-FS.', 'CHECK-FS.', "    IF WS-FS NOT = '00' STOP RUN END-IF."])), [], 'a test in a performed paragraph counts');
   assert.deepEqual(io(fileProgram(["MOVE '00' TO WS-FS", ...OPENED, 'READ CUSTFILE', ...FS_TEST, 'MOVE CUST-NAME TO WS-NAME', 'GOBACK.'])), [],
     'a MOVE into the status field is not an I/O');
+  assert.deepEqual(io(fileProgram([...OPENED, 'READ CUSTFILE', '    AT END STOP RUN', 'END-READ', 'MOVE CUST-NAME TO WS-NAME', 'GOBACK.'])), [],
+    'an AT END phrase handles the READ');
+  assert.deepEqual(io(fileProgram([...OPENED, 'READ CUSTFILE', '    NOT AT END MOVE CUST-NAME TO WS-NAME', 'END-READ', 'GOBACK.'])), [],
+    'so does NOT AT END alone');
+  assert.deepEqual(io(fileProgram([...OPENED, 'CLOSE CUSTFILE', ...OPENED, 'GOBACK.'])), [], 'a CLOSE sets nothing to report');
+  assert.deepEqual(io(fileProgram([...OPENED, 'READ CUSTFILE', 'CLOSE CUSTFILE', 'GOBACK.'])), ['io-status-unchecked'],
+    'a CLOSE still relies on the READ before it');
 });
 
 test('B8.3 A status test made before the I/O does not count after it', () => {
@@ -983,6 +990,12 @@ test('B8.6 An EXEC SQL whose SQLCODE is never tested is reported', () => {
   assert.deepEqual(sql({ 'CUSTSQL.cbl': p }), ['sql-status-unchecked'], 'SQLCA not in the tree');
   assert.deepEqual(sql({ 'CUSTSQL.cbl': p, 'SQLCA.cpy': SQLCA }), ['sql-status-unchecked'], 'SQLCA in the tree');
   assert.deepEqual(sql({ 'CUSTSQL.cbl': program('CUSTSQL', SQL_WS, [...SELECT, 'IF SQLCODE NOT = 0', '    GOBACK', 'END-IF', 'MOVE WS-NAME TO WS-OUT', 'GOBACK.']) }), []);
+  const CURSOR_WS = [...SQL_WS, '    EXEC SQL DECLARE C1 CURSOR FOR', '        SELECT NAME FROM CUST END-EXEC.'];
+  const cursor = (fetched) => sql({ 'CUSTSQL.cbl': program('CUSTSQL', CURSOR_WS, ['EXEC SQL OPEN C1 END-EXEC', ...fetched, 'EXEC SQL CLOSE C1 END-EXEC', 'GOBACK.']) });
+  assert.deepEqual(cursor(['EXEC SQL FETCH C1 INTO :WS-NAME END-EXEC', 'IF SQLCODE = 0', '    MOVE WS-NAME TO WS-OUT', 'END-IF']), [],
+    'a tested FETCH answers for the OPEN before it');
+  assert.deepEqual(cursor(['EXEC SQL FETCH C1 INTO :WS-NAME END-EXEC', 'MOVE WS-NAME TO WS-OUT']), ['sql-status-unchecked', 'sql-status-unchecked'],
+    'with nothing tested, the OPEN and the FETCH are both reported');
 });
 
 test('B8.7 WHENEVER SQLERROR GO TO covers what follows it, and CONTINUE does not', () => {

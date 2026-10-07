@@ -1,0 +1,9 @@
+{
+ "id": "130-a-close-whose-status-is-not-tested",
+ "title": "A file is closed and opened again, the CLOSE untested and the OPEN tested",
+ "cwe": "CWE-252",
+ "expect": [],
+ "negativeFor": [
+  "io-status-unchecked"
+ ]
+}

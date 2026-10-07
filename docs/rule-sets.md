@@ -344,7 +344,9 @@ on the same file, the next `EXEC SQL` or `EXEC CICS`, or a read of what it wrote
 the status: `io-status-unchecked`, `sql-status-unchecked` and `cics-response-unchecked` (CWE-252).
 Any condition naming the status field, a condition-name under it, `SQLCODE`, `SQLSTATE`, `EIBRESP`
 or a field the status was moved into counts as a test, on either outcome, as does a `CALL` handed the
-status; `AT END` and `INVALID KEY` do not, since they handle one condition and not a failed device. A
+status. A file statement with an `AT END`, `INVALID KEY` or `EXCEPTION` phrase, or its `NOT` form,
+handles its own status, and a `CLOSE` sets none that is reported. A cursor is judged by its `FETCH`:
+an `OPEN` or `FETCH` is reported only where no later statement of the cursor tests the status. A
 file a `USE AFTER ERROR` declarative covers is not reported, nor an `EXEC SQL` after `WHENEVER
 SQLERROR GO TO` (by position in the source, as the precompiler applies it), nor a `RETURN` or `XCTL`,
 which comes back only when it failed. A program whose order could not be read is counted as

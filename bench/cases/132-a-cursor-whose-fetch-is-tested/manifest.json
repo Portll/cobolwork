@@ -1,0 +1,9 @@
+{
+ "id": "132-a-cursor-whose-fetch-is-tested",
+ "title": "A cursor opened untested and fetched with SQLCODE tested",
+ "cwe": "CWE-252",
+ "expect": [],
+ "negativeFor": [
+  "sql-status-unchecked"
+ ]
+}

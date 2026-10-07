@@ -62,8 +62,8 @@ function assignsFromItem(f, root) {
 // and a control that should not. A byte whose low half is not a digit ends zoned arithmetic with a
 // data exception (S0C7, ASRA in a CICS task), which the marker cannot: each of its letters reads as
 // a digit. Nines put a subscript, start, length or count past the table or field, which under
-// SSRANGE ends the run with U4038; ones keep it inside most.
-const BEYOND = { codes: ['U4038'], value: '9', named: 'nines', control: '1', controlNamed: 'ones', ssrange: true };
+// SSRANGE ends the run with U4038, transaction abend 4038 in a CICS task; ones keep it inside most.
+const BEYOND = { codes: ['U4038', '4038'], value: '9', named: 'nines', control: '1', controlNamed: 'ones', ssrange: true };
 export const ABENDS = {
   arithmetic: { codes: ['S0C7', 'ASRA'], value: '*', named: 'asterisks', control: '0', controlNamed: 'digits' },
   subscript: BEYOND,

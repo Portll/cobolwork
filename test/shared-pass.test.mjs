@@ -56,6 +56,30 @@ test('a file that cannot be read or parsed fails the same way for every set, and
   assert.equal(calls.text, 3);
 });
 
+test('a set reading bytes and one reading text share one read of each file where the tree decodes its bytes', () => {
+  const reads = [];
+  const tree = sharingTree({
+    list: () => ['a.cbl', 'b.cbl'],
+    bytes: (p) => { reads.push(p); return Buffer.from(`src ${p}`, 'latin1'); },
+    text: () => { throw new Error('text is read through decode'); },
+    decode: (buf) => ({ text: buf.toString('latin1') }),
+  });
+  function* bytesReader() {
+    const seen = [];
+    const run = yield loopOver(tree.list(), (f) => { seen.push(tree.bytes(f).length); return 1; });
+    return { seen, run };
+  }
+  function* textReader() {
+    const seen = [];
+    const run = yield loopOver(tree.list(), (f) => { seen.push(tree.text(f).text); return 1; });
+    return { seen, run };
+  }
+  const [texts, sizes] = driveTogether([textReader(), bytesReader()], tree);
+  assert.deepEqual(texts.seen, ['src a.cbl', 'src b.cbl']);
+  assert.deepEqual(sizes.seen, [9, 9]);
+  assert.deepEqual(reads, ['a.cbl', 'b.cbl']);
+});
+
 test('a byte budget stops only the set that set it', () => {
   const { tree } = fakeTree(['a.cbl', 'b.cbl', 'c.cbl']);
   const [small, whole] = driveTogether([reader(tree, () => true, { maxBytes: 1 }), reader(tree, () => true)], tree);

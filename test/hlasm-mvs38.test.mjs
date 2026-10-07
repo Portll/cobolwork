@@ -39,6 +39,26 @@ test('ATTACH reads HIARCHY and JSCB, and DCB reads PGFX and AERR', () => {
   assert.match(parse('XDCB     DCB   DSORG=PS,MACRF=(E),PGFX=YES', OFF).reason, /PGFX=YES is an MVS 3.8 form/);
 });
 
+test('READ and WRITE read BTAM types, MF=(E,addr) and VTAM basic mode as MVS 3.8 forms', () => {
+  assert.deepEqual(parse('         READ  (1),T,MF=E').node.mvs38, ['type T']);
+  assert.match(parse('         READ  DECB1,T,DCB,AREA').reason, /type T is not one/);
+  assert.deepEqual(parse('         WRITE DECB2,TI,DCB,AREA,40').node.mvs38, ['type TI']);
+  const remote = parse('         READ  BCDECB1,DIF,(REGA),(REG5),,,(REG3),MF=(E,(1))');
+  assert.deepEqual([remote.node.mvs38, remote.node.mf, remote.node.list], [['MF=(E,addr)'], 'E', '(1)']);
+  const vtam = parse('         WRITE RPL=(RPLPTR),OPTCD=ASY,EXIT=DONE,ARG=(R4)');
+  assert.deepEqual([vtam.node.mvs38, vtam.node.rpl], [['RPL='], '(RPLPTR)']);
+  assert.match(parse('         READ  RPL=X,COLOUR=RED').reason, /unknown keyword COLOUR/);
+  assert.match(parse('         WRITE DECB2,TI,DCB,AREA,40', OFF).reason, /WRITE: type TI is an MVS 3.8 form/);
+  assert.match(parse('         WRITE RPL=X', OFF).reason, /WRITE: RPL= is an MVS 3.8 form/);
+});
+
+test('WTOR, GETMAIN and FREEMAIN read trailing empty operands as omitted', () => {
+  assert.equal(parse('         WTOR  ,,,,,MF=(E,(1))').status, 'parsed');
+  assert.equal(parse('         GETMAIN RC,LV=(0),SP=245,').status, 'parsed');
+  assert.equal(parse('         FREEMAIN RU,LV=8,A=(1),').status, 'parsed');
+  assert.match(parse('         GETMAIN RC,X,LV=8').reason, /extra positional operands: X/);
+});
+
 const SUPR = [
   'GOKEY0   CSECT',
   '         MODESET EXTKEY=SUPR',

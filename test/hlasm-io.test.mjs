@@ -148,7 +148,7 @@ test('READ and WRITE read the BDAM and BSAM forms and their list and execute for
   assert.equal(parse('         WRITE WDECB3,SZ,BDAMOUT').status, 'unparsed');
   assert.equal(parse('         WRITE WDECB3,SZ,BDAMOUT,AREA').status, 'parsed');
   assert.equal(parse("         WRITE DECBMODW,DK,0,'S','S',0,0,MF=L").status, 'parsed');
-  assert.match(parse('         READ  DECB,SF,DCB,AREA,MF=(E,LIST)').reason, /MF= value \(E,LIST\) is not L or E/);
+  assert.match(parseHlasmStatement(readHlasmStatements('         READ  DECB,SF,DCB,AREA,MF=(E,LIST)').statements[0], { mvs38: false }).reason, /READ: MF=\(E,addr\) is an MVS 3.8 form/);
   assert.match(parse('         READ  DECB,SF,,AREA').reason, /dcb address is missing/);
 });
 

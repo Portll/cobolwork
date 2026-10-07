@@ -353,7 +353,8 @@ IBM manual defining it. A `MODESET` that switches to key zero or supervisor stat
 and problem state is not reported. MVS 3.8's names for key zero (`EXTKEY=SUPR`, `SRM`, `RSM`,
 `VSM`) count as well. The reader takes the operands MVS 3.8's system macros accepted and z/OS 3.1's
 documentation does not list (the other `EXTKEY=` key names, `GETMAIN` and `FREEMAIN P`, `HIARCHY=`,
-`ATTACH JSCB=`, `DCB PGFX=` and `AERR=`) with the meaning those macros gave them;
+`ATTACH JSCB=`, `DCB PGFX=` and `AERR=`, BTAM's `READ` and `WRITE` types, VTAM's basic-mode
+`READ` and `WRITE RPL=`, and their `MF=(E,addr)`) with the meaning those macros gave them;
 `scan --no-mvs38-forms` refuses them instead. `EX` and `EXRL` run their target with its second byte from a
 register, which for a move is its length, and the cross-memory instructions (`PC`, `PR`, `PT`,
 `SSAR`, `LASP`) reach another address space; both are high. `RACROUTE`, `RACHECK` and `RACINIT`

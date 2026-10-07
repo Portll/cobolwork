@@ -255,6 +255,10 @@ const libraries = (ctx) => [...ctx.copyDirs.flatMap((d) => ['-I', d]), ...ctx.pr
 // PICTURE of more than 18 digits compiles only under ARITH(EXTEND).
 const NEEDED = [{ refused: /ARITH\(COMPAT\) allows/, option: 'ARITH(EXTEND)' }];
 
+// Refusals of a form ironwork reads only under --compliance extended, where it means what cobc's IBM
+// dialect gives it: a level-66 entry inside its record (IWX0032).
+const EXTENDED_READS = [/\bIWC0035-S\b/];
+
 // Why ironwork refuses the program under `options`, or null where it compiles.
 function refusalUnder(ctx, options) {
   const dir = options.length || ctx.rewrite ? mkdtempSync(join(tmpdir(), 'cobolwork-label-check-')) : null;
@@ -280,6 +284,11 @@ function compileOptions(ctx) {
     if (!why || !need.refused.test(why)) continue;
     options.push(need.option);
     why = refusalUnder(ctx, options);
+  }
+  if (why && !ctx.extended && EXTENDED_READS.some((r) => r.test(why))) {
+    const out = { ...compileOptions({ ...ctx, extended: true }), extended: true };
+    ctx.checked.set(key, out);
+    return out;
   }
   const out = why ? { why: `ironwork does not compile the program: ${why}` } : { options };
   ctx.checked.set(key, out);
@@ -351,8 +360,9 @@ export function labelFinding(f, root, opts) {
   // ironwork traces only under --compliance extended runs in that mode, so their labels are their
   // own strata.
   const extended = kinds?.sink === 'dynamic-file-path' && assignsFromItem(f, root);
-  const labelledOn = [kinds?.source === 'argv-or-env' && 'rewritten', extended && 'extended'].filter(Boolean).join('+');
-  const base = { source: 'execution', ...(labelledOn ? { labelledOn } : {}), rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line };
+  const strata = (ext) => [kinds?.source === 'argv-or-env' && 'rewritten', ext && 'extended'].filter(Boolean).join('+');
+  const stamped = (labelledOn) => ({ source: 'execution', ...(labelledOn ? { labelledOn } : {}), rule: f.rule, fingerprint: f.fingerprint, path: f.path, line: f.line });
+  let base = stamped(strata(extended));
   const unknown = (why) => ({ ...base, label: 'unknown', why });
   const byAbend = ABENDS[kinds?.sink];
   if (!kinds || (!TRACED[kinds.sink] && !byAbend)) return unknown(`ironwork does not trace the sink ${kinds?.sink ?? '?'}`);
@@ -379,6 +389,10 @@ export function labelFinding(f, root, opts) {
     }
   } catch { return unknown('the program does not parse'); }
   const compiled = compileOptions(ctx);
+  if (compiled.extended) {
+    ctx.extended = true;
+    base = stamped(strata(true));
+  }
   if (compiled.why) return unknown(compiled.why);
   // SSRANGE so that a range check ends the run.
   const options = [...(byAbend?.ssrange ? ['SSRANGE'] : []), ...compiled.options];
@@ -483,6 +497,8 @@ function main(argv) {
     process.stderr.write('usage: node bench/label.mjs <repository | corpus-root> [--corpus] [--ironwork path] [--out file] [--evidence dir] [--timeout ms] [--trace-input]\n');
     return 2;
   }
+  // The memory guard's free term is the whole machine, which macOS reports as free pages only.
+  process.env.COBOLWORK_FREE_MEMORY_MB ||= '1024';
   const out = label(target, opts);
   const text = `${JSON.stringify(out, null, 1)}\n`;
   if (opts.out) writeFileSync(opts.out, text);

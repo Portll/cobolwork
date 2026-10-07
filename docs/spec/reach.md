@@ -311,6 +311,9 @@ the DD name from the item's value and records the sink at the SELECT, the line c
 Those findings compile and run in that mode, whatever their source, and record `labelledOn:
 extended` (`rewritten+extended` for command-line input), each its own stratum. The sink's other
 form, an EXEC CICS FILE or DATASET option, ironwork does not trace, and those findings are unknown.
+A program ironwork refuses for a level-66 entry inside its record (IWC0035), which only
+`--compliance extended` reads (IWX0032), runs in that mode too, and its labels record `extended`
+the same way.
 
 ironwork runs with `--trace-marker`. The finding is confirmed where the run's sealed journal has a
 `sink` record at its line with the marker in the operand. Two kinds of finding are confirmed by

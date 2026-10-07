@@ -52,6 +52,14 @@ test('a job\'s in-stream data is fed through its DD, and a program of more than 
   assert.equal(verifyEvidence(evidence).verified, true);
 });
 
+test('a program ironwork reads only under --compliance extended runs there, and its label says so', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
+  const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
+  t.after(() => rmSync(evidence, { recursive: true, force: true }));
+  const out = label(join(import.meta.dirname, 'fixtures', 'label', 'renames'), { ironwork: IRONWORK, evidence });
+  assert.deepEqual(out.labels.map((l) => [l.rule, l.label, l.labelledOn]), [['file-record-to-dynamic-program-load', 'confirmed', 'extended']]);
+  assert.equal(verifyEvidence(evidence).verified, true);
+});
+
 test('taint\'s answer at an operation the marker missed is recorded, and the finding stays unknown', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
   const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
   t.after(() => rmSync(evidence, { recursive: true, force: true }));

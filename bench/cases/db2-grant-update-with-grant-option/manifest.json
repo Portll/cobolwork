@@ -1,0 +1,11 @@
+{
+ "id": "db2-grant-update-with-grant-option",
+ "title": "UPDATE on a table is granted to one user, who may grant it on",
+ "cwe": "CWE-269",
+ "expect": [
+  {
+   "rule": "db2-grant-with-grant-option",
+   "file": "GRANTS.sql"
+  }
+ ]
+}

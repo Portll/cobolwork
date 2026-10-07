@@ -65,6 +65,7 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | The estate | production names outside production jobs, routable addresses, compiler and runtime versions with published advisories |
 | Assembler | a switch to key zero or supervisor state, an instruction run through `EX`, cross-memory calls, a module named at run time, the security product called directly, and the CSECT or ENTRY a COBOL `CALL` or a job step reaches |
 | IMS and Db2 | a PSB letting a program change every segment it reads, a SENSEG naming no segment of its DBD, a `KEYLEN` or field that DBDGEN, PSBGEN or ACBGEN refuses; a GRANT to `PUBLIC`, `WITH GRANT OPTION` or of a system authority, and the exit routines and load modules that run inside Db2 |
+| PL/I | input reaching a sink through a PL/I program, as in COBOL; a `FETCH` of a module named at run time, an `ON` unit that ignores its condition, and where pointers, entry variables or the preprocessor take the flow out of sight |
 | Cryptography | a single-length DES key, an MD5 or SHA-1 hash, or a fixed initialization vector asked of ICSF, read from IBM's parameter lists; an outbound CICS connection asking for HTTP |
 | Secrets | a credential written into a program or copybook: a literal `VALUE` on an item named for one, or a literal password in `EXEC SQL CONNECT` or `EXEC CICS SIGNON` |
 
@@ -382,7 +383,25 @@ assembly, 99.5% parse on the dev corpus and 99.8% on the held-out one; the rest 
 kind. `bench/hlasm-locate/` holds small programs, one assembler feature each, with z390's answers
 recorded beside them, so the tests check the locator without z390.
 
-`bench/cases/` holds 137 CWE-labelled cases, each paired with a near-miss negative: the same shape
+PL/I has no compiler that may grade it, so its reader is measured by how much of a corpus it parses
+(`diag/pli-measure.mjs`, over `.pli`, `.pl1` and `.plx` files and `.inc` and `.pcx` include
+members), counted by statement kind, with every statement it does not parse named.
+The 500 set was used while building the reader. One of its repositories, `jcf608_PacificNationalBank`,
+is generated code and is counted apart. Measured 2026-10-07:
+
+| Corpus | Repositories | Files | Statements | Parsed |
+|---|---|---|---|---|
+| 500 repositories, dev, written by hand | 9 | 164 | 9,547 | 98.8% |
+| 500 repositories, dev, generated | 1 | 901 | 263,531 | 99.9% |
+| 200 repositories, held out | 3 | 31 | 1,768 | 99.8% |
+| 300 repositories, held out | 6 | 66 | 3,686 | 99.8% |
+
+Two repositories parse nothing, because the members measured there are `.inc` files that are not
+PL/I (three statements each). `jarora8_GitPlay` parses 89%, and most of the rest of
+the dev set's misses are its statements. Structure offsets are checked against hand-built fixtures
+and the Language Reference's own example, not against a compiler.
+
+`bench/cases/` holds 149 CWE-labelled cases, each paired with a near-miss negative: the same shape
 with the flaw removed. `node bench/run.mjs` scores any scanner's findings against them, by rule and
 file, never by line, and `npm test` fails if any case scores differently from its declaration.
 `--validate` compiles every COBOL case with GnuCOBOL, assembles every HLASM case with z390 when

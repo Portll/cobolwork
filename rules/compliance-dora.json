@@ -3251,6 +3251,71 @@
     "retrieved": "2026-09-20",
     "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-based-storage-addressing",
+   "framework": "dora",
+   "clause": "Article 8(4)",
+   "title": "Identification",
+   "rationale": "The rule reports: A program addresses storage through a pointer, so data flow through it is not followed. That is an interdependency between assets which no single file records, and mapping it is what this clause asks for.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-entry-variable-call",
+   "framework": "dora",
+   "clause": "Article 8(4)",
+   "title": "Identification",
+   "rationale": "The rule reports: A CALL through an entry variable dispatches to a procedure chosen at run time, so the callee is not known statically. That is an interdependency between assets which no single file records, and mapping it is what this clause asks for.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-error-condition-ignored",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: An ON unit for a condition does nothing with it, so the condition is silently ignored. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-fetch-title-variable",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A FETCH whose TITLE is not a literal names the module to load at run time. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-preprocessor-in-use",
+   "framework": "dora",
+   "clause": "Article 8(4)",
+   "title": "Identification",
+   "rationale": "The rule reports: A program uses PL/I preprocessor directives, so the source text is not the code that is compiled. That is an interdependency between assets which no single file records, and mapping it is what this clause asks for.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
+   }
   }
  ],
  "evidence": [],

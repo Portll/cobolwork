@@ -2985,6 +2985,66 @@
     "retrieved": "2026-09-20",
     "idsOnly": true
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-based-storage-addressing",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A program addresses storage through a pointer, so data flow through it is not followed. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-entry-variable-call",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A CALL through an entry variable dispatches to a procedure chosen at run time, so the callee is not known statically. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-error-condition-ignored",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: An ON unit for a condition does nothing with it, so the condition is silently ignored. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-fetch-title-variable",
+   "framework": "cobit-2019",
+   "clause": "DSS06.02",
+   "rationale": "The rule reports: A FETCH whose TITLE is not a literal names the module to load at run time. That is information processed without the control that keeps it valid, authorised and accurate, which is what this practice asks of business process controls.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-preprocessor-in-use",
+   "framework": "cobit-2019",
+   "clause": "BAI09.01",
+   "rationale": "The rule reports: A program uses PL/I preprocessor directives, so the source text is not the code that is compiled. That is a component the record of assets does not account for, which this practice requires be identified and recorded.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
   }
  ],
  "evidence": [

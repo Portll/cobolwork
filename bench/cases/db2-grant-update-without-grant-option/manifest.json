@@ -1,0 +1,9 @@
+{
+ "id": "db2-grant-update-without-grant-option",
+ "title": "The same grant without WITH GRANT OPTION",
+ "cwe": "CWE-269",
+ "expect": [],
+ "negativeFor": [
+  "db2-grant-with-grant-option"
+ ]
+}

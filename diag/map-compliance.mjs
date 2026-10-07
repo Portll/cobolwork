@@ -91,6 +91,8 @@ const FRAMEWORKS = {
       'ims-senseg-unknown-segment': '9(3)(b)',
       'ims-definition-inconsistent': '9(3)(b)',
       'db2-exit-routine-declared': '8(4)',
+      'pli-error-condition-ignored': '9(3)(b)',
+      'pli-fetch-title-variable': '9(3)(b)',
       'db2-external-routine': '8(4)',
     },
     perSet: {
@@ -109,6 +111,8 @@ const FRAMEWORKS = {
       // What a PCB or a GRANT lets a program or a user do is the access this clause limits.
       ims: '9(4)(c)',
       ddl: '9(4)(c)',
+      // What a static reading of PL/I cannot follow is, as for the opaque set, missing from the inventory.
+      pli: '8(4)',
     },
     exfil: '9(3)(a)',
     frame: {
@@ -185,6 +189,8 @@ const FRAMEWORKS = {
       'ims-senseg-unknown-segment': 'DA&M V',
       'ims-definition-inconsistent': 'DA&M V',
       'db2-exit-routine-declared': 'DA&M IV',
+      'pli-error-condition-ignored': 'DA&M V',
+      'pli-fetch-title-variable': 'DA&M V',
       'db2-external-routine': 'DA&M IV',
     },
     perSet: {
@@ -198,6 +204,7 @@ const FRAMEWORKS = {
       crypto: 'IS II.C.19',
       ims: 'IS II.C.7',
       ddl: 'IS II.C.7',
+      pli: 'DA&M IV',
     },
     exfil: 'IS II.C.19',
     frame: {
@@ -291,6 +298,8 @@ const FRAMEWORKS = {
       'ims-senseg-unknown-segment': 'SI-2',
       'ims-definition-inconsistent': 'SI-2',
       'db2-exit-routine-declared': 'CM-8',
+      'pli-error-condition-ignored': 'SI-10',
+      'pli-fetch-title-variable': 'SI-10',
       'db2-external-routine': 'CM-8',
     },
     perSet: {
@@ -304,6 +313,7 @@ const FRAMEWORKS = {
       crypto: 'SC-13',
       ims: 'AC-6',
       ddl: 'AC-6',
+      pli: 'CM-8',
     },
     exfil: 'SC-7',
     frame: {

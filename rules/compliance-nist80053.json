@@ -3234,6 +3234,71 @@
     "retrieved": "2026-09-20",
     "quote": "Identify, report, and correct system flaws"
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-based-storage-addressing",
+   "framework": "nist-800-53r5",
+   "clause": "CM-8",
+   "title": "System Component Inventory",
+   "rationale": "The rule reports: A program addresses storage through a pointer, so data flow through it is not followed. That is a component the inventory does not accurately account for, which this control requires be documented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Develop and document an inventory of system components"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-entry-variable-call",
+   "framework": "nist-800-53r5",
+   "clause": "CM-8",
+   "title": "System Component Inventory",
+   "rationale": "The rule reports: A CALL through an entry variable dispatches to a procedure chosen at run time, so the callee is not known statically. That is a component the inventory does not accurately account for, which this control requires be documented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Develop and document an inventory of system components"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-error-condition-ignored",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: An ON unit for a condition does nothing with it, so the condition is silently ignored. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-fetch-title-variable",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A FETCH whose TITLE is not a literal names the module to load at run time. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-preprocessor-in-use",
+   "framework": "nist-800-53r5",
+   "clause": "CM-8",
+   "title": "System Component Inventory",
+   "rationale": "The rule reports: A program uses PL/I preprocessor directives, so the source text is not the code that is compiled. That is a component the inventory does not accurately account for, which this control requires be documented.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Develop and document an inventory of system components"
+   }
   }
  ],
  "evidence": [

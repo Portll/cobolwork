@@ -1,0 +1,11 @@
+{
+ "id": "db2-sysadm-granted-to-a-user",
+ "title": "SYSADM, every privilege on the subsystem, is granted to one user",
+ "cwe": "CWE-250",
+ "expect": [
+  {
+   "rule": "db2-system-authority-granted",
+   "file": "GRANTS.sql"
+  }
+ ]
+}

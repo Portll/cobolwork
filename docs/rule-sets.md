@@ -422,6 +422,21 @@ dialect, a DBD operand the reference does not list. Each refusal is named by kin
 sets `coverageIncomplete`, because a segment or a grant in a statement nobody read is one no rule
 saw.
 
+## PL/I
+
+**What a reading of PL/I cannot follow.** PL/I programs (`.pli`, `.pl1`, `.plx`) are read statement
+by statement by `lib/pli`, and join the flow graph, so input reaching a sink in a PL/I program is
+reported by the data-flow rules as it is in COBOL. The PL/I set reports what the program text shows
+on its own. A `FETCH` whose `TITLE` is not a literal loads a module named at run time, and is medium.
+An `ON` unit for `ERROR`, `CONVERSION`, `ZERODIVIDE`, `SUBSCRIPTRANGE` or another condition a
+program should act on, whose body does nothing or only jumps away, is low. Addressing storage
+through a pointer (`BASED`), a `CALL` through an entry variable and the preprocessor are listed as
+coverage, because the flow they make is one a static reading does not follow.
+
+The reader refuses what it does not recognise rather than guess. Each statement it could not parse
+is counted by kind in the report and sets `coverageIncomplete`. `COBOLWORK_PLI=0` leaves PL/I out
+of a scan. A PL/I member with no extension is not recognised: no content sniff reads it as PL/I.
+
 ## Change review
 
 **Change review.** `cobolwork diff` compares two revisions the way the compiler sees them. A

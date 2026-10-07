@@ -3234,6 +3234,71 @@
     "retrieved": "2026-09-20",
     "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-based-storage-addressing",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A program addresses storage through a pointer, so data flow through it is not followed. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-entry-variable-call",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A CALL through an entry variable dispatches to a procedure chosen at run time, so the callee is not known statically. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-error-condition-ignored",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: An ON unit for a condition does nothing with it, so the condition is silently ignored. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-fetch-title-variable",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A FETCH whose TITLE is not a literal names the module to load at run time. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "pli-preprocessor-in-use",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A program uses PL/I preprocessor directives, so the source text is not the code that is compiled. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
   }
  ],
  "evidence": [],

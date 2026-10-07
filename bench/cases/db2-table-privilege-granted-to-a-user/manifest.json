@@ -1,0 +1,9 @@
+{
+ "id": "db2-table-privilege-granted-to-a-user",
+ "title": "The same user is granted SELECT on one table",
+ "cwe": "CWE-250",
+ "expect": [],
+ "negativeFor": [
+  "db2-system-authority-granted"
+ ]
+}

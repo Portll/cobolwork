@@ -1,0 +1,11 @@
+{
+ "id": "pli-parm-to-dynamic-sql",
+ "title": "A batch job's PARM is concatenated into a statement that is prepared and executed",
+ "cwe": "CWE-89",
+ "expect": [
+  {
+   "rule": "argv-or-env-to-dynamic-sql",
+   "file": "MAIN.pli"
+  }
+ ]
+}

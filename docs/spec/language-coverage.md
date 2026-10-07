@@ -412,6 +412,46 @@ that no COBOL rule set would ever find. Treat them as first-class.
 
 **Effort: 12–18h.**
 
+**Met, 2026-10-07.** The census, from `diag/db2-measure.mjs` over the dev corpus (the 500 set's 29
+repositories that hold DDL) and the held-out one (the 200 and 300 sets' 19), with copies of one
+statement counted once:
+
+| Statement | Dev | Parsed | Held out | Parsed |
+|---|---|---|---|---|
+| INSERT | 4,100 | 4,100 | 2,588 | 2,588 |
+| CREATE TABLE | 1,336 | 824 | 138 | 49 |
+| CREATE INDEX | 712 | 709 | 106 | 93 |
+| CREATE PROCEDURE | 400 | 400 | 4 | 2 |
+| COMMIT | 99 | 99 | 70 | 70 |
+| SELECT | 98 | 98 | 35 | 35 |
+| GRANT | 70 | 70 | 0 | 0 |
+| DROP TABLE | 59 | 37 | 62 | 25 |
+| COMMENT ON, LABEL ON | 5 | 3 | 82 | 60 |
+| ALTER TABLE | 3 | 2 | 24 | 0 |
+| CREATE TRIGGER | 0 | 0 | 19 | 0 |
+| The other 23 kinds, unrecognised statements among them | 157 | 62 | 354 | 139 |
+| All | 7,039 | 6,404 | 3,482 | 3,061 |
+
+Every statement the reader refuses was read against the Db2 13 for z/OS syntax diagrams. Each is
+another dialect (MySQL, PostgreSQL, Oracle, Db2 for LUW, Db2 for i) or a form the diagrams do not
+draw: `IN TABLESPACE` on CREATE TABLE, `IN DATABASE` on CREATE TABLESPACE, `DEFAULT CURRENT
+TIMESTAMP` (z/OS gives a datetime column its current value by `WITH DEFAULT`), `ON UPDATE` on a
+foreign key, `ERASE` outside `USING STOGROUP`. The scan names each by kind and sets
+`coverageIncomplete`. CREATE TRIGGER has no reader: the corpora hold only Db2 for i and PostgreSQL
+triggers.
+
+`diag/db2-differential.mjs` runs JSqlParser 5.1 over the distinct statements. Dev, 5,257: both
+parse 4,495, both refuse 477, only the reader parses 136, only JSqlParser 149. Held out, 1,740:
+1,281, 197, 89 and 173. Every statement only JSqlParser parses is one of the forms above, and none
+is Db2 for z/OS. Most of those only the reader parses are z/OS forms JSqlParser lacks: GRANT, LOCK
+TABLE, `COPY YES`, `USING STOGROUP`, CREATE STOGROUP, sequences, identity columns. The rest are
+SELECT, INSERT and UPDATE in other dialects, because the reader reads queries and data changes for
+their kind only and no rule reads them. `COMMENT ON TABLESPACE`, which the reader accepts, is not
+checked against IBM's text.
+
+The benchmark pairs are a GRANT to `PUBLIC` against the same grant to a named user, `WITH GRANT
+OPTION` against the grant without it, and `SYSADM` against one table's privilege.
+
 ---
 
 ## 5. Phase 4 — HLASM
@@ -553,6 +593,20 @@ byte-range taint model applies unchanged, and every `*-to-*` rule works. Plus:
 
 **Effort: 32–44h** for the corpus subset. A full front end is several times that and is not
 recommended.
+
+**Met, 2026-10-07.** A scan reads PL/I by default, through the flow graph and the PL/I set
+(`lib/sets/pli.mjs`); `COBOLWORK_PLI=0` leaves it out. The README publishes the parse rate by corpus
+(`diag/pli-measure.mjs`): 98.8% of the 9,547 statements written by hand in the dev corpus, 99.9% of
+the generated repository's 263,531, and 99.8% of each held-out corpus. Layout is checked against
+hand-built fixtures and the Language Reference's example. Each statement the reader does not parse is
+counted by kind and sets `coverageIncomplete`. `bench/cases/pli-parm-to-dynamic-sql` and its negative
+take a job's PARM to a prepared statement.
+
+On the 20 repositories of the 500 set that hold PL/I, with free memory fixed so the runs compare,
+reading PL/I adds 73 findings, all in PL/I programs: 70 programs nothing in the tree starts, and 3
+where a job's PARM sets a substring's position or length. No COBOL finding is added or lost; two
+now say their job step names two programs, because the tree also holds a PL/I program of that
+name. The 20 scans take 223 seconds against 190.
 
 ### The Iron Spring licence
 

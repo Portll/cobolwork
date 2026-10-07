@@ -10,7 +10,10 @@ reuse of the control analysis for large copied programs. 4.2 is dropped: measure
 megabytes and would renumber nodes. Typed node columns are not built: after the steps above, node
 objects are 18.5 MB of a 139 MB heap on one Unieuro program in fifty, and columns would free about
 10 MB at the cost of rewriting every node read. 4.5 is built for the control analysis: programs of
-32 KiB and more have it built in worker threads (`lib/control-workers.mjs`).
+32 KiB and more have it built in worker threads (`lib/control-workers.mjs`). The walk loops look
+only at a state's own return edge where a node has eight or more, held by call site. What the graph
+now costs is the walk: BACKLOG, "Scan time on very large repositories", gives where the bounds stop
+it.
 
 Depends on: nothing outside `lib/dataflow.mjs`. `analyze()` returns findings, constructs, entries
 and counts, never the graph. Every change below stays inside that file and `lib/control.mjs`, except

@@ -588,6 +588,23 @@ that declares it rather than to whoever merged the findings. What that specifica
   23 s; which names it wants is known only once its loop ends. ACAS's walk is 131 s of 190, most of
   it edges crossed rather than any one step.
 
+  Measured at `ef7297f`, with `COBOLWORK_FREE_MEMORY_MB=12288` and a 16 GB heap: every repository of
+  the 500 corpus scans to the end, every rule set reading every file and the flow set walking every
+  source, the slowest in 416 s and the largest in 5.8 GB. cnafbadboy's full scan takes 257 s and
+  6.5 GB. Unieuro's flow set reads all 3,263 programs, in a full scan of 933 s and 8.4 GB, and then
+  stops walking at its bound of 500 million edges: 166,451 of 166,586 sources are not walked. ACAS
+  stops 99 walks at the bound of 5 million edges each. Their walks are large because a value carries
+  its call context, four calls deep, and a subprogram that thousands of places call (a logger) gives
+  one state per context: one Unieuro walk holds 32,107 contexts over 6,857 nodes.
+
+  A node with eight or more return edges holds them by call site, and a state with a call context
+  looks only at its own call's return. With the bounds lifted, ACAS's flow set takes 264 s against
+  410 s and reports the same. It needs 79 million edges for its largest walk and 2.0 billion in all;
+  under today's bounds it walks every source but cuts 82 walks, with 120 findings of the 185 a walk
+  without bounds reports. Unieuro walks about 320 sources before the bound. Walking every Unieuro
+  source needs the walk to share work across call contexts or across sources, which today's walk,
+  one breadth-first search per source with its first route kept, cannot do exactly.
+
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,
   BMS, utility, FTP and explain readers and the hidden, copybook and recon rule sets; `lib/layout.mjs`

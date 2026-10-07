@@ -358,7 +358,9 @@ unless the policy's `rules` names it `block` (build-gate.md §11d).
 IBM manual defining it. A `MODESET` that switches to key zero or supervisor state
 (`KEY=ZERO`, `MODE=SUP` or `EXTKEY=ZERO`) is critical; one that returns to the caller's key
 and problem state is not reported. MVS 3.8's names for key zero (`EXTKEY=SUPR`, `SRM`, `RSM`,
-`VSM`) count as well. The reader takes the operands MVS 3.8's system macros accepted and z/OS 3.1's
+`VSM`) count as well. A switch to another system key (`EXTKEY=KEY2`, `KEY3`, `KEY4` or `KEY7`,
+or MVS 3.8's `SCHED`, `JES`, `HASP`, `DATAMGT`, `TCAM` and `VTAM`) is high under the same rule;
+`TCB`, `RBT1` and `RBT234` take a key decided at run time and are not reported. The reader takes the operands MVS 3.8's system macros accepted and z/OS 3.1's
 documentation does not list (the other `EXTKEY=` key names, `GETMAIN` and `FREEMAIN P`, `HIARCHY=`,
 `ATTACH JSCB=`, `DCB PGFX=` and `AERR=`, BTAM's `READ` and `WRITE` types, VTAM's basic-mode
 `READ` and `WRITE RPL=`, and their `MF=(E,addr)`) with the meaning those macros gave them;

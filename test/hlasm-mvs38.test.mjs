@@ -67,13 +67,20 @@ const SUPR = [
   '         END',
 ].join('\n') + '\n';
 
+test('a switch to a z/OS system key other than zero is high, and one decided at run time is not reported', () => {
+  const src = ['SYSKEY   CSECT', '         MODESET EXTKEY=KEY2', '         MODESET EXTKEY=TCB,WORKREG=2', '         BR    14', '         END'].join('\n') + '\n';
+  assert.deepEqual(readHlasm(src).operations.map((o) => o.systemKey), [{ written: 'EXTKEY=KEY2', key: 2 }, null]);
+  assert.deepEqual(readHlasm(SUPR, OFF).operations.map((o) => o.systemKey ?? null), [null, null]);
+});
+
 test('MVS 3.8 names for key zero are a switch to key zero, and only while the forms are read', () => {
   assert.deepEqual(readHlasm(SUPR).operations.map((o) => o.stateChange), ['EXTKEY=SUPR', null]);
   assert.deepEqual(readHlasm(SUPR, OFF).operations.map((o) => o.stateChange), [null, null]);
   const root = mkdtempSync(join(tmpdir(), 'cw-mvs38-'));
   writeFileSync(join(root, 'GOKEY0.asm'), SUPR);
   const on = scanHlasm(root);
-  assert.deepEqual(on.findings.filter((f) => f.rule === 'hlasm-supervisor-state-change').map((f) => f.line), [2]);
+  assert.deepEqual(on.findings.filter((f) => f.rule === 'hlasm-supervisor-state-change').map((f) => [f.line, f.sev]), [[2, 'crit'], [3, 'high']]);
+  assert.match(on.findings.find((f) => f.line === 3).detail, /EXTKEY=DATAMGT switches to PSW key 5, a system key/);
   assert.equal(on.summary.mvs38Forms, 2);
   const off = scanHlasm(root, { mvs38Forms: false });
   assert.deepEqual(off.findings.filter((f) => f.rule === 'hlasm-supervisor-state-change'), []);

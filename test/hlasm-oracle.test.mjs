@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseListing } from '../diag/hlasm-oracle.mjs';
+import { parseListing, batchPrograms } from '../diag/hlasm-oracle.mjs';
 import './pin-machine.mjs';
 
 // z390 1.8.4.4 with `xref printall`, on a program written for this test: a SAVE macro call, a COPY
@@ -68,6 +68,16 @@ test('reads the symbol table, the defining statement first in XREF', () => {
 
 test('takes an error\'s text from the AZ390I line after it', () => {
   assert.deepEqual(parseListing(PRN).errors, [{ tool: 'AZ', number: 144, file: 1, line: 4, stmt: 6, text: 'no base register found' }]);
+});
+
+test('assembles each program of a batch file alone, the others made comments', () => {
+  const batch = ['A        CSECT', '         BR    14', '         END', '* NEXT', 'B        CSECT', '         END', ''].join('\n');
+  assert.deepEqual(batchPrograms(batch), [
+    ['A        CSECT', '         BR    14', '         END', '*', '*', '*', '*'].join('\n'),
+    ['*', '*', '*', '* NEXT', 'B        CSECT', '         END', '*'].join('\n'),
+  ]);
+  const inMacro = ['         MACRO', '         M', '         END', '         MEND', 'A        CSECT', '         END'].join('\n');
+  assert.equal(batchPrograms(inMacro), null);
 });
 
 test('reads a generated MNOTE of severity 8 or more as the macro refusing its call', () => {

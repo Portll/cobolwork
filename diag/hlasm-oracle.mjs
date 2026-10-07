@@ -27,7 +27,27 @@ const namesLiteral = (field) => /(^|[,(])=/.test(String(field || '').replace(/'(
 // A macro z390 does not have, defined as one that takes any operands and generates nothing.
 export const stubMacro = (name) => `         MACRO\n&L       ${name}\n&L       DS    0H\n         MEND\n`;
 export const missingMacros = (text) => [...new Set([...String(text).matchAll(/missing macro\s*=\s*(\S+)/g)].map((m) => m[1].toUpperCase()))];
+const LISTING_CONTROL = new Set(['END', 'TITLE', 'PRINT', 'SPACE', 'EJECT']);
 const operationOf = (source) => (/^\S*\s+(\S+)/.exec(source)?.[1] ?? '').toUpperCase();
+
+// HLASM's BATCH option assembles each program a file ends with END, and z390 refuses a second one.
+// Each program is assembled alone, the other programs' lines made comments to keep the line numbers.
+// Null when the file holds one program.
+export function batchPrograms(text) {
+  const lines = String(text).split('\n');
+  const statements = foldStatements(text, { batch: true }).statements.filter((st) => st.kind === 'statement');
+  const ends = [];
+  let depth = 0;
+  for (const st of statements) {
+    if (st.operation === 'MACRO') depth++;
+    else if (depth && st.operation === 'MEND') depth--;
+    else if (!depth && st.operation === 'END') ends.push(st.endLine);
+  }
+  const bounds = [0, ...ends, lines.length].map((b, i, all) => (i ? [all[i - 1] + 1, b] : null)).filter(Boolean);
+  const programs = bounds.filter(([from, to]) => statements.some((st) => st.line >= from && st.line <= to));
+  if (programs.length < 2) return null;
+  return programs.map(([from, to]) => lines.map((l, i) => (i + 1 >= from && i + 1 <= to ? l : l.endsWith('\r') ? '*\r' : '*')).join('\n'));
+}
 
 // Reads a z390 PRN, or its console output for the errors. finished: the symbol table was printed;
 // aborted: a phase gave up, which z390 reports as an abort line or as error 165.
@@ -183,10 +203,22 @@ function main(args) {
   async function oracle(file, n) {
     const bytes = readFileSync(join(root, file));
     const sha256 = createHash('sha256').update(bytes).digest('hex');
+    const programs = batchPrograms(bytes.toString('latin1'));
+    if (!programs) return oracleOf(file, bytes, sha256, n);
+    const each = [];
+    for (const [i, program] of programs.entries()) each.push(await oracleOf(file, Buffer.from(program, 'latin1'), sha256, `${n}-${i}`));
+    const rs = each.filter((r) => r.why !== 'macro definition');
+    if (!rs.length) return each[0];
+    const failed = rs.findIndex((r) => r.why);
+    const all = (key) => rs.flatMap((r) => r[key]);
+    return { ...rs[0], programs: rs.length, graded: failed < 0, why: failed < 0 ? null : `program ${failed + 1}: ${rs[failed].why}`,
+      stubs: [...new Set(all('stubs'))], errors: all('errors'), macroCalls: all('macroCalls'), esd: all('esd'), symbols: all('symbols'), statements: all('statements') };
+  }
+
+  async function oracleOf(file, bytes, sha256, n) {
     const result = { file, sha256, z390: VERSION, graded: false, why: null, stubs: [], errors: [], macroCalls: [], esd: [], symbols: [], statements: [] };
     const text = bytes.toString('latin1');
     const folded = foldStatements(text).statements;
-    if (folded.find((s) => s.kind === 'statement')?.operation === 'MACRO') return { ...result, why: 'macro definition' };
 
     const open = [];
     const definitionLines = new Set();
@@ -199,6 +231,8 @@ function main(args) {
       if (inside) st.lines.forEach((l) => definitionLines.add(l));
       else open.push(st);
     }
+    // A macro member holds definitions and nothing an assembly would run; a program may define macros before its code.
+    if (definitionLines.size && !open.some((st) => !LISTING_CONTROL.has(st.operation))) return { ...result, why: 'macro definition' };
     const statementAt = new Map();
     for (const st of open) for (const l of st.lines) statementAt.set(l, st);
     const isCall = (op) => !assembler.has(op) && !machine.has(op) && !/^[&.]/.test(op);

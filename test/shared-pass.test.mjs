@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { drive, driveTogether, loopOver, sharingTree } from '../lib/kernel/shared-pass.mjs';
+import { drive, driveTogether, loopOver, loopsOver, sharingTree } from '../lib/kernel/shared-pass.mjs';
 import './pin-machine.mjs';
 
 const fakeTree = (files) => {
@@ -78,6 +78,28 @@ test('a set reading bytes and one reading text share one read of each file where
   assert.deepEqual(texts.seen, ['src a.cbl', 'src b.cbl']);
   assert.deepEqual(sizes.seen, [9, 9]);
   assert.deepEqual(reads, ['a.cbl', 'b.cbl']);
+});
+
+test('a set walking two loops in one pass gets an account for each, and a file both hold is read once', () => {
+  const { tree, calls } = fakeTree(['a.cbl', 'b.jcl', 'c.cbl']);
+  const order = [];
+  function* twoLoops() {
+    const [every, programs] = yield loopsOver(
+      loopOver(tree.list(), (f) => { order.push(`every ${tree.text(f).text}`); }, { guarded: false }),
+      loopOver(tree.list().filter((f) => f.endsWith('.cbl')), (f) => { order.push(`program ${f}`); return 1; }, { label: 'programs' }),
+    );
+    return { every, programs };
+  }
+  const [alone] = driveTogether([twoLoops()], tree);
+  assert.deepEqual(order, ['every src a.cbl', 'program a.cbl', 'every src b.jcl', 'every src c.cbl', 'program c.cbl']);
+  assert.equal(calls.text, 3);
+  assert.equal(alone.every.processed, 3);
+  assert.equal(alone.programs.processed, 2);
+  assert.equal(alone.programs.bytes, 2);
+  order.length = 0;
+  const driven = drive(twoLoops());
+  assert.deepEqual(order, ['every src a.cbl', 'every src b.jcl', 'every src c.cbl', 'program a.cbl', 'program c.cbl']);
+  assert.equal(driven.programs.processed, 2);
 });
 
 test('a byte budget stops only the set that set it', () => {

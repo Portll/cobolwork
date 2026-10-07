@@ -6,6 +6,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { scanWeb, WEB_RULES } from '../lib/sets/web.mjs';
+import { scanAll } from '../lib/scan.mjs';
 import './pin-machine.mjs';
 
 const tree = (files) => {
@@ -75,6 +76,16 @@ test('a URIMAP decides the scheme where the program names one, and AT-TLS-aware 
   assert.match(r.findings.find((f) => f.path === 'VIAMAP.cbl').detail, /URIMAP PAYMAP, which csd\/CLIENT\.csd:1 defines with SCHEME\(HTTP\) to PAY\.EXAMPLE and no ATTLS\(AWARE\)/);
   for (const p of ['VIAATTLS.cbl', 'VIATLS.cbl', 'VIAELSE.cbl', 'VARSCHEME.cbl']) assert.deepEqual(rules(r, p), [], p);
   assert.equal(r.summary.opensUndecided, 2, 'a URIMAP the tree does not define and a scheme in a variable are counted as undecided');
+});
+
+test('in the shared pass, a URIMAP defined in a file after the program still decides its open', () => {
+  const root = tree({
+    'A.cbl': prog('A', [], open("URIMAP('LATEMAP')")),
+    'zz/LATE.csd': 'DEFINE URIMAP(LATEMAP) GROUP(PAY) USAGE(CLIENT) SCHEME(HTTP) HOST(pay.example)\n',
+  });
+  const r = scanAll(root, { only: ['web'] });
+  assert.deepEqual(r.findings.filter((f) => f.path === 'A.cbl').map((f) => f.rule), ['web-client-opens-cleartext']);
+  assert.deepEqual(rules(scanWeb(root), 'A.cbl'), [['web-client-opens-cleartext', 7]]);
 });
 
 const receive = (verb, ...options) => [`EXEC CICS WEB ${verb}`, ...options.map((o) => `    ${o}`), 'END-EXEC'];

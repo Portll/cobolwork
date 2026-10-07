@@ -68,7 +68,8 @@ reference-modification length of 0 is a zero-length move that can overrun. File 
 these: in batch COBOL nearly every subscript descends from one.
 
 **Data lost without an abend.** Input reaching a statement that drops what does not fit and carries
-on: a `STRING` or `UNSTRING` with no `ON OVERFLOW` (a `NOT ON OVERFLOW` alone handles nothing); a
+on: a `STRING` or `UNSTRING` with no `ON OVERFLOW` (a `NOT ON OVERFLOW` alone handles nothing), unless
+it is a `STRING` whose sending items and literals together fit the receiving item; a
 `MOVE`, or arithmetic with no `ON SIZE ERROR`, into a numeric item with fewer integer digits than the
 operand, counted from the picture with `V` and `P` read (`9(7)V99` into `9(5)V99` is reported, into
 `9(7)V9` is not, since only high-order digits are lost silently); and the subject of an `EVALUATE`

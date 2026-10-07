@@ -7,7 +7,6 @@
   "cics-terminal-to-internal-reader"
  ],
  "alsoExpected": [
-  "cics-terminal-to-log",
-  "cics-terminal-to-text-truncation"
+  "cics-terminal-to-log"
  ]
 }

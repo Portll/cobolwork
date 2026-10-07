@@ -587,7 +587,7 @@ caller controls: `argv-or-env`, `cics-terminal`, `cics-web`, `jcl-parm`, `jcl-in
 
 | Sink kind | CWE | Reported when |
 |---|---|---|
-| `text-truncation` | CWE-222 | a `STRING` or `UNSTRING` with no `ON OVERFLOW` phrase; `NOT ON OVERFLOW` alone does not count |
+| `text-truncation` | CWE-222 | a `STRING` or `UNSTRING` with no `ON OVERFLOW` phrase; `NOT ON OVERFLOW` alone does not count. A `STRING` with no `POINTER` whose sending items and literals together fit the receiving item cannot overflow and is not a sink |
 | `numeric-truncation` | CWE-197 | a `MOVE` into a numeric item with fewer integer digits than the sender, or arithmetic with no `ON SIZE ERROR` into such an item. The layout keeps each numeric picture's integer and decimal digits, `P` scaling included; an elementary alphanumeric sender counts its length, as a `MOVE` to a numeric item reads it |
 | `unhandled-selector` | CWE-478 | an `EVALUATE` with no `WHEN OTHER`, or a `GO TO … DEPENDING ON`, whose subject is the input: a value no branch names falls through and the program carries on |
 

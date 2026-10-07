@@ -4,6 +4,5 @@
  "cwe": "CWE-77",
  "expect": [
   { "rule": "cics-terminal-to-internal-reader", "file": "RPTSUB.cbl" }
- ],
- "alsoExpected": ["cics-terminal-to-text-truncation"]
+ ]
 }

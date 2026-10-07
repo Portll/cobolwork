@@ -1022,6 +1022,9 @@ test('B8.10 A STRING of terminal input with no ON OVERFLOW is reported', () => {
   assert.deepEqual(flow(string([]), 'text-truncation'), ['cics-terminal-to-text-truncation']);
   assert.deepEqual(flow(string(['  ON OVERFLOW MOVE SPACES TO WS-OUT']), 'text-truncation'), []);
   assert.deepEqual(flow(string(['  NOT ON OVERFLOW MOVE SPACES TO WS-OUT']), 'text-truncation'), ['cics-terminal-to-text-truncation']);
+  const wide = program('P', ['01 WS-IN PIC X(40).', '01 WS-LEN PIC S9(4) COMP.', '01 WS-OUT PIC X(60).'],
+    [RECEIVE, "STRING 'KEY ' WS-IN DELIMITED BY SIZE INTO WS-OUT", 'END-STRING', 'GOBACK.']);
+  assert.deepEqual(flow(wide, 'text-truncation'), [], 'what it sends always fits');
 });
 
 test('B8.11 A MOVE of input into fewer integer digits is reported', () => {

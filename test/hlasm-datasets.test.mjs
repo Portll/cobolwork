@@ -36,6 +36,10 @@ test('DCB takes the keywords of an EXCP DCB', () => {
   assert.equal(r.node.keywords.IOBAD, 'XIOB');
 });
 
+test('DCB reads a trailing comma as an omitted operand', () => {
+  assert.equal(parse('PRINT    DCB   DDNAME=SYSPRINT,MACRF=PM,BLKSIZE=133,').status, 'parsed');
+});
+
 test('OPEN and CLOSE read their list and execute forms, with DCB slots left to the other form', () => {
   const list = parse('OPENL    OPEN  (,),MF=L');
   assert.equal(list.status, 'parsed');

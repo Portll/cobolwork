@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LIMIT.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-IN.
+          05 WS-AMT          PIC 9(7)V99.
+          05 FILLER          PIC X(31).
+       01 WS-LEN             PIC S9(4) COMP VALUE 40.
+       01 WS-LIMIT           PIC 9(5)V99.
+       01 WS-TOTAL           PIC 9(7)V9.
+       PROCEDURE DIVISION.
+           EXEC CICS RECEIVE INTO(WS-IN) LENGTH(WS-LEN) END-EXEC
+           MOVE WS-AMT TO WS-LIMIT
+           EXEC CICS RETURN END-EXEC.

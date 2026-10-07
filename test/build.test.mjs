@@ -14,6 +14,7 @@ import { SINK_KINDS } from '../lib/dataflow.mjs';
 import { KEV } from '../lib/kev.mjs';
 import { compilerTasks } from '../lib/options.mjs';
 import { SHAPE_RULES } from '../lib/sets/secrets.mjs';
+import { picDigits } from '../lib/layout.mjs';
 import './pin-machine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -1007,10 +1008,35 @@ test('B8.9 cics-signon-bypassed is unchanged by killable facts', () => {
   assert.equal(bench('070-menu-only-past-the-password'), 0);
 });
 
-const RULE_NOT_BUILT = { todo: 'the rule is specified in §11 and not built yet' };
-test('B8.10 A STRING of terminal input with no ON OVERFLOW is reported', RULE_NOT_BUILT, () => {});
-test('B8.11 A MOVE of input into fewer integer digits is reported', RULE_NOT_BUILT, () => {});
-test('B8.12 An EVALUATE of input with no WHEN OTHER is reported', RULE_NOT_BUILT, () => {});
+const RECEIVE = 'EXEC CICS RECEIVE INTO(WS-IN) LENGTH(WS-LEN) END-EXEC';
+const flow = (src, kind) => rulesIn({ 'P.cbl': src }, ['flow']).filter((r) => r.endsWith(`-to-${kind}`));
+
+test('B8.10 A STRING of terminal input with no ON OVERFLOW is reported', () => {
+  const ws = ['01 WS-IN PIC X(40).', '01 WS-LEN PIC S9(4) COMP.', '01 WS-OUT PIC X(20).'];
+  const string = (phrase) => program('P', ws, [RECEIVE, 'STRING WS-IN DELIMITED BY SIZE INTO WS-OUT', ...phrase, 'END-STRING', 'GOBACK.']);
+  assert.deepEqual(flow(string([]), 'text-truncation'), ['cics-terminal-to-text-truncation']);
+  assert.deepEqual(flow(string(['  ON OVERFLOW MOVE SPACES TO WS-OUT']), 'text-truncation'), []);
+  assert.deepEqual(flow(string(['  NOT ON OVERFLOW MOVE SPACES TO WS-OUT']), 'text-truncation'), ['cics-terminal-to-text-truncation']);
+});
+
+test('B8.11 A MOVE of input into fewer integer digits is reported', () => {
+  const ws = ['01 WS-IN.', '   05 WS-AMT PIC 9(7)V99.', '01 WS-LEN PIC S9(4) COMP.', '01 WS-SMALL PIC 9(5)V99.', '01 WS-WIDE PIC 9(7)V9.'];
+  const moved = (body) => flow(program('P', ws, [RECEIVE, ...body, 'GOBACK.']), 'numeric-truncation');
+  assert.deepEqual(moved(['MOVE WS-AMT TO WS-SMALL']), ['cics-terminal-to-numeric-truncation']);
+  assert.deepEqual(moved(['MOVE WS-AMT TO WS-WIDE']), []);
+  assert.deepEqual(moved(['COMPUTE WS-SMALL = WS-AMT * 2']), ['cics-terminal-to-numeric-truncation']);
+  assert.deepEqual(moved(['COMPUTE WS-SMALL = WS-AMT * 2', '  ON SIZE ERROR MOVE 0 TO WS-SMALL', 'END-COMPUTE']), []);
+  assert.deepEqual(['9(7)V99', 'S9(5)V99', '999PP', 'PP99', 'X(5)'].map((p) => picDigits(p)),
+    [{ int: 7, dec: 2 }, { int: 5, dec: 2 }, { int: 5, dec: 0 }, { int: 0, dec: 4 }, null]);
+});
+
+test('B8.12 An EVALUATE of input with no WHEN OTHER is reported', () => {
+  const ws = ['01 WS-IN.', '   05 WS-CODE PIC X.', '   05 FILLER PIC X(39).', '01 WS-LEN PIC S9(4) COMP.', '01 WS-OUT PIC X(20).'];
+  const evaluate = (whens) => flow(program('P', ws, [RECEIVE, 'EVALUATE WS-CODE', "  WHEN 'A' MOVE 'ADD' TO WS-OUT", ...whens, 'END-EVALUATE', 'GOBACK.']), 'unhandled-selector');
+  assert.deepEqual(evaluate([]), ['cics-terminal-to-unhandled-selector']);
+  assert.deepEqual(evaluate(['  WHEN OTHER MOVE SPACES TO WS-OUT']), []);
+});
+
 const DB_PASSWORD = program('L', ["01 WS-DB-PASSWORD PIC X(12) VALUE 'Zq7r2Lm9Vx4p'."], ["CALL 'DBLOGON' USING WS-DB-PASSWORD", 'GOBACK.']);
 test('B8.13 A password in a VALUE clause is reported, and the gitleaks file holds the same shapes', { skip }, () => {
   const root = repo({ 'Q0.cbl': QUIET });

@@ -1,0 +1,9 @@
+{
+ "id": "123-terminal-input-strung-with-an-overflow-phrase",
+ "title": "The same STRING rejects input that does not fit",
+ "cwe": "CWE-222",
+ "expect": [],
+ "negativeFor": [
+  "cics-terminal-to-text-truncation"
+ ]
+}

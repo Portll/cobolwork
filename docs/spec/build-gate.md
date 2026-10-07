@@ -588,7 +588,7 @@ caller controls: `argv-or-env`, `cics-terminal`, `cics-web`, `jcl-parm`, `jcl-in
 | Sink kind | CWE | Reported when |
 |---|---|---|
 | `text-truncation` | CWE-222 | a `STRING` or `UNSTRING` with no `ON OVERFLOW` phrase; `NOT ON OVERFLOW` alone does not count |
-| `numeric-truncation` | CWE-197 | a `MOVE` into a numeric item with fewer integer digits than the sender, or arithmetic with no `ON SIZE ERROR` into such an item. The parser keeps a picture's size in bytes and ignores `V`, so it has to keep integer and decimal digits first |
+| `numeric-truncation` | CWE-197 | a `MOVE` into a numeric item with fewer integer digits than the sender, or arithmetic with no `ON SIZE ERROR` into such an item. The layout keeps each numeric picture's integer and decimal digits, `P` scaling included; an elementary alphanumeric sender counts its length, as a `MOVE` to a numeric item reads it |
 | `unhandled-selector` | CWE-478 | an `EVALUATE` with no `WHEN OTHER`, or a `GO TO … DEPENDING ON`, whose subject is the input: a value no branch names falls through and the program carries on |
 
 ### 11c. Credentials in the source

@@ -21,6 +21,7 @@
   }
  ],
  "alsoExpected": [
-  "web-response-without-protective-headers"
+  "web-response-without-protective-headers",
+  "cics-web-to-text-truncation"
  ]
 }

@@ -1,0 +1,11 @@
+{
+ "id": "126-terminal-action-chosen-with-no-when-other",
+ "title": "A typed action code chooses a branch of an EVALUATE with no WHEN OTHER",
+ "cwe": "CWE-478",
+ "expect": [
+  {
+   "rule": "cics-terminal-to-unhandled-selector",
+   "file": "MENU.cbl"
+  }
+ ]
+}

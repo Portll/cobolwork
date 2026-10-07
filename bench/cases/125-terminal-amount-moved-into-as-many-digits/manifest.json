@@ -1,0 +1,9 @@
+{
+ "id": "125-terminal-amount-moved-into-as-many-digits",
+ "title": "The same amount moved into seven integer digits and one decimal",
+ "cwe": "CWE-197",
+ "expect": [],
+ "negativeFor": [
+  "cics-terminal-to-numeric-truncation"
+ ]
+}

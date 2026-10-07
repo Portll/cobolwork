@@ -67,6 +67,17 @@ test, and not where it carries on past a failed one; a bound at both ends stops 
 reference-modification length of 0 is a zero-length move that can overrun. File records and database values are not followed into
 these: in batch COBOL nearly every subscript descends from one.
 
+**Data lost without an abend.** Input reaching a statement that drops what does not fit and carries
+on: a `STRING` or `UNSTRING` with no `ON OVERFLOW` (a `NOT ON OVERFLOW` alone handles nothing); a
+`MOVE`, or arithmetic with no `ON SIZE ERROR`, into a numeric item with fewer integer digits than the
+operand, counted from the picture with `V` and `P` read (`9(7)V99` into `9(5)V99` is reported, into
+`9(7)V9` is not, since only high-order digits are lost silently); and the subject of an `EVALUATE`
+with no `WHEN OTHER`, or of `GO TO ... DEPENDING ON`, where a value no branch names runs none. These
+are `*-to-text-truncation`, `*-to-numeric-truncation` and `*-to-unhandled-selector`, followed from the
+command line, a job, a terminal, the web and file records. A selector already narrowed to a list of
+literals clears the route. Their firing rate over the corpus is not yet recorded, so the build gate
+treats them as warnings unless the policy's `rules` names one `block` (build-gate.md §11d).
+
 **The internal reader.** Input written where the internal reader will submit it as a job: through a
 DD its job sends to `SYSOUT=(class,INTRDR)`, or by `EXEC CICS WRITEQ TD` to a queue the CSD maps to
 a DD that `cobolwork.site.json` names in `internalReaderDds`. The CSD is read from `.csd` extracts

@@ -1,0 +1,11 @@
+{
+ "id": "122-terminal-input-strung-with-no-overflow-phrase",
+ "title": "Terminal input is put by STRING into a shorter field with no ON OVERFLOW",
+ "cwe": "CWE-222",
+ "expect": [
+  {
+   "rule": "cics-terminal-to-text-truncation",
+   "file": "GREET.cbl"
+  }
+ ]
+}

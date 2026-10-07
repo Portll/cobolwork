@@ -68,6 +68,7 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | PL/I | input reaching a sink through a PL/I program, as in COBOL; a `FETCH` of a module named at run time, an `ON` unit that ignores its condition, and where pointers, entry variables or the preprocessor take the flow out of sight |
 | Cryptography | a single-length DES key, an MD5 or SHA-1 hash, or a fixed initialization vector asked of ICSF, read from IBM's parameter lists; an outbound CICS connection asking for HTTP |
 | Secrets | a credential written into a program or copybook: a literal `VALUE` on an item named for one, or a literal password in `EXEC SQL CONNECT` or `EXEC CICS SIGNON` |
+| Errors | a file status, `SQLCODE` or CICS `RESP` never tested before the program relies on what the statement did; input cut short by `STRING`, a `MOVE` into fewer digits, or a selector with no `WHEN OTHER` |
 
 HLASM is read, not assembled. Each statement is parsed by what its operation is: a machine
 instruction against IBM's operand syntax for its mnemonic (`rules/hlasm-instructions.json`, every

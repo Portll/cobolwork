@@ -1,0 +1,9 @@
+{
+ "id": "127-terminal-action-chosen-with-a-when-other",
+ "title": "The same EVALUATE rejects an action it does not name",
+ "cwe": "CWE-478",
+ "expect": [],
+ "negativeFor": [
+  "cics-terminal-to-unhandled-selector"
+ ]
+}

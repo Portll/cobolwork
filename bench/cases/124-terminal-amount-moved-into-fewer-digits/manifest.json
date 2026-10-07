@@ -1,0 +1,11 @@
+{
+ "id": "124-terminal-amount-moved-into-fewer-digits",
+ "title": "A typed amount of seven integer digits is moved into five",
+ "cwe": "CWE-197",
+ "expect": [
+  {
+   "rule": "cics-terminal-to-numeric-truncation",
+   "file": "LIMIT.cbl"
+  }
+ ]
+}

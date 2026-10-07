@@ -134,6 +134,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "argv-or-env-to-numeric-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Command-line or environment input is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "argv-or-env-to-occurs-depending-count",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -191,6 +204,32 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: Command-line or environment input is used as a subscript. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-text-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Command-line or environment input is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-unhandled-selector",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Command-line or environment input chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -615,6 +654,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-terminal-to-numeric-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Terminal input is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-terminal-to-occurs-depending-count",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -698,6 +750,32 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: Terminal input is used as a subscript. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-text-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Terminal input is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-unhandled-selector",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Terminal input chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -901,6 +979,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-web-to-numeric-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Web input is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-web-to-occurs-depending-count",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -984,6 +1075,32 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: Web input is used as a subscript. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-text-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Web input is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-unhandled-selector",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: Web input chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1694,6 +1811,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "file-record-to-numeric-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A file record is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-queue-to-message-queue",
    "framework": "dora",
    "clause": "Article 9(3)(a)",
@@ -1820,6 +1950,32 @@
     "doc": "dora",
     "retrieved": "2026-09-20",
     "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-text-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A file record is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-unhandled-selector",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A file record chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
    }
   },
   {
@@ -2318,6 +2474,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-instream-to-numeric-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: In-stream job data is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-instream-to-occurs-depending-count",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -2375,6 +2544,32 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: In-stream job data is used as a subscript. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-text-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: In-stream job data is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-unhandled-selector",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: In-stream job data chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -2500,6 +2695,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-parm-to-numeric-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A JCL PARM is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-parm-to-occurs-depending-count",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
@@ -2557,6 +2765,32 @@
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A JCL PARM is used as a subscript. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-text-truncation",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A JCL PARM is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-unhandled-selector",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A JCL PARM chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

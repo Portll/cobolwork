@@ -143,6 +143,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "argv-or-env-to-numeric-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Command-line or environment input is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "argv-or-env-to-occurs-depending-count",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -200,6 +213,32 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: Command-line or environment input is used as a subscript. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-text-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Command-line or environment input is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "argv-or-env-to-unhandled-selector",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Command-line or environment input chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -624,6 +663,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-terminal-to-numeric-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Terminal input is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-terminal-to-occurs-depending-count",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -707,6 +759,32 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: Terminal input is used as a subscript. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-text-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Terminal input is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-terminal-to-unhandled-selector",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Terminal input chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -910,6 +988,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-web-to-numeric-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Web input is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-web-to-occurs-depending-count",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -993,6 +1084,32 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: Web input is used as a subscript. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-text-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Web input is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-web-to-unhandled-selector",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: Web input chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1703,6 +1820,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "file-record-to-numeric-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A file record is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "cics-queue-to-message-queue",
    "framework": "nist-800-53r5",
    "clause": "SC-7",
@@ -1829,6 +1959,32 @@
     "doc": "nist80053",
     "retrieved": "2026-09-20",
     "quote": "Monitor and control communications at the external managed interfaces to the system and at key internal managed interfaces within the system"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-text-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A file record is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "file-record-to-unhandled-selector",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A file record chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
    }
   },
   {
@@ -2327,6 +2483,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-instream-to-numeric-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: In-stream job data is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-instream-to-occurs-depending-count",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -2384,6 +2553,32 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: In-stream job data is used as a subscript. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-text-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: In-stream job data is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-instream-to-unhandled-selector",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: In-stream job data chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -2509,6 +2704,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "jcl-parm-to-numeric-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A JCL PARM is moved into fewer integer digits than it holds, so its high-order digits are dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "jcl-parm-to-occurs-depending-count",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
@@ -2566,6 +2774,32 @@
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A JCL PARM is used as a subscript. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-text-truncation",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A JCL PARM is sent by a STRING or UNSTRING with no ON OVERFLOW, so what does not fit is dropped. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "jcl-parm-to-unhandled-selector",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A JCL PARM chooses the branch of an EVALUATE with no WHEN OTHER, or of a GO TO DEPENDING ON, so a value no branch names runs none. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",

@@ -1031,6 +1031,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "compile-communication-feature",
+   "framework": "dora",
+   "clause": "Article 8(2)",
+   "title": "Identification",
+   "rationale": "The rule reports: A program uses the Communication feature, which Enterprise COBOL does not compile. That is a source of ICT risk in a business-supporting function, identified by reading the source rather than by asking the team that maintains it.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "identify all sources of ICT risk, in particular the risk exposure to and from other financial entities, and assess cyber threats and ICT vulnerabilities relevant to their ICT supported business functions"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "compile-undefined-name",
    "framework": "dora",
    "clause": "Article 8(2)",

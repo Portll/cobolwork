@@ -960,6 +960,18 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "compile-communication-feature",
+   "framework": "cobit-2019",
+   "clause": "BAI09.03",
+   "rationale": "The rule reports: A program uses the Communication feature, which Enterprise COBOL does not compile. That is a component at the end of its supported life, whose replacement this practice requires be planned and managed.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "compile-undefined-name",
    "framework": "cobit-2019",
    "clause": "BAI09.01",

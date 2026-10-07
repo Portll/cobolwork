@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { scanCompile, COMPILE_RULES } from '../lib/sets/compile.mjs';
 import './pin-machine.mjs';
 
@@ -197,4 +198,40 @@ test('the rule is a construct defect, never informational', () => {
   // A construct defect carries what it lets someone do and the standard fix.
   assert.equal(typeof r.impact, 'string');
   assert.equal(typeof r.remedy, 'string');
+});
+
+const COMMUNICATION = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'communication');
+
+test('a program using the Communication feature is reported with its CDs, their symbolic names and its statements', () => {
+  const r = scanCompile(COMMUNICATION);
+  assert.equal(r.summary.programsUndecided, 0);
+  assert.deepEqual(r.findings.map((f) => f.rule), ['compile-communication-feature'], 'every name its CDs declare is declared');
+  const f = r.findings[0];
+  assert.deepEqual([f.path, f.line, f.program, f.sev, f.evidence, f.cwe], ['MSGROUTE.cbl', 10, 'MSGROUTE', 'med', 'construct', 'CWE-477']);
+  assert.deepEqual(f.cds, [
+    { name: 'ORDER-IN', kind: 'INITIAL INPUT', symbolic: [
+      { clause: 'SYMBOLIC QUEUE', field: 'IN-QUEUE', names: ['ORDERS'] },
+      { clause: 'SYMBOLIC SUB-QUEUE-1', field: 'IN-SUBQ', names: [] }] },
+    { name: 'SHIP-OUT', kind: 'OUTPUT', symbolic: [{ clause: 'SYMBOLIC DESTINATION', field: 'OUT-DEST', names: ['SHIP01', 'SHIP02'] }] },
+  ]);
+  assert.deepEqual(f.statements, { ENABLE: 1, DISABLE: 1, RECEIVE: 1, SEND: 1, PURGE: 1, 'ACCEPT MESSAGE COUNT': 1 });
+  assert.match(f.detail, /^MSGROUTE uses the Communication feature, which Enterprise COBOL does not compile: 2 CD\(s\) \(CD ORDER-IN FOR INITIAL INPUT, CD SHIP-OUT FOR OUTPUT\); statements ENABLE 1, /);
+  assert.deepEqual(f.related.map((x) => [x.line, x.detail]).slice(0, 3), [[11, 'CD ORDER-IN FOR INITIAL INPUT'], [21, 'CD SHIP-OUT FOR OUTPUT'], [32, 'ENABLE names ORDER-IN']]);
+});
+
+test('a COMMUNICATION SECTION alone is reported, and a program without one is not', () => {
+  const head = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. P.', '       DATA DIVISION.'];
+  const r = scanCompile(tree({
+    'P.cbl': [...head, '       COMMUNICATION SECTION.', '       PROCEDURE DIVISION.', '           STOP RUN.', ''].join('\n'),
+    'Q.cbl': prog('Q', '       01 WS-A PIC X.', '           DISPLAY WS-A'),
+  }));
+  assert.deepEqual(r.findings.map((f) => [f.rule, f.path, f.line, f.detail]), [
+    ['compile-communication-feature', 'P.cbl', 4, 'P uses the Communication feature, which Enterprise COBOL does not compile: 0 CD(s)']]);
+});
+
+test('the Communication rule is a construct defect that names the remedy', () => {
+  const r = COMPILE_RULES['compile-communication-feature'];
+  assert.deepEqual([r.sev, r.evidence, r.cwe], ['med', 'construct', 'CWE-477']);
+  assert.match(r.impact, /OS\/VS COBOL load module .* may still run under Language Environment/);
+  assert.match(r.remedy, /CICS terminal control or transient data queues, or to IBM MQ/);
 });

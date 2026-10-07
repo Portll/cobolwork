@@ -1040,6 +1040,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "compile-communication-feature",
+   "framework": "nist-800-53r5",
+   "clause": "SA-22",
+   "title": "Unsupported System Components",
+   "rationale": "The rule reports: A program uses the Communication feature, which Enterprise COBOL does not compile. That is a component built with a feature its vendor's supported compiler no longer accepts, which this control requires be replaced.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Replace system components when support for the components is no longer available from the developer, vendor, or manufacturer"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "compile-undefined-name",
    "framework": "nist-800-53r5",
    "clause": "CM-8",

@@ -261,6 +261,7 @@ const FRAMEWORKS = {
       'AU-9(3)': { title: 'Cryptographic Protection', quote: 'Implement cryptographic mechanisms to protect the integrity of audit information and audit tools.' },
       'SR-4': { title: 'Provenance', quote: 'Document, monitor, and maintain valid provenance of the following systems, system components, and associated data' },
       'CM-6': { title: 'Configuration Settings', quote: 'Establish and document configuration settings for components employed within the system that reflect the most restrictive mode consistent with operational requirements' },
+      'SA-22': { title: 'Unsupported System Components', quote: 'Replace system components when support for the components is no longer available from the developer, vendor, or manufacturer' },
     },
     // SA-11(1) is the control this entire tool answers. Mapping it per rule would be padding.
     documentLevel: ['SA-11(1)'],
@@ -301,6 +302,7 @@ const FRAMEWORKS = {
       'pli-error-condition-ignored': 'SI-10',
       'pli-fetch-title-variable': 'SI-10',
       'db2-external-routine': 'CM-8',
+      'compile-communication-feature': 'SA-22',
     },
     perSet: {
       flow: 'SI-10', cics: 'SI-10', hidden: 'SI-10', copybook: 'CM-8', diff: 'CM-3',
@@ -330,6 +332,7 @@ const FRAMEWORKS = {
       'SI-11': 'That is the system emitting information that could be exploited, to a destination read by people the record was never for, which this control requires it not do.',
       'SA-3(2)': 'That is live data put to use outside production, which this control requires be approved, documented and controlled.',
       'IA-5(1)': 'That is a password sent over a channel with no cryptographic protection, which this control does not allow.',
+      'SA-22': 'That is a component built with a feature its vendor\'s supported compiler no longer accepts, which this control requires be replaced.',
     },
     // Recorded rather than stretched. NIST 800-53 has no control that genuinely covers committing
     // an LPAR name or a production qualifier to a repository: the nearest candidates are about
@@ -370,6 +373,7 @@ const NIST_TO_COBIT = {
   'SI-2': 'DSS05.07', 'CM-8': 'BAI09.01', 'CM-3': 'BAI06.01',
   'SI-11': 'DSS06.06', 'SA-3(2)': 'BAI07.04', 'SC-13': 'DSS06.06',
   'AU-3': 'DSS06.05', 'AU-9(3)': 'DSS06.05', 'SR-4': 'DSS06.05', 'CM-6': 'BAI10.04',
+  'SA-22': 'BAI09.03',
 };
 const toCobit = (table) => Object.fromEntries(Object.entries(table).map(([k, c]) => [k, NIST_TO_COBIT[c]]));
 FRAMEWORKS.cobit2019 = {
@@ -396,6 +400,7 @@ FRAMEWORKS.cobit2019 = {
     'BAI06.01': 'That is a change whose impact has to be assessed before it is authorised, which this practice requires.',
     'DSS06.06': 'That is information released to people it was never meant for, which this practice requires be secured.',
     'BAI07.04': 'That is live data put to use outside production, where the test environment this practice requires should not reach it.',
+    'BAI09.03': 'That is a component at the end of its supported life, whose replacement this practice requires be planned and managed.',
   },
   perEvidence: toCobit(FRAMEWORKS.nist80053.perEvidence),
   evidenceFrame: {

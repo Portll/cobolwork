@@ -1040,6 +1040,19 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "compile-communication-feature",
+   "framework": "ffiec",
+   "clause": "DA&M IV",
+   "title": "Common Development, Acquisition, and Maintenance Practices",
+   "rationale": "The rule reports: A program uses the Communication feature, which Enterprise COBOL does not compile. That is a component or dependency the inventory does not accurately account for, which this practice requires be catalogued.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "compile-undefined-name",
    "framework": "ffiec",
    "clause": "DA&M IV",

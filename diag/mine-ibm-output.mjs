@@ -18,6 +18,7 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseIbmListing } from './ibm-listing.mjs';
 
 const MAX_BYTES = 16 * 1024 * 1024;
 const HEADER = /PP (\d{4}-[A-Z0-9]{3}) (IBM [A-Za-z/& ]*COBOL[A-Za-z/& ]*?)\s+(\d+\.\d+(?:\.\d+)?)(?:\s+(P\d{6}))?/g;
@@ -108,7 +109,7 @@ function tally(map, key, path, sample, emitted = false) {
 }
 
 export function inventoryOf(paths, attribution) {
-  const inv = { files: 0, withHeader: 0, skipped: 0, compilers: {}, sections: {}, compileMessages: {}, runtimeMessages: {}, abends: {}, repos: {} };
+  const inv = { files: 0, withHeader: 0, skipped: 0, compilers: {}, sections: {}, options: {}, compileMessages: {}, runtimeMessages: {}, abends: {}, repos: {} };
   for (const path of paths) {
     let text;
     try {
@@ -127,7 +128,15 @@ export function inventoryOf(paths, attribution) {
       tally(inv.compilers, key, path);
       r.compilers.add(key);
     }
-    if (headed) inv.withHeader += 1;
+    if (headed) {
+      inv.withHeader += 1;
+      for (const option of new Set(parseIbmListing(text).options)) {
+        const entry = inv.options[option] ?? (inv.options[option] = { count: 0, files: new Set(), repos: new Set() });
+        entry.count += 1;
+        entry.files.add(path);
+        entry.repos.add(repo);
+      }
+    }
     for (const [name, re] of SECTIONS) if (re.test(text)) tally(inv.sections, name, path);
     for (const line of text.split('\n')) {
       const compileEmitted = COMPILE_EMITTED.test(line);
@@ -186,6 +195,10 @@ export function markdown(inv, known) {
   for (const [key, e] of rows(inv.compilers)) out.push(`| ${key.slice(0, 8)} | ${cell(key.slice(9))} | ${e.files.size} |`);
   out.push('\n## Listing sections\n\n| Section | Files |\n|---|---|');
   for (const [name, e] of rows(inv.sections)) out.push(`| ${name} | ${e.files.size} |`);
+  const census = Object.entries(inv.options).map(([token, e]) => ({ token, name: token.replace(/\(.*$/, '').replace(/^NO(?=[A-Z])/, ''), e }));
+  const varied = new Set(census.filter((a) => census.some((b) => b.name === a.name && b.token !== a.token)).map((a) => a.name));
+  out.push(`\n## Options in effect\n\nOptions whose setting differs between listings, by files and by repositories.\n\n| Option | Files | Repositories |\n|---|---|---|`);
+  for (const { token, e } of census.filter((c) => varied.has(c.name)).sort((a, b) => a.name.localeCompare(b.name) || b.e.files.size - a.e.files.size)) out.push(`| ${token} | ${e.files.size} | ${e.repos.size} |`);
   const emitted = Object.fromEntries(Object.entries(inv.compileMessages).filter(([, e]) => e.emitted > 0));
   out.push(`\n## Compile-time messages emitted in listings\n\n${Object.keys(emitted).length} ids emitted; ${Object.keys(inv.compileMessages).length - Object.keys(emitted).length} more only mentioned are in the JSON.\n\n| Id | Emitted | Files | Sample |\n|---|---|---|---|`);
   for (const [id, e] of rows(emitted, 80, byEmitted)) out.push(`| ${id} | ${e.emitted} | ${e.files.size} | ${cell(e.sample)} |`);

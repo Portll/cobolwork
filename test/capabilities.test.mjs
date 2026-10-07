@@ -92,7 +92,7 @@ test('capabilities --json is one document, with a version for every document cob
 
 test('capabilities names every command and option the command line takes, and no other', () => {
   const cli = readFileSync(CLI, 'utf8');
-  const parsed = new Set([...cli.matchAll(/a === '(--[a-z-]+)'/g)].map((m) => m[1]));
+  const parsed = new Set([...cli.matchAll(/a === '(--[a-z0-9-]+)'/g)].map((m) => m[1]));
   const listed = new Set([...Object.values(COMMANDS).flatMap((c) => c.options), ...GLOBAL_OPTIONS]);
   assert.deepEqual([...parsed].filter((o) => !listed.has(o)).sort(), [], 'every option parsed is listed');
   assert.deepEqual([...listed].filter((o) => !parsed.has(o)).sort(), [], 'every option listed is parsed');

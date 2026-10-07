@@ -113,3 +113,11 @@ test('GETMAIN and FREEMAIN read their list and execute forms and branch entry', 
   assert.deepEqual(parse('         FREEMAIN E,LV=100,A=AREA,MF=(E,FMLIST)').node.mf, { form: 'E', list: 'FMLIST' });
   assert.match(parse('         FREEMAIN R,LV=100,A=X,BRANCH=(YES,GLOBAL)').reason, /only with RC, RU/);
 });
+
+test('the list and execute forms of GETMAIN and FREEMAIN may leave out the request type', () => {
+  assert.equal(parse('GMLIST   GETMAIN MF=L').node.mode, null);
+  assert.deepEqual(parse('         GETMAIN ,MF=(E,(1))').node.mf, { form: 'E', list: '(1)' });
+  assert.deepEqual(parse('         FREEMAIN A=FMPARM,MF=(E,FMLIST)').node.mf, { form: 'E', list: 'FMLIST' });
+  assert.match(parse('         GETMAIN LV=100').reason, /GETMAIN requires a request type/);
+  assert.match(parse('         FREEMAIN A=X,LV=100').reason, /FREEMAIN requires a request type/);
+});

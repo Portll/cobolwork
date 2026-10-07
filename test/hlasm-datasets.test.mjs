@@ -30,6 +30,12 @@ test('DCB keeps its keywords and names the DD statement it reads', () => {
   assert.equal(parse('BAD      DCB   X').status, 'unparsed');
 });
 
+test('DCB takes the keywords of an EXCP DCB', () => {
+  const r = parse('XDCB     DCB   MACRF=(E),IOBAD=XIOB,DSORG=DA,DEVD=DA,REPOS=Y,PCIA=PCI');
+  assert.equal(r.status, 'parsed');
+  assert.equal(r.node.keywords.IOBAD, 'XIOB');
+});
+
 test('OPEN and CLOSE read their list and execute forms, with DCB slots left to the other form', () => {
   const list = parse('OPENL    OPEN  (,),MF=L');
   assert.equal(list.status, 'parsed');

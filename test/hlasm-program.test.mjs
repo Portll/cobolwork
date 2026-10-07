@@ -22,6 +22,12 @@ test('LINK refuses unknown keyword', () => {
   assert.match(res.reason, /unknown keyword/);
 });
 
+test('ATTACH reads STAI and ESTAI as an exit address and a parameter list address', () => {
+  assert.equal(parse('         ATTACH EP=SUB,ESTAI=((R8),(R9)),ECB=(R7)').status, 'parsed');
+  assert.equal(parse('         ATTACH EP=SUB,ESTAI=(EXIT,PARMS),STAI=(EXIT)').status, 'parsed');
+  assert.match(parse('         ATTACH EP=SUB,ESTAI=(A,B,C)').reason, /invalid ESTAI address/);
+});
+
 test('LOAD parses EP= with trailing comment', () => {
   const res = parse('         LOAD  EP=CEELOCT                LOAD ENTRY OF CEELOCT');
   assert.equal(res.status, 'parsed');

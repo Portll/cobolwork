@@ -366,6 +366,21 @@ DORA 9(4)(c), NIST AC-6 and FFIEC IS II.C.7.
 
 **Effort: 24–32h.**
 
+**Met, 2026-10-07.** `lib/ims/model.mjs` reads DBDs and PSBs, and its BYTES= self-consistency
+checks find no problem in the corpus. `lib/ims/dli.mjs` gives the DL/I call interface: a get call,
+`CALL 'CBLTDLI'` or `'AIBTDLI'` or `EXEC DLI`, fills its I/O area as a `database` source, and
+`bench/cases/ims-segment-run-as-a-command` runs a retrieved segment as a command, with an ISRT as
+its near miss. `ims-procopt-broader-than-used` holds a PSB to the options the calls of the programs
+that run with it use, proven on `bench/cases/ims-psb-grants-replace-to-a-reader` and its negative. A
+program runs with a PSB that a DFSRRC00 step's PARM names for it, or that it schedules itself by
+`EXEC DLI SCHD` or a PCB call; a PSB nothing names falls back to its PSBGEN PSBNAME or file name.
+Over the 14 repositories of the 500 set that issue DL/I, it fires once: RaichoDemo's DMDPSB grants
+`PROCOPT=A` to RBMTR00C, which only gets. CardDemo's PSBPAUTB, shared by five programs, is used in
+full. The rest of the rule set fires as it did: `ims-pcb-procopt-all` 41 times in 10 repositories,
+`ims-definition-inconsistent` 42 times in one. No DL/I segment reaches a sink in that corpus.
+ISRT and REPL are not yet sinks, because the engine has no sink for data written to a database to
+pair them with, and `ims-unqualified-destructive-call` and `ims-dbd-password-none` are not built.
+
 ---
 
 ## 4. Phase 3 — DB2 DDL

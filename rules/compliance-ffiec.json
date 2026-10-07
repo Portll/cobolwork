@@ -3299,6 +3299,19 @@
     "retrieved": "2026-09-20",
     "quote": "Inventory of all systems and components (e.g., open-source, proprietary, application programming interfaces [API], and container images and registries), including related licenses, and data as part of IT asset management (ITAM)."
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-procopt-broader-than-used",
+   "framework": "ffiec",
+   "clause": "IS II.C.7",
+   "title": "User Security Controls",
+   "rationale": "The rule reports: A PSB grants a processing option that no DL/I call of the program it is named for uses. That is authority granted or exercised beyond job necessity, which the principle of least privilege exists to constrain.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Principle of least privilege, which recommends minimum user profile privileges for both physical and logical access based on job necessity."
+   }
   }
  ],
  "evidence": [],

@@ -3316,6 +3316,19 @@
     "retrieved": "2026-09-20",
     "quote": "map the configuration of the information assets and ICT assets and the links and interdependencies between the different information assets and ICT assets"
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-procopt-broader-than-used",
+   "framework": "dora",
+   "clause": "Article 9(4)(c)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A PSB grants a processing option that no DL/I call of the program it is named for uses. That grants or alters access rights outside the policy controls this clause requires be soundly administered.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "implement policies that limit the physical or logical access to information assets and ICT assets to what is required for legitimate and approved functions and activities only"
+   }
   }
  ],
  "evidence": [],

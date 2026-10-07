@@ -1,0 +1,11 @@
+{
+ "id": "ims-segment-run-as-a-command",
+ "title": "A segment a DL/I GU call retrieves is run as a command",
+ "cwe": "CWE-78",
+ "expect": [
+  {
+   "rule": "database-to-os-command",
+   "file": "SEGCMD.cbl"
+  }
+ ]
+}

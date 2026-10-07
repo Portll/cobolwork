@@ -1,0 +1,9 @@
+{
+ "id": "ims-psb-grants-get-to-a-reader",
+ "title": "The same PSB grants only get",
+ "cwe": "CWE-250",
+ "expect": [],
+ "negativeFor": [
+  "ims-procopt-broader-than-used"
+ ]
+}

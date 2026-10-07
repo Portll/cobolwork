@@ -1,0 +1,11 @@
+{
+ "id": "ims-psb-grants-replace-to-a-reader",
+ "title": "A PSB grants replace to a program whose DL/I calls only get",
+ "cwe": "CWE-250",
+ "expect": [
+  {
+   "rule": "ims-procopt-broader-than-used",
+   "file": "ACCTRPT.psb"
+  }
+ ]
+}

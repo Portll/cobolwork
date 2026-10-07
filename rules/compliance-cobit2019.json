@@ -3045,6 +3045,18 @@
     "retrieved": "2026-09-20",
     "idsOnly": true
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-procopt-broader-than-used",
+   "framework": "cobit-2019",
+   "clause": "DSS05.04",
+   "rationale": "The rule reports: A PSB grants a processing option that no DL/I call of the program it is named for uses. That is access or authentication handled outside the managed identity and logical access this practice requires.",
+   "source": {
+    "doc": "cobit2019",
+    "retrieved": "2026-09-20",
+    "idsOnly": true
+   }
   }
  ],
  "evidence": [

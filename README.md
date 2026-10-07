@@ -64,7 +64,7 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | The source | names nothing declares (code that cannot compile), shadowed copybooks, payloads hidden in columns 73-80 or aimed at AI readers |
 | The estate | production names outside production jobs, routable addresses, compiler and runtime versions with published advisories |
 | Assembler | a switch to key zero or supervisor state, an instruction run through `EX`, cross-memory calls, a module named at run time, the security product called directly, and the CSECT or ENTRY a COBOL `CALL` or a job step reaches |
-| IMS and Db2 | a PSB letting a program change every segment it reads, a SENSEG naming no segment of its DBD, a `KEYLEN` or field that DBDGEN, PSBGEN or ACBGEN refuses; a GRANT to `PUBLIC`, `WITH GRANT OPTION` or of a system authority, and the exit routines and load modules that run inside Db2 |
+| IMS and Db2 | a PSB granting a program an option its own DL/I calls never use, and a segment a DL/I get retrieves reaching a sink; a PSB letting a program change every segment it reads, a SENSEG naming no segment of its DBD, a `KEYLEN` or field that DBDGEN, PSBGEN or ACBGEN refuses; a GRANT to `PUBLIC`, `WITH GRANT OPTION` or of a system authority, and the exit routines and load modules that run inside Db2 |
 | PL/I | input reaching a sink through a PL/I program, as in COBOL; a `FETCH` of a module named at run time, an `ON` unit that ignores its condition, and where pointers, entry variables or the preprocessor take the flow out of sight |
 | Cryptography | a single-length DES key, an MD5 or SHA-1 hash, or a fixed initialization vector asked of ICSF, read from IBM's parameter lists; an outbound CICS connection asking for HTTP |
 | Secrets | a credential written into a program or copybook: a literal `VALUE` on an item named for one, or a literal password in `EXEC SQL CONNECT` or `EXEC CICS SIGNON` |
@@ -401,7 +401,7 @@ PL/I (three statements each). `jarora8_GitPlay` parses 89%, and most of the rest
 the dev set's misses are its statements. Structure offsets are checked against hand-built fixtures
 and the Language Reference's own example, not against a compiler.
 
-`bench/cases/` holds 149 CWE-labelled cases, each paired with a near-miss negative: the same shape
+`bench/cases/` holds 153 CWE-labelled cases, each paired with a near-miss negative: the same shape
 with the flaw removed. `node bench/run.mjs` scores any scanner's findings against them, by rule and
 file, never by line, and `npm test` fails if any case scores differently from its declaration.
 `--validate` compiles every COBOL case with GnuCOBOL, assembles every HLASM case with z390 when

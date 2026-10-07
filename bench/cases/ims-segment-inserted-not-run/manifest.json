@@ -1,0 +1,9 @@
+{
+ "id": "ims-segment-inserted-not-run",
+ "title": "The same call is an ISRT, which writes the I/O area and does not fill it",
+ "cwe": "CWE-78",
+ "expect": [],
+ "negativeFor": [
+  "database-to-os-command"
+ ]
+}

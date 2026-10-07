@@ -3299,6 +3299,19 @@
     "retrieved": "2026-09-20",
     "quote": "Develop and document an inventory of system components"
    }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "ims-procopt-broader-than-used",
+   "framework": "nist-800-53r5",
+   "clause": "AC-6",
+   "title": "Least Privilege",
+   "rationale": "The rule reports: A PSB grants a processing option that no DL/I call of the program it is named for uses. That is authority granted or exercised beyond what the task requires, which this control exists to prevent.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Employ the principle of least privilege, allowing only authorized accesses for users (or processes acting on behalf of users) that are necessary to accomplish assigned organizational tasks."
+   }
   }
  ],
  "evidence": [

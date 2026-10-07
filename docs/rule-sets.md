@@ -409,6 +409,18 @@ rest), as is a `KEYLEN` shorter than the longest concatenated key along the DBD'
 never overstates IMS's own; a PCB with a secondary processing sequence, or on a logical DBD, is not
 checked.
 
+**What a program's own calls use.** A PSB is checked against the DL/I calls of the programs that run
+with it: a program a DFSRRC00 step's PARM names with it, one that schedules it by `EXEC DLI SCHD` or
+a PCB call, or, for a PSB nothing names, the program its `PSBGEN PSBNAME` or file name names. The
+calls read are `CALL 'CBLTDLI'` or `'AIBTDLI'`, with its function code as a literal or a field only
+constants fill, and `EXEC DLI`. An option a database PCB grants, insert, replace, delete or get,
+that no call uses is high (`ims-procopt-broader-than-used`). A call is not tied to its PCB, so only
+an option no call of those programs uses at all is reported. Nothing is reported for a PSB one of whose programs has a function code that could be
+anything, CALLs another program with its PCB or a LINKAGE item, or schedules the PSB and LINKs or
+XCTLs, since the program it starts can issue DL/I against it. A get call (`GU`, `GN`, `GNP` and their
+hold forms) fills its I/O area with the segment it retrieves, which the data-flow rules read as a
+database value, as they read what EXEC SQL INTO fills.
+
 **What a GRANT opens.** Db2 for z/OS DDL (`.sql`, `.ddl`, `.db2`, or no extension and a `CREATE` or
 `GRANT` statement ending in a semicolon) is read statement by statement by `lib/db2/read.mjs`. A
 GRANT to `PUBLIC` is high, and critical when it grants a write (`INSERT`, `UPDATE`, `DELETE`,

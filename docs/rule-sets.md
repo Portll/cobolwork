@@ -364,7 +364,11 @@ or MVS 3.8's `SCHED`, `JES`, `HASP`, `DATAMGT`, `TCAM` and `VTAM`) is high under
 documentation does not list (the other `EXTKEY=` key names, `GETMAIN` and `FREEMAIN P`, `HIARCHY=`,
 `ATTACH JSCB=`, `DCB PGFX=` and `AERR=`, BTAM's `READ` and `WRITE` types, VTAM's basic-mode
 `READ` and `WRITE RPL=`, and their `MF=(E,addr)`) with the meaning those macros gave them;
-`scan --no-mvs38-forms` refuses them instead. `EX` and `EXRL` run their target with its second byte from a
+`scan --no-mvs38-forms` refuses them instead. Machine instructions are read from the operation code
+table HLASM's `OPTABLE` option names (`rules/hlasm-optables.json`, from IBM's table of supported
+instructions): `scan --hlasm-optable`, else a `*PROCESS OVERRIDE` in the file, the `PARM` of the
+estate's assembly steps when they agree, the file's own `*PROCESS`, and `UNI` otherwise. A mnemonic
+outside the table, such as `MSG` under `OPTABLE(ESA)`, is a macro call. `EX` and `EXRL` run their target with its second byte from a
 register, which for a move is its length, and the cross-memory instructions (`PC`, `PR`, `PT`,
 `SSAR`, `LASP`) reach another address space; both are high. `RACROUTE`, `RACHECK` and `RACINIT`
 called directly are listed as context. `LINK`, `XCTL`, `LOAD` or `ATTACH` given `EPLOC=` or `DE=`

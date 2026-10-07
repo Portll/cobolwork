@@ -1,0 +1,8024 @@
+{
+ "_comment": "The operation code tables (OPTABLE) each machine-instruction mnemonic is in, as ranges of levels (UNI is the universal table; X- is X and later; X-Y a range), and the MACHINE suboption each table answers to. Facts read from IBM HLASM 1.6 Programmer's Guide; no IBM prose is copied. Written by diag/hlasm-optables.mjs.",
+ "schemaVersion": 1,
+ "retrieved": "2026-10-07",
+ "source": {
+  "doc": "High Level Assembler for z/OS & z/VM & z/VSE 1.6 Programmer's Guide",
+  "topics": [
+   "Table of all supported instructions",
+   "MACHINE"
+  ],
+  "url": "https://www.ibm.com/docs/en/hla-and-tf/1.6.0"
+ },
+ "levels": [
+  "DOS",
+  "370",
+  "XA",
+  "ESA",
+  "ZOP",
+  "YOP",
+  "Z9",
+  "Z10",
+  "Z11",
+  "Z12",
+  "Z13",
+  "Z14",
+  "Z15",
+  "Z16",
+  "Z17"
+ ],
+ "synonyms": {
+  "ZS1": "ZOP",
+  "ZS2": "YOP",
+  "ZS3": "Z9",
+  "ZS4": "Z10",
+  "ZS5": "Z11",
+  "ZS6": "Z12",
+  "ZS7": "Z13",
+  "ZS8": "Z14",
+  "ZS9": "Z15",
+  "ZSA": "Z16",
+  "ZSB": "Z17"
+ },
+ "machines": {
+  "S370": "370",
+  "S370XA": "XA",
+  "ARCH-0": "XA",
+  "S390": "ESA",
+  "S390E": "ESA",
+  "S370ESA": "ESA",
+  "ARCH-1": "ESA",
+  "ARCH-2": "ESA",
+  "ARCH-3": "ESA",
+  "ARCH-4": "ESA",
+  "ZSERIES": "ZOP",
+  "ZS": "ZOP",
+  "Z900": "ZOP",
+  "Z800": "ZOP",
+  "ARCH-5": "ZOP",
+  "ZSERIES-1": "ZOP",
+  "ZS-1": "ZOP",
+  "Z990": "YOP",
+  "Z890": "YOP",
+  "ARCH-6": "YOP",
+  "ZSERIES-2": "YOP",
+  "ZS-2": "YOP",
+  "Z9": "Z9",
+  "ARCH-7": "Z9",
+  "ZSERIES-3": "Z9",
+  "ZS-3": "Z9",
+  "Z10": "Z10",
+  "ARCH-8": "Z10",
+  "ZSERIES-4": "Z10",
+  "ZS-4": "Z10",
+  "Z11": "Z11",
+  "Z196": "Z11",
+  "Z114": "Z11",
+  "ARCH-9": "Z11",
+  "ZSERIES-5": "Z11",
+  "ZS-5": "Z11",
+  "Z12": "Z12",
+  "ZEC12": "Z12",
+  "ZBC12": "Z12",
+  "ARCH-10": "Z12",
+  "ZSERIES-6": "Z12",
+  "ZS-6": "Z12",
+  "Z13": "Z13",
+  "ARCH-11": "Z13",
+  "ZSERIES-7": "Z13",
+  "ZS-7": "Z13",
+  "Z14": "Z14",
+  "ARCH-12": "Z14",
+  "ZSERIES-8": "Z14",
+  "ZS-8": "Z14",
+  "Z15": "Z15",
+  "ARCH-13": "Z15",
+  "ZSERIES-9": "Z15",
+  "ZS-9": "Z15",
+  "Z16": "Z16",
+  "ARCH-14": "Z16",
+  "ZSERIES-10": "Z16",
+  "ZS-10": "Z16",
+  "Z17": "Z17",
+  "ARCH-15": "Z17",
+  "ZSERIES-11": "Z17",
+  "ZS-11": "Z17"
+ },
+ "mnemonics": {
+  "A": [
+   "UNI,DOS-"
+  ],
+  "AD": [
+   "UNI,DOS-"
+  ],
+  "ADB": [
+   "UNI,ESA-"
+  ],
+  "ADBR": [
+   "UNI,ESA-"
+  ],
+  "ADR": [
+   "UNI,DOS-"
+  ],
+  "ADTR": [
+   "UNI,Z9-"
+  ],
+  "ADTRA": [
+   "UNI,Z11-"
+  ],
+  "AE": [
+   "UNI,DOS-"
+  ],
+  "AEB": [
+   "UNI,ESA-"
+  ],
+  "AEBR": [
+   "UNI,ESA-"
+  ],
+  "AER": [
+   "UNI,DOS-"
+  ],
+  "AFI": [
+   "UNI,Z9-"
+  ],
+  "AG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "AGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "AGFI": [
+   "UNI,Z9-"
+  ],
+  "AGFR": [
+   "UNI,ZOP-"
+  ],
+  "AGH": [
+   "UNI,Z14-"
+  ],
+  "AGHI": [
+   "UNI,ZOP-"
+  ],
+  "AGHIK": [
+   "UNI,Z11-"
+  ],
+  "AGR": [
+   "UNI,ZOP-"
+  ],
+  "AGRK": [
+   "UNI,Z11-"
+  ],
+  "AGSI": [
+   "UNI,Z10-"
+  ],
+  "AH": [
+   "UNI,DOS-"
+  ],
+  "AHHHR": [
+   "UNI,Z11-"
+  ],
+  "AHHLR": [
+   "UNI,Z11-"
+  ],
+  "AHI": [
+   "UNI,ESA-"
+  ],
+  "AHIK": [
+   "UNI,Z11-"
+  ],
+  "AHY": [
+   "UNI,YOP-"
+  ],
+  "AIH": [
+   "UNI,Z11-"
+  ],
+  "AL": [
+   "UNI,DOS-"
+  ],
+  "ALC": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "ALCG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "ALCGR": [
+   "UNI,ZOP-"
+  ],
+  "ALCR": [
+   "UNI,ESA-"
+  ],
+  "ALFI": [
+   "UNI,Z9-"
+  ],
+  "ALG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "ALGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "ALGFI": [
+   "UNI,Z9-"
+  ],
+  "ALGFR": [
+   "UNI,ZOP-"
+  ],
+  "ALGHSIK": [
+   "UNI,Z11-"
+  ],
+  "ALGR": [
+   "UNI,ZOP-"
+  ],
+  "ALGRK": [
+   "UNI,Z11-"
+  ],
+  "ALGSI": [
+   "UNI,Z10-"
+  ],
+  "ALHHHR": [
+   "UNI,Z11-"
+  ],
+  "ALHHLR": [
+   "UNI,Z11-"
+  ],
+  "ALHSIK": [
+   "UNI,Z11-"
+  ],
+  "ALR": [
+   "UNI,DOS-"
+  ],
+  "ALRK": [
+   "UNI,Z11-"
+  ],
+  "ALSI": [
+   "UNI,Z10-"
+  ],
+  "ALSIH": [
+   "UNI,Z11-"
+  ],
+  "ALSIHN": [
+   "UNI,Z11-"
+  ],
+  "ALY": [
+   "UNI,YOP-"
+  ],
+  "AP": [
+   "UNI,DOS-"
+  ],
+  "AR": [
+   "UNI,DOS-"
+  ],
+  "ARK": [
+   "UNI,Z11-"
+  ],
+  "ASI": [
+   "UNI,Z10-"
+  ],
+  "AU": [
+   "UNI,DOS-"
+  ],
+  "AUR": [
+   "UNI,DOS-"
+  ],
+  "AW": [
+   "UNI,DOS-"
+  ],
+  "AWR": [
+   "UNI,DOS-"
+  ],
+  "AXBR": [
+   "UNI,ESA-"
+  ],
+  "AXR": [
+   "UNI,DOS-"
+  ],
+  "AXTR": [
+   "UNI,Z9-"
+  ],
+  "AXTRA": [
+   "UNI,Z11-"
+  ],
+  "AY": [
+   "UNI,YOP-"
+  ],
+  "B": [
+   "UNI,DOS-"
+  ],
+  "BAKR": [
+   "UNI,ESA-"
+  ],
+  "BAL": [
+   "UNI,DOS-"
+  ],
+  "BALR": [
+   "UNI,DOS-"
+  ],
+  "BAS": [
+   "UNI,370-"
+  ],
+  "BASR": [
+   "UNI,370-"
+  ],
+  "BASSM": [
+   "UNI,XA-"
+  ],
+  "BC": [
+   "UNI,DOS-"
+  ],
+  "BCR": [
+   "UNI,DOS-"
+  ],
+  "BCT": [
+   "UNI,DOS-"
+  ],
+  "BCTG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "BCTGR": [
+   "UNI,ZOP-"
+  ],
+  "BCTR": [
+   "UNI,DOS-"
+  ],
+  "BDEPG": [
+   "UNI,Z17-"
+  ],
+  "BE": [
+   "UNI,DOS-"
+  ],
+  "BER": [
+   "UNI,DOS-"
+  ],
+  "BEXTG": [
+   "UNI,Z17-"
+  ],
+  "BH": [
+   "UNI,DOS-"
+  ],
+  "BHR": [
+   "UNI,DOS-"
+  ],
+  "BI": [
+   "UNI,Z14-"
+  ],
+  "BIC": [
+   "UNI,Z14-"
+  ],
+  "BIE": [
+   "UNI,Z14-"
+  ],
+  "BIH": [
+   "UNI,Z14-"
+  ],
+  "BIL": [
+   "UNI,Z14-"
+  ],
+  "BIM": [
+   "UNI,Z14-"
+  ],
+  "BINE": [
+   "UNI,Z14-"
+  ],
+  "BINH": [
+   "UNI,Z14-"
+  ],
+  "BINL": [
+   "UNI,Z14-"
+  ],
+  "BINM": [
+   "UNI,Z14-"
+  ],
+  "BINO": [
+   "UNI,Z14-"
+  ],
+  "BINP": [
+   "UNI,Z14-"
+  ],
+  "BINZ": [
+   "UNI,Z14-"
+  ],
+  "BIO": [
+   "UNI,Z14-"
+  ],
+  "BIP": [
+   "UNI,Z14-"
+  ],
+  "BIZ": [
+   "UNI,Z14-"
+  ],
+  "BL": [
+   "UNI,DOS-"
+  ],
+  "BLR": [
+   "UNI,DOS-"
+  ],
+  "BM": [
+   "UNI,DOS-"
+  ],
+  "BMR": [
+   "UNI,DOS-"
+  ],
+  "BNE": [
+   "UNI,DOS-"
+  ],
+  "BNER": [
+   "UNI,DOS-"
+  ],
+  "BNH": [
+   "UNI,DOS-"
+  ],
+  "BNHR": [
+   "UNI,DOS-"
+  ],
+  "BNL": [
+   "UNI,DOS-"
+  ],
+  "BNLR": [
+   "UNI,DOS-"
+  ],
+  "BNM": [
+   "UNI,DOS-"
+  ],
+  "BNMR": [
+   "UNI,DOS-"
+  ],
+  "BNO": [
+   "UNI,DOS-"
+  ],
+  "BNOR": [
+   "UNI,DOS-"
+  ],
+  "BNP": [
+   "UNI,DOS-"
+  ],
+  "BNPR": [
+   "UNI,DOS-"
+  ],
+  "BNZ": [
+   "UNI,DOS-"
+  ],
+  "BNZR": [
+   "UNI,DOS-"
+  ],
+  "BO": [
+   "UNI,DOS-"
+  ],
+  "BOR": [
+   "UNI,DOS-"
+  ],
+  "BP": [
+   "UNI,DOS-"
+  ],
+  "BPP": [
+   "UNI,Z12-"
+  ],
+  "BPR": [
+   "UNI,DOS-"
+  ],
+  "BPRP": [
+   "UNI,Z12-"
+  ],
+  "BR": [
+   "UNI,DOS-"
+  ],
+  "BRAS": [
+   "UNI,ESA-"
+  ],
+  "BRASL": [
+   "UNI,ESA-"
+  ],
+  "BRC": [
+   "UNI,ESA-"
+  ],
+  "BRCL": [
+   "UNI,ESA-"
+  ],
+  "BRCT": [
+   "UNI,ESA-"
+  ],
+  "BRCTG": [
+   "UNI,ZOP-"
+  ],
+  "BRCTH": [
+   "UNI,Z11-"
+  ],
+  "BRE": [
+   "UNI,ESA-"
+  ],
+  "BREL": [
+   "UNI,ZOP-"
+  ],
+  "BRH": [
+   "UNI,ESA-"
+  ],
+  "BRHL": [
+   "UNI,ZOP-"
+  ],
+  "BRL": [
+   "UNI,ESA-"
+  ],
+  "BRLL": [
+   "UNI,ZOP-"
+  ],
+  "BRM": [
+   "UNI,ESA-"
+  ],
+  "BRML": [
+   "UNI,ZOP-"
+  ],
+  "BRNE": [
+   "UNI,ESA-"
+  ],
+  "BRNEL": [
+   "UNI,ZOP-"
+  ],
+  "BRNH": [
+   "UNI,ESA-"
+  ],
+  "BRNHL": [
+   "UNI,ZOP-"
+  ],
+  "BRNL": [
+   "UNI,ESA-"
+  ],
+  "BRNLL": [
+   "UNI,ZOP-"
+  ],
+  "BRNM": [
+   "UNI,ESA-"
+  ],
+  "BRNML": [
+   "UNI,ZOP-"
+  ],
+  "BRNO": [
+   "UNI,ESA-"
+  ],
+  "BRNOL": [
+   "UNI,ZOP-"
+  ],
+  "BRNP": [
+   "UNI,ESA-"
+  ],
+  "BRNPL": [
+   "UNI,ZOP-"
+  ],
+  "BRNZ": [
+   "UNI,ESA-"
+  ],
+  "BRNZL": [
+   "UNI,ZOP-"
+  ],
+  "BRO": [
+   "UNI,ESA-"
+  ],
+  "BROL": [
+   "UNI,ZOP-"
+  ],
+  "BRP": [
+   "UNI,ESA-"
+  ],
+  "BRPL": [
+   "UNI,ZOP-"
+  ],
+  "BRU": [
+   "UNI,ESA-"
+  ],
+  "BRUL": [
+   "UNI,ZOP-"
+  ],
+  "BRXH": [
+   "UNI,ESA-"
+  ],
+  "BRXHG": [
+   "UNI,ZOP-"
+  ],
+  "BRXLE": [
+   "UNI,ESA-"
+  ],
+  "BRXLG": [
+   "UNI,ZOP-"
+  ],
+  "BRZ": [
+   "UNI,ESA-"
+  ],
+  "BRZL": [
+   "UNI,ZOP-"
+  ],
+  "BSA": [
+   "UNI,ESA-"
+  ],
+  "BSG": [
+   "UNI,ESA-"
+  ],
+  "BSM": [
+   "UNI,XA-"
+  ],
+  "BXH": [
+   "UNI,DOS-"
+  ],
+  "BXHG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "BXLE": [
+   "UNI,DOS-"
+  ],
+  "BXLEG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "BZ": [
+   "UNI,DOS-"
+  ],
+  "BZR": [
+   "UNI,DOS-"
+  ],
+  "C": [
+   "UNI,DOS-"
+  ],
+  "CAL": [
+   "UNI,Z17-"
+  ],
+  "CALG": [
+   "UNI,Z17-"
+  ],
+  "CALGF": [
+   "UNI,Z17-"
+  ],
+  "CD": [
+   "UNI,DOS-"
+  ],
+  "CDB": [
+   "UNI,ESA-"
+  ],
+  "CDBR": [
+   "UNI,ESA-"
+  ],
+  "CDFBR": [
+   "UNI,ESA-"
+  ],
+  "CDFBRA": [
+   "UNI,Z11-"
+  ],
+  "CDFR": [
+   "UNI,ESA-"
+  ],
+  "CDFTR": [
+   "UNI,Z11-"
+  ],
+  "CDGBR": [
+   "UNI,ZOP-"
+  ],
+  "CDGBRA": [
+   "UNI,Z11-"
+  ],
+  "CDGR": [
+   "UNI,ZOP-"
+  ],
+  "CDGTR": [
+   "UNI,Z9-"
+  ],
+  "CDGTRA": [
+   "UNI,Z11-"
+  ],
+  "CDLFBR": [
+   "UNI,Z11-"
+  ],
+  "CDLFTR": [
+   "UNI,Z11-"
+  ],
+  "CDLGBR": [
+   "UNI,Z11-"
+  ],
+  "CDLGTR": [
+   "UNI,Z11-"
+  ],
+  "CDPT": [
+   "UNI,Z13-"
+  ],
+  "CDR": [
+   "UNI,DOS-"
+  ],
+  "CDS": [
+   "UNI,DOS-"
+  ],
+  "CDSG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CDSTR": [
+   "UNI,Z9-"
+  ],
+  "CDSY": [
+   "UNI,YOP-"
+  ],
+  "CDTR": [
+   "UNI,Z9-"
+  ],
+  "CDUTR": [
+   "UNI,Z9-"
+  ],
+  "CDZT": [
+   "UNI,Z12-"
+  ],
+  "CE": [
+   "UNI,DOS-"
+  ],
+  "CEB": [
+   "UNI,ESA-"
+  ],
+  "CEBR": [
+   "UNI,ESA-"
+  ],
+  "CEDTR": [
+   "UNI,Z9-"
+  ],
+  "CEFBR": [
+   "UNI,ESA-"
+  ],
+  "CEFBRA": [
+   "UNI,Z11-"
+  ],
+  "CEFR": [
+   "UNI,ESA-"
+  ],
+  "CEGBR": [
+   "UNI,ZOP-"
+  ],
+  "CEGBRA": [
+   "UNI,Z11-"
+  ],
+  "CEGR": [
+   "UNI,ZOP-"
+  ],
+  "CELFBR": [
+   "UNI,Z11-"
+  ],
+  "CELGBR": [
+   "UNI,Z11-"
+  ],
+  "CER": [
+   "UNI,DOS-"
+  ],
+  "CEXTR": [
+   "UNI,Z9-"
+  ],
+  "CFC": [
+   "UNI,XA-"
+  ],
+  "CFDBR": [
+   "UNI,ESA-"
+  ],
+  "CFDBRA": [
+   "UNI,Z11-"
+  ],
+  "CFDR": [
+   "UNI,ESA-"
+  ],
+  "CFDTR": [
+   "UNI,Z11-"
+  ],
+  "CFEBR": [
+   "UNI,ESA-"
+  ],
+  "CFEBRA": [
+   "UNI,Z11-"
+  ],
+  "CFER": [
+   "UNI,ESA-"
+  ],
+  "CFI": [
+   "UNI,Z9-"
+  ],
+  "CFXBR": [
+   "UNI,ESA-"
+  ],
+  "CFXBRA": [
+   "UNI,Z11-"
+  ],
+  "CFXR": [
+   "UNI,ESA-"
+  ],
+  "CFXTR": [
+   "UNI,Z11-"
+  ],
+  "CG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CGDBR": [
+   "UNI,ZOP-"
+  ],
+  "CGDBRA": [
+   "UNI,Z11-"
+  ],
+  "CGDR": [
+   "UNI,ZOP-"
+  ],
+  "CGDTR": [
+   "UNI,Z9-"
+  ],
+  "CGDTRA": [
+   "UNI,Z11-"
+  ],
+  "CGEBR": [
+   "UNI,ZOP-"
+  ],
+  "CGEBRA": [
+   "UNI,Z11-"
+  ],
+  "CGER": [
+   "UNI,ZOP-"
+  ],
+  "CGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CGFI": [
+   "UNI,Z9-"
+  ],
+  "CGFR": [
+   "UNI,ZOP-"
+  ],
+  "CGFRL": [
+   "UNI,Z10-"
+  ],
+  "CGH": [
+   "UNI,Z10-"
+  ],
+  "CGHI": [
+   "UNI,ZOP-"
+  ],
+  "CGHRL": [
+   "UNI,Z10-"
+  ],
+  "CGHSI": [
+   "UNI,Z10-"
+  ],
+  "CGIB": [
+   "UNI,Z10-"
+  ],
+  "CGIBE": [
+   "UNI,Z10-"
+  ],
+  "CGIBH": [
+   "UNI,Z10-"
+  ],
+  "CGIBL": [
+   "UNI,Z10-"
+  ],
+  "CGIBNE": [
+   "UNI,Z10-"
+  ],
+  "CGIBNH": [
+   "UNI,Z10-"
+  ],
+  "CGIBNL": [
+   "UNI,Z10-"
+  ],
+  "CGIJ": [
+   "UNI,Z10-"
+  ],
+  "CGIJE": [
+   "UNI,Z10-"
+  ],
+  "CGIJH": [
+   "UNI,Z10-"
+  ],
+  "CGIJL": [
+   "UNI,Z10-"
+  ],
+  "CGIJNE": [
+   "UNI,Z10-"
+  ],
+  "CGIJNH": [
+   "UNI,Z10-"
+  ],
+  "CGIJNL": [
+   "UNI,Z10-"
+  ],
+  "CGIT": [
+   "UNI,Z10-"
+  ],
+  "CGITE": [
+   "UNI,Z10-"
+  ],
+  "CGITH": [
+   "UNI,Z10-"
+  ],
+  "CGITL": [
+   "UNI,Z10-"
+  ],
+  "CGITNE": [
+   "UNI,Z10-"
+  ],
+  "CGITNH": [
+   "UNI,Z10-"
+  ],
+  "CGITNL": [
+   "UNI,Z10-"
+  ],
+  "CGR": [
+   "UNI,ZOP-"
+  ],
+  "CGRB": [
+   "UNI,Z10-"
+  ],
+  "CGRBE": [
+   "UNI,Z10-"
+  ],
+  "CGRBH": [
+   "UNI,Z10-"
+  ],
+  "CGRBL": [
+   "UNI,Z10-"
+  ],
+  "CGRBNE": [
+   "UNI,Z10-"
+  ],
+  "CGRBNH": [
+   "UNI,Z10-"
+  ],
+  "CGRBNL": [
+   "UNI,Z10-"
+  ],
+  "CGRJ": [
+   "UNI,Z10-"
+  ],
+  "CGRJE": [
+   "UNI,Z10-"
+  ],
+  "CGRJH": [
+   "UNI,Z10-"
+  ],
+  "CGRJL": [
+   "UNI,Z10-"
+  ],
+  "CGRJNE": [
+   "UNI,Z10-"
+  ],
+  "CGRJNH": [
+   "UNI,Z10-"
+  ],
+  "CGRJNL": [
+   "UNI,Z10-"
+  ],
+  "CGRL": [
+   "UNI,Z10-"
+  ],
+  "CGRT": [
+   "UNI,Z10-"
+  ],
+  "CGRTE": [
+   "UNI,Z10-"
+  ],
+  "CGRTH": [
+   "UNI,Z10-"
+  ],
+  "CGRTL": [
+   "UNI,Z10-"
+  ],
+  "CGRTNE": [
+   "UNI,Z10-"
+  ],
+  "CGRTNH": [
+   "UNI,Z10-"
+  ],
+  "CGRTNL": [
+   "UNI,Z10-"
+  ],
+  "CGXBR": [
+   "UNI,ZOP-"
+  ],
+  "CGXBRA": [
+   "UNI,Z11-"
+  ],
+  "CGXR": [
+   "UNI,ZOP-"
+  ],
+  "CGXTR": [
+   "UNI,Z9-"
+  ],
+  "CGXTRA": [
+   "UNI,Z11-"
+  ],
+  "CH": [
+   "UNI,DOS-"
+  ],
+  "CHF": [
+   "UNI,Z11-"
+  ],
+  "CHHR": [
+   "UNI,Z11-"
+  ],
+  "CHHSI": [
+   "UNI,Z10-"
+  ],
+  "CHI": [
+   "UNI,ESA-"
+  ],
+  "CHLR": [
+   "UNI,Z11-"
+  ],
+  "CHRL": [
+   "UNI,Z10-"
+  ],
+  "CHSI": [
+   "UNI,Z10-"
+  ],
+  "CHY": [
+   "UNI,YOP-"
+  ],
+  "CIB": [
+   "UNI,Z10-"
+  ],
+  "CIBE": [
+   "UNI,Z10-"
+  ],
+  "CIBH": [
+   "UNI,Z10-"
+  ],
+  "CIBL": [
+   "UNI,Z10-"
+  ],
+  "CIBNE": [
+   "UNI,Z10-"
+  ],
+  "CIBNH": [
+   "UNI,Z10-"
+  ],
+  "CIBNL": [
+   "UNI,Z10-"
+  ],
+  "CIH": [
+   "UNI,Z11-"
+  ],
+  "CIJ": [
+   "UNI,Z10-"
+  ],
+  "CIJE": [
+   "UNI,Z10-"
+  ],
+  "CIJH": [
+   "UNI,Z10-"
+  ],
+  "CIJL": [
+   "UNI,Z10-"
+  ],
+  "CIJNE": [
+   "UNI,Z10-"
+  ],
+  "CIJNH": [
+   "UNI,Z10-"
+  ],
+  "CIJNL": [
+   "UNI,Z10-"
+  ],
+  "CIT": [
+   "UNI,Z10-"
+  ],
+  "CITE": [
+   "UNI,Z10-"
+  ],
+  "CITH": [
+   "UNI,Z10-"
+  ],
+  "CITL": [
+   "UNI,Z10-"
+  ],
+  "CITNE": [
+   "UNI,Z10-"
+  ],
+  "CITNH": [
+   "UNI,Z10-"
+  ],
+  "CITNL": [
+   "UNI,Z10-"
+  ],
+  "CKSM": [
+   "UNI,ESA-"
+  ],
+  "CL": [
+   "UNI,DOS-"
+  ],
+  "CLC": [
+   "UNI,DOS-"
+  ],
+  "CLCL": [
+   "UNI,DOS-"
+  ],
+  "CLCLE": [
+   "UNI,ESA-"
+  ],
+  "CLCLU": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CLFDBR": [
+   "UNI,Z11-"
+  ],
+  "CLFDTR": [
+   "UNI,Z11-"
+  ],
+  "CLFEBR": [
+   "UNI,Z11-"
+  ],
+  "CLFHSI": [
+   "UNI,Z10-"
+  ],
+  "CLFI": [
+   "UNI,Z9-"
+  ],
+  "CLFIT": [
+   "UNI,Z10-"
+  ],
+  "CLFITE": [
+   "UNI,Z10-"
+  ],
+  "CLFITH": [
+   "UNI,Z10-"
+  ],
+  "CLFITL": [
+   "UNI,Z10-"
+  ],
+  "CLFITNE": [
+   "UNI,Z10-"
+  ],
+  "CLFITNH": [
+   "UNI,Z10-"
+  ],
+  "CLFITNL": [
+   "UNI,Z10-"
+  ],
+  "CLFXBR": [
+   "UNI,Z11-"
+  ],
+  "CLFXTR": [
+   "UNI,Z11-"
+  ],
+  "CLG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CLGDBR": [
+   "UNI,Z11-"
+  ],
+  "CLGDTR": [
+   "UNI,Z11-"
+  ],
+  "CLGEBR": [
+   "UNI,Z11-"
+  ],
+  "CLGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CLGFI": [
+   "UNI,Z9-"
+  ],
+  "CLGFR": [
+   "UNI,ZOP-"
+  ],
+  "CLGFRL": [
+   "UNI,Z10-"
+  ],
+  "CLGHRL": [
+   "UNI,Z10-"
+  ],
+  "CLGHSI": [
+   "UNI,Z10-"
+  ],
+  "CLGIB": [
+   "UNI,Z10-"
+  ],
+  "CLGIBE": [
+   "UNI,Z10-"
+  ],
+  "CLGIBH": [
+   "UNI,Z10-"
+  ],
+  "CLGIBL": [
+   "UNI,Z10-"
+  ],
+  "CLGIBNE": [
+   "UNI,Z10-"
+  ],
+  "CLGIBNH": [
+   "UNI,Z10-"
+  ],
+  "CLGIBNL": [
+   "UNI,Z10-"
+  ],
+  "CLGIJ": [
+   "UNI,Z10-"
+  ],
+  "CLGIJE": [
+   "UNI,Z10-"
+  ],
+  "CLGIJH": [
+   "UNI,Z10-"
+  ],
+  "CLGIJL": [
+   "UNI,Z10-"
+  ],
+  "CLGIJNE": [
+   "UNI,Z10-"
+  ],
+  "CLGIJNH": [
+   "UNI,Z10-"
+  ],
+  "CLGIJNL": [
+   "UNI,Z10-"
+  ],
+  "CLGIT": [
+   "UNI,Z10-"
+  ],
+  "CLGITE": [
+   "UNI,Z10-"
+  ],
+  "CLGITH": [
+   "UNI,Z10-"
+  ],
+  "CLGITL": [
+   "UNI,Z10-"
+  ],
+  "CLGITNE": [
+   "UNI,Z10-"
+  ],
+  "CLGITNH": [
+   "UNI,Z10-"
+  ],
+  "CLGITNL": [
+   "UNI,Z10-"
+  ],
+  "CLGR": [
+   "UNI,ZOP-"
+  ],
+  "CLGRB": [
+   "UNI,Z10-"
+  ],
+  "CLGRBE": [
+   "UNI,Z10-"
+  ],
+  "CLGRBH": [
+   "UNI,Z10-"
+  ],
+  "CLGRBL": [
+   "UNI,Z10-"
+  ],
+  "CLGRBNE": [
+   "UNI,Z10-"
+  ],
+  "CLGRBNH": [
+   "UNI,Z10-"
+  ],
+  "CLGRBNL": [
+   "UNI,Z10-"
+  ],
+  "CLGRJ": [
+   "UNI,Z10-"
+  ],
+  "CLGRJE": [
+   "UNI,Z10-"
+  ],
+  "CLGRJH": [
+   "UNI,Z10-"
+  ],
+  "CLGRJL": [
+   "UNI,Z10-"
+  ],
+  "CLGRJNE": [
+   "UNI,Z10-"
+  ],
+  "CLGRJNH": [
+   "UNI,Z10-"
+  ],
+  "CLGRJNL": [
+   "UNI,Z10-"
+  ],
+  "CLGRL": [
+   "UNI,Z10-"
+  ],
+  "CLGRT": [
+   "UNI,Z10-"
+  ],
+  "CLGRTE": [
+   "UNI,Z10-"
+  ],
+  "CLGRTH": [
+   "UNI,Z10-"
+  ],
+  "CLGRTL": [
+   "UNI,Z10-"
+  ],
+  "CLGRTNE": [
+   "UNI,Z10-"
+  ],
+  "CLGRTNH": [
+   "UNI,Z10-"
+  ],
+  "CLGRTNL": [
+   "UNI,Z10-"
+  ],
+  "CLGT": [
+   "UNI,Z12-"
+  ],
+  "CLGTE": [
+   "UNI,Z12-"
+  ],
+  "CLGTH": [
+   "UNI,Z12-"
+  ],
+  "CLGTL": [
+   "UNI,Z12-"
+  ],
+  "CLGTNE": [
+   "UNI,Z12-"
+  ],
+  "CLGTNH": [
+   "UNI,Z12-"
+  ],
+  "CLGTNL": [
+   "UNI,Z12-"
+  ],
+  "CLGXBR": [
+   "UNI,Z11-"
+  ],
+  "CLGXTR": [
+   "UNI,Z11-"
+  ],
+  "CLHF": [
+   "UNI,Z11-"
+  ],
+  "CLHHR": [
+   "UNI,Z11-"
+  ],
+  "CLHHSI": [
+   "UNI,Z10-"
+  ],
+  "CLHLR": [
+   "UNI,Z11-"
+  ],
+  "CLHRL": [
+   "UNI,Z10-"
+  ],
+  "CLI": [
+   "UNI,DOS-"
+  ],
+  "CLIB": [
+   "UNI,Z10-"
+  ],
+  "CLIBE": [
+   "UNI,Z10-"
+  ],
+  "CLIBH": [
+   "UNI,Z10-"
+  ],
+  "CLIBL": [
+   "UNI,Z10-"
+  ],
+  "CLIBNE": [
+   "UNI,Z10-"
+  ],
+  "CLIBNH": [
+   "UNI,Z10-"
+  ],
+  "CLIBNL": [
+   "UNI,Z10-"
+  ],
+  "CLIH": [
+   "UNI,Z11-"
+  ],
+  "CLIJ": [
+   "UNI,Z10-"
+  ],
+  "CLIJE": [
+   "UNI,Z10-"
+  ],
+  "CLIJH": [
+   "UNI,Z10-"
+  ],
+  "CLIJL": [
+   "UNI,Z10-"
+  ],
+  "CLIJNE": [
+   "UNI,Z10-"
+  ],
+  "CLIJNH": [
+   "UNI,Z10-"
+  ],
+  "CLIJNL": [
+   "UNI,Z10-"
+  ],
+  "CLIY": [
+   "UNI,YOP-"
+  ],
+  "CLM": [
+   "UNI,DOS-"
+  ],
+  "CLMH": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CLMY": [
+   "UNI,YOP-"
+  ],
+  "CLR": [
+   "UNI,DOS-"
+  ],
+  "CLRB": [
+   "UNI,Z10-"
+  ],
+  "CLRBE": [
+   "UNI,Z10-"
+  ],
+  "CLRBH": [
+   "UNI,Z10-"
+  ],
+  "CLRBL": [
+   "UNI,Z10-"
+  ],
+  "CLRBNE": [
+   "UNI,Z10-"
+  ],
+  "CLRBNH": [
+   "UNI,Z10-"
+  ],
+  "CLRBNL": [
+   "UNI,Z10-"
+  ],
+  "CLRCH": [
+   "UNI,370"
+  ],
+  "CLRIO": [
+   "UNI,DOS-370"
+  ],
+  "CLRJ": [
+   "UNI,Z10-"
+  ],
+  "CLRJE": [
+   "UNI,Z10-"
+  ],
+  "CLRJH": [
+   "UNI,Z10-"
+  ],
+  "CLRJL": [
+   "UNI,Z10-"
+  ],
+  "CLRJNE": [
+   "UNI,Z10-"
+  ],
+  "CLRJNH": [
+   "UNI,Z10-"
+  ],
+  "CLRJNL": [
+   "UNI,Z10-"
+  ],
+  "CLRL": [
+   "UNI,Z10-"
+  ],
+  "CLRT": [
+   "UNI,Z10-"
+  ],
+  "CLRTE": [
+   "UNI,Z10-"
+  ],
+  "CLRTH": [
+   "UNI,Z10-"
+  ],
+  "CLRTL": [
+   "UNI,Z10-"
+  ],
+  "CLRTNE": [
+   "UNI,Z10-"
+  ],
+  "CLRTNH": [
+   "UNI,Z10-"
+  ],
+  "CLRTNL": [
+   "UNI,Z10-"
+  ],
+  "CLST": [
+   "UNI,ESA-"
+  ],
+  "CLT": [
+   "UNI,Z12-"
+  ],
+  "CLTE": [
+   "UNI,Z12-"
+  ],
+  "CLTH": [
+   "UNI,Z12-"
+  ],
+  "CLTL": [
+   "UNI,Z12-"
+  ],
+  "CLTNE": [
+   "UNI,Z12-"
+  ],
+  "CLTNH": [
+   "UNI,Z12-"
+  ],
+  "CLTNL": [
+   "UNI,Z12-"
+  ],
+  "CLY": [
+   "UNI,YOP-"
+  ],
+  "CLZG": [
+   "UNI,Z17-"
+  ],
+  "CMPSC": [
+   "UNI,ESA-"
+  ],
+  "CONCS": [
+   "UNI,",
+   "370"
+  ],
+  "CP": [
+   "UNI,DOS-"
+  ],
+  "CPDT": [
+   "UNI,Z13-"
+  ],
+  "CPSDR": [
+   "UNI,Z9-"
+  ],
+  "CPXT": [
+   "UNI,Z13-"
+  ],
+  "CPYA": [
+   "UNI,ESA-"
+  ],
+  "CR": [
+   "UNI,DOS-"
+  ],
+  "CRB": [
+   "UNI,Z10-"
+  ],
+  "CRBE": [
+   "UNI,Z10-"
+  ],
+  "CRBH": [
+   "UNI,Z10-"
+  ],
+  "CRBL": [
+   "UNI,Z10-"
+  ],
+  "CRBNE": [
+   "UNI,Z10-"
+  ],
+  "CRBNH": [
+   "UNI,Z10-"
+  ],
+  "CRBNL": [
+   "UNI,Z10-"
+  ],
+  "CRDTE": [
+   "UNI,Z12-"
+  ],
+  "CRJ": [
+   "UNI,Z10-"
+  ],
+  "CRJE": [
+   "UNI,Z10-"
+  ],
+  "CRJH": [
+   "UNI,Z10-"
+  ],
+  "CRJL": [
+   "UNI,Z10-"
+  ],
+  "CRJNE": [
+   "UNI,Z10-"
+  ],
+  "CRJNH": [
+   "UNI,Z10-"
+  ],
+  "CRJNL": [
+   "UNI,Z10-"
+  ],
+  "CRL": [
+   "UNI,Z10-"
+  ],
+  "CRT": [
+   "UNI,Z10-"
+  ],
+  "CRTE": [
+   "UNI,Z10-"
+  ],
+  "CRTH": [
+   "UNI,Z10-"
+  ],
+  "CRTL": [
+   "UNI,Z10-"
+  ],
+  "CRTNE": [
+   "UNI,Z10-"
+  ],
+  "CRTNH": [
+   "UNI,Z10-"
+  ],
+  "CRTNL": [
+   "UNI,Z10-"
+  ],
+  "CS": [
+   "UNI,DOS-"
+  ],
+  "CSCH": [
+   "UNI,XA-"
+  ],
+  "CSDTR": [
+   "UNI,Z9-"
+  ],
+  "CSG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CSP": [
+   "UNI,ZOP-"
+  ],
+  "CSPG": [
+   "UNI,YOP-"
+  ],
+  "CSST": [
+   "UNI,Z9-"
+  ],
+  "CSXTR": [
+   "UNI,Z9-"
+  ],
+  "CSY": [
+   "UNI,YOP-"
+  ],
+  "CTZG": [
+   "UNI,Z17-"
+  ],
+  "CU12": [
+   "YOP",
+   "UNI,Z9-"
+  ],
+  "CU14": [
+   "YOP",
+   "UNI,Z9-"
+  ],
+  "CU21": [
+   "YOP",
+   "UNI,Z9-"
+  ],
+  "CU24": [
+   "YOP",
+   "UNI,Z9-"
+  ],
+  "CU41": [
+   "UNI,YOP-"
+  ],
+  "CU42": [
+   "UNI,YOP-"
+  ],
+  "CUDTR": [
+   "UNI,Z9-"
+  ],
+  "CUSE": [
+   "UNI,ESA-"
+  ],
+  "CUTFU": [
+   "ESA-YOP",
+   "UNI,Z9-"
+  ],
+  "CUUTF": [
+   "ESA-YOP",
+   "UNI,Z9-"
+  ],
+  "CUXTR": [
+   "UNI,Z9-"
+  ],
+  "CVB": [
+   "UNI,DOS-"
+  ],
+  "CVBG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CVBY": [
+   "UNI,YOP-"
+  ],
+  "CVD": [
+   "UNI,DOS-"
+  ],
+  "CVDG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "CVDY": [
+   "UNI,YOP-"
+  ],
+  "CXBR": [
+   "UNI,ESA-"
+  ],
+  "CXFBR": [
+   "UNI,ESA-"
+  ],
+  "CXFBRA": [
+   "UNI,Z11-"
+  ],
+  "CXFR": [
+   "UNI,ESA-"
+  ],
+  "CXFTR": [
+   "UNI,Z11-"
+  ],
+  "CXGBR": [
+   "UNI,ZOP-"
+  ],
+  "CXGBRA": [
+   "UNI,Z11-"
+  ],
+  "CXGR": [
+   "UNI,ZOP-"
+  ],
+  "CXGTR": [
+   "UNI,Z9-"
+  ],
+  "CXGTRA": [
+   "UNI,Z11-"
+  ],
+  "CXLFBR": [
+   "UNI,Z11-"
+  ],
+  "CXLFTR": [
+   "UNI,Z11-"
+  ],
+  "CXLGBR": [
+   "UNI,Z11-"
+  ],
+  "CXLGTR": [
+   "UNI,Z11-"
+  ],
+  "CXPT": [
+   "UNI,Z13-"
+  ],
+  "CXR": [
+   "UNI,ESA-"
+  ],
+  "CXSTR": [
+   "UNI,Z9-"
+  ],
+  "CXTR": [
+   "UNI,Z9-"
+  ],
+  "CXUTR": [
+   "UNI,Z9-"
+  ],
+  "CXZT": [
+   "UNI,Z12-"
+  ],
+  "CY": [
+   "UNI,YOP-"
+  ],
+  "CZDT": [
+   "UNI,Z12-"
+  ],
+  "CZXT": [
+   "UNI,Z12-"
+  ],
+  "D": [
+   "UNI,DOS-"
+  ],
+  "DD": [
+   "UNI,DOS-"
+  ],
+  "DDB": [
+   "UNI,ESA-"
+  ],
+  "DDBR": [
+   "UNI,ESA-"
+  ],
+  "DDR": [
+   "UNI,DOS-"
+  ],
+  "DDTR": [
+   "UNI,Z9-"
+  ],
+  "DDTRA": [
+   "UNI,Z11-"
+  ],
+  "DE": [
+   "UNI,DOS-"
+  ],
+  "DEB": [
+   "UNI,ESA-"
+  ],
+  "DEBR": [
+   "UNI,ESA-"
+  ],
+  "DER": [
+   "UNI,DOS-"
+  ],
+  "DFLTCC": [
+   "UNI,Z15-"
+  ],
+  "DIDBR": [
+   "UNI,ESA-"
+  ],
+  "DIEBR": [
+   "UNI,ESA-"
+  ],
+  "DISCS": [
+   "UNI,",
+   "370"
+  ],
+  "DL": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "DLG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "DLGR": [
+   "UNI,ZOP-"
+  ],
+  "DLR": [
+   "UNI,ESA-"
+  ],
+  "DP": [
+   "UNI,DOS-"
+  ],
+  "DR": [
+   "UNI,DOS-"
+  ],
+  "DSG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "DSGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "DSGFR": [
+   "UNI,ZOP-"
+  ],
+  "DSGR": [
+   "UNI,ZOP-"
+  ],
+  "DXBR": [
+   "UNI,ESA-"
+  ],
+  "DXR": [
+   "UNI,XA-"
+  ],
+  "DXTR": [
+   "UNI,Z9-"
+  ],
+  "DXTRA": [
+   "UNI,Z11-"
+  ],
+  "EAR": [
+   "UNI,ESA-"
+  ],
+  "ECAG": [
+   "UNI,Z10-"
+  ],
+  "ECCTR": [
+   "UNI,Z10-"
+  ],
+  "ECPGA": [
+   "UNI,Z10-"
+  ],
+  "ECTG": [
+   "UNI,Z9-"
+  ],
+  "ED": [
+   "UNI,DOS-"
+  ],
+  "EDMK": [
+   "UNI,DOS-"
+  ],
+  "EEDTR": [
+   "UNI,Z9-"
+  ],
+  "EEXTR": [
+   "UNI,Z9-"
+  ],
+  "EFPC": [
+   "UNI,ESA-"
+  ],
+  "EPAIR": [
+   "UNI,YOP-"
+  ],
+  "EPAR": [
+   "UNI,370-"
+  ],
+  "EPCTR": [
+   "UNI,Z10-"
+  ],
+  "EPSW": [
+   "UNI,ESA-"
+  ],
+  "EREG": [
+   "UNI,ESA-"
+  ],
+  "EREGG": [
+   "UNI,ZOP-"
+  ],
+  "ESAIR": [
+   "UNI,YOP-"
+  ],
+  "ESAR": [
+   "UNI,370-"
+  ],
+  "ESDTR": [
+   "UNI,Z9-"
+  ],
+  "ESEA": [
+   "UNI,ZOP-"
+  ],
+  "ESTA": [
+   "UNI,ESA-"
+  ],
+  "ESXTR": [
+   "UNI,Z9-"
+  ],
+  "ETND": [
+   "UNI,Z12-"
+  ],
+  "EX": [
+   "UNI,DOS-"
+  ],
+  "EXRL": [
+   "UNI,Z10-"
+  ],
+  "FIDBR": [
+   "UNI,ESA-"
+  ],
+  "FIDBRA": [
+   "UNI,Z11-"
+  ],
+  "FIDR": [
+   "UNI,ESA-"
+  ],
+  "FIDTR": [
+   "UNI,Z9-"
+  ],
+  "FIEBR": [
+   "UNI,ESA-"
+  ],
+  "FIEBRA": [
+   "UNI,Z11-"
+  ],
+  "FIER": [
+   "UNI,ESA-"
+  ],
+  "FIXBR": [
+   "UNI,ESA-"
+  ],
+  "FIXBRA": [
+   "UNI,Z11-"
+  ],
+  "FIXR": [
+   "UNI,ESA-"
+  ],
+  "FIXTR": [
+   "UNI,Z9-"
+  ],
+  "FLOGR": [
+   "UNI,Z9-"
+  ],
+  "HDR": [
+   "UNI,DOS-"
+  ],
+  "HDV": [
+   "UNI,DOS-370"
+  ],
+  "HER": [
+   "UNI,DOS-"
+  ],
+  "HIO": [
+   "UNI,DOS-370"
+  ],
+  "HSCH": [
+   "UNI,XA-"
+  ],
+  "IAC": [
+   "UNI,370-"
+  ],
+  "IC": [
+   "UNI,DOS-"
+  ],
+  "ICM": [
+   "UNI,DOS-"
+  ],
+  "ICMH": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "ICMY": [
+   "UNI,YOP-"
+  ],
+  "ICY": [
+   "UNI,YOP-"
+  ],
+  "IDTE": [
+   "YOP-Z11",
+   "UNI,Z12-"
+  ],
+  "IEDTR": [
+   "UNI,Z9-"
+  ],
+  "IEXTR": [
+   "UNI,Z9-"
+  ],
+  "IIHF": [
+   "UNI,Z9-"
+  ],
+  "IIHH": [
+   "UNI,ZOP-"
+  ],
+  "IIHL": [
+   "UNI,ZOP-"
+  ],
+  "IILF": [
+   "UNI,Z9-"
+  ],
+  "IILH": [
+   "UNI,ZOP-"
+  ],
+  "IILL": [
+   "UNI,ZOP-"
+  ],
+  "IPK": [
+   "UNI,DOS-"
+  ],
+  "IPM": [
+   "UNI,XA-"
+  ],
+  "IPTE": [
+   "370-Z11",
+   "UNI,Z12-"
+  ],
+  "IRBM": [
+   "UNI,Z14-"
+  ],
+  "ISK": [
+   "UNI,DOS-370"
+  ],
+  "ISKE": [
+   "UNI,370-"
+  ],
+  "IVSK": [
+   "UNI,370-"
+  ],
+  "J": [
+   "UNI,ESA-"
+  ],
+  "JAS": [
+   "UNI,ESA-"
+  ],
+  "JASL": [
+   "UNI,ESA-"
+  ],
+  "JC": [
+   "UNI,ESA-"
+  ],
+  "JCT": [
+   "UNI,ESA-"
+  ],
+  "JCTG": [
+   "UNI,ZOP-"
+  ],
+  "JCTH": [
+   "UNI,Z11-"
+  ],
+  "JE": [
+   "UNI,ESA-"
+  ],
+  "JH": [
+   "UNI,ESA-"
+  ],
+  "JL": [
+   "UNI,ESA-"
+  ],
+  "JLC": [
+   "UNI,ESA-"
+  ],
+  "JLE": [
+   "UNI,ZOP-"
+  ],
+  "JLH": [
+   "UNI,ZOP-"
+  ],
+  "JLL": [
+   "UNI,ZOP-"
+  ],
+  "JLM": [
+   "UNI,ZOP-"
+  ],
+  "JLNE": [
+   "UNI,ZOP-"
+  ],
+  "JLNH": [
+   "UNI,ZOP-"
+  ],
+  "JLNL": [
+   "UNI,ZOP-"
+  ],
+  "JLNM": [
+   "UNI,ZOP-"
+  ],
+  "JLNO": [
+   "UNI,ZOP-"
+  ],
+  "JLNOP": [
+   "UNI,ESA-"
+  ],
+  "JLNP": [
+   "UNI,ZOP-"
+  ],
+  "JLNZ": [
+   "UNI,ZOP-"
+  ],
+  "JLO": [
+   "UNI,ZOP-"
+  ],
+  "JLP": [
+   "UNI,ZOP-"
+  ],
+  "JLU": [
+   "UNI,ZOP-"
+  ],
+  "JLZ": [
+   "UNI,ZOP-"
+  ],
+  "JM": [
+   "UNI,ESA-"
+  ],
+  "JNE": [
+   "UNI,ESA-"
+  ],
+  "JNH": [
+   "UNI,ESA-"
+  ],
+  "JNL": [
+   "UNI,ESA-"
+  ],
+  "JNM": [
+   "UNI,ESA-"
+  ],
+  "JNO": [
+   "UNI,ESA-"
+  ],
+  "JNOP": [
+   "UNI,ESA-"
+  ],
+  "JNP": [
+   "UNI,ESA-"
+  ],
+  "JNZ": [
+   "UNI,ESA-"
+  ],
+  "JO": [
+   "UNI,ESA-"
+  ],
+  "JP": [
+   "UNI,ESA-"
+  ],
+  "JXH": [
+   "UNI,ESA-"
+  ],
+  "JXHG": [
+   "UNI,ZOP-"
+  ],
+  "JXLE": [
+   "UNI,ESA-"
+  ],
+  "JXLEG": [
+   "UNI,ZOP-"
+  ],
+  "JZ": [
+   "UNI,ESA-"
+  ],
+  "KDB": [
+   "UNI,ESA-"
+  ],
+  "KDBR": [
+   "UNI,ESA-"
+  ],
+  "KDSA": [
+   "UNI,Z15-"
+  ],
+  "KDTR": [
+   "UNI,Z9-"
+  ],
+  "KEB": [
+   "UNI,ESA-"
+  ],
+  "KEBR": [
+   "UNI,ESA-"
+  ],
+  "KIMD": [
+   "YOP-Z16",
+   "UNI,Z17-"
+  ],
+  "KLMD": [
+   "YOP-Z16",
+   "UNI,Z17-"
+  ],
+  "KM": [
+   "UNI,YOP-"
+  ],
+  "KMA": [
+   "UNI,Z14-"
+  ],
+  "KMAC": [
+   "UNI,YOP-"
+  ],
+  "KMC": [
+   "UNI,YOP-"
+  ],
+  "KMCTR": [
+   "UNI,Z11-"
+  ],
+  "KMF": [
+   "UNI,Z11-"
+  ],
+  "KMO": [
+   "UNI,Z11-"
+  ],
+  "KXBR": [
+   "UNI,ESA-"
+  ],
+  "KXTR": [
+   "UNI,Z9-"
+  ],
+  "L": [
+   "UNI,DOS-"
+  ],
+  "LA": [
+   "UNI,DOS-"
+  ],
+  "LAA": [
+   "UNI,Z11-"
+  ],
+  "LAAG": [
+   "UNI,Z11-"
+  ],
+  "LAAL": [
+   "UNI,Z11-"
+  ],
+  "LAALG": [
+   "UNI,Z11-"
+  ],
+  "LAE": [
+   "UNI,ESA-"
+  ],
+  "LAEY": [
+   "UNI,Z10-"
+  ],
+  "LAM": [
+   "UNI,ESA-"
+  ],
+  "LAMY": [
+   "UNI,YOP-"
+  ],
+  "LAN": [
+   "UNI,Z11-"
+  ],
+  "LANG": [
+   "UNI,Z11-"
+  ],
+  "LAO": [
+   "UNI,Z11-"
+  ],
+  "LAOG": [
+   "UNI,Z11-"
+  ],
+  "LARL": [
+   "UNI,ESA-"
+  ],
+  "LASP": [
+   "UNI,370-"
+  ],
+  "LAT": [
+   "UNI,Z12-"
+  ],
+  "LAX": [
+   "UNI,Z11-"
+  ],
+  "LAXG": [
+   "UNI,Z11-"
+  ],
+  "LAY": [
+   "UNI,YOP-"
+  ],
+  "LB": [
+   "UNI,YOP-"
+  ],
+  "LBEAR": [
+   "UNI,Z16-"
+  ],
+  "LBH": [
+   "UNI,Z11-"
+  ],
+  "LBR": [
+   "UNI,Z9-"
+  ],
+  "LCBB": [
+   "UNI,Z13-"
+  ],
+  "LCCTL": [
+   "UNI,Z10-"
+  ],
+  "LCDBR": [
+   "UNI,ESA-"
+  ],
+  "LCDFR": [
+   "UNI,Z9-"
+  ],
+  "LCDR": [
+   "UNI,DOS-"
+  ],
+  "LCEBR": [
+   "UNI,ESA-"
+  ],
+  "LCER": [
+   "UNI,DOS-"
+  ],
+  "LCGFR": [
+   "UNI,ZOP-"
+  ],
+  "LCGR": [
+   "UNI,ZOP-"
+  ],
+  "LCR": [
+   "UNI,DOS-"
+  ],
+  "LCTL": [
+   "UNI,DOS-"
+  ],
+  "LCTLG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LCXBR": [
+   "UNI,ESA-"
+  ],
+  "LCXR": [
+   "UNI,ESA-"
+  ],
+  "LD": [
+   "UNI,DOS-"
+  ],
+  "LDE": [
+   "UNI,ESA-"
+  ],
+  "LDEB": [
+   "UNI,ESA-"
+  ],
+  "LDEBR": [
+   "UNI,ESA-"
+  ],
+  "LDER": [
+   "UNI,ESA-"
+  ],
+  "LDETR": [
+   "UNI,Z9-"
+  ],
+  "LDGR": [
+   "UNI,Z9-"
+  ],
+  "LDR": [
+   "UNI,DOS-"
+  ],
+  "LDRV": [
+   "UNI,Z15-"
+  ],
+  "LDXBR": [
+   "UNI,ESA-"
+  ],
+  "LDXBRA": [
+   "UNI,Z11-"
+  ],
+  "LDXR": [
+   "UNI,ESA-"
+  ],
+  "LDXTR": [
+   "UNI,Z9-"
+  ],
+  "LDY": [
+   "UNI,YOP-"
+  ],
+  "LE": [
+   "UNI,DOS-"
+  ],
+  "LEDBR": [
+   "UNI,ESA-"
+  ],
+  "LEDBRA": [
+   "UNI,Z11-"
+  ],
+  "LEDR": [
+   "UNI,ESA-"
+  ],
+  "LEDTR": [
+   "UNI,Z9-"
+  ],
+  "LER": [
+   "UNI,DOS-"
+  ],
+  "LERV": [
+   "UNI,Z15-"
+  ],
+  "LEXBR": [
+   "UNI,ESA-"
+  ],
+  "LEXBRA": [
+   "UNI,Z11-"
+  ],
+  "LEXR": [
+   "UNI,ESA-"
+  ],
+  "LEY": [
+   "UNI,YOP-"
+  ],
+  "LFAS": [
+   "UNI,Z9-"
+  ],
+  "LFH": [
+   "UNI,Z11-"
+  ],
+  "LFHAT": [
+   "UNI,Z12-"
+  ],
+  "LFI": [
+   "UNI,Z16-"
+  ],
+  "LFPC": [
+   "UNI,ESA-"
+  ],
+  "LG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LGAT": [
+   "UNI,Z12-"
+  ],
+  "LGB": [
+   "UNI,YOP-"
+  ],
+  "LGBR": [
+   "UNI,Z9-"
+  ],
+  "LGDR": [
+   "UNI,Z9-"
+  ],
+  "LGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LGFI": [
+   "UNI,Z9-"
+  ],
+  "LGFR": [
+   "UNI,ZOP-"
+  ],
+  "LGFRL": [
+   "UNI,Z10-"
+  ],
+  "LGG": [
+   "UNI,Z14-"
+  ],
+  "LGH": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LGHI": [
+   "UNI,ZOP-"
+  ],
+  "LGHR": [
+   "UNI,Z9-"
+  ],
+  "LGHRL": [
+   "UNI,Z10-"
+  ],
+  "LGR": [
+   "UNI,ZOP-"
+  ],
+  "LGRL": [
+   "UNI,Z10-"
+  ],
+  "LGSC": [
+   "UNI,Z14-"
+  ],
+  "LH": [
+   "UNI,DOS-"
+  ],
+  "LHH": [
+   "UNI,Z11-"
+  ],
+  "LHHR": [
+   "UNI,Z11-"
+  ],
+  "LHI": [
+   "UNI,ESA-"
+  ],
+  "LHLR": [
+   "UNI,Z11-"
+  ],
+  "LHR": [
+   "UNI,Z9-"
+  ],
+  "LHRL": [
+   "UNI,Z10-"
+  ],
+  "LHY": [
+   "UNI,YOP-"
+  ],
+  "LLC": [
+   "UNI,Z9-"
+  ],
+  "LLCH": [
+   "UNI,Z11-"
+  ],
+  "LLCHHR": [
+   "UNI,Z11-"
+  ],
+  "LLCHLR": [
+   "UNI,Z11-"
+  ],
+  "LLCLHR": [
+   "UNI,Z11-"
+  ],
+  "LLCR": [
+   "UNI,Z9-"
+  ],
+  "LLGC": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LLGCR": [
+   "UNI,Z9-"
+  ],
+  "LLGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LLGFAT": [
+   "UNI,Z12-"
+  ],
+  "LLGFI": [
+   "UNI,Z16-"
+  ],
+  "LLGFR": [
+   "UNI,ZOP-"
+  ],
+  "LLGFRL": [
+   "UNI,Z10-"
+  ],
+  "LLGFSG": [
+   "UNI,Z14-"
+  ],
+  "LLGH": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LLGHI": [
+   "UNI,Z17-"
+  ],
+  "LLGHR": [
+   "UNI,Z9-"
+  ],
+  "LLGHRL": [
+   "UNI,Z10-"
+  ],
+  "LLGT": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LLGTAT": [
+   "UNI,Z12-"
+  ],
+  "LLGTR": [
+   "UNI,ZOP-"
+  ],
+  "LLH": [
+   "UNI,Z9-"
+  ],
+  "LLHFR": [
+   "UNI,Z11-"
+  ],
+  "LLHH": [
+   "UNI,Z11-"
+  ],
+  "LLHHHR": [
+   "UNI,Z11-"
+  ],
+  "LLHHLR": [
+   "UNI,Z11-"
+  ],
+  "LLHLHR": [
+   "UNI,Z11-"
+  ],
+  "LLHR": [
+   "UNI,Z9-"
+  ],
+  "LLHRL": [
+   "UNI,Z10-"
+  ],
+  "LLIHF": [
+   "UNI,Z9-"
+  ],
+  "LLIHH": [
+   "UNI,ZOP-"
+  ],
+  "LLIHL": [
+   "UNI,ZOP-"
+  ],
+  "LLILF": [
+   "UNI,Z9-"
+  ],
+  "LLILH": [
+   "UNI,ZOP-"
+  ],
+  "LLILL": [
+   "UNI,ZOP-"
+  ],
+  "LLXAB": [
+   "UNI,Z17-"
+  ],
+  "LLXAF": [
+   "UNI,Z17-"
+  ],
+  "LLXAG": [
+   "UNI,Z17-"
+  ],
+  "LLXAH": [
+   "UNI,Z17-"
+  ],
+  "LLXAQ": [
+   "UNI,Z17-"
+  ],
+  "LLZRGF": [
+   "UNI,Z13-"
+  ],
+  "LM": [
+   "UNI,DOS-"
+  ],
+  "LMD": [
+   "UNI,ZOP-"
+  ],
+  "LMG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LMH": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LMY": [
+   "UNI,YOP-"
+  ],
+  "LNDBR": [
+   "UNI,ESA-"
+  ],
+  "LNDFR": [
+   "UNI,Z9-"
+  ],
+  "LNDR": [
+   "UNI,DOS-"
+  ],
+  "LNEBR": [
+   "UNI,ESA-"
+  ],
+  "LNER": [
+   "UNI,DOS-"
+  ],
+  "LNGFR": [
+   "UNI,ZOP-"
+  ],
+  "LNGR": [
+   "UNI,ZOP-"
+  ],
+  "LNR": [
+   "UNI,DOS-"
+  ],
+  "LNXBR": [
+   "UNI,ESA-"
+  ],
+  "LNXR": [
+   "UNI,ESA-"
+  ],
+  "LOC": [
+   "UNI,Z11-"
+  ],
+  "LOCE": [
+   "UNI,Z11-"
+  ],
+  "LOCFH": [
+   "UNI,Z13-"
+  ],
+  "LOCFHE": [
+   "UNI,Z13-"
+  ],
+  "LOCFHH": [
+   "UNI,Z13-"
+  ],
+  "LOCFHL": [
+   "UNI,Z13-"
+  ],
+  "LOCFHM": [
+   "UNI,Z13-"
+  ],
+  "LOCFHNE": [
+   "UNI,Z13-"
+  ],
+  "LOCFHNH": [
+   "UNI,Z13-"
+  ],
+  "LOCFHNL": [
+   "UNI,Z13-"
+  ],
+  "LOCFHNM": [
+   "UNI,Z13-"
+  ],
+  "LOCFHNO": [
+   "UNI,Z13-"
+  ],
+  "LOCFHNP": [
+   "UNI,Z13-"
+  ],
+  "LOCFHNZ": [
+   "UNI,Z13-"
+  ],
+  "LOCFHO": [
+   "UNI,Z13-"
+  ],
+  "LOCFHP": [
+   "UNI,Z13-"
+  ],
+  "LOCFHR": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRE": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRH": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRL": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRM": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRNE": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRNH": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRNL": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRNM": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRNO": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRNP": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRNZ": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRO": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRP": [
+   "UNI,Z13-"
+  ],
+  "LOCFHRZ": [
+   "UNI,Z13-"
+  ],
+  "LOCFHZ": [
+   "UNI,Z13-"
+  ],
+  "LOCG": [
+   "UNI,Z11-"
+  ],
+  "LOCGE": [
+   "UNI,Z11-"
+  ],
+  "LOCGH": [
+   "UNI,Z11-"
+  ],
+  "LOCGHI": [
+   "UNI,Z13-"
+  ],
+  "LOCGHIE": [
+   "UNI,Z13-"
+  ],
+  "LOCGHIH": [
+   "UNI,Z13-"
+  ],
+  "LOCGHIL": [
+   "UNI,Z13-"
+  ],
+  "LOCGHIM": [
+   "UNI,Z13-"
+  ],
+  "LOCGHINE": [
+   "UNI,Z13-"
+  ],
+  "LOCGHINH": [
+   "UNI,Z13-"
+  ],
+  "LOCGHINL": [
+   "UNI,Z13-"
+  ],
+  "LOCGHINM": [
+   "UNI,Z13-"
+  ],
+  "LOCGHINO": [
+   "UNI,Z13-"
+  ],
+  "LOCGHINP": [
+   "UNI,Z13-"
+  ],
+  "LOCGHINZ": [
+   "UNI,Z13-"
+  ],
+  "LOCGHIO": [
+   "UNI,Z13-"
+  ],
+  "LOCGHIP": [
+   "UNI,Z13-"
+  ],
+  "LOCGHIZ": [
+   "UNI,Z13-"
+  ],
+  "LOCGL": [
+   "UNI,Z11-"
+  ],
+  "LOCGM": [
+   "UNI,Z13-"
+  ],
+  "LOCGNE": [
+   "UNI,Z11-"
+  ],
+  "LOCGNH": [
+   "UNI,Z11-"
+  ],
+  "LOCGNL": [
+   "UNI,Z11-"
+  ],
+  "LOCGNM": [
+   "UNI,Z13-"
+  ],
+  "LOCGNO": [
+   "UNI,Z13-"
+  ],
+  "LOCGNP": [
+   "UNI,Z13-"
+  ],
+  "LOCGNZ": [
+   "UNI,Z13-"
+  ],
+  "LOCGO": [
+   "UNI,Z13-"
+  ],
+  "LOCGP": [
+   "UNI,Z13-"
+  ],
+  "LOCGR": [
+   "UNI,Z11-"
+  ],
+  "LOCGRE": [
+   "UNI,Z11-"
+  ],
+  "LOCGRH": [
+   "UNI,Z11-"
+  ],
+  "LOCGRL": [
+   "UNI,Z11-"
+  ],
+  "LOCGRM": [
+   "UNI,Z13-"
+  ],
+  "LOCGRNE": [
+   "UNI,Z11-"
+  ],
+  "LOCGRNH": [
+   "UNI,Z11-"
+  ],
+  "LOCGRNL": [
+   "UNI,Z11-"
+  ],
+  "LOCGRNM": [
+   "UNI,Z13-"
+  ],
+  "LOCGRNO": [
+   "UNI,Z13-"
+  ],
+  "LOCGRNP": [
+   "UNI,Z13-"
+  ],
+  "LOCGRNZ": [
+   "UNI,Z13-"
+  ],
+  "LOCGRO": [
+   "UNI,Z13-"
+  ],
+  "LOCGRP": [
+   "UNI,Z13-"
+  ],
+  "LOCGRZ": [
+   "UNI,Z13-"
+  ],
+  "LOCGZ": [
+   "UNI,Z13-"
+  ],
+  "LOCH": [
+   "UNI,Z11-"
+  ],
+  "LOCHHI": [
+   "UNI,Z13-"
+  ],
+  "LOCHHIE": [
+   "UNI,Z13-"
+  ],
+  "LOCHHIH": [
+   "UNI,Z13-"
+  ],
+  "LOCHHIL": [
+   "UNI,Z13-"
+  ],
+  "LOCHHIM": [
+   "UNI,Z13-"
+  ],
+  "LOCHHINE": [
+   "UNI,Z13-"
+  ],
+  "LOCHHINH": [
+   "UNI,Z13-"
+  ],
+  "LOCHHINL": [
+   "UNI,Z13-"
+  ],
+  "LOCHHINM": [
+   "UNI,Z13-"
+  ],
+  "LOCHHINO": [
+   "UNI,Z13-"
+  ],
+  "LOCHHINP": [
+   "UNI,Z13-"
+  ],
+  "LOCHHINZ": [
+   "UNI,Z13-"
+  ],
+  "LOCHHIO": [
+   "UNI,Z13-"
+  ],
+  "LOCHHIP": [
+   "UNI,Z13-"
+  ],
+  "LOCHHIZ": [
+   "UNI,Z13-"
+  ],
+  "LOCHI": [
+   "UNI,Z13-"
+  ],
+  "LOCHIE": [
+   "UNI,Z13-"
+  ],
+  "LOCHIH": [
+   "UNI,Z13-"
+  ],
+  "LOCHIL": [
+   "UNI,Z13-"
+  ],
+  "LOCHIM": [
+   "UNI,Z13-"
+  ],
+  "LOCHINE": [
+   "UNI,Z13-"
+  ],
+  "LOCHINH": [
+   "UNI,Z13-"
+  ],
+  "LOCHINL": [
+   "UNI,Z13-"
+  ],
+  "LOCHINM": [
+   "UNI,Z13-"
+  ],
+  "LOCHINO": [
+   "UNI,Z13-"
+  ],
+  "LOCHINP": [
+   "UNI,Z13-"
+  ],
+  "LOCHINZ": [
+   "UNI,Z13-"
+  ],
+  "LOCHIO": [
+   "UNI,Z13-"
+  ],
+  "LOCHIP": [
+   "UNI,Z13-"
+  ],
+  "LOCHIZ": [
+   "UNI,Z13-"
+  ],
+  "LOCL": [
+   "UNI,Z11-"
+  ],
+  "LOCM": [
+   "UNI,Z13-"
+  ],
+  "LOCNE": [
+   "UNI,Z11-"
+  ],
+  "LOCNH": [
+   "UNI,Z11-"
+  ],
+  "LOCNL": [
+   "UNI,Z11-"
+  ],
+  "LOCNM": [
+   "UNI,Z13-"
+  ],
+  "LOCNO": [
+   "UNI,Z13-"
+  ],
+  "LOCNP": [
+   "UNI,Z13-"
+  ],
+  "LOCNZ": [
+   "UNI,Z13-"
+  ],
+  "LOCO": [
+   "UNI,Z13-"
+  ],
+  "LOCP": [
+   "UNI,Z13-"
+  ],
+  "LOCR": [
+   "UNI,Z11-"
+  ],
+  "LOCRE": [
+   "UNI,Z11-"
+  ],
+  "LOCRH": [
+   "UNI,Z11-"
+  ],
+  "LOCRL": [
+   "UNI,Z11-"
+  ],
+  "LOCRM": [
+   "UNI,Z13-"
+  ],
+  "LOCRNE": [
+   "UNI,Z11-"
+  ],
+  "LOCRNH": [
+   "UNI,Z11-"
+  ],
+  "LOCRNL": [
+   "UNI,Z11-"
+  ],
+  "LOCRNM": [
+   "UNI,Z13-"
+  ],
+  "LOCRNO": [
+   "UNI,Z13-"
+  ],
+  "LOCRNP": [
+   "UNI,Z13-"
+  ],
+  "LOCRNZ": [
+   "UNI,Z13-"
+  ],
+  "LOCRO": [
+   "UNI,Z13-"
+  ],
+  "LOCRP": [
+   "UNI,Z13-"
+  ],
+  "LOCRZ": [
+   "UNI,Z13-"
+  ],
+  "LOCZ": [
+   "UNI,Z13-"
+  ],
+  "LPCTL": [
+   "UNI,Z10-"
+  ],
+  "LPD": [
+   "UNI,Z11-"
+  ],
+  "LPDBR": [
+   "UNI,ESA-"
+  ],
+  "LPDFR": [
+   "UNI,Z9-"
+  ],
+  "LPDG": [
+   "UNI,Z11-"
+  ],
+  "LPDR": [
+   "UNI,DOS-"
+  ],
+  "LPEBR": [
+   "UNI,ESA-"
+  ],
+  "LPER": [
+   "UNI,DOS-"
+  ],
+  "LPGFR": [
+   "UNI,ZOP-"
+  ],
+  "LPGR": [
+   "UNI,ZOP-"
+  ],
+  "LPP": [
+   "UNI,Z10-"
+  ],
+  "LPQ": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LPR": [
+   "UNI,DOS-"
+  ],
+  "LPSW": [
+   "UNI,DOS-"
+  ],
+  "LPSWE": [
+   "UNI,ZOP-"
+  ],
+  "LPSWEY": [
+   "UNI,Z16-"
+  ],
+  "LPTEA": [
+   "UNI,Z9-"
+  ],
+  "LPXBR": [
+   "UNI,ESA-"
+  ],
+  "LPXR": [
+   "UNI,ESA-"
+  ],
+  "LR": [
+   "UNI,DOS-"
+  ],
+  "LRA": [
+   "UNI,DOS-"
+  ],
+  "LRAG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LRAY": [
+   "UNI,YOP-"
+  ],
+  "LRDR": [
+   "UNI,DOS-"
+  ],
+  "LRER": [
+   "UNI,DOS-"
+  ],
+  "LRL": [
+   "UNI,Z10-"
+  ],
+  "LRV": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "LRVG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "LRVGR": [
+   "UNI,ZOP-"
+  ],
+  "LRVH": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "LRVR": [
+   "UNI,ESA-"
+  ],
+  "LSCTL": [
+   "UNI,Z10-"
+  ],
+  "LT": [
+   "UNI,Z9-"
+  ],
+  "LTDBR": [
+   "UNI,ESA-"
+  ],
+  "LTDR": [
+   "UNI,DOS-"
+  ],
+  "LTDTR": [
+   "UNI,Z9-"
+  ],
+  "LTEBR": [
+   "UNI,ESA-"
+  ],
+  "LTER": [
+   "UNI,DOS-"
+  ],
+  "LTG": [
+   "UNI,Z9-"
+  ],
+  "LTGF": [
+   "UNI,Z10-"
+  ],
+  "LTGFR": [
+   "UNI,ZOP-"
+  ],
+  "LTGR": [
+   "UNI,ZOP-"
+  ],
+  "LTR": [
+   "UNI,DOS-"
+  ],
+  "LTXBR": [
+   "UNI,ESA-"
+  ],
+  "LTXR": [
+   "UNI,ESA-"
+  ],
+  "LTXTR": [
+   "UNI,Z9-"
+  ],
+  "LURA": [
+   "UNI,ESA-"
+  ],
+  "LURAG": [
+   "UNI,ZOP-"
+  ],
+  "LXAB": [
+   "UNI,Z17-"
+  ],
+  "LXAF": [
+   "UNI,Z17-"
+  ],
+  "LXAG": [
+   "UNI,Z17-"
+  ],
+  "LXAH": [
+   "UNI,Z17-"
+  ],
+  "LXAQ": [
+   "UNI,Z17-"
+  ],
+  "LXD": [
+   "UNI,ESA-"
+  ],
+  "LXDB": [
+   "UNI,ESA-"
+  ],
+  "LXDBR": [
+   "UNI,ESA-"
+  ],
+  "LXDR": [
+   "UNI,ESA-"
+  ],
+  "LXDTR": [
+   "UNI,Z9-"
+  ],
+  "LXE": [
+   "UNI,ESA-"
+  ],
+  "LXEB": [
+   "UNI,ESA-"
+  ],
+  "LXEBR": [
+   "UNI,ESA-"
+  ],
+  "LXER": [
+   "UNI,ESA-"
+  ],
+  "LXR": [
+   "UNI,ESA-"
+  ],
+  "LY": [
+   "UNI,YOP-"
+  ],
+  "LZDR": [
+   "UNI,ESA-"
+  ],
+  "LZER": [
+   "UNI,ESA-"
+  ],
+  "LZRF": [
+   "UNI,Z13-"
+  ],
+  "LZRG": [
+   "UNI,Z13-"
+  ],
+  "LZXR": [
+   "UNI,ESA-"
+  ],
+  "M": [
+   "UNI,DOS-"
+  ],
+  "MAD": [
+   "UNI,YOP-"
+  ],
+  "MADB": [
+   "UNI,ESA-"
+  ],
+  "MADBR": [
+   "UNI,ESA-"
+  ],
+  "MADR": [
+   "UNI,YOP-"
+  ],
+  "MAE": [
+   "UNI,YOP-"
+  ],
+  "MAEB": [
+   "UNI,ESA-"
+  ],
+  "MAEBR": [
+   "UNI,ESA-"
+  ],
+  "MAER": [
+   "UNI,YOP-"
+  ],
+  "MAY": [
+   "UNI,Z9-"
+  ],
+  "MAYH": [
+   "UNI,Z9-"
+  ],
+  "MAYHR": [
+   "UNI,Z9-"
+  ],
+  "MAYL": [
+   "UNI,Z9-"
+  ],
+  "MAYLR": [
+   "UNI,Z9-"
+  ],
+  "MAYR": [
+   "UNI,Z9-"
+  ],
+  "MC": [
+   "UNI,DOS-"
+  ],
+  "MD": [
+   "UNI,DOS-"
+  ],
+  "MDB": [
+   "UNI,ESA-"
+  ],
+  "MDBR": [
+   "UNI,ESA-"
+  ],
+  "MDE": [
+   "UNI,DOS-"
+  ],
+  "MDEB": [
+   "UNI,ESA-"
+  ],
+  "MDEBR": [
+   "UNI,ESA-"
+  ],
+  "MDER": [
+   "UNI,DOS-"
+  ],
+  "MDR": [
+   "UNI,DOS-"
+  ],
+  "MDTR": [
+   "UNI,Z9-"
+  ],
+  "MDTRA": [
+   "UNI,Z11-"
+  ],
+  "ME": [
+   "UNI,DOS-"
+  ],
+  "MEE": [
+   "UNI,ESA-"
+  ],
+  "MEEB": [
+   "UNI,ESA-"
+  ],
+  "MEEBR": [
+   "UNI,ESA-"
+  ],
+  "MEER": [
+   "UNI,ESA-"
+  ],
+  "MER": [
+   "UNI,DOS-"
+  ],
+  "MFY": [
+   "UNI,Z10-"
+  ],
+  "MG": [
+   "UNI,Z14-"
+  ],
+  "MGH": [
+   "UNI,Z14-"
+  ],
+  "MGHI": [
+   "UNI,ZOP-"
+  ],
+  "MGRK": [
+   "UNI,Z14-"
+  ],
+  "MH": [
+   "UNI,DOS-"
+  ],
+  "MHI": [
+   "UNI,ESA-"
+  ],
+  "MHY": [
+   "UNI,Z10-"
+  ],
+  "ML": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "MLG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "MLGR": [
+   "UNI,ZOP-"
+  ],
+  "MLR": [
+   "UNI,ESA-"
+  ],
+  "MP": [
+   "UNI,DOS-"
+  ],
+  "MR": [
+   "UNI,DOS-"
+  ],
+  "MS": [
+   "UNI,ESA-"
+  ],
+  "MSC": [
+   "UNI,Z14-"
+  ],
+  "MSCH": [
+   "UNI,XA-"
+  ],
+  "MSD": [
+   "UNI,YOP-"
+  ],
+  "MSDB": [
+   "UNI,ESA-"
+  ],
+  "MSDBR": [
+   "UNI,ESA-"
+  ],
+  "MSDR": [
+   "UNI,YOP-"
+  ],
+  "MSE": [
+   "UNI,YOP-"
+  ],
+  "MSEB": [
+   "UNI,ESA-"
+  ],
+  "MSEBR": [
+   "UNI,ESA-"
+  ],
+  "MSER": [
+   "UNI,YOP-"
+  ],
+  "MSFI": [
+   "UNI,Z10-"
+  ],
+  "MSG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "MSGC": [
+   "UNI,Z14-"
+  ],
+  "MSGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "MSGFI": [
+   "UNI,Z10-"
+  ],
+  "MSGFR": [
+   "UNI,ZOP-"
+  ],
+  "MSGR": [
+   "UNI,ZOP-"
+  ],
+  "MSGRKC": [
+   "UNI,Z14-"
+  ],
+  "MSR": [
+   "UNI,ESA-"
+  ],
+  "MSRKC": [
+   "UNI,Z14-"
+  ],
+  "MSTA": [
+   "UNI,ESA-"
+  ],
+  "MSY": [
+   "UNI,YOP-"
+  ],
+  "MVC": [
+   "UNI,DOS-"
+  ],
+  "MVCDK": [
+   "UNI,ESA-"
+  ],
+  "MVCIN": [
+   "UNI,DOS-"
+  ],
+  "MVCK": [
+   "UNI,370-"
+  ],
+  "MVCL": [
+   "UNI,DOS-"
+  ],
+  "MVCLE": [
+   "UNI,ESA-"
+  ],
+  "MVCLU": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "MVCOS": [
+   "UNI,Z9-"
+  ],
+  "MVCP": [
+   "UNI,370-"
+  ],
+  "MVCRL": [
+   "UNI,Z15-"
+  ],
+  "MVCS": [
+   "UNI,370-"
+  ],
+  "MVCSK": [
+   "UNI,ESA-"
+  ],
+  "MVGHI": [
+   "UNI,Z10-"
+  ],
+  "MVHHI": [
+   "UNI,Z10-"
+  ],
+  "MVHI": [
+   "UNI,Z10-"
+  ],
+  "MVI": [
+   "UNI,DOS-"
+  ],
+  "MVIY": [
+   "UNI,YOP-"
+  ],
+  "MVN": [
+   "UNI,DOS-"
+  ],
+  "MVO": [
+   "UNI,DOS-"
+  ],
+  "MVPG": [
+   "UNI,ESA-"
+  ],
+  "MVST": [
+   "UNI,ESA-"
+  ],
+  "MVZ": [
+   "UNI,DOS-"
+  ],
+  "MXBR": [
+   "UNI,ESA-"
+  ],
+  "MXD": [
+   "UNI,DOS-"
+  ],
+  "MXDB": [
+   "UNI,ESA-"
+  ],
+  "MXDBR": [
+   "UNI,ESA-"
+  ],
+  "MXDR": [
+   "UNI,DOS-"
+  ],
+  "MXR": [
+   "UNI,DOS-"
+  ],
+  "MXTR": [
+   "UNI,Z9-"
+  ],
+  "MXTRA": [
+   "UNI,Z11-"
+  ],
+  "MY": [
+   "UNI,Z9-"
+  ],
+  "MYH": [
+   "UNI,Z9-"
+  ],
+  "MYHR": [
+   "UNI,Z9-"
+  ],
+  "MYL": [
+   "UNI,Z9-"
+  ],
+  "MYLR": [
+   "UNI,Z9-"
+  ],
+  "MYR": [
+   "UNI,Z9-"
+  ],
+  "N": [
+   "UNI,DOS-"
+  ],
+  "NC": [
+   "UNI,DOS-"
+  ],
+  "NCGRK": [
+   "UNI,Z15-"
+  ],
+  "NCRK": [
+   "UNI,Z15-"
+  ],
+  "NG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "NGR": [
+   "UNI,ZOP-"
+  ],
+  "NGRK": [
+   "UNI,Z11-"
+  ],
+  "NHHR": [
+   "UNI,Z11-"
+  ],
+  "NHLR": [
+   "UNI,Z11-"
+  ],
+  "NI": [
+   "UNI,DOS-"
+  ],
+  "NIAI": [
+   "UNI,Z12-"
+  ],
+  "NIHF": [
+   "UNI,Z9-"
+  ],
+  "NIHH": [
+   "UNI,ZOP-"
+  ],
+  "NIHL": [
+   "UNI,ZOP-"
+  ],
+  "NILF": [
+   "UNI,Z9-"
+  ],
+  "NILH": [
+   "UNI,ZOP-"
+  ],
+  "NILL": [
+   "UNI,ZOP-"
+  ],
+  "NIY": [
+   "UNI,YOP-"
+  ],
+  "NLHR": [
+   "UNI,Z11-"
+  ],
+  "NNGRK": [
+   "UNI,Z15-"
+  ],
+  "NNPA": [
+   "UNI,Z16-"
+  ],
+  "NNRK": [
+   "UNI,Z15-"
+  ],
+  "NOGRK": [
+   "UNI,Z15-"
+  ],
+  "NOP": [
+   "UNI,DOS-"
+  ],
+  "NOPR": [
+   "UNI,DOS-"
+  ],
+  "NORK": [
+   "UNI,Z15-"
+  ],
+  "NOTGR": [
+   "UNI,Z15-"
+  ],
+  "NOTR": [
+   "UNI,Z15-"
+  ],
+  "NR": [
+   "UNI,DOS-"
+  ],
+  "NRK": [
+   "UNI,Z11-"
+  ],
+  "NTSTG": [
+   "UNI,Z12-"
+  ],
+  "NXGRK": [
+   "UNI,Z15-"
+  ],
+  "NXRK": [
+   "UNI,Z15-"
+  ],
+  "NY": [
+   "UNI,YOP-"
+  ],
+  "O": [
+   "UNI,DOS-"
+  ],
+  "OC": [
+   "UNI,DOS-"
+  ],
+  "OCGRK": [
+   "UNI,Z15-"
+  ],
+  "OCRK": [
+   "UNI,Z15-"
+  ],
+  "OG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "OGR": [
+   "UNI,ZOP-"
+  ],
+  "OGRK": [
+   "UNI,Z11-"
+  ],
+  "OHHR": [
+   "UNI,Z11-"
+  ],
+  "OHLR": [
+   "UNI,Z11-"
+  ],
+  "OI": [
+   "UNI,DOS-"
+  ],
+  "OIHF": [
+   "UNI,Z9-"
+  ],
+  "OIHH": [
+   "UNI,ZOP-"
+  ],
+  "OIHL": [
+   "UNI,ZOP-"
+  ],
+  "OILF": [
+   "UNI,Z9-"
+  ],
+  "OILH": [
+   "UNI,ZOP-"
+  ],
+  "OILL": [
+   "UNI,ZOP-"
+  ],
+  "OIY": [
+   "UNI,YOP-"
+  ],
+  "OLHR": [
+   "UNI,Z11-"
+  ],
+  "OR": [
+   "UNI,DOS-"
+  ],
+  "ORK": [
+   "UNI,Z11-"
+  ],
+  "OY": [
+   "UNI,YOP-"
+  ],
+  "PACK": [
+   "UNI,DOS-"
+  ],
+  "PALB": [
+   "UNI,ESA-"
+  ],
+  "PC": [
+   "UNI,370-"
+  ],
+  "PCC": [
+   "UNI,Z11-"
+  ],
+  "PCKMO": [
+   "UNI,Z10-"
+  ],
+  "PFD": [
+   "UNI,Z10-"
+  ],
+  "PFDRL": [
+   "UNI,Z10-"
+  ],
+  "PFMF": [
+   "UNI,Z10-"
+  ],
+  "PFPO": [
+   "UNI,Z9-"
+  ],
+  "PKA": [
+   "UNI,ZOP-"
+  ],
+  "PKU": [
+   "UNI,ZOP-"
+  ],
+  "PLO": [
+   "UNI,ESA-"
+  ],
+  "POPCNT": [
+   "Z11-Z14",
+   "UNI,Z15-"
+  ],
+  "PPA": [
+   "UNI,Z12-"
+  ],
+  "PPNO": [
+   "Z12-Z13",
+   "UNI,Z14-"
+  ],
+  "PR": [
+   "UNI,ESA-"
+  ],
+  "PRNO": [
+   "UNI,Z14-"
+  ],
+  "PT": [
+   "UNI,370-"
+  ],
+  "PTF": [
+   "UNI,Z10-"
+  ],
+  "PTFF": [
+   "UNI,Z9-"
+  ],
+  "PTI": [
+   "UNI,YOP-"
+  ],
+  "PTLB": [
+   "UNI,DOS-"
+  ],
+  "QADTR": [
+   "UNI,Z9-"
+  ],
+  "QAXTR": [
+   "UNI,Z9-"
+  ],
+  "QCTRI": [
+   "UNI,Z10-"
+  ],
+  "QPACI": [
+   "UNI,Z16-"
+  ],
+  "QSI": [
+   "UNI,Z10-"
+  ],
+  "RCHP": [
+   "UNI,XA-"
+  ],
+  "RDD": [
+   "UNI,DOS-370"
+  ],
+  "RDP": [
+   "UNI,Z16-"
+  ],
+  "RIO": [
+   "UNI,370"
+  ],
+  "RISBG": [
+   "UNI,Z10-"
+  ],
+  "RISBGN": [
+   "UNI,Z12-"
+  ],
+  "RISBGNZ": [
+   "UNI,Z12-"
+  ],
+  "RISBGZ": [
+   "UNI,Z10-"
+  ],
+  "RISBHG": [
+   "UNI,Z11-"
+  ],
+  "RISBHGZ": [
+   "UNI,Z11-"
+  ],
+  "RISBLG": [
+   "UNI,Z11-"
+  ],
+  "RISBLGZ": [
+   "UNI,Z11-"
+  ],
+  "RLL": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "RLLG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "RNSBG": [
+   "UNI,Z10-"
+  ],
+  "RNSBGT": [
+   "UNI,Z10-"
+  ],
+  "ROSBG": [
+   "UNI,Z10-"
+  ],
+  "ROSBGT": [
+   "UNI,Z10-"
+  ],
+  "RP": [
+   "UNI,ESA-"
+  ],
+  "RRB": [
+   "UNI,DOS-370"
+  ],
+  "RRBE": [
+   "UNI,370-"
+  ],
+  "RRBM": [
+   "UNI,Z11-"
+  ],
+  "RRDTR": [
+   "UNI,Z9-"
+  ],
+  "RRXTR": [
+   "UNI,Z9-"
+  ],
+  "RSCH": [
+   "UNI,XA-"
+  ],
+  "RXSBG": [
+   "UNI,Z10-"
+  ],
+  "RXSBGT": [
+   "UNI,Z10-"
+  ],
+  "S": [
+   "UNI,DOS-"
+  ],
+  "SAC": [
+   "UNI,370-"
+  ],
+  "SACF": [
+   "UNI,ESA-"
+  ],
+  "SAL": [
+   "UNI,XA-"
+  ],
+  "SAM24": [
+   "UNI,ESA-"
+  ],
+  "SAM31": [
+   "UNI,ESA-"
+  ],
+  "SAM64": [
+   "UNI,ZOP-"
+  ],
+  "SAR": [
+   "UNI,ESA-"
+  ],
+  "SCCTR": [
+   "UNI,Z10-"
+  ],
+  "SCHM": [
+   "UNI,XA-"
+  ],
+  "SCK": [
+   "UNI,DOS-"
+  ],
+  "SCKC": [
+   "UNI,DOS-"
+  ],
+  "SCKPF": [
+   "UNI,ESA-"
+  ],
+  "SD": [
+   "UNI,DOS-"
+  ],
+  "SDB": [
+   "UNI,ESA-"
+  ],
+  "SDBR": [
+   "UNI,ESA-"
+  ],
+  "SDR": [
+   "UNI,DOS-"
+  ],
+  "SDTR": [
+   "UNI,Z9-"
+  ],
+  "SDTRA": [
+   "UNI,Z11-"
+  ],
+  "SE": [
+   "UNI,DOS-"
+  ],
+  "SEB": [
+   "UNI,ESA-"
+  ],
+  "SEBR": [
+   "UNI,ESA-"
+  ],
+  "SELFHR": [
+   "UNI,Z15-"
+  ],
+  "SELFHRE": [
+   "UNI,Z15-"
+  ],
+  "SELFHRH": [
+   "UNI,Z15-"
+  ],
+  "SELFHRL": [
+   "UNI,Z15-"
+  ],
+  "SELFHRM": [
+   "UNI,Z15-"
+  ],
+  "SELFHRNE": [
+   "UNI,Z15-"
+  ],
+  "SELFHRNH": [
+   "UNI,Z15-"
+  ],
+  "SELFHRNL": [
+   "UNI,Z15-"
+  ],
+  "SELFHRNM": [
+   "UNI,Z15-"
+  ],
+  "SELFHRNO": [
+   "UNI,Z15-"
+  ],
+  "SELFHRNP": [
+   "UNI,Z15-"
+  ],
+  "SELFHRNZ": [
+   "UNI,Z15-"
+  ],
+  "SELFHRO": [
+   "UNI,Z15-"
+  ],
+  "SELFHRP": [
+   "UNI,Z15-"
+  ],
+  "SELFHRZ": [
+   "UNI,Z15-"
+  ],
+  "SELGR": [
+   "UNI,Z15-"
+  ],
+  "SELGRE": [
+   "UNI,Z15-"
+  ],
+  "SELGRH": [
+   "UNI,Z15-"
+  ],
+  "SELGRL": [
+   "UNI,Z15-"
+  ],
+  "SELGRM": [
+   "UNI,Z15-"
+  ],
+  "SELGRNE": [
+   "UNI,Z15-"
+  ],
+  "SELGRNH": [
+   "UNI,Z15-"
+  ],
+  "SELGRNL": [
+   "UNI,Z15-"
+  ],
+  "SELGRNM": [
+   "UNI,Z15-"
+  ],
+  "SELGRNO": [
+   "UNI,Z15-"
+  ],
+  "SELGRNP": [
+   "UNI,Z15-"
+  ],
+  "SELGRNZ": [
+   "UNI,Z15-"
+  ],
+  "SELGRO": [
+   "UNI,Z15-"
+  ],
+  "SELGRP": [
+   "UNI,Z15-"
+  ],
+  "SELGRZ": [
+   "UNI,Z15-"
+  ],
+  "SELR": [
+   "UNI,Z15-"
+  ],
+  "SELRE": [
+   "UNI,Z15-"
+  ],
+  "SELRH": [
+   "UNI,Z15-"
+  ],
+  "SELRL": [
+   "UNI,Z15-"
+  ],
+  "SELRM": [
+   "UNI,Z15-"
+  ],
+  "SELRNE": [
+   "UNI,Z15-"
+  ],
+  "SELRNH": [
+   "UNI,Z15-"
+  ],
+  "SELRNL": [
+   "UNI,Z15-"
+  ],
+  "SELRNM": [
+   "UNI,Z15-"
+  ],
+  "SELRNO": [
+   "UNI,Z15-"
+  ],
+  "SELRNP": [
+   "UNI,Z15-"
+  ],
+  "SELRNZ": [
+   "UNI,Z15-"
+  ],
+  "SELRO": [
+   "UNI,Z15-"
+  ],
+  "SELRP": [
+   "UNI,Z15-"
+  ],
+  "SELRZ": [
+   "UNI,Z15-"
+  ],
+  "SER": [
+   "UNI,DOS-"
+  ],
+  "SFASR": [
+   "UNI,Z9-"
+  ],
+  "SFPC": [
+   "UNI,ESA-"
+  ],
+  "SG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SGFR": [
+   "UNI,ZOP-"
+  ],
+  "SGH": [
+   "UNI,Z14-"
+  ],
+  "SGR": [
+   "UNI,ZOP-"
+  ],
+  "SGRK": [
+   "UNI,Z11-"
+  ],
+  "SH": [
+   "UNI,DOS-"
+  ],
+  "SHHHR": [
+   "UNI,Z11-"
+  ],
+  "SHHLR": [
+   "UNI,Z11-"
+  ],
+  "SHY": [
+   "UNI,YOP-"
+  ],
+  "SIE": [
+   "UNI,XA-"
+  ],
+  "SIGP": [
+   "UNI,370-"
+  ],
+  "SIO": [
+   "UNI,DOS-370"
+  ],
+  "SIOF": [
+   "UNI,DOS-370"
+  ],
+  "SL": [
+   "UNI,DOS-"
+  ],
+  "SLA": [
+   "UNI,DOS-"
+  ],
+  "SLAG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SLAK": [
+   "UNI,Z11-"
+  ],
+  "SLB": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "SLBG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SLBGR": [
+   "UNI,ZOP-"
+  ],
+  "SLBR": [
+   "UNI,ESA-"
+  ],
+  "SLDA": [
+   "UNI,DOS-"
+  ],
+  "SLDL": [
+   "UNI,DOS-"
+  ],
+  "SLDT": [
+   "UNI,Z9-"
+  ],
+  "SLFI": [
+   "UNI,Z9-"
+  ],
+  "SLG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SLGF": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SLGFI": [
+   "UNI,Z9-"
+  ],
+  "SLGFR": [
+   "UNI,ZOP-"
+  ],
+  "SLGR": [
+   "UNI,ZOP-"
+  ],
+  "SLGRK": [
+   "UNI,Z11-"
+  ],
+  "SLHHHR": [
+   "UNI,Z11-"
+  ],
+  "SLHHLR": [
+   "UNI,Z11-"
+  ],
+  "SLL": [
+   "UNI,DOS-"
+  ],
+  "SLLG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SLLHH": [
+   "UNI,Z16-"
+  ],
+  "SLLHL": [
+   "UNI,Z16-"
+  ],
+  "SLLK": [
+   "UNI,Z11-"
+  ],
+  "SLLLH": [
+   "UNI,Z16-"
+  ],
+  "SLR": [
+   "UNI,DOS-"
+  ],
+  "SLRK": [
+   "UNI,Z11-"
+  ],
+  "SLXT": [
+   "UNI,Z9-"
+  ],
+  "SLY": [
+   "UNI,YOP-"
+  ],
+  "SORTL": [
+   "UNI,Z15-"
+  ],
+  "SP": [
+   "UNI,DOS-"
+  ],
+  "SPCTR": [
+   "UNI,Z10-"
+  ],
+  "SPKA": [
+   "UNI,DOS-"
+  ],
+  "SPM": [
+   "UNI,DOS-"
+  ],
+  "SPT": [
+   "UNI,DOS-"
+  ],
+  "SPX": [
+   "UNI,370-"
+  ],
+  "SQD": [
+   "UNI,ESA-"
+  ],
+  "SQDB": [
+   "UNI,ESA-"
+  ],
+  "SQDBR": [
+   "UNI,ESA-"
+  ],
+  "SQDR": [
+   "UNI,XA-"
+  ],
+  "SQE": [
+   "UNI,ESA-"
+  ],
+  "SQEB": [
+   "UNI,ESA-"
+  ],
+  "SQEBR": [
+   "UNI,ESA-"
+  ],
+  "SQER": [
+   "UNI,XA-"
+  ],
+  "SQXBR": [
+   "UNI,ESA-"
+  ],
+  "SQXR": [
+   "UNI,ESA-"
+  ],
+  "SR": [
+   "UNI,DOS-"
+  ],
+  "SRA": [
+   "UNI,DOS-"
+  ],
+  "SRAG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SRAK": [
+   "UNI,Z11-"
+  ],
+  "SRDA": [
+   "UNI,DOS-"
+  ],
+  "SRDL": [
+   "UNI,DOS-"
+  ],
+  "SRDT": [
+   "UNI,Z9-"
+  ],
+  "SRK": [
+   "UNI,Z11-"
+  ],
+  "SRL": [
+   "UNI,DOS-"
+  ],
+  "SRLG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "SRLHH": [
+   "UNI,Z16-"
+  ],
+  "SRLHL": [
+   "UNI,Z16-"
+  ],
+  "SRLK": [
+   "UNI,Z11-"
+  ],
+  "SRLLH": [
+   "UNI,Z16-"
+  ],
+  "SRNM": [
+   "UNI,ESA-"
+  ],
+  "SRNMB": [
+   "UNI,Z11-"
+  ],
+  "SRNMT": [
+   "UNI,Z9-"
+  ],
+  "SRP": [
+   "UNI,DOS-"
+  ],
+  "SRST": [
+   "UNI,ESA-"
+  ],
+  "SRSTU": [
+   "UNI,YOP-"
+  ],
+  "SRXT": [
+   "UNI,Z9-"
+  ],
+  "SSAIR": [
+   "UNI,YOP-"
+  ],
+  "SSAR": [
+   "UNI,370-"
+  ],
+  "SSCH": [
+   "UNI,XA-"
+  ],
+  "SSK": [
+   "UNI,DOS-370"
+  ],
+  "SSKE": [
+   "370-YOP",
+   "UNI,Z9-"
+  ],
+  "SSM": [
+   "UNI,DOS-"
+  ],
+  "ST": [
+   "UNI,DOS-"
+  ],
+  "STAM": [
+   "UNI,ESA-"
+  ],
+  "STAMY": [
+   "UNI,YOP-"
+  ],
+  "STAP": [
+   "UNI,370-"
+  ],
+  "STBEAR": [
+   "UNI,Z16-"
+  ],
+  "STC": [
+   "UNI,DOS-"
+  ],
+  "STCH": [
+   "UNI,Z11-"
+  ],
+  "STCK": [
+   "UNI,DOS-"
+  ],
+  "STCKC": [
+   "UNI,DOS-"
+  ],
+  "STCKE": [
+   "UNI,ESA-"
+  ],
+  "STCKF": [
+   "UNI,Z9-"
+  ],
+  "STCM": [
+   "UNI,DOS-"
+  ],
+  "STCMH": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "STCMY": [
+   "UNI,YOP-"
+  ],
+  "STCPS": [
+   "UNI,XA-"
+  ],
+  "STCRW": [
+   "UNI,XA-"
+  ],
+  "STCTG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "STCTL": [
+   "UNI,DOS-"
+  ],
+  "STCY": [
+   "UNI,YOP-"
+  ],
+  "STD": [
+   "UNI,DOS-"
+  ],
+  "STDRV": [
+   "UNI,Z15-"
+  ],
+  "STDY": [
+   "UNI,YOP-"
+  ],
+  "STE": [
+   "UNI,DOS-"
+  ],
+  "STERV": [
+   "UNI,Z15-"
+  ],
+  "STEY": [
+   "UNI,YOP-"
+  ],
+  "STFH": [
+   "UNI,Z11-"
+  ],
+  "STFL": [
+   "UNI,ESA-"
+  ],
+  "STFLE": [
+   "UNI,Z9-"
+  ],
+  "STFPC": [
+   "UNI,ESA-"
+  ],
+  "STG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "STGRL": [
+   "UNI,Z10-"
+  ],
+  "STGSC": [
+   "UNI,Z14-"
+  ],
+  "STH": [
+   "UNI,DOS-"
+  ],
+  "STHH": [
+   "UNI,Z11-"
+  ],
+  "STHRL": [
+   "UNI,Z10-"
+  ],
+  "STHY": [
+   "UNI,YOP-"
+  ],
+  "STIDC": [
+   "UNI,DOS-370"
+  ],
+  "STIDP": [
+   "UNI,DOS-"
+  ],
+  "STM": [
+   "UNI,DOS-"
+  ],
+  "STMG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "STMH": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "STMY": [
+   "UNI,YOP-"
+  ],
+  "STNSM": [
+   "UNI,DOS-"
+  ],
+  "STOC": [
+   "UNI,Z11-"
+  ],
+  "STOCE": [
+   "UNI,Z11-"
+  ],
+  "STOCFH": [
+   "UNI,Z13-"
+  ],
+  "STOCFHE": [
+   "UNI,Z13-"
+  ],
+  "STOCFHH": [
+   "UNI,Z13-"
+  ],
+  "STOCFHL": [
+   "UNI,Z13-"
+  ],
+  "STOCFHM": [
+   "UNI,Z13-"
+  ],
+  "STOCFHNE": [
+   "UNI,Z13-"
+  ],
+  "STOCFHNH": [
+   "UNI,Z13-"
+  ],
+  "STOCFHNL": [
+   "UNI,Z13-"
+  ],
+  "STOCFHNM": [
+   "UNI,Z13-"
+  ],
+  "STOCFHNO": [
+   "UNI,Z13-"
+  ],
+  "STOCFHNP": [
+   "UNI,Z13-"
+  ],
+  "STOCFHNZ": [
+   "UNI,Z13-"
+  ],
+  "STOCFHO": [
+   "UNI,Z13-"
+  ],
+  "STOCFHP": [
+   "UNI,Z13-"
+  ],
+  "STOCFHZ": [
+   "UNI,Z13-"
+  ],
+  "STOCG": [
+   "UNI,Z11-"
+  ],
+  "STOCGE": [
+   "UNI,Z11-"
+  ],
+  "STOCGH": [
+   "UNI,Z11-"
+  ],
+  "STOCGL": [
+   "UNI,Z11-"
+  ],
+  "STOCGM": [
+   "UNI,Z13-"
+  ],
+  "STOCGNE": [
+   "UNI,Z11-"
+  ],
+  "STOCGNH": [
+   "UNI,Z11-"
+  ],
+  "STOCGNL": [
+   "UNI,Z11-"
+  ],
+  "STOCGNM": [
+   "UNI,Z13-"
+  ],
+  "STOCGNO": [
+   "UNI,Z13-"
+  ],
+  "STOCGNP": [
+   "UNI,Z13-"
+  ],
+  "STOCGNZ": [
+   "UNI,Z13-"
+  ],
+  "STOCGO": [
+   "UNI,Z13-"
+  ],
+  "STOCGP": [
+   "UNI,Z13-"
+  ],
+  "STOCGZ": [
+   "UNI,Z13-"
+  ],
+  "STOCH": [
+   "UNI,Z11-"
+  ],
+  "STOCL": [
+   "UNI,Z11-"
+  ],
+  "STOCM": [
+   "UNI,Z13-"
+  ],
+  "STOCNE": [
+   "UNI,Z11-"
+  ],
+  "STOCNH": [
+   "UNI,Z11-"
+  ],
+  "STOCNL": [
+   "UNI,Z11-"
+  ],
+  "STOCNM": [
+   "UNI,Z13-"
+  ],
+  "STOCNO": [
+   "UNI,Z13-"
+  ],
+  "STOCNP": [
+   "UNI,Z13-"
+  ],
+  "STOCNZ": [
+   "UNI,Z13-"
+  ],
+  "STOCO": [
+   "UNI,Z13-"
+  ],
+  "STOCP": [
+   "UNI,Z13-"
+  ],
+  "STOCZ": [
+   "UNI,Z13-"
+  ],
+  "STOSM": [
+   "UNI,DOS-"
+  ],
+  "STPQ": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "STPT": [
+   "UNI,DOS-"
+  ],
+  "STPX": [
+   "UNI,370-"
+  ],
+  "STRAG": [
+   "UNI,ZOP-"
+  ],
+  "STRL": [
+   "UNI,Z10-"
+  ],
+  "STRV": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "STRVG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "STRVH": [
+   "ESA-ZOP",
+   "UNI,YOP-"
+  ],
+  "STSCH": [
+   "UNI,XA-"
+  ],
+  "STSI": [
+   "UNI,ESA-"
+  ],
+  "STURA": [
+   "UNI,ESA-"
+  ],
+  "STURG": [
+   "UNI,ZOP-"
+  ],
+  "STY": [
+   "UNI,YOP-"
+  ],
+  "SU": [
+   "UNI,DOS-"
+  ],
+  "SUR": [
+   "UNI,DOS-"
+  ],
+  "SVC": [
+   "UNI,DOS-"
+  ],
+  "SW": [
+   "UNI,DOS-"
+  ],
+  "SWR": [
+   "UNI,DOS-"
+  ],
+  "SXBR": [
+   "UNI,ESA-"
+  ],
+  "SXR": [
+   "UNI,DOS-"
+  ],
+  "SXTR": [
+   "UNI,Z9-"
+  ],
+  "SXTRA": [
+   "UNI,Z11-"
+  ],
+  "SY": [
+   "UNI,YOP-"
+  ],
+  "TABORT": [
+   "UNI,Z12-"
+  ],
+  "TAM": [
+   "UNI,ESA-"
+  ],
+  "TAR": [
+   "UNI,ESA-"
+  ],
+  "TB": [
+   "UNI,370-"
+  ],
+  "TBDR": [
+   "UNI,ESA-"
+  ],
+  "TBEDR": [
+   "UNI,ESA-"
+  ],
+  "TBEGIN": [
+   "UNI,Z12-"
+  ],
+  "TBEGINC": [
+   "UNI,Z12-"
+  ],
+  "TCDB": [
+   "UNI,ESA-"
+  ],
+  "TCEB": [
+   "UNI,ESA-"
+  ],
+  "TCH": [
+   "UNI,DOS-370"
+  ],
+  "TCXB": [
+   "UNI,ESA-"
+  ],
+  "TDCDT": [
+   "UNI,Z9-"
+  ],
+  "TDCET": [
+   "UNI,Z9-"
+  ],
+  "TDCXT": [
+   "UNI,Z9-"
+  ],
+  "TDGDT": [
+   "UNI,Z9-"
+  ],
+  "TDGET": [
+   "UNI,Z9-"
+  ],
+  "TDGXT": [
+   "UNI,Z9-"
+  ],
+  "TEND": [
+   "UNI,Z12-"
+  ],
+  "THDER": [
+   "UNI,ESA-"
+  ],
+  "THDR": [
+   "UNI,ESA-"
+  ],
+  "TIO": [
+   "UNI,DOS-370"
+  ],
+  "TM": [
+   "UNI,DOS-"
+  ],
+  "TMH": [
+   "UNI,ESA-"
+  ],
+  "TMHH": [
+   "UNI,ZOP-"
+  ],
+  "TMHL": [
+   "UNI,ZOP-"
+  ],
+  "TML": [
+   "UNI,ESA-"
+  ],
+  "TMLH": [
+   "UNI,ESA-"
+  ],
+  "TMLL": [
+   "UNI,ESA-"
+  ],
+  "TMY": [
+   "UNI,YOP-"
+  ],
+  "TP": [
+   "UNI,ZOP-"
+  ],
+  "TPEI": [
+   "UNI,Z14-"
+  ],
+  "TPI": [
+   "UNI,XA-"
+  ],
+  "TPROT": [
+   "UNI,370-"
+  ],
+  "TR": [
+   "UNI,DOS-"
+  ],
+  "TRACE": [
+   "UNI,XA-"
+  ],
+  "TRACG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "TRAP2": [
+   "UNI,ESA-"
+  ],
+  "TRAP4": [
+   "UNI,ESA-"
+  ],
+  "TRE": [
+   "UNI,ESA-"
+  ],
+  "TROO": [
+   "ZOP-YOP",
+   "UNI,Z9-"
+  ],
+  "TROT": [
+   "ZOP-YOP",
+   "UNI,Z9-"
+  ],
+  "TRT": [
+   "UNI,DOS-"
+  ],
+  "TRTE": [
+   "UNI,Z10-"
+  ],
+  "TRTO": [
+   "ZOP-YOP",
+   "UNI,Z9-"
+  ],
+  "TRTR": [
+   "UNI,YOP-"
+  ],
+  "TRTRE": [
+   "UNI,Z10-"
+  ],
+  "TRTT": [
+   "ZOP-YOP",
+   "UNI,Z9-"
+  ],
+  "TS": [
+   "UNI,DOS-"
+  ],
+  "TSCH": [
+   "UNI,XA-"
+  ],
+  "UNPK": [
+   "UNI,DOS-"
+  ],
+  "UNPKA": [
+   "UNI,ZOP-"
+  ],
+  "UNPKU": [
+   "UNI,ZOP-"
+  ],
+  "UPT": [
+   "UNI,XA-"
+  ],
+  "VA*": [
+   "370-ESA"
+  ],
+  "VA": [
+   "UNI,Z13-"
+  ],
+  "VAB": [
+   "UNI,Z13-"
+  ],
+  "VAC": [
+   "UNI,Z13-"
+  ],
+  "VACC": [
+   "UNI,Z13-"
+  ],
+  "VACCB": [
+   "UNI,Z13-"
+  ],
+  "VACCC": [
+   "UNI,Z13-"
+  ],
+  "VACCCQ": [
+   "UNI,Z13-"
+  ],
+  "VACCF": [
+   "UNI,Z13-"
+  ],
+  "VACCG": [
+   "UNI,Z13-"
+  ],
+  "VACCH": [
+   "UNI,Z13-"
+  ],
+  "VACCQ": [
+   "UNI,Z13-"
+  ],
+  "VACD*": [
+   "370-ESA"
+  ],
+  "VACDR*": [
+   "370-ESA"
+  ],
+  "VACE*": [
+   "370-ESA"
+  ],
+  "VACER*": [
+   "370-ESA"
+  ],
+  "VACQ": [
+   "UNI,Z13-"
+  ],
+  "VACRS*": [
+   "370-ESA"
+  ],
+  "VACSV*": [
+   "370-ESA"
+  ],
+  "VAD*": [
+   "370-ESA"
+  ],
+  "VADQ*": [
+   "370-ESA"
+  ],
+  "VADR*": [
+   "370-ESA"
+  ],
+  "VADS*": [
+   "370-ESA"
+  ],
+  "VAE*": [
+   "370-ESA"
+  ],
+  "VAEQ*": [
+   "370-ESA"
+  ],
+  "VAER*": [
+   "370-ESA"
+  ],
+  "VAES*": [
+   "370-ESA"
+  ],
+  "VAF": [
+   "UNI,Z13-"
+  ],
+  "VAG": [
+   "UNI,Z13-"
+  ],
+  "VAH": [
+   "UNI,Z13-"
+  ],
+  "VAP": [
+   "UNI,Z14-"
+  ],
+  "VAQ*": [
+   "370-ESA"
+  ],
+  "VAQ": [
+   "UNI,Z13-"
+  ],
+  "VAR*": [
+   "370-ESA"
+  ],
+  "VAS*": [
+   "370-ESA"
+  ],
+  "VAVG": [
+   "UNI,Z13-"
+  ],
+  "VAVGB": [
+   "UNI,Z13-"
+  ],
+  "VAVGF": [
+   "UNI,Z13-"
+  ],
+  "VAVGG": [
+   "UNI,Z13-"
+  ],
+  "VAVGH": [
+   "UNI,Z13-"
+  ],
+  "VAVGL": [
+   "UNI,Z13-"
+  ],
+  "VAVGLB": [
+   "UNI,Z13-"
+  ],
+  "VAVGLF": [
+   "UNI,Z13-"
+  ],
+  "VAVGLG": [
+   "UNI,Z13-"
+  ],
+  "VAVGLH": [
+   "UNI,Z13-"
+  ],
+  "VAVGLQ": [
+   "UNI,Z17-"
+  ],
+  "VAVGQ": [
+   "UNI,Z17-"
+  ],
+  "VBLEND": [
+   "UNI,Z17-"
+  ],
+  "VBLENDB": [
+   "UNI,Z17-"
+  ],
+  "VBLENDF": [
+   "UNI,Z17-"
+  ],
+  "VBLENDG": [
+   "UNI,Z17-"
+  ],
+  "VBLENDH": [
+   "UNI,Z17-"
+  ],
+  "VBLENDQ": [
+   "UNI,Z17-"
+  ],
+  "VBPERM": [
+   "UNI,Z14-"
+  ],
+  "VC*": [
+   "370-ESA"
+  ],
+  "VCD*": [
+   "370-ESA"
+  ],
+  "VCDG": [
+   "Z13-Z14",
+   "UNI,Z15-"
+  ],
+  "VCDGB": [
+   "UNI,Z13-"
+  ],
+  "VCDLG": [
+   "Z13-Z14",
+   "UNI,Z15-"
+  ],
+  "VCDLGB": [
+   "UNI,Z13-"
+  ],
+  "VCDQ*": [
+   "370-ESA"
+  ],
+  "VCDR*": [
+   "370-ESA"
+  ],
+  "VCDS*": [
+   "370-ESA"
+  ],
+  "VCE*": [
+   "370-ESA"
+  ],
+  "VCEFB": [
+   "UNI,Z15-"
+  ],
+  "VCELFB": [
+   "UNI,Z15-"
+  ],
+  "VCEQ*": [
+   "370-ESA"
+  ],
+  "VCEQ": [
+   "UNI,Z13-"
+  ],
+  "VCEQB": [
+   "UNI,Z13-"
+  ],
+  "VCEQBS": [
+   "UNI,Z13-"
+  ],
+  "VCEQF": [
+   "UNI,Z13-"
+  ],
+  "VCEQFS": [
+   "UNI,Z13-"
+  ],
+  "VCEQG": [
+   "UNI,Z13-"
+  ],
+  "VCEQGS": [
+   "UNI,Z13-"
+  ],
+  "VCEQH": [
+   "UNI,Z13-"
+  ],
+  "VCEQHS": [
+   "UNI,Z13-"
+  ],
+  "VCEQQ": [
+   "UNI,Z17-"
+  ],
+  "VCEQQS": [
+   "UNI,Z17-"
+  ],
+  "VCER*": [
+   "370-ESA"
+  ],
+  "VCES*": [
+   "370-ESA"
+  ],
+  "VCFEB": [
+   "UNI,Z15-"
+  ],
+  "VCFN": [
+   "UNI,Z16-"
+  ],
+  "VCFPL": [
+   "UNI,Z15-"
+  ],
+  "VCFPS": [
+   "UNI,Z15-"
+  ],
+  "VCGD": [
+   "Z13-Z14",
+   "UNI,Z15-"
+  ],
+  "VCGDB": [
+   "UNI,Z13-"
+  ],
+  "VCH": [
+   "UNI,Z13-"
+  ],
+  "VCHB": [
+   "UNI,Z13-"
+  ],
+  "VCHBS": [
+   "UNI,Z13-"
+  ],
+  "VCHF": [
+   "UNI,Z13-"
+  ],
+  "VCHFS": [
+   "UNI,Z13-"
+  ],
+  "VCHG": [
+   "UNI,Z13-"
+  ],
+  "VCHGS": [
+   "UNI,Z13-"
+  ],
+  "VCHH": [
+   "UNI,Z13-"
+  ],
+  "VCHHS": [
+   "UNI,Z13-"
+  ],
+  "VCHL": [
+   "UNI,Z13-"
+  ],
+  "VCHLB": [
+   "UNI,Z13-"
+  ],
+  "VCHLBS": [
+   "UNI,Z13-"
+  ],
+  "VCHLF": [
+   "UNI,Z13-"
+  ],
+  "VCHLFS": [
+   "UNI,Z13-"
+  ],
+  "VCHLG": [
+   "UNI,Z13-"
+  ],
+  "VCHLGS": [
+   "UNI,Z13-"
+  ],
+  "VCHLH": [
+   "UNI,Z13-"
+  ],
+  "VCHLHS": [
+   "UNI,Z13-"
+  ],
+  "VCHLQ": [
+   "UNI,Z17-"
+  ],
+  "VCHLQS": [
+   "UNI,Z17-"
+  ],
+  "VCHQ": [
+   "UNI,Z17-"
+  ],
+  "VCHQS": [
+   "UNI,Z17-"
+  ],
+  "VCKSM": [
+   "UNI,Z13-"
+  ],
+  "VCLFEB": [
+   "UNI,Z15-"
+  ],
+  "VCLFNH": [
+   "UNI,Z16-"
+  ],
+  "VCLFNL": [
+   "UNI,Z16-"
+  ],
+  "VCLFP": [
+   "UNI,Z15-"
+  ],
+  "VCLGD": [
+   "Z13-Z14",
+   "UNI,Z15-"
+  ],
+  "VCLGDB": [
+   "UNI,Z13-"
+  ],
+  "VCLZ": [
+   "UNI,Z13-"
+  ],
+  "VCLZB": [
+   "UNI,Z13-"
+  ],
+  "VCLZDP": [
+   "UNI,Z16-"
+  ],
+  "VCLZF": [
+   "UNI,Z13-"
+  ],
+  "VCLZG": [
+   "UNI,Z13-"
+  ],
+  "VCLZH": [
+   "UNI,Z13-"
+  ],
+  "VCLZQ": [
+   "UNI,Z17-"
+  ],
+  "VCNF": [
+   "UNI,Z16-"
+  ],
+  "VCOVM*": [
+   "370-ESA"
+  ],
+  "VCP": [
+   "UNI,Z14-"
+  ],
+  "VCQ*": [
+   "370-ESA"
+  ],
+  "VCR*": [
+   "370-ESA"
+  ],
+  "VCRNF": [
+   "UNI,Z16-"
+  ],
+  "VCS*": [
+   "370-ESA"
+  ],
+  "VCSFP": [
+   "UNI,Z15-"
+  ],
+  "VCSPH": [
+   "UNI,Z16-"
+  ],
+  "VCTZ": [
+   "UNI,Z13-"
+  ],
+  "VCTZB": [
+   "UNI,Z13-"
+  ],
+  "VCTZF": [
+   "UNI,Z13-"
+  ],
+  "VCTZG": [
+   "UNI,Z13-"
+  ],
+  "VCTZH": [
+   "UNI,Z13-"
+  ],
+  "VCTZQ": [
+   "UNI,Z17-"
+  ],
+  "VCVB": [
+   "Z14",
+   "UNI,Z15-"
+  ],
+  "VCVBG": [
+   "Z14",
+   "UNI,Z15-"
+  ],
+  "VCVBQ": [
+   "UNI,Z17-"
+  ],
+  "VCVD": [
+   "UNI,Z14-"
+  ],
+  "VCVDG": [
+   "UNI,Z14-"
+  ],
+  "VCVDQ": [
+   "UNI,Z17-"
+  ],
+  "VCVM*": [
+   "370-ESA"
+  ],
+  "VCZVM*": [
+   "370-ESA"
+  ],
+  "VD": [
+   "UNI,Z17-"
+  ],
+  "VDD*": [
+   "370-ESA"
+  ],
+  "VDDQ*": [
+   "370-ESA"
+  ],
+  "VDDR*": [
+   "370-ESA"
+  ],
+  "VDDS*": [
+   "370-ESA"
+  ],
+  "VDE*": [
+   "370-ESA"
+  ],
+  "VDEQ*": [
+   "370-ESA"
+  ],
+  "VDER*": [
+   "370-ESA"
+  ],
+  "VDES*": [
+   "370-ESA"
+  ],
+  "VDF": [
+   "UNI,Z17-"
+  ],
+  "VDG": [
+   "UNI,Z17-"
+  ],
+  "VDL": [
+   "UNI,Z17-"
+  ],
+  "VDLF": [
+   "UNI,Z17-"
+  ],
+  "VDLG": [
+   "UNI,Z17-"
+  ],
+  "VDLQ": [
+   "UNI,Z17-"
+  ],
+  "VDP": [
+   "UNI,Z14-"
+  ],
+  "VDQ": [
+   "UNI,Z17-"
+  ],
+  "VEC": [
+   "UNI,Z13-"
+  ],
+  "VECB": [
+   "UNI,Z13-"
+  ],
+  "VECF": [
+   "UNI,Z13-"
+  ],
+  "VECG": [
+   "UNI,Z13-"
+  ],
+  "VECH": [
+   "UNI,Z13-"
+  ],
+  "VECL": [
+   "UNI,Z13-"
+  ],
+  "VECLB": [
+   "UNI,Z13-"
+  ],
+  "VECLF": [
+   "UNI,Z13-"
+  ],
+  "VECLG": [
+   "UNI,Z13-"
+  ],
+  "VECLH": [
+   "UNI,Z13-"
+  ],
+  "VECLQ": [
+   "UNI,Z17-"
+  ],
+  "VECQ": [
+   "UNI,Z17-"
+  ],
+  "VERIM": [
+   "UNI,Z13-"
+  ],
+  "VERIMB": [
+   "UNI,Z13-"
+  ],
+  "VERIMF": [
+   "UNI,Z13-"
+  ],
+  "VERIMG": [
+   "UNI,Z13-"
+  ],
+  "VERIMH": [
+   "UNI,Z13-"
+  ],
+  "VERLL": [
+   "UNI,Z13-"
+  ],
+  "VERLLB": [
+   "UNI,Z13-"
+  ],
+  "VERLLF": [
+   "UNI,Z13-"
+  ],
+  "VERLLG": [
+   "UNI,Z13-"
+  ],
+  "VERLLH": [
+   "UNI,Z13-"
+  ],
+  "VERLLV": [
+   "UNI,Z13-"
+  ],
+  "VERLLVB": [
+   "UNI,Z13-"
+  ],
+  "VERLLVF": [
+   "UNI,Z13-"
+  ],
+  "VERLLVG": [
+   "UNI,Z13-"
+  ],
+  "VERLLVH": [
+   "UNI,Z13-"
+  ],
+  "VESL": [
+   "UNI,Z13-"
+  ],
+  "VESLB": [
+   "UNI,Z13-"
+  ],
+  "VESLF": [
+   "UNI,Z13-"
+  ],
+  "VESLG": [
+   "UNI,Z13-"
+  ],
+  "VESLH": [
+   "UNI,Z13-"
+  ],
+  "VESLV": [
+   "UNI,Z13-"
+  ],
+  "VESLVB": [
+   "UNI,Z13-"
+  ],
+  "VESLVF": [
+   "UNI,Z13-"
+  ],
+  "VESLVG": [
+   "UNI,Z13-"
+  ],
+  "VESLVH": [
+   "UNI,Z13-"
+  ],
+  "VESRA": [
+   "UNI,Z13-"
+  ],
+  "VESRAB": [
+   "UNI,Z13-"
+  ],
+  "VESRAF": [
+   "UNI,Z13-"
+  ],
+  "VESRAG": [
+   "UNI,Z13-"
+  ],
+  "VESRAH": [
+   "UNI,Z13-"
+  ],
+  "VESRAV": [
+   "UNI,Z13-"
+  ],
+  "VESRAVB": [
+   "UNI,Z13-"
+  ],
+  "VESRAVF": [
+   "UNI,Z13-"
+  ],
+  "VESRAVG": [
+   "UNI,Z13-"
+  ],
+  "VESRAVH": [
+   "UNI,Z13-"
+  ],
+  "VESRL": [
+   "UNI,Z13-"
+  ],
+  "VESRLB": [
+   "UNI,Z13-"
+  ],
+  "VESRLF": [
+   "UNI,Z13-"
+  ],
+  "VESRLG": [
+   "UNI,Z13-"
+  ],
+  "VESRLH": [
+   "UNI,Z13-"
+  ],
+  "VESRLV": [
+   "UNI,Z13-"
+  ],
+  "VESRLVB": [
+   "UNI,Z13-"
+  ],
+  "VESRLVF": [
+   "UNI,Z13-"
+  ],
+  "VESRLVG": [
+   "UNI,Z13-"
+  ],
+  "VESRLVH": [
+   "UNI,Z13-"
+  ],
+  "VEVAL": [
+   "UNI,Z17-"
+  ],
+  "VFA": [
+   "UNI,Z13-"
+  ],
+  "VFADB": [
+   "UNI,Z13-"
+  ],
+  "VFAE": [
+   "UNI,Z13-"
+  ],
+  "VFAEB": [
+   "UNI,Z13-"
+  ],
+  "VFAEBS": [
+   "UNI,Z13-"
+  ],
+  "VFAEF": [
+   "UNI,Z13-"
+  ],
+  "VFAEFS": [
+   "UNI,Z13-"
+  ],
+  "VFAEH": [
+   "UNI,Z13-"
+  ],
+  "VFAEHS": [
+   "UNI,Z13-"
+  ],
+  "VFAEZB": [
+   "UNI,Z13-"
+  ],
+  "VFAEZBS": [
+   "UNI,Z13-"
+  ],
+  "VFAEZF": [
+   "UNI,Z13-"
+  ],
+  "VFAEZFS": [
+   "UNI,Z13-"
+  ],
+  "VFAEZH": [
+   "UNI,Z13-"
+  ],
+  "VFAEZHS": [
+   "UNI,Z13-"
+  ],
+  "VFASB": [
+   "UNI,Z14-"
+  ],
+  "VFCE": [
+   "UNI,Z13-"
+  ],
+  "VFCEDB": [
+   "UNI,Z13-"
+  ],
+  "VFCEDBS": [
+   "UNI,Z13-"
+  ],
+  "VFCESB": [
+   "UNI,Z14-"
+  ],
+  "VFCESBS": [
+   "UNI,Z14-"
+  ],
+  "VFCH": [
+   "UNI,Z13-"
+  ],
+  "VFCHDB": [
+   "UNI,Z13-"
+  ],
+  "VFCHDBS": [
+   "UNI,Z13-"
+  ],
+  "VFCHE": [
+   "UNI,Z13-"
+  ],
+  "VFCHEDB": [
+   "UNI,Z13-"
+  ],
+  "VFCHEDBS": [
+   "UNI,Z13-"
+  ],
+  "VFCHESB": [
+   "UNI,Z14-"
+  ],
+  "VFCHESBS": [
+   "UNI,Z14-"
+  ],
+  "VFCHSB": [
+   "UNI,Z14-"
+  ],
+  "VFCHSBS": [
+   "UNI,Z14-"
+  ],
+  "VFD": [
+   "UNI,Z13-"
+  ],
+  "VFDDB": [
+   "UNI,Z13-"
+  ],
+  "VFDSB": [
+   "UNI,Z14-"
+  ],
+  "VFEE": [
+   "UNI,Z13-"
+  ],
+  "VFEEB": [
+   "UNI,Z13-"
+  ],
+  "VFEEBS": [
+   "UNI,Z13-"
+  ],
+  "VFEEF": [
+   "UNI,Z13-"
+  ],
+  "VFEEFS": [
+   "UNI,Z13-"
+  ],
+  "VFEEH": [
+   "UNI,Z13-"
+  ],
+  "VFEEHS": [
+   "UNI,Z13-"
+  ],
+  "VFEEZB": [
+   "UNI,Z13-"
+  ],
+  "VFEEZBS": [
+   "UNI,Z13-"
+  ],
+  "VFEEZF": [
+   "UNI,Z13-"
+  ],
+  "VFEEZFS": [
+   "UNI,Z13-"
+  ],
+  "VFEEZH": [
+   "UNI,Z13-"
+  ],
+  "VFEEZHS": [
+   "UNI,Z13-"
+  ],
+  "VFENE": [
+   "UNI,Z13-"
+  ],
+  "VFENEB": [
+   "UNI,Z13-"
+  ],
+  "VFENEBS": [
+   "UNI,Z13-"
+  ],
+  "VFENEF": [
+   "UNI,Z13-"
+  ],
+  "VFENEFS": [
+   "UNI,Z13-"
+  ],
+  "VFENEH": [
+   "UNI,Z13-"
+  ],
+  "VFENEHS": [
+   "UNI,Z13-"
+  ],
+  "VFENEZB": [
+   "UNI,Z13-"
+  ],
+  "VFENEZBS": [
+   "UNI,Z13-"
+  ],
+  "VFENEZF": [
+   "UNI,Z13-"
+  ],
+  "VFENEZFS": [
+   "UNI,Z13-"
+  ],
+  "VFENEZH": [
+   "UNI,Z13-"
+  ],
+  "VFENEZHS": [
+   "UNI,Z13-"
+  ],
+  "VFI": [
+   "UNI,Z13-"
+  ],
+  "VFIDB": [
+   "UNI,Z13-"
+  ],
+  "VFISB": [
+   "UNI,Z14-"
+  ],
+  "VFKEDB": [
+   "UNI,Z14-"
+  ],
+  "VFKEDBS": [
+   "UNI,Z14-"
+  ],
+  "VFKESB": [
+   "UNI,Z14-"
+  ],
+  "VFKESBS": [
+   "UNI,Z14-"
+  ],
+  "VFKHDB": [
+   "UNI,Z14-"
+  ],
+  "VFKHDBS": [
+   "UNI,Z14-"
+  ],
+  "VFKHEDB": [
+   "UNI,Z14-"
+  ],
+  "VFKHEDBS": [
+   "UNI,Z14-"
+  ],
+  "VFKHESB": [
+   "UNI,Z14-"
+  ],
+  "VFKHESBS": [
+   "UNI,Z14-"
+  ],
+  "VFKHSB": [
+   "UNI,Z14-"
+  ],
+  "VFKHSBS": [
+   "UNI,Z14-"
+  ],
+  "VFLCDB": [
+   "UNI,Z13-"
+  ],
+  "VFLCSB": [
+   "UNI,Z14-"
+  ],
+  "VFLL": [
+   "UNI,Z14-"
+  ],
+  "VFLLS": [
+   "UNI,Z14-"
+  ],
+  "VFLNDB": [
+   "UNI,Z13-"
+  ],
+  "VFLNSB": [
+   "UNI,Z14-"
+  ],
+  "VFLPDB": [
+   "UNI,Z13-"
+  ],
+  "VFLPSB": [
+   "UNI,Z14-"
+  ],
+  "VFLR": [
+   "UNI,Z14-"
+  ],
+  "VFLRD": [
+   "UNI,Z14-"
+  ],
+  "VFM": [
+   "UNI,Z13-"
+  ],
+  "VFMA": [
+   "UNI,Z13-"
+  ],
+  "VFMADB": [
+   "UNI,Z13-"
+  ],
+  "VFMASB": [
+   "UNI,Z14-"
+  ],
+  "VFMAX": [
+   "UNI,Z14-"
+  ],
+  "VFMAXDB": [
+   "UNI,Z14-"
+  ],
+  "VFMAXSB": [
+   "UNI,Z14-"
+  ],
+  "VFMDB": [
+   "UNI,Z13-"
+  ],
+  "VFMIN": [
+   "UNI,Z14-"
+  ],
+  "VFMINDB": [
+   "UNI,Z14-"
+  ],
+  "VFMINSB": [
+   "UNI,Z14-"
+  ],
+  "VFMS": [
+   "UNI,Z13-"
+  ],
+  "VFMSB": [
+   "UNI,Z14-"
+  ],
+  "VFMSDB": [
+   "UNI,Z13-"
+  ],
+  "VFMSSB": [
+   "UNI,Z14-"
+  ],
+  "VFNMA": [
+   "UNI,Z14-"
+  ],
+  "VFNMADB": [
+   "UNI,Z14-"
+  ],
+  "VFNMASB": [
+   "UNI,Z14-"
+  ],
+  "VFNMS": [
+   "UNI,Z14-"
+  ],
+  "VFNMSDB": [
+   "UNI,Z14-"
+  ],
+  "VFNMSSB": [
+   "UNI,Z14-"
+  ],
+  "VFPSO": [
+   "UNI,Z13-"
+  ],
+  "VFPSODB": [
+   "UNI,Z13-"
+  ],
+  "VFPSOSB": [
+   "UNI,Z14-"
+  ],
+  "VFS": [
+   "UNI,Z13-"
+  ],
+  "VFSDB": [
+   "UNI,Z13-"
+  ],
+  "VFSQ": [
+   "UNI,Z13-"
+  ],
+  "VFSQDB": [
+   "UNI,Z13-"
+  ],
+  "VFSQSB": [
+   "UNI,Z14-"
+  ],
+  "VFSSB": [
+   "UNI,Z14-"
+  ],
+  "VFTCI": [
+   "UNI,Z13-"
+  ],
+  "VFTCIDB": [
+   "UNI,Z13-"
+  ],
+  "VFTCISB": [
+   "UNI,Z14-"
+  ],
+  "VGBM": [
+   "UNI,Z13-"
+  ],
+  "VGEF": [
+   "UNI,Z13-"
+  ],
+  "VGEG": [
+   "UNI,Z13-"
+  ],
+  "VGEM": [
+   "UNI,Z17-"
+  ],
+  "VGEMB": [
+   "UNI,Z17-"
+  ],
+  "VGEMF": [
+   "UNI,Z17-"
+  ],
+  "VGEMG": [
+   "UNI,Z17-"
+  ],
+  "VGEMH": [
+   "UNI,Z17-"
+  ],
+  "VGEMQ": [
+   "UNI,Z17-"
+  ],
+  "VGFM": [
+   "UNI,Z13-"
+  ],
+  "VGFMA": [
+   "UNI,Z13-"
+  ],
+  "VGFMAB": [
+   "UNI,Z13-"
+  ],
+  "VGFMAF": [
+   "UNI,Z13-"
+  ],
+  "VGFMAG": [
+   "UNI,Z13-"
+  ],
+  "VGFMAH": [
+   "UNI,Z13-"
+  ],
+  "VGFMB": [
+   "UNI,Z13-"
+  ],
+  "VGFMF": [
+   "UNI,Z13-"
+  ],
+  "VGFMG": [
+   "UNI,Z13-"
+  ],
+  "VGFMH": [
+   "UNI,Z13-"
+  ],
+  "VGM": [
+   "UNI,Z13-"
+  ],
+  "VGMB": [
+   "UNI,Z13-"
+  ],
+  "VGMF": [
+   "UNI,Z13-"
+  ],
+  "VGMG": [
+   "UNI,Z13-"
+  ],
+  "VGMH": [
+   "UNI,Z13-"
+  ],
+  "VISTR": [
+   "UNI,Z13-"
+  ],
+  "VISTRB": [
+   "UNI,Z13-"
+  ],
+  "VISTRBS": [
+   "UNI,Z13-"
+  ],
+  "VISTRF": [
+   "UNI,Z13-"
+  ],
+  "VISTRFS": [
+   "UNI,Z13-"
+  ],
+  "VISTRH": [
+   "UNI,Z13-"
+  ],
+  "VISTRHS": [
+   "UNI,Z13-"
+  ],
+  "VL*": [
+   "370-ESA"
+  ],
+  "VL": [
+   "UNI,Z13-"
+  ],
+  "VLBB": [
+   "UNI,Z13-"
+  ],
+  "VLBIX*": [
+   "370-ESA"
+  ],
+  "VLBR": [
+   "UNI,Z15-"
+  ],
+  "VLBRF": [
+   "UNI,Z15-"
+  ],
+  "VLBRG": [
+   "UNI,Z15-"
+  ],
+  "VLBRH": [
+   "UNI,Z15-"
+  ],
+  "VLBRQ": [
+   "UNI,Z15-"
+  ],
+  "VLBRREP": [
+   "UNI,Z15-"
+  ],
+  "VLBRREPF": [
+   "UNI,Z15-"
+  ],
+  "VLBRREPG": [
+   "UNI,Z15-"
+  ],
+  "VLBRREPH": [
+   "UNI,Z15-"
+  ],
+  "VLC": [
+   "UNI,Z13-"
+  ],
+  "VLCB": [
+   "UNI,Z13-"
+  ],
+  "VLCDR*": [
+   "370-ESA"
+  ],
+  "VLCER*": [
+   "370-ESA"
+  ],
+  "VLCF": [
+   "UNI,Z13-"
+  ],
+  "VLCG": [
+   "UNI,Z13-"
+  ],
+  "VLCH": [
+   "UNI,Z13-"
+  ],
+  "VLCQ": [
+   "UNI,Z17-"
+  ],
+  "VLCR*": [
+   "370-ESA"
+  ],
+  "VLCVM*": [
+   "370-ESA"
+  ],
+  "VLD*": [
+   "370-ESA"
+  ],
+  "VLDE": [
+   "Z13",
+   "UNI,Z14-"
+  ],
+  "VLDEB": [
+   "UNI,Z13-"
+  ],
+  "VLDQ*": [
+   "370-ESA"
+  ],
+  "VLDR*": [
+   "370-ESA"
+  ],
+  "VLE*": [
+   "370-ESA"
+  ],
+  "VLEB": [
+   "UNI,Z13-"
+  ],
+  "VLEBRF": [
+   "UNI,Z15-"
+  ],
+  "VLEBRG": [
+   "UNI,Z15-"
+  ],
+  "VLEBRH": [
+   "UNI,Z15-"
+  ],
+  "VLED": [
+   "Z13",
+   "UNI,Z14-"
+  ],
+  "VLEDB": [
+   "UNI,Z13-"
+  ],
+  "VLEF": [
+   "UNI,Z13-"
+  ],
+  "VLEG": [
+   "UNI,Z13-"
+  ],
+  "VLEH": [
+   "UNI,Z13-"
+  ],
+  "VLEIB": [
+   "UNI,Z13-"
+  ],
+  "VLEIF": [
+   "UNI,Z13-"
+  ],
+  "VLEIG": [
+   "UNI,Z13-"
+  ],
+  "VLEIH": [
+   "UNI,Z13-"
+  ],
+  "VLEL*": [
+   "370-ESA"
+  ],
+  "VLELD*": [
+   "370-ESA"
+  ],
+  "VLELE*": [
+   "370-ESA"
+  ],
+  "VLEQ*": [
+   "370-ESA"
+  ],
+  "VLER*": [
+   "370-ESA"
+  ],
+  "VLER": [
+   "UNI,Z15-"
+  ],
+  "VLERF": [
+   "UNI,Z15-"
+  ],
+  "VLERG": [
+   "UNI,Z15-"
+  ],
+  "VLERH": [
+   "UNI,Z15-"
+  ],
+  "VLGV": [
+   "UNI,Z13-"
+  ],
+  "VLGVB": [
+   "UNI,Z13-"
+  ],
+  "VLGVF": [
+   "UNI,Z13-"
+  ],
+  "VLGVG": [
+   "UNI,Z13-"
+  ],
+  "VLGVH": [
+   "UNI,Z13-"
+  ],
+  "VLH*": [
+   "370-ESA"
+  ],
+  "VLI*": [
+   "370-ESA"
+  ],
+  "VLID*": [
+   "370-ESA"
+  ],
+  "VLIE*": [
+   "370-ESA"
+  ],
+  "VLINT*": [
+   "370-ESA"
+  ],
+  "VLIP": [
+   "UNI,Z14-"
+  ],
+  "VLL": [
+   "UNI,Z13-"
+  ],
+  "VLLEBRZ": [
+   "UNI,Z15-"
+  ],
+  "VLLEBRZE": [
+   "UNI,Z15-"
+  ],
+  "VLLEBRZF": [
+   "UNI,Z15-"
+  ],
+  "VLLEBRZG": [
+   "UNI,Z15-"
+  ],
+  "VLLEBRZH": [
+   "UNI,Z15-"
+  ],
+  "VLLEZ": [
+   "UNI,Z13-"
+  ],
+  "VLLEZB": [
+   "UNI,Z13-"
+  ],
+  "VLLEZF": [
+   "UNI,Z13-"
+  ],
+  "VLLEZG": [
+   "UNI,Z13-"
+  ],
+  "VLLEZH": [
+   "UNI,Z13-"
+  ],
+  "VLLEZLF": [
+   "UNI,Z14-"
+  ],
+  "VLM*": [
+   "370-ESA"
+  ],
+  "VLM": [
+   "UNI,Z13-"
+  ],
+  "VLMD*": [
+   "370-ESA"
+  ],
+  "VLMDQ*": [
+   "370-ESA"
+  ],
+  "VLMDR*": [
+   "370-ESA"
+  ],
+  "VLME*": [
+   "370-ESA"
+  ],
+  "VLMEQ*": [
+   "370-ESA"
+  ],
+  "VLMER*": [
+   "370-ESA"
+  ],
+  "VLMQ*": [
+   "370-ESA"
+  ],
+  "VLMR*": [
+   "370-ESA"
+  ],
+  "VLNDR*": [
+   "370-ESA"
+  ],
+  "VLNER*": [
+   "370-ESA"
+  ],
+  "VLNR*": [
+   "370-ESA"
+  ],
+  "VLP": [
+   "UNI,Z13-"
+  ],
+  "VLPB": [
+   "UNI,Z13-"
+  ],
+  "VLPDR*": [
+   "370-ESA"
+  ],
+  "VLPER*": [
+   "370-ESA"
+  ],
+  "VLPF": [
+   "UNI,Z13-"
+  ],
+  "VLPG": [
+   "UNI,Z13-"
+  ],
+  "VLPH": [
+   "UNI,Z13-"
+  ],
+  "VLPQ": [
+   "UNI,Z17"
+  ],
+  "VLPR*": [
+   "370-ESA"
+  ],
+  "VLQ*": [
+   "370-ESA"
+  ],
+  "VLR*": [
+   "370-ESA"
+  ],
+  "VLR": [
+   "UNI,Z13-"
+  ],
+  "VLREP": [
+   "UNI,Z13-"
+  ],
+  "VLREPB": [
+   "UNI,Z13-"
+  ],
+  "VLREPF": [
+   "UNI,Z13-"
+  ],
+  "VLREPG": [
+   "UNI,Z13-"
+  ],
+  "VLREPH": [
+   "UNI,Z13-"
+  ],
+  "VLRL": [
+   "UNI,Z14-"
+  ],
+  "VLRLR": [
+   "UNI,Z14-"
+  ],
+  "VLVCA*": [
+   "370-ESA"
+  ],
+  "VLVCU*": [
+   "370-ESA"
+  ],
+  "VLVG": [
+   "UNI,Z13-"
+  ],
+  "VLVGB": [
+   "UNI,Z13-"
+  ],
+  "VLVGF": [
+   "UNI,Z13-"
+  ],
+  "VLVGG": [
+   "UNI,Z13-"
+  ],
+  "VLVGH": [
+   "UNI,Z13-"
+  ],
+  "VLVGP": [
+   "UNI,Z13-"
+  ],
+  "VLVM*": [
+   "370-ESA"
+  ],
+  "VLVXA*": [
+   "370-ESA"
+  ],
+  "VLY*": [
+   "370-ESA"
+  ],
+  "VLYD*": [
+   "370-ESA"
+  ],
+  "VLYE*": [
+   "370-ESA"
+  ],
+  "VLZDR*": [
+   "370-ESA"
+  ],
+  "VLZER*": [
+   "370-ESA"
+  ],
+  "VLZR*": [
+   "370-ESA"
+  ],
+  "VM*": [
+   "370-ESA"
+  ],
+  "VMAD*": [
+   "370-ESA"
+  ],
+  "VMADQ*": [
+   "370-ESA"
+  ],
+  "VMADS*": [
+   "370-ESA"
+  ],
+  "VMAE*": [
+   "370-ESA"
+  ],
+  "VMAE": [
+   "UNI,Z13-"
+  ],
+  "VMAEB": [
+   "UNI,Z13-"
+  ],
+  "VMAEF": [
+   "UNI,Z13-"
+  ],
+  "VMAEG": [
+   "UNI,Z17-"
+  ],
+  "VMAEH": [
+   "UNI,Z13-"
+  ],
+  "VMAEQ*": [
+   "370-ESA"
+  ],
+  "VMAES*": [
+   "370-ESA"
+  ],
+  "VMAH": [
+   "UNI,Z13-"
+  ],
+  "VMAHB": [
+   "UNI,Z13-"
+  ],
+  "VMAHF": [
+   "UNI,Z13-"
+  ],
+  "VMAHG": [
+   "UNI,Z17-"
+  ],
+  "VMAHH": [
+   "UNI,Z13-"
+  ],
+  "VMAHQ": [
+   "UNI,Z17-"
+  ],
+  "VMAL": [
+   "UNI,Z13-"
+  ],
+  "VMALB": [
+   "UNI,Z13-"
+  ],
+  "VMALE": [
+   "UNI,Z13-"
+  ],
+  "VMALEB": [
+   "UNI,Z13-"
+  ],
+  "VMALEF": [
+   "UNI,Z13-"
+  ],
+  "VMALEG": [
+   "UNI,Z17-"
+  ],
+  "VMALEH": [
+   "UNI,Z13-"
+  ],
+  "VMALF": [
+   "UNI,Z13-"
+  ],
+  "VMALG": [
+   "UNI,Z17-"
+  ],
+  "VMALH": [
+   "UNI,Z13-"
+  ],
+  "VMALHB": [
+   "UNI,Z13-"
+  ],
+  "VMALHF": [
+   "UNI,Z13-"
+  ],
+  "VMALHG": [
+   "UNI,Z17-"
+  ],
+  "VMALHH": [
+   "UNI,Z13-"
+  ],
+  "VMALHQ": [
+   "UNI,Z17-"
+  ],
+  "VMALHW": [
+   "UNI,Z13-"
+  ],
+  "VMALO": [
+   "UNI,Z13-"
+  ],
+  "VMALOB": [
+   "UNI,Z13-"
+  ],
+  "VMALOF": [
+   "UNI,Z13-"
+  ],
+  "VMALOG": [
+   "UNI,Z17-"
+  ],
+  "VMALOH": [
+   "UNI,Z13-"
+  ],
+  "VMALQ": [
+   "UNI,Z17-"
+  ],
+  "VMAO": [
+   "UNI,Z13-"
+  ],
+  "VMAOB": [
+   "UNI,Z13-"
+  ],
+  "VMAOF": [
+   "UNI,Z13-"
+  ],
+  "VMAOG": [
+   "UNI,Z17-"
+  ],
+  "VMAOH": [
+   "UNI,Z13-"
+  ],
+  "VMCD*": [
+   "370-ESA"
+  ],
+  "VMCDR*": [
+   "370-ESA"
+  ],
+  "VMCE*": [
+   "370-ESA"
+  ],
+  "VMCER*": [
+   "370-ESA"
+  ],
+  "VMD*": [
+   "370-ESA"
+  ],
+  "VMDQ*": [
+   "370-ESA"
+  ],
+  "VMDR*": [
+   "370-ESA"
+  ],
+  "VMDS*": [
+   "370-ESA"
+  ],
+  "VME*": [
+   "370-ESA"
+  ],
+  "VME": [
+   "UNI,Z13-"
+  ],
+  "VMEB": [
+   "UNI,Z13-"
+  ],
+  "VMEF": [
+   "UNI,Z13-"
+  ],
+  "VMEG": [
+   "UNI,Z17-"
+  ],
+  "VMEH": [
+   "UNI,Z13-"
+  ],
+  "VMEQ*": [
+   "370-ESA"
+  ],
+  "VMER*": [
+   "370-ESA"
+  ],
+  "VMES*": [
+   "370-ESA"
+  ],
+  "VMH": [
+   "UNI,Z13-"
+  ],
+  "VMHB": [
+   "UNI,Z13-"
+  ],
+  "VMHF": [
+   "UNI,Z13-"
+  ],
+  "VMHG": [
+   "UNI,Z17-"
+  ],
+  "VMHH": [
+   "UNI,Z13-"
+  ],
+  "VMHQ": [
+   "UNI,Z17-"
+  ],
+  "VML": [
+   "UNI,Z13-"
+  ],
+  "VMLB": [
+   "UNI,Z13-"
+  ],
+  "VMLE": [
+   "UNI,Z13-"
+  ],
+  "VMLEB": [
+   "UNI,Z13-"
+  ],
+  "VMLEF": [
+   "UNI,Z13-"
+  ],
+  "VMLEG": [
+   "UNI,Z17-"
+  ],
+  "VMLEH": [
+   "UNI,Z13-"
+  ],
+  "VMLF": [
+   "UNI,Z13-"
+  ],
+  "VMLG": [
+   "UNI,Z17-"
+  ],
+  "VMLH": [
+   "UNI,Z13-"
+  ],
+  "VMLHB": [
+   "UNI,Z13-"
+  ],
+  "VMLHF": [
+   "UNI,Z13-"
+  ],
+  "VMLHG": [
+   "UNI,Z17-"
+  ],
+  "VMLHH": [
+   "UNI,Z13-"
+  ],
+  "VMLHQ": [
+   "UNI,Z17-"
+  ],
+  "VMLHW": [
+   "UNI,Z13-"
+  ],
+  "VMLO": [
+   "UNI,Z13-"
+  ],
+  "VMLOB": [
+   "UNI,Z13-"
+  ],
+  "VMLOF": [
+   "UNI,Z13-"
+  ],
+  "VMLOG": [
+   "UNI,Z17-"
+  ],
+  "VMLOH": [
+   "UNI,Z13-"
+  ],
+  "VMLQ": [
+   "UNI,Z17-"
+  ],
+  "VMN": [
+   "UNI,Z13-"
+  ],
+  "VMNB": [
+   "UNI,Z13-"
+  ],
+  "VMNF": [
+   "UNI,Z13-"
+  ],
+  "VMNG": [
+   "UNI,Z13-"
+  ],
+  "VMNH": [
+   "UNI,Z13-"
+  ],
+  "VMNL": [
+   "UNI,Z13-"
+  ],
+  "VMNLB": [
+   "UNI,Z13-"
+  ],
+  "VMNLF": [
+   "UNI,Z13-"
+  ],
+  "VMNLG": [
+   "UNI,Z13-"
+  ],
+  "VMNLH": [
+   "UNI,Z13-"
+  ],
+  "VMNLQ": [
+   "UNI,Z17-"
+  ],
+  "VMNQ": [
+   "UNI,Z17-"
+  ],
+  "VMNSD*": [
+   "370-ESA"
+  ],
+  "VMNSE*": [
+   "370-ESA"
+  ],
+  "VMO": [
+   "UNI,Z13-"
+  ],
+  "VMOB": [
+   "UNI,Z13-"
+  ],
+  "VMOF": [
+   "UNI,Z13-"
+  ],
+  "VMOG": [
+   "UNI,Z17-"
+  ],
+  "VMOH": [
+   "UNI,Z13-"
+  ],
+  "VMP": [
+   "UNI,Z14-"
+  ],
+  "VMQ*": [
+   "370-ESA"
+  ],
+  "VMR*": [
+   "370-ESA"
+  ],
+  "VMRH": [
+   "UNI,Z13-"
+  ],
+  "VMRHB": [
+   "UNI,Z13-"
+  ],
+  "VMRHF": [
+   "UNI,Z13-"
+  ],
+  "VMRHG": [
+   "UNI,Z13-"
+  ],
+  "VMRHH": [
+   "UNI,Z13-"
+  ],
+  "VMRL": [
+   "UNI,Z13-"
+  ],
+  "VMRLB": [
+   "UNI,Z13-"
+  ],
+  "VMRLF": [
+   "UNI,Z13-"
+  ],
+  "VMRLG": [
+   "UNI,Z13-"
+  ],
+  "VMRLH": [
+   "UNI,Z13-"
+  ],
+  "VMRRS*": [
+   "370-ESA"
+  ],
+  "VMRSV*": [
+   "370-ESA"
+  ],
+  "VMS*": [
+   "370-ESA"
+  ],
+  "VMSD*": [
+   "370-ESA"
+  ],
+  "VMSDQ*": [
+   "370-ESA"
+  ],
+  "VMSDS*": [
+   "370-ESA"
+  ],
+  "VMSE*": [
+   "370-ESA"
+  ],
+  "VMSEQ*": [
+   "370-ESA"
+  ],
+  "VMSES*": [
+   "370-ESA"
+  ],
+  "VMSL": [
+   "UNI,Z14-"
+  ],
+  "VMSLG": [
+   "UNI,Z14-"
+  ],
+  "VMSP": [
+   "UNI,Z14-"
+  ],
+  "VMX": [
+   "UNI,Z13-"
+  ],
+  "VMXAD*": [
+   "370-ESA"
+  ],
+  "VMXAE*": [
+   "370-ESA"
+  ],
+  "VMXB": [
+   "UNI,Z13-"
+  ],
+  "VMXF": [
+   "UNI,Z13-"
+  ],
+  "VMXG": [
+   "UNI,Z13-"
+  ],
+  "VMXH": [
+   "UNI,Z13-"
+  ],
+  "VMXL": [
+   "UNI,Z13-"
+  ],
+  "VMXLB": [
+   "UNI,Z13-"
+  ],
+  "VMXLF": [
+   "UNI,Z13-"
+  ],
+  "VMXLG": [
+   "UNI,Z13-"
+  ],
+  "VMXLH": [
+   "UNI,Z13-"
+  ],
+  "VMXLQ": [
+   "UNI,Z17-"
+  ],
+  "VMXQ": [
+   "UNI,Z17-"
+  ],
+  "VMXSD*": [
+   "370-ESA"
+  ],
+  "VMXSE*": [
+   "370-ESA"
+  ],
+  "VN*": [
+   "370-ESA"
+  ],
+  "VN": [
+   "UNI,Z13-"
+  ],
+  "VNC": [
+   "UNI,Z13-"
+  ],
+  "VNN": [
+   "UNI,Z14-"
+  ],
+  "VNO": [
+   "UNI,Z13-"
+  ],
+  "VNOT": [
+   "UNI,Z13-"
+  ],
+  "VNQ*": [
+   "370-ESA"
+  ],
+  "VNR*": [
+   "370-ESA"
+  ],
+  "VNS*": [
+   "370-ESA"
+  ],
+  "VNVM*": [
+   "370-ESA"
+  ],
+  "VNX": [
+   "UNI,Z14-"
+  ],
+  "VO*": [
+   "370-ESA"
+  ],
+  "VO": [
+   "UNI,Z13-"
+  ],
+  "VOC": [
+   "UNI,Z14-"
+  ],
+  "VONE": [
+   "UNI,Z13-"
+  ],
+  "VOQ*": [
+   "370-ESA"
+  ],
+  "VOR*": [
+   "370-ESA"
+  ],
+  "VOS*": [
+   "370-ESA"
+  ],
+  "VOVM*": [
+   "370-ESA"
+  ],
+  "VPDI": [
+   "UNI,Z13-"
+  ],
+  "VPERM": [
+   "UNI,Z13-"
+  ],
+  "VPK": [
+   "UNI,Z13-"
+  ],
+  "VPKF": [
+   "UNI,Z13-"
+  ],
+  "VPKG": [
+   "UNI,Z13-"
+  ],
+  "VPKH": [
+   "UNI,Z13-"
+  ],
+  "VPKLS": [
+   "UNI,Z13-"
+  ],
+  "VPKLSF": [
+   "UNI,Z13-"
+  ],
+  "VPKLSFS": [
+   "UNI,Z13-"
+  ],
+  "VPKLSG": [
+   "UNI,Z13-"
+  ],
+  "VPKLSGS": [
+   "UNI,Z13-"
+  ],
+  "VPKLSH": [
+   "UNI,Z13-"
+  ],
+  "VPKLSHS": [
+   "UNI,Z13-"
+  ],
+  "VPKS": [
+   "UNI,Z13-"
+  ],
+  "VPKSF": [
+   "UNI,Z13-"
+  ],
+  "VPKSFS": [
+   "UNI,Z13-"
+  ],
+  "VPKSG": [
+   "UNI,Z13-"
+  ],
+  "VPKSGS": [
+   "UNI,Z13-"
+  ],
+  "VPKSH": [
+   "UNI,Z13-"
+  ],
+  "VPKSHS": [
+   "UNI,Z13-"
+  ],
+  "VPKZ": [
+   "UNI,Z14-"
+  ],
+  "VPKZR": [
+   "UNI,Z16-"
+  ],
+  "VPOPCT": [
+   "UNI,Z13-"
+  ],
+  "VPOPCTB": [
+   "UNI,Z14-"
+  ],
+  "VPOPCTF": [
+   "UNI,Z14-"
+  ],
+  "VPOPCTG": [
+   "UNI,Z14-"
+  ],
+  "VPOPCTH": [
+   "UNI,Z14-"
+  ],
+  "VPSOP": [
+   "UNI,Z14-"
+  ],
+  "VR": [
+   "UNI,Z17-"
+  ],
+  "VRCL*": [
+   "370-ESA"
+  ],
+  "VREP": [
+   "UNI,Z13-"
+  ],
+  "VREPB": [
+   "UNI,Z13-"
+  ],
+  "VREPF": [
+   "UNI,Z13-"
+  ],
+  "VREPG": [
+   "UNI,Z13-"
+  ],
+  "VREPH": [
+   "UNI,Z13-"
+  ],
+  "VREPI": [
+   "UNI,Z13-"
+  ],
+  "VREPIB": [
+   "UNI,Z13-"
+  ],
+  "VREPIF": [
+   "UNI,Z13-"
+  ],
+  "VREPIG": [
+   "UNI,Z13-"
+  ],
+  "VREPIH": [
+   "UNI,Z13-"
+  ],
+  "VRF": [
+   "UNI,Z17-"
+  ],
+  "VRG": [
+   "UNI,Z17-"
+  ],
+  "VRL": [
+   "UNI,Z17-"
+  ],
+  "VRLF": [
+   "UNI,Z17-"
+  ],
+  "VRLG": [
+   "UNI,Z17-"
+  ],
+  "VRLQ": [
+   "UNI,Z17-"
+  ],
+  "VRP": [
+   "UNI,Z14-"
+  ],
+  "VRQ": [
+   "UNI,Z17-"
+  ],
+  "VRRS*": [
+   "370-ESA"
+  ],
+  "VRSV*": [
+   "370-ESA"
+  ],
+  "VRSVC*": [
+   "370-ESA"
+  ],
+  "VS*": [
+   "370-ESA"
+  ],
+  "VS": [
+   "UNI,Z13-"
+  ],
+  "VSB": [
+   "UNI,Z13-"
+  ],
+  "VSBCBI": [
+   "UNI,Z13-"
+  ],
+  "VSBCBIQ": [
+   "UNI,Z13-"
+  ],
+  "VSBI": [
+   "UNI,Z13-"
+  ],
+  "VSBIQ": [
+   "UNI,Z13-"
+  ],
+  "VSCBI": [
+   "UNI,Z13-"
+  ],
+  "VSCBIB": [
+   "UNI,Z13-"
+  ],
+  "VSCBIF": [
+   "UNI,Z13-"
+  ],
+  "VSCBIG": [
+   "UNI,Z13-"
+  ],
+  "VSCBIH": [
+   "UNI,Z13-"
+  ],
+  "VSCBIQ": [
+   "UNI,Z13-"
+  ],
+  "VSCEF": [
+   "UNI,Z13-"
+  ],
+  "VSCEG": [
+   "UNI,Z13-"
+  ],
+  "VSCHDP": [
+   "UNI,Z16-"
+  ],
+  "VSCHP": [
+   "UNI,Z16-"
+  ],
+  "VSCHSP": [
+   "UNI,Z16-"
+  ],
+  "VSCHXP": [
+   "UNI,Z16-"
+  ],
+  "VSCSHP": [
+   "UNI,Z16-"
+  ],
+  "VSD*": [
+   "370-ESA"
+  ],
+  "VSDP": [
+   "UNI,Z14-"
+  ],
+  "VSDQ*": [
+   "370-ESA"
+  ],
+  "VSDR*": [
+   "370-ESA"
+  ],
+  "VSDS*": [
+   "370-ESA"
+  ],
+  "VSE*": [
+   "370-ESA"
+  ],
+  "VSEG": [
+   "UNI,Z13-"
+  ],
+  "VSEGB": [
+   "UNI,Z13-"
+  ],
+  "VSEGF": [
+   "UNI,Z13-"
+  ],
+  "VSEGH": [
+   "UNI,Z13-"
+  ],
+  "VSEL": [
+   "UNI,Z13-"
+  ],
+  "VSEQ*": [
+   "370-ESA"
+  ],
+  "VSER*": [
+   "370-ESA"
+  ],
+  "VSES*": [
+   "370-ESA"
+  ],
+  "VSF": [
+   "UNI,Z13-"
+  ],
+  "VSG": [
+   "UNI,Z13-"
+  ],
+  "VSH": [
+   "UNI,Z13-"
+  ],
+  "VSL": [
+   "UNI,Z13-"
+  ],
+  "VSLB": [
+   "UNI,Z13-"
+  ],
+  "VSLD": [
+   "UNI,Z15-"
+  ],
+  "VSLDB": [
+   "UNI,Z13-"
+  ],
+  "VSLL*": [
+   "370-ESA"
+  ],
+  "VSP": [
+   "UNI,Z14-"
+  ],
+  "VSPSD*": [
+   "370-ESA"
+  ],
+  "VSQ*": [
+   "370-ESA"
+  ],
+  "VSQ": [
+   "UNI,Z13-"
+  ],
+  "VSQD*": [
+   "370-ESA"
+  ],
+  "VSQDR*": [
+   "370-ESA"
+  ],
+  "VSQE*": [
+   "370-ESA"
+  ],
+  "VSQER*": [
+   "370-ESA"
+  ],
+  "VSR*": [
+   "370-ESA"
+  ],
+  "VSRA": [
+   "UNI,Z13-"
+  ],
+  "VSRAB": [
+   "UNI,Z13-"
+  ],
+  "VSRD": [
+   "UNI,Z15-"
+  ],
+  "VSRL*": [
+   "370-ESA"
+  ],
+  "VSRL": [
+   "UNI,Z13-"
+  ],
+  "VSRLB": [
+   "UNI,Z13-"
+  ],
+  "VSRP": [
+   "UNI,Z14-"
+  ],
+  "VSRPR": [
+   "UNI,Z16-"
+  ],
+  "VSRRS*": [
+   "370-ESA"
+  ],
+  "VSRSV*": [
+   "370-ESA"
+  ],
+  "VSS*": [
+   "370-ESA"
+  ],
+  "VST*": [
+   "370-ESA"
+  ],
+  "VST": [
+   "UNI,Z13-"
+  ],
+  "VSTBR": [
+   "UNI,Z15-"
+  ],
+  "VSTBRF": [
+   "UNI,Z15-"
+  ],
+  "VSTBRG": [
+   "UNI,Z15-"
+  ],
+  "VSTBRH": [
+   "UNI,Z15-"
+  ],
+  "VSTBRQ": [
+   "UNI,Z15-"
+  ],
+  "VSTD*": [
+   "370-ESA"
+  ],
+  "VSTE*": [
+   "370-ESA"
+  ],
+  "VSTEB": [
+   "UNI,Z13-"
+  ],
+  "VSTEBRF": [
+   "UNI,Z15-"
+  ],
+  "VSTEBRG": [
+   "UNI,Z15-"
+  ],
+  "VSTEBRH": [
+   "UNI,Z15-"
+  ],
+  "VSTEF": [
+   "UNI,Z13-"
+  ],
+  "VSTEG": [
+   "UNI,Z13-"
+  ],
+  "VSTEH": [
+   "UNI,Z13-"
+  ],
+  "VSTER": [
+   "UNI,Z15-"
+  ],
+  "VSTERF": [
+   "UNI,Z15-"
+  ],
+  "VSTERG": [
+   "UNI,Z15-"
+  ],
+  "VSTERH": [
+   "UNI,Z15-"
+  ],
+  "VSTH*": [
+   "370-ESA"
+  ],
+  "VSTI*": [
+   "370-ESA"
+  ],
+  "VSTID*": [
+   "370-ESA"
+  ],
+  "VSTIE*": [
+   "370-ESA"
+  ],
+  "VSTK*": [
+   "370-ESA"
+  ],
+  "VSTKD*": [
+   "370-ESA"
+  ],
+  "VSTKE*": [
+   "370-ESA"
+  ],
+  "VSTL": [
+   "UNI,Z13-"
+  ],
+  "VSTM*": [
+   "370-ESA"
+  ],
+  "VSTM": [
+   "UNI,Z13-"
+  ],
+  "VSTMD*": [
+   "370-ESA"
+  ],
+  "VSTME*": [
+   "370-ESA"
+  ],
+  "VSTRC": [
+   "UNI,Z13-"
+  ],
+  "VSTRCB": [
+   "UNI,Z13-"
+  ],
+  "VSTRCBS": [
+   "UNI,Z13-"
+  ],
+  "VSTRCF": [
+   "UNI,Z13-"
+  ],
+  "VSTRCFS": [
+   "UNI,Z13-"
+  ],
+  "VSTRCH": [
+   "UNI,Z13-"
+  ],
+  "VSTRCHS": [
+   "UNI,Z13-"
+  ],
+  "VSTRCZB": [
+   "UNI,Z13-"
+  ],
+  "VSTRCZBS": [
+   "UNI,Z13-"
+  ],
+  "VSTRCZF": [
+   "UNI,Z13-"
+  ],
+  "VSTRCZFS": [
+   "UNI,Z13-"
+  ],
+  "VSTRCZH": [
+   "UNI,Z13-"
+  ],
+  "VSTRCZHS": [
+   "UNI,Z13-"
+  ],
+  "VSTRL": [
+   "UNI,Z14-"
+  ],
+  "VSTRLR": [
+   "UNI,Z14-"
+  ],
+  "VSTRS": [
+   "UNI,Z15-"
+  ],
+  "VSTRSB": [
+   "UNI,Z15-"
+  ],
+  "VSTRSF": [
+   "UNI,Z15-"
+  ],
+  "VSTRSH": [
+   "UNI,Z15-"
+  ],
+  "VSTRSZB": [
+   "UNI,Z15-"
+  ],
+  "VSTRSZF": [
+   "UNI,Z15-"
+  ],
+  "VSTRSZH": [
+   "UNI,Z15-"
+  ],
+  "VSTVM*": [
+   "370-ESA"
+  ],
+  "VSTVP*": [
+   "370-ESA"
+  ],
+  "VSUM": [
+   "UNI,Z13-"
+  ],
+  "VSUMB": [
+   "UNI,Z13-"
+  ],
+  "VSUMG": [
+   "UNI,Z13-"
+  ],
+  "VSUMGF": [
+   "UNI,Z13-"
+  ],
+  "VSUMGH": [
+   "UNI,Z13-"
+  ],
+  "VSUMH": [
+   "UNI,Z13-"
+  ],
+  "VSUMQ": [
+   "UNI,Z13-"
+  ],
+  "VSUMQF": [
+   "UNI,Z13-"
+  ],
+  "VSUMQG": [
+   "UNI,Z13-"
+  ],
+  "VSVMM*": [
+   "370-ESA"
+  ],
+  "VTAD*": [
+   "370-ESA"
+  ],
+  "VTAE*": [
+   "370-ESA"
+  ],
+  "VTM": [
+   "UNI,Z13-"
+  ],
+  "VTP": [
+   "Z14-Z16",
+   "UNI,Z17-"
+  ],
+  "VTSD*": [
+   "370-ESA"
+  ],
+  "VTSE*": [
+   "370-ESA"
+  ],
+  "VTVM*": [
+   "370-ESA"
+  ],
+  "VTZ": [
+   "UNI,Z17-"
+  ],
+  "VUPH": [
+   "UNI,Z13-"
+  ],
+  "VUPHB": [
+   "UNI,Z13-"
+  ],
+  "VUPHF": [
+   "UNI,Z13-"
+  ],
+  "VUPHG": [
+   "UNI,Z17-"
+  ],
+  "VUPHH": [
+   "UNI,Z13-"
+  ],
+  "VUPKZ": [
+   "UNI,Z14-"
+  ],
+  "VUPKZH": [
+   "UNI,Z16-"
+  ],
+  "VUPKZL": [
+   "UNI,Z16-"
+  ],
+  "VUPL": [
+   "UNI,Z13-"
+  ],
+  "VUPLB": [
+   "UNI,Z13-"
+  ],
+  "VUPLF": [
+   "UNI,Z13-"
+  ],
+  "VUPLG": [
+   "UNI,Z17-"
+  ],
+  "VUPLH": [
+   "UNI,Z13-"
+  ],
+  "VUPLHB": [
+   "UNI,Z13-"
+  ],
+  "VUPLHF": [
+   "UNI,Z13-"
+  ],
+  "VUPLHG": [
+   "UNI,Z17-"
+  ],
+  "VUPLHH": [
+   "UNI,Z13-"
+  ],
+  "VUPLHW": [
+   "UNI,Z13-"
+  ],
+  "VUPLL": [
+   "UNI,Z13-"
+  ],
+  "VUPLLB": [
+   "UNI,Z13-"
+  ],
+  "VUPLLF": [
+   "UNI,Z13-"
+  ],
+  "VUPLLG": [
+   "UNI,Z17-"
+  ],
+  "VUPLLH": [
+   "UNI,Z13-"
+  ],
+  "VX*": [
+   "370-ESA"
+  ],
+  "VX": [
+   "UNI,Z13-"
+  ],
+  "VXEL*": [
+   "370-ESA"
+  ],
+  "VXELD*": [
+   "370-ESA"
+  ],
+  "VXELE*": [
+   "370-ESA"
+  ],
+  "VXQ*": [
+   "370-ESA"
+  ],
+  "VXR*": [
+   "370-ESA"
+  ],
+  "VXS*": [
+   "370-ESA"
+  ],
+  "VXVC*": [
+   "370-ESA"
+  ],
+  "VXVM*": [
+   "370-ESA"
+  ],
+  "VXVMM*": [
+   "370-ESA"
+  ],
+  "VZERO": [
+   "UNI,Z13-"
+  ],
+  "VZPSD*": [
+   "370-ESA"
+  ],
+  "WCDGB": [
+   "UNI,Z13-"
+  ],
+  "WCDLGB": [
+   "UNI,Z13-"
+  ],
+  "WCEFB": [
+   "UNI,Z15-"
+  ],
+  "WCELFB": [
+   "UNI,Z15-"
+  ],
+  "WCFEB": [
+   "UNI,Z15-"
+  ],
+  "WCGDB": [
+   "UNI,Z13-"
+  ],
+  "WCLFEB": [
+   "UNI,Z15-"
+  ],
+  "WCLGDB": [
+   "UNI,Z13-"
+  ],
+  "WFADB": [
+   "UNI,Z13-"
+  ],
+  "WFASB": [
+   "UNI,Z14-"
+  ],
+  "WFAXB": [
+   "UNI,Z14-"
+  ],
+  "WFC": [
+   "UNI,Z13-"
+  ],
+  "WFCDB": [
+   "UNI,Z13-"
+  ],
+  "WFCEDB": [
+   "UNI,Z13-"
+  ],
+  "WFCEDBS": [
+   "UNI,Z13-"
+  ],
+  "WFCESB": [
+   "UNI,Z14-"
+  ],
+  "WFCESBS": [
+   "UNI,Z14-"
+  ],
+  "WFCEXB": [
+   "UNI,Z14-"
+  ],
+  "WFCEXBS": [
+   "UNI,Z14-"
+  ],
+  "WFCHDB": [
+   "UNI,Z13-"
+  ],
+  "WFCHDBS": [
+   "UNI,Z13-"
+  ],
+  "WFCHEDB": [
+   "UNI,Z13-"
+  ],
+  "WFCHEDBS": [
+   "UNI,Z13-"
+  ],
+  "WFCHESB": [
+   "UNI,Z14-"
+  ],
+  "WFCHESBS": [
+   "UNI,Z14-"
+  ],
+  "WFCHEXB": [
+   "UNI,Z14-"
+  ],
+  "WFCHEXBS": [
+   "UNI,Z14-"
+  ],
+  "WFCHSB": [
+   "UNI,Z14-"
+  ],
+  "WFCHSBS": [
+   "UNI,Z14-"
+  ],
+  "WFCHXB": [
+   "UNI,Z14-"
+  ],
+  "WFCHXBS": [
+   "UNI,Z14-"
+  ],
+  "WFCSB": [
+   "UNI,Z14-"
+  ],
+  "WFCXB": [
+   "UNI,Z14-"
+  ],
+  "WFDDB": [
+   "UNI,Z13-"
+  ],
+  "WFDSB": [
+   "UNI,Z14-"
+  ],
+  "WFDXB": [
+   "UNI,Z14-"
+  ],
+  "WFIDB": [
+   "UNI,Z13-"
+  ],
+  "WFISB": [
+   "UNI,Z14-"
+  ],
+  "WFIXB": [
+   "UNI,Z14-"
+  ],
+  "WFK": [
+   "UNI,Z13-"
+  ],
+  "WFKDB": [
+   "UNI,Z13-"
+  ],
+  "WFKEDB": [
+   "UNI,Z14-"
+  ],
+  "WFKEDBS": [
+   "UNI,Z14-"
+  ],
+  "WFKESB": [
+   "UNI,Z14-"
+  ],
+  "WFKESBS": [
+   "UNI,Z14-"
+  ],
+  "WFKEXB": [
+   "UNI,Z14-"
+  ],
+  "WFKEXBS": [
+   "UNI,Z14-"
+  ],
+  "WFKHDB": [
+   "UNI,Z14-"
+  ],
+  "WFKHDBS": [
+   "UNI,Z14-"
+  ],
+  "WFKHEDB": [
+   "UNI,Z14-"
+  ],
+  "WFKHEDBS": [
+   "UNI,Z14-"
+  ],
+  "WFKHESB": [
+   "UNI,Z14-"
+  ],
+  "WFKHESBS": [
+   "UNI,Z14-"
+  ],
+  "WFKHEXB": [
+   "UNI,Z14-"
+  ],
+  "WFKHEXBS": [
+   "UNI,Z14-"
+  ],
+  "WFKHSB": [
+   "UNI,Z14-"
+  ],
+  "WFKHSBS": [
+   "UNI,Z14-"
+  ],
+  "WFKHXB": [
+   "UNI,Z14-"
+  ],
+  "WFKHXBS": [
+   "UNI,Z14-"
+  ],
+  "WFKSB": [
+   "UNI,Z14-"
+  ],
+  "WFKXB": [
+   "UNI,Z14-"
+  ],
+  "WFLCDB": [
+   "UNI,Z13-"
+  ],
+  "WFLCSB": [
+   "UNI,Z14-"
+  ],
+  "WFLCXB": [
+   "UNI,Z14-"
+  ],
+  "WFLLD": [
+   "UNI,Z14-"
+  ],
+  "WFLLS": [
+   "UNI,Z14-"
+  ],
+  "WFLNDB": [
+   "UNI,Z13-"
+  ],
+  "WFLNSB": [
+   "UNI,Z14-"
+  ],
+  "WFLNXB": [
+   "UNI,Z14-"
+  ],
+  "WFLPDB": [
+   "UNI,Z13-"
+  ],
+  "WFLPSB": [
+   "UNI,Z14-"
+  ],
+  "WFLPXB": [
+   "UNI,Z14-"
+  ],
+  "WFLRD": [
+   "UNI,Z14-"
+  ],
+  "WFLRX": [
+   "UNI,Z14-"
+  ],
+  "WFMADB": [
+   "UNI,Z13-"
+  ],
+  "WFMASB": [
+   "UNI,Z14-"
+  ],
+  "WFMAXB": [
+   "UNI,Z14-"
+  ],
+  "WFMAXDB": [
+   "UNI,Z14-"
+  ],
+  "WFMAXSB": [
+   "UNI,Z14-"
+  ],
+  "WFMAXXB": [
+   "UNI,Z14-"
+  ],
+  "WFMDB": [
+   "UNI,Z13-"
+  ],
+  "WFMINDB": [
+   "UNI,Z14-"
+  ],
+  "WFMINSB": [
+   "UNI,Z14-"
+  ],
+  "WFMINXB": [
+   "UNI,Z14-"
+  ],
+  "WFMSB": [
+   "UNI,Z14-"
+  ],
+  "WFMSDB": [
+   "UNI,Z13-"
+  ],
+  "WFMSSB": [
+   "UNI,Z14-"
+  ],
+  "WFMSXB": [
+   "UNI,Z14-"
+  ],
+  "WFMXB": [
+   "UNI,Z14-"
+  ],
+  "WFNMADB": [
+   "UNI,Z14-"
+  ],
+  "WFNMASB": [
+   "UNI,Z14-"
+  ],
+  "WFNMAXB": [
+   "UNI,Z14-"
+  ],
+  "WFNMSDB": [
+   "UNI,Z14-"
+  ],
+  "WFNMSSB": [
+   "UNI,Z14-"
+  ],
+  "WFNMSXB": [
+   "UNI,Z14-"
+  ],
+  "WFPSODB": [
+   "UNI,Z13-"
+  ],
+  "WFPSOSB": [
+   "UNI,Z14-"
+  ],
+  "WFPSOXB": [
+   "UNI,Z14-"
+  ],
+  "WFSDB": [
+   "UNI,Z13-"
+  ],
+  "WFSQDB": [
+   "UNI,Z13-"
+  ],
+  "WFSQSB": [
+   "UNI,Z14-"
+  ],
+  "WFSQXB": [
+   "UNI,Z14-"
+  ],
+  "WFSSB": [
+   "UNI,Z14-"
+  ],
+  "WFSXB": [
+   "UNI,Z14-"
+  ],
+  "WFTCIDB": [
+   "UNI,Z13-"
+  ],
+  "WFTCISB": [
+   "UNI,Z14-"
+  ],
+  "WFTCIXB": [
+   "UNI,Z14-"
+  ],
+  "WLDEB": [
+   "UNI,Z13-"
+  ],
+  "WLEDB": [
+   "UNI,Z13-"
+  ],
+  "WRD": [
+   "UNI,DOS-370"
+  ],
+  "X": [
+   "UNI,DOS-"
+  ],
+  "XC": [
+   "UNI,DOS-"
+  ],
+  "XG": [
+   "ZOP",
+   "UNI,YOP-"
+  ],
+  "XGR": [
+   "UNI,ZOP-"
+  ],
+  "XGRK": [
+   "UNI,Z11-"
+  ],
+  "XHHR": [
+   "UNI,Z11-"
+  ],
+  "XHLR": [
+   "UNI,Z11-"
+  ],
+  "XI": [
+   "UNI,DOS-"
+  ],
+  "XIHF": [
+   "UNI,Z9-"
+  ],
+  "XILF": [
+   "UNI,Z9-"
+  ],
+  "XIY": [
+   "UNI,YOP-"
+  ],
+  "XLHR": [
+   "UNI,Z11-"
+  ],
+  "XR": [
+   "UNI,DOS-"
+  ],
+  "XRK": [
+   "UNI,Z11-"
+  ],
+  "XSCH": [
+   "UNI,ESA-"
+  ],
+  "XY": [
+   "UNI,YOP-"
+  ],
+  "ZAP": [
+   "UNI,DOS-"
+  ]
+ }
+}

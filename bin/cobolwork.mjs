@@ -29,6 +29,7 @@ import { printable } from '../lib/kernel/printable.mjs';
 import { startEvidence, recordInputs, recordHashed, recordFindings, recordOutput, recordVerdict, recordBaselineWrite, finishEvidence } from '../lib/evidence/run.mjs';
 import { evidenceCommand } from '../lib/evidence/cli.mjs';
 import { slsaStatement } from '../lib/evidence/slsa.mjs';
+import { optableLevel } from '../lib/hlasm/optable.mjs';
 
 const STARTED = new Date().toISOString();
 
@@ -95,6 +96,10 @@ Options
   --mvs38-forms, --no-mvs38-forms  scan: read (the default) or refuse the operands MVS 3.8's system
                         macros take and z/OS 3.1's documentation does not list, such as MODESET
                         EXTKEY=SUPR (key zero), GETMAIN P and ATTACH HIARCHY=
+  --hlasm-optable <table>  scan: read assembler source with this HLASM operation code table (UNI,
+                        DOS, 370, XA, ESA, ZOP, YOP, Z9 ... Z17, or a MACHINE name such as S390): a
+                        mnemonic outside it is a macro call. Without it the estate's assembly JCL
+                        PARM or a file's *PROCESS decides, and UNI otherwise
   --copylib <dir>[,<dir>]  copy libraries the estate keeps outside the repository, searched after the
                         tree's own copybooks, as COBCPY is; a copybook found there is read, not reported missing
   --report <file>       tui, explain: read a stored scan report instead of scanning
@@ -177,6 +182,7 @@ function parseArgs(argv) {
     else if (a === '--pds-export') opts.pdsExport = true;
     else if (a === '--mvs38-forms') opts.mvs38Forms = true;
     else if (a === '--no-mvs38-forms') opts.mvs38Forms = false;
+    else if (a === '--hlasm-optable') opts.hlasmOptable = value();
     else if (a === '--precompile') opts.precompile = true;
     else if (a === '--copylib') opts.copylib = [...new Set(list().map(x => resolve(x)))];
     else if (a === '--report') opts.report = value();
@@ -305,6 +311,12 @@ const notDirs = (opts.copylib || []).filter((d) => { try { return !statSync(d).i
 if (notDirs.length) { process.stderr.write(`cobolwork: --copylib ${notDirs.join(', ')} is not a directory\n`); process.exit(2); }
 const systemDirs = opts.copylib || [];
 if (opts.pdsExport && opts._.length && !['scan', 'diff', 'build'].includes(opts._[0])) { process.stderr.write('cobolwork: --pds-export is for scan, diff and build\n'); process.exit(2); }
+if (opts.hlasmOptable !== undefined) {
+  const level = optableLevel(opts.hlasmOptable) ?? optableLevel(opts.hlasmOptable, { machine: true });
+  if (!level) { process.stderr.write(`cobolwork: --hlasm-optable ${opts.hlasmOptable} names no HLASM operation code table\n`); process.exit(2); }
+  if (opts._.length && opts._[0] !== 'scan') { process.stderr.write('cobolwork: --hlasm-optable is for scan\n'); process.exit(2); }
+  opts.hlasmOptable = level;
+}
 if (opts.mvs38Forms !== undefined && opts._.length && opts._[0] !== 'scan') { process.stderr.write('cobolwork: --mvs38-forms and --no-mvs38-forms are for scan\n'); process.exit(2); }
 if (opts.pdsExport && opts.repos) { process.stderr.write('cobolwork: --pds-export reads one export; --repos does not apply\n'); process.exit(2); }
 if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
@@ -376,7 +388,7 @@ try {
   } else if (command === 'evidence') {
     process.exitCode = evidenceCommand(target, opts, { toolVersion: VERSION, write: (s) => process.stdout.write(s) });
   } else if (command === 'scan' || command === 'flow') {
-    const flowOpts = { repos, fullTrace: opts.fullTrace === true, allRoutes: opts.allRoutes === true, systemDirs, mvs38Forms: opts.mvs38Forms !== false };
+    const flowOpts = { repos, fullTrace: opts.fullTrace === true, allRoutes: opts.allRoutes === true, systemDirs, mvs38Forms: opts.mvs38Forms !== false, hlasmOptable: opts.hlasmOptable ?? null };
     // The site file sits beside the members and is not one of them, so it is named rather than found.
     const site = resolve(root, SITE_FILE);
     const pds = opts.pdsExport ? pdsExportTree(root, { systemDirs }) : null;

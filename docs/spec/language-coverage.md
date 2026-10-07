@@ -481,7 +481,7 @@ resolving to an assembler module currently reports `jcl-exec-pgm-unresolved` or 
 
 | Rule | Severity | What it catches |
 |---|---|---|
-| `hlasm-supervisor-state-change` | crit | `MODESET KEY=ZERO` / `MODE=SUP` |
+| `hlasm-supervisor-state-change` | crit | `MODESET KEY=ZERO` / `MODE=SUP` / `EXTKEY=ZERO` (and MVS 3.8's `SUPR`, `SRM`, `RSM`, `VSM` unless `--no-mvs38-forms`) |
 | `hlasm-executes-built-instruction` | high | `EX`/`EXRL` |
 | `hlasm-cross-memory-service` | high | `PC`/`SSAR`/`LASP` |
 | `hlasm-calls-security-product` | med | `RACROUTE` and relatives — inventory, not defect |

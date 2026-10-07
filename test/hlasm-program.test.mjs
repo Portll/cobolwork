@@ -105,7 +105,7 @@ test('LOAD and ATTACH read their list and execute forms and authorized keywords,
   assert.equal(attach.status, 'parsed');
   assert.deepEqual(attach.node.sf, { form: 'E', list: 'ATTACHD' });
   assert.equal(parse('         ATTACH DE=0,SF=L').status, 'parsed');
-  assert.match(parse('         ATTACH EP=X,HIARCHY=0').reason, /unknown keyword HIARCHY/);
+  assert.match(parseHlasmStatement(readHlasmStatements('         ATTACH EP=X,HIARCHY=0').statements[0], { mvs38: false }).reason, /HIARCHY=0 is an MVS 3.8 form/);
   assert.equal(parse('         XCTL  (2,12),DE=(R8),MF=(E,(1)),SF=(E,(15))').status, 'parsed');
   assert.equal(parse('         LINK  ,SF=(E,PARSLINK)').status, 'parsed');
   assert.equal(parse('         LINK  EP=ASMA90,PARAM=((R3),DDNLIST),VL=1').status, 'parsed');

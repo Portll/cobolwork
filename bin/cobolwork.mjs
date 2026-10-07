@@ -92,6 +92,9 @@ Options
   --pds-export          scan: the directory holds partitioned data sets' members as files, as
                         zowe zos-files download all-members writes them (hlq/llq/member.txt) or in a
                         directory named for each data set; findings name DATA.SET/MEMBER
+  --mvs38-forms, --no-mvs38-forms  scan: read (the default) or refuse the operands MVS 3.8's system
+                        macros take and z/OS 3.1's documentation does not list, such as MODESET
+                        EXTKEY=SUPR (key zero), GETMAIN P and ATTACH HIARCHY=
   --copylib <dir>[,<dir>]  copy libraries the estate keeps outside the repository, searched after the
                         tree's own copybooks, as COBCPY is; a copybook found there is read, not reported missing
   --report <file>       tui, explain: read a stored scan report instead of scanning
@@ -172,6 +175,8 @@ function parseArgs(argv) {
     else if (a === '--rule') opts.rule = list();
     else if (a === '--advisories') opts.advisoryFeeds = [...new Set(list().map(x => resolve(x)))];
     else if (a === '--pds-export') opts.pdsExport = true;
+    else if (a === '--mvs38-forms') opts.mvs38Forms = true;
+    else if (a === '--no-mvs38-forms') opts.mvs38Forms = false;
     else if (a === '--precompile') opts.precompile = true;
     else if (a === '--copylib') opts.copylib = [...new Set(list().map(x => resolve(x)))];
     else if (a === '--report') opts.report = value();
@@ -300,6 +305,7 @@ const notDirs = (opts.copylib || []).filter((d) => { try { return !statSync(d).i
 if (notDirs.length) { process.stderr.write(`cobolwork: --copylib ${notDirs.join(', ')} is not a directory\n`); process.exit(2); }
 const systemDirs = opts.copylib || [];
 if (opts.pdsExport && opts._.length && !['scan', 'diff', 'build'].includes(opts._[0])) { process.stderr.write('cobolwork: --pds-export is for scan, diff and build\n'); process.exit(2); }
+if (opts.mvs38Forms !== undefined && opts._.length && opts._[0] !== 'scan') { process.stderr.write('cobolwork: --mvs38-forms and --no-mvs38-forms are for scan\n'); process.exit(2); }
 if (opts.pdsExport && opts.repos) { process.stderr.write('cobolwork: --pds-export reads one export; --repos does not apply\n'); process.exit(2); }
 if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
   process.stderr.write(`cobolwork: --json is for capabilities; every other command writes JSON unless --format says otherwise\n`);
@@ -370,7 +376,7 @@ try {
   } else if (command === 'evidence') {
     process.exitCode = evidenceCommand(target, opts, { toolVersion: VERSION, write: (s) => process.stdout.write(s) });
   } else if (command === 'scan' || command === 'flow') {
-    const flowOpts = { repos, fullTrace: opts.fullTrace === true, allRoutes: opts.allRoutes === true, systemDirs };
+    const flowOpts = { repos, fullTrace: opts.fullTrace === true, allRoutes: opts.allRoutes === true, systemDirs, mvs38Forms: opts.mvs38Forms !== false };
     // The site file sits beside the members and is not one of them, so it is named rather than found.
     const site = resolve(root, SITE_FILE);
     const pds = opts.pdsExport ? pdsExportTree(root, { systemDirs }) : null;

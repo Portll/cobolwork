@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { readHlasm, OPERATIONS } from '../lib/hlasm.mjs';
+import { readHlasmStatements } from '../lib/hlasm/read.mjs';
 import { scanHlasm, HLASM_RULES } from '../lib/sets/hlasm.mjs';
 import { scanJcl } from '../lib/sets/jcl.mjs';
 import { isAssembler, kindOfBytes } from '../lib/sources.mjs';
@@ -218,4 +219,29 @@ test('the defects are graded, and the inventory rules assert none', () => {
   for (const id of ['hlasm-supervisor-state-change', 'hlasm-executes-built-instruction', 'hlasm-cross-memory-service']) {
     assert.ok(HLASM_RULES[id].impact && HLASM_RULES[id].remedy, `${id} says what is at stake and what to do`);
   }
+});
+
+test('a file holding several programs is read to its end, as HLASM assembles a batch', () => {
+  const batch = asm(
+    card('FIRST', 'CSECT'),
+    card('', 'BR', '14'),
+    card('', 'END'),
+    '//STEP2   EXEC PGM=IEFBR14',
+    '++SRC(SECOND) DISTLIB(ASRCLIB).',
+    card('SECOND', 'CSECT'),
+    card('', 'MODESET', 'KEY=ZERO,MODE=SUP'),
+    card('', 'BR', '14'),
+    card('', 'END'),
+    '\x1a',
+  );
+  const r = scanHlasm(tree({ 'asm/BATCH.asm': batch }));
+  assert.deepEqual(r.findings.filter((f) => f.rule === 'hlasm-supervisor-state-change').map((f) => f.line), [7]);
+  assert.equal(r.summary.statementsNotRead, undefined);
+  assert.deepEqual(readHlasm(batch).defines.map((d) => d.name), ['FIRST', 'SECOND']);
+});
+
+test('a source macro one program of a batch defines is not the next program\'s', () => {
+  const src = asm('         MACRO', '         LOCAL', '         MEND', card('A', 'CSECT'), card('', 'LOCAL'), card('', 'END'), card('B', 'CSECT'), card('', 'LOCAL'), card('', 'END'));
+  const calls = readHlasmStatements(src).statements.filter((s) => s.operation === 'LOCAL' && !s.prototype);
+  assert.deepEqual(calls.map((s) => [s.line, !!s.sourceMacro]), [[5, true], [8, false]]);
 });

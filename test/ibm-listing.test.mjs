@@ -123,10 +123,12 @@ test('a page header spliced onto a source line by a form feed does not take the 
     '   000006         000600 PROCEDURE DIVISION.',
     'End of compilation 1,  program SPLICED,  no statements flagged.',
   ].join('\n');
-  const r = parseIbmListing(listing);
-  assert.equal(r.compiler, 'IBM Enterprise COBOL for z/OS 6.4.0 P231130');
-  assert.deepEqual(r.units[0].source.map((s) => s.line), [1, 2, 3, 4, 5, 6]);
-  assert.match(r.units[0].source[4].card, /01  EM-TIME PIC X\(6\)\./);
+  for (const text of [listing, listing.replace('\f', '^L')]) {
+    const r = parseIbmListing(text);
+    assert.equal(r.compiler, 'IBM Enterprise COBOL for z/OS 6.4.0 P231130');
+    assert.deepEqual(r.units[0].source.map((s) => s.line), [1, 2, 3, 4, 5, 6]);
+    assert.match(r.units[0].source[4].card, /01  EM-TIME PIC X\(6\)\./);
+  }
 });
 
 test('a 4.2 map gives displacements within the record from the block displacement', () => {

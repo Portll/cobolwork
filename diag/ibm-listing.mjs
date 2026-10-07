@@ -37,8 +37,8 @@ export function parseIbmListing(text) {
     unit = null;
   };
   // A form feed starts a page as a new line does: some spools carry one mid-line, the page header
-  // spliced onto a source line.
-  for (const raw of text.split(/\r?\n|\f/)) {
+  // spliced onto a source line, and a capture tool may have rendered it as the two characters ^L.
+  for (const raw of text.split(/\r?\n|\f|\^L(?=1?PP \d{4}-)/)) {
     const line = withoutCarriageControl(raw);
     const trimmed = line.trim();
     if (HEADER.test(line)) {

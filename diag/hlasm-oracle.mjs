@@ -145,9 +145,13 @@ function stageLibrary(dir, lib) {
     if (!byName.has(name)) byName.set(name, []);
     byName.get(name).push(f);
   }
+  // A member is a macro only if it defines one: z390 aborts on help text or a program it finds as a
+  // macro, where a missing macro is stubbed.
+  const definesMacro = (f) => foldStatements(readFileSync(f, 'latin1')).statements.find((s) => s.kind === 'statement')?.operation === 'MACRO';
   for (const [name, files] of byName) {
     const ext = (f) => extname(f).toLowerCase();
-    copyFileSync(files.find((f) => ext(f) === '.mac') || files[0], join(lib, `${name}.MAC`));
+    const macro = [...files].sort((a, b) => (ext(b) === '.mac') - (ext(a) === '.mac')).find(definesMacro);
+    if (macro) copyFileSync(macro, join(lib, `${name}.MAC`));
     copyFileSync(files.find((f) => ext(f) === '.cpy' || ext(f) === '.copy') || files[0], join(lib, `${name}.CPY`));
   }
   return lib;

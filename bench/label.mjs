@@ -29,6 +29,7 @@ import { scan as scanFlow } from '../lib/sets/flow.mjs';
 import { isAssembler, isProgram, readSource } from '../lib/sources.mjs';
 import { MARKER } from '../lib/verify.mjs';
 import { RUN_ENDINGS } from '../lib/ironwork-ids.mjs';
+import { inStreamJob, labelByJob } from './label-job.mjs';
 
 // The journal's sink names that show a finding's sink kind, as ironwork docs/evidence.md §1.1
 // records them. A TD queue's data is `log` to ironwork whatever the CSD makes of the queue.
@@ -98,13 +99,9 @@ const controlOf = (byAbend) => byAbend?.control ?? '0';
 // the program as the records of the DD it is written on.
 const FED_BY_DD = new Set(['file-record', 'jcl-instream']);
 
-// Every DD the program assigns, and SYSIN, holding each fill. A DD's records are as long as its
-// file's fixed record: a longer line is a length conflict (FILE STATUS 04), which a program that
-// checks its status takes as a fatal error before it reaches anything it does with the record.
-// An indexed or relative file is empty unless it is the finding's source, whose records then have
-// distinct ascending keys at the record key, as a REPRO unload holds them (operator 2026-10-07).
-function fileRecordVariants(program, byAbend, { copyDirs = [], sourceFile = null } = {}) {
-  const programs = parseFile(program, { includeDirs: copyDirs }).programs;
+// Each DD name the programs assign, with its file's name, fixed record length, whether it is
+// indexed or relative, and where the record key sits in the record.
+export function fileShapes(programs) {
   const shapes = new Map();
   for (const p of programs) {
     for (const f of p.files || []) {
@@ -116,14 +113,26 @@ function fileRecordVariants(program, byAbend, { copyDirs = [], sourceFile = null
       const key = keyName ? p.items.find((it) => it.name === keyName && it.offset != null && it.size) : null;
       const recordOf = key ? (it) => { let top = it; while (top.parent) top = top.parent; return top; } : null;
       const shape = {
+        file: f.name,
         length: fd?.fixedLength || (keyed ? fd?.size : null) || null,
         keyed,
-        source: sourceFile === f.name,
+        relative: words.includes('RELATIVE'),
         key: key ? { offset: key.offset - (recordOf(key).offset || 0), size: key.size } : null,
       };
       for (const dd of ddNames(f.assign)) if (!shapes.has(dd)) shapes.set(dd, shape);
     }
   }
+  return shapes;
+}
+
+// Every DD the program assigns, and SYSIN, holding each fill. A DD's records are as long as its
+// file's fixed record: a longer line is a length conflict (FILE STATUS 04), which a program that
+// checks its status takes as a fatal error before it reaches anything it does with the record.
+// An indexed or relative file is empty unless it is the finding's source, whose records then have
+// distinct ascending keys at the record key, as a REPRO unload holds them (operator 2026-10-07).
+function fileRecordVariants(program, byAbend, { copyDirs = [], sourceFile = null } = {}) {
+  const programs = parseFile(program, { includeDirs: copyDirs }).programs;
+  const shapes = new Map([...fileShapes(programs)].map(([dd, s]) => [dd, { ...s, source: sourceFile === s.file }]));
   const unplaced = [...shapes.values()].find((x) => x.keyed && x.source && !x.key);
   if (unplaced) return { why: 'the finding\'s source is an indexed file whose record key the labeller cannot place' };
   const dds = [...new Set([...programs.flatMap((p) => p.files || []).flatMap((x) => ddNames(x.assign)), 'SYSIN'])];
@@ -459,6 +468,9 @@ export function labelFinding(f, root, opts) {
   const candidates = [...(f.related || []).map((r) => r.path), ...(f.trace || []).map((t) => t.file), f.path].filter(Boolean).map((p) => resolve(root, p));
   const program = candidates.find(isProgram);
   if (!program) return unknown('no program source on the finding');
+  // In-stream data in a JCL file the repository holds is labelled by running its job.
+  const job = kinds.source === 'jcl-instream' ? inStreamJob(f, root) : null;
+  if (job) return labelByJob(f, root, { ...opts, program, sink: kinds.sink, runs: null, extended }, job, (ext) => stamped(['job', strata(ext)].filter(Boolean).join('+')));
   const ctx = { ...opts, program, sink: kinds.sink, runs: null, extended };
   let variants;
   try {
@@ -572,6 +584,8 @@ export function label(given, opts = {}) {
   const inputAtSink = run.traceInput ? Object.fromEntries([true, false, null].map((v) => [String(v), labels.filter((l) => l.inputAtSink === v).length])) : undefined;
   return { tool: 'cobolwork-label', marker: MARKER, evidence: run.evidence, byRule, ...(inputAtSink ? { inputAtSink } : {}), incomplete, labels };
 }
+
+export { abendText, calledAway, compileOptions, compliance, controlOf, DATA_EXCEPTION, fills, IRONWORK_ENDED, journalOf, libraries, withoutValue };
 
 function main(argv) {
   const opts = {};

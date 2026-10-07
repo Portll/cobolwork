@@ -52,6 +52,20 @@ test('a job\'s in-stream data is fed through its DD, and a program of more than 
   assert.equal(verifyEvidence(evidence).verified, true);
 });
 
+test('in-stream data is labelled by running its job, with the data set an earlier step writes, an empty generation and an empty cluster in place', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
+  const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
+  t.after(() => rmSync(evidence, { recursive: true, force: true }));
+  // CTLUSE gives up unless STEP010's data set, a generation of CWJOB.HIST and the cluster
+  // CWJOB.REF.MASTER all open, so neither operation runs unless the job was prepared whole.
+  const out = label(join(import.meta.dirname, 'fixtures', 'label', 'job'), { ironwork: IRONWORK, evidence });
+  const jobs = out.labels.filter((l) => l.rule.startsWith('jcl-instream'));
+  assert.deepEqual(jobs.map((l) => [l.rule, l.path, l.line, l.labelledOn, l.job, l.label, l.variant, !!l.control]).sort(), [
+    ['jcl-instream-to-arithmetic', 'CTLUSE.cbl', 46, 'job', 'CTLJOB.jcl', 'confirmed', 'in-stream asterisks', true],
+    ['jcl-instream-to-dynamic-program-load', 'CTLUSE.cbl', 47, 'job', 'CTLJOB.jcl', 'confirmed', 'in-stream shifted 0', false],
+  ]);
+  assert.equal(verifyEvidence(evidence).verified, true);
+});
+
 test('a program ironwork reads only under --compliance extended runs there, and its label says so', { skip: !IRONWORK || !existsSync(IRONWORK) ? 'COBOLWORK_IRONWORK names no ironwork binary' : false }, (t) => {
   const evidence = mkdtempSync(join(tmpdir(), 'cobolwork-label-test-'));
   t.after(() => rmSync(evidence, { recursive: true, force: true }));

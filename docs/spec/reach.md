@@ -290,11 +290,28 @@ unmatched only where no repository's finding carries it.
 
 Labels are made by machine, execution first. `bench/label.mjs` runs each path finding's
 verification plan (§9.7) in ironwork. The marker goes in at the finding's source:
-- a batch program reading a file's records or a job's in-stream data: every DD it assigns, and
+- a batch program reading a file's records: every DD it assigns, and
   SYSIN, with the records shifted through the marker's eight alignments, each as long as its file's
   fixed record. A DD is named as ASSIGN writes it and as IBM reads it, after the label (`UT-S-`,
   `DA-`). An indexed or relative file is empty unless it is the finding's source, whose records
   then carry the keys 1, 2 and 3 at the record key, in order (operator 2026-10-07);
+- a job's in-stream data, where the JCL file is in the repository: the whole job, run by `ironwork
+  job` (`bench/label-job.mjs`) from a copy of the JCL in which each line of that DD's in-stream data
+  is an 80-byte record of the fill, every other byte as it was. Every other DD holds what the job
+  gives it. A data set the job reads before any step creates it is the repository's file of that
+  name where the repository holds it as text, a member the file of the member's name in a
+  directory named after the data set's last qualifier, and otherwise empty. A generation data
+  group the job names and does not define gets its base, made by an IDCAMS DEFINE GDG run through
+  ironwork, and as many empty generations as its (0) and (-n) references read back. An indexed or
+  relative data set a step's program reads gets an empty cluster, made by DEFINE CLUSTER with the
+  program's record key and length. Each program the job runs up to the finding's step, and the
+  program the finding is in, runs from a copy carrying the options it compiles under. The finding
+  is confirmed where the operation at its line, in any step, sees the marker, or for an abend sink
+  ends as below while the job with the control in the in-stream data gets past it. A job ironwork
+  refuses, a step whose program the repository does not hold, or a job that stops or bypasses the
+  finding's step leaves the label unknown with that reason. `ironwork job` takes no
+  `--trace-input`, so these labels carry no `inputAtSink`. They record `labelledOn: job`
+  (`job+extended` under `--compliance extended`) and are their own stratum (operator 2026-10-07);
 - a RECEIVE MAP: typed into the map's unprotected fields, across the pseudo-conversation the
   program's RETURN TRANSID starts;
 - a RECEIVE without a map: typed on a cleared screen after the transaction's name;

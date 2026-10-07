@@ -70,6 +70,16 @@ test('takes an error\'s text from the AZ390I line after it', () => {
   assert.deepEqual(parseListing(PRN).errors, [{ tool: 'AZ', number: 144, file: 1, line: 4, stmt: 6, text: 'no base register found' }]);
 });
 
+test('reads a generated MNOTE of severity 8 or more as the macro refusing its call', () => {
+  const listing = `Assembler Listing
+000000                                        (1/1)1 T        CSECT
+000000                                        (1/2)2          MODESET ENABLE=NO
+000000                                      (2/297)5+         MNOTE 12,'ENABLE FUNCTION HAS BEEN REPLACED'
+000000                                      (2/298)6+         MNOTE 4,'ONLY A WARNING'
+000000                                        (1/3)7          END`;
+  assert.deepEqual(parseListing(listing).errors, [{ tool: 'AZ', number: 'MNOTE', file: 2, line: 297, stmt: 5, text: "MNOTE 12,'ENABLE FUNCTION HAS BEEN REPLACED'" }]);
+});
+
 test('reads macro-phase errors from console output, and a listing without END as unfinished', () => {
   const console = `MZ390E error 101         (1/7)7 missing copy  = NOPE
 AZ390E error  29       (1/11)14            MISSING A=1

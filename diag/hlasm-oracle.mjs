@@ -58,7 +58,11 @@ export function parseListing(text) {
       explained.text = m[1].trim();
     } else if ((m = LISTED.exec(line))) {
       const obj = /^[0-9A-F]*/.exec(line.slice(7, 23).trim())[0];
-      statements.push({ stmt: Number(m[5]), loc: hex(m[1]), obj, file: Number(m[3]), line: Number(m[4]), generated: m[6] === '+' || m[6] === '=', source: m[7] });
+      const st = { stmt: Number(m[5]), loc: hex(m[1]), obj, file: Number(m[3]), line: Number(m[4]), generated: m[6] === '+' || m[6] === '=', source: m[7] };
+      statements.push(st);
+      // A macro refuses a call with an MNOTE of severity 8 or more, which z390 counts apart from its errors.
+      const note = st.generated && operationOf(st.source) === 'MNOTE' ? /\bMNOTE\s+(\d+)\s*,(.*)$/i.exec(st.source) : null;
+      if (note && Number(note[1]) >= 8) errors.push({ tool: 'AZ', number: 'MNOTE', file: st.file, line: st.line, stmt: st.stmt, text: `MNOTE ${note[1]},${note[2].trim()}` });
     } else if (part === 'esd' && (m = ESD.exec(line))) {
       esd.push({ id: hex(m[1]), loc: hex(m[2]), len: hex(m[3]), type: m[4], name: m[5].trim() });
     } else if (part === 'literals' && (m = LIT.exec(line))) {

@@ -83,7 +83,7 @@ test('returns a not-readable-as-JSON problem when the policy file outside the re
     assert.equal(out.path, resolve(file));
     assert.equal(out.raw, null);
     assert.equal(out.problems.length, 1);
-    assert.match(out.problems[0], new RegExp(`^${resolve(file)} is not readable as JSON: `));
+    assert.ok(out.problems[0].startsWith(`${resolve(file)} is not readable as JSON: `), out.problems[0]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
     rmSync(outside, { recursive: true, force: true });

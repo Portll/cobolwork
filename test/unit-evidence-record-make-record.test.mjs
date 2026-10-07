@@ -109,3 +109,21 @@ test('accepts a sink record with marker and reached together', () => {
   assert.equal(record.marker, 'm');
   assert.equal(record.reached, true);
 });
+
+test('accepts a close record naming the assumptions an ironwork run could have rested on', () => {
+  const { record } = makeRecord({
+    chain: 'c1',
+    prev: null,
+    kind: 'close',
+    fields: { exit: 0, executor: 'vm', assumptions: ['C1', 'C12', 'L19'] },
+    at: '2024-01-01T00:00:00Z',
+  });
+  assert.deepEqual(record.assumptions, ['C1', 'C12', 'L19']);
+});
+
+test('rejects a close record whose assumptions are not all strings', () => {
+  assert.throws(
+    () => makeRecord({ chain: 'c1', prev: null, kind: 'close', fields: { exit: 0, assumptions: ['C1', 12] }, at: '2024-01-01T00:00:00Z' }),
+    /assumptions/,
+  );
+});

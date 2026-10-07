@@ -331,10 +331,18 @@ function runVariant(f, ctx, variant) {
       ran: true,
       abend: abend ? `${abend.code}${abend.line ? ` at ${abend.file || basename(ctx.program)}:${lineOf(abend)}` : ''}` : null,
       abendAtOperation: atOperation ? abend.code : null,
+      assumptions: journal.records.find((x) => x.kind === 'close')?.assumptions || [],
     };
   } finally {
     rmSync(data, { recursive: true, force: true });
   }
+}
+
+// The ironwork assumptions a label's runs could have rested on, as their journals' close records
+// name them.
+export function restedOn(...runs) {
+  const ids = [...new Set(runs.flatMap((r) => r?.assumptions || []))].sort();
+  return ids.length ? { assumptions: ids } : {};
 }
 
 export function labelFinding(f, root, opts) {
@@ -381,12 +389,12 @@ export function labelFinding(f, root, opts) {
     const r = runVariant(f, ctx, variant);
     if (!r.ran) return { ...unknown(r.outcome), variant: variant.name };
     seen.push(r);
-    if (!byAbend && r.reached) return { ...base, label: 'confirmed', run: r.run, variant: variant.name };
+    if (!byAbend && r.reached) return { ...base, label: 'confirmed', run: r.run, variant: variant.name, ...restedOn(r) };
     if (byAbend && byAbend.codes.includes(r.abendAtOperation)) {
       // The same run with the control input must get past the operation, or the abend is not the
       // input's doing.
       const c = runVariant(f, ctx, variant.control);
-      if (c.ran && !c.abendAtOperation) return { ...base, label: 'confirmed', run: r.run, variant: variant.name, control: c.run };
+      if (c.ran && !c.abendAtOperation) return { ...base, label: 'confirmed', run: r.run, variant: variant.name, control: c.run, ...restedOn(r, c) };
       r.controlAbended = true;
     }
   }
@@ -397,7 +405,7 @@ export function labelFinding(f, root, opts) {
     : seen.find((r) => r.abend) ? `the run ended before the operation: ABEND ${seen.find((r) => r.abend).abend}`
       : 'the run did not reach the operation';
   const atSink = seen.filter((r) => r.atSink);
-  return { ...unknown(why), runs: seen.map((r) => r.run), ...(opts.traceInput && atSink.length ? { inputAtSink: combined(atSink.map((r) => r.input)) } : {}) };
+  return { ...unknown(why), runs: seen.map((r) => r.run), ...restedOn(...seen), ...(opts.traceInput && atSink.length ? { inputAtSink: combined(atSink.map((r) => r.input)) } : {}) };
 }
 
 // The repository's BMS mapsets by name, and the directories that hold them, which ironwork reads

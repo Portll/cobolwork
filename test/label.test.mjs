@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { argvRewritten, label, shifted, TRACED } from '../bench/label.mjs';
+import { argvRewritten, label, restedOn, shifted, TRACED } from '../bench/label.mjs';
 import { SINK_KINDS } from '../lib/dataflow.mjs';
 import { verifyEvidence } from '../lib/evidence/verify.mjs';
 import { MARKER } from '../lib/verify.mjs';
@@ -17,6 +17,12 @@ test('every field of eight bytes or more holds the marker in one of the eight sh
     const holding = [...Array(MARKER.length).keys()].filter((k) => shifted(k).slice(offset, offset + MARKER.length) === MARKER);
     assert.equal(holding.length, 1, `offset ${offset}`);
   }
+});
+
+test('a label carries the assumptions its runs could have rested on, once each, and none where the journals name none', () => {
+  assert.deepEqual(restedOn({ assumptions: ['C12', 'C1'] }, { assumptions: ['C1', 'L19'] }), { assumptions: ['C1', 'C12', 'L19'] });
+  assert.deepEqual(restedOn({ assumptions: [] }, {}), {});
+  assert.deepEqual(restedOn(), {});
 });
 
 test('the labeller names only sink kinds cobolwork has', () => {

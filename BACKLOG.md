@@ -578,8 +578,15 @@ that declares it rather than to whoever merged the findings. What that specifica
   return edge, which took 43% of ACAS's flow time: its flow set takes 62 to 68 s against 83 to 87 s.
   Programs of 32 KiB or more have their control analysis built in worker threads, four by default:
   cnafbadboy's `Batch/` scans in 109 s against 314 s, one Unieuro program in ten in about 310 s
-  against 440 s, at up to 2.5 GB more peak memory. Fewer arithmetic rounds on a large program is a
-  separate precision decision.
+  against 440 s, at up to 2.5 GB more peak memory. Workers claim files in order and run up to
+  twice their number ahead of the main thread: scheduled from `Batch/`'s measured costs, the main
+  thread's wait falls from 16 s of an 87 s flow loop to about 1 s. Fewer arithmetic rounds on a
+  large program is a separate precision decision.
+
+  Still measured but not built: whole-tree reads outside the shared pass, where one pass over one
+  Unieuro program in ten (31,520 files) costs 15 to 23 s: web's listener and URIMAP definitions,
+  read before its loop, and compile's search of every copybook answering to a copied name. ACAS's
+  walk is 131 s of 190, most of it edges crossed rather than any one step.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

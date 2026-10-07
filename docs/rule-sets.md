@@ -74,11 +74,18 @@ and from `DFHCSDUP` job input. The region's own JCL, which is what makes a DD th
 is rarely in an application repository, so without the declaration the rule has not run and the
 report says so under `setsIncomplete` rather than reading clean.
 
-**Exfiltration paths.** Data at rest (a database row or a file record) reaching a channel the
+**Exfiltration paths.** Data at rest (a database row, a file record or a CICS queue item) reaching a channel the
 program opened itself: `EXEC CICS WEB CONVERSE`, or `WEB SEND` on a client session; a socket `SEND`
 through `EZASOKET`; `MQPUT`. A web program answering its own caller is not a finding. Queue routes
 are low severity, listed so the route is visible, because queues are how mainframe systems
 ordinarily hand data to each other.
+
+**What another task stored.** An item `EXEC CICS READQ TS` or `READQ TD` returns, and the data
+`RETRIEVE` returns from the `START` that began the task, were written by another task, so whoever can
+write the queue or start the transaction with data controls them. They are `cics-queue`, followed as a
+file record is, to the same sinks at the same severities. A web request's form fields, query
+parameters and headers, which `WEB READ`, `WEB READNEXT` and `WEB EXTRACT` return in options other
+than `INTO`, are web input.
 
 **Screen fields a modified terminal can change.** A map's `PROT`, `ASKIP`, `DRK` and `NUM` are
 enforced by the 3270 emulator, not by CICS, so a modified client writes a protected field and reads

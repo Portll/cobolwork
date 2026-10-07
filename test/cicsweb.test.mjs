@@ -21,6 +21,19 @@ test('web input echoed into the reply, a header, a host and a queue name is repo
   ]);
 });
 
+test('a form field CICS returns in VALUE is web input', () => {
+  assert.deepEqual(of('WEBFORM.cbl'), [['cics-web-to-http-header', 11, 'high']]);
+});
+
+test('a queue item and the data a START passed are stored by another task, and choose a transfer', () => {
+  assert.deepEqual(of('QUEUEXFER.cbl'), [
+    ['cics-queue-to-cics-dynamic-transfer', 13, 'high'],
+    ['cics-queue-to-cics-dynamic-transfer', 15, 'high'],
+  ]);
+  const f = report.findings.find((x) => x.path === 'QUEUEXFER.cbl' && x.line === 15);
+  assert.match(f.detail, /READQ TS INTO/);
+});
+
 test('a fixed page, and a queue the program names itself, are not reported', () => {
   assert.deepEqual(of('WEBSTATIC.cbl'), []);
 });

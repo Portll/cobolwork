@@ -1447,11 +1447,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-dynamic-transfer",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item decides which program CICS transfers to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-cics-sysid",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record decides which region a CICS command is shipped to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-sysid",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item decides which region a CICS command is shipped to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1473,11 +1499,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-system-resource",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item names the resource an EXEC CICS SET changes. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-dynamic-file-path",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record decides which file is opened. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-file-path",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item decides which file is opened. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1499,11 +1551,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-program-load",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item decides which program is called. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-dynamic-sql",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record reaches dynamic SQL. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-sql",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item reaches dynamic SQL. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1525,11 +1603,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-extrapartition-queue",
+   "framework": "dora",
+   "clause": "Article 9(3)(a)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item is written to a transient-data queue that leaves the region. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-http-header",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record is written into a header of the response. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-http-header",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item is written into a header of the response. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1551,11 +1655,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-internal-reader",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item is written into a job the internal reader submits. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-message-queue",
    "framework": "dora",
    "clause": "Article 9(3)(a)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record is put on a message queue. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-message-queue",
+   "framework": "dora",
+   "clause": "Article 9(3)(a)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item is put on a message queue. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1577,11 +1707,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-os-command",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item reaches an operating-system command routine. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-outbound-host",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record decides the host or path this program sends a request to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-outbound-host",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item decides the host or path this program sends a request to. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1603,11 +1759,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-outbound-http",
+   "framework": "dora",
+   "clause": "Article 9(3)(a)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item is sent to a remote server over HTTP. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-queue-name",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record names the queue a command reads, writes or deletes. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-queue-name",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item names the queue a command reads, writes or deletes. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",
@@ -1629,11 +1811,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-socket-send",
+   "framework": "dora",
+   "clause": "Article 9(3)(a)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item is written to a network socket. That is data leaving through a channel the program opened itself, which bears directly on the security of the means of transfer.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "ensure the security of the means of transfer of data"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-web-response",
    "framework": "dora",
    "clause": "Article 9(3)(b)",
    "title": "Protection and prevention",
    "rationale": "The rule reports: A file record is written into the response this program returns. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
+   "source": {
+    "doc": "dora",
+    "retrieved": "2026-09-20",
+    "quote": "minimise the risk of corruption or loss of data, unauthorised access and technical flaws that may hinder business activity"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-web-response",
+   "framework": "dora",
+   "clause": "Article 9(3)(b)",
+   "title": "Protection and prevention",
+   "rationale": "The rule reports: A CICS queue item is written into the response this program returns. That is a technical flaw permitting unauthorised access or data corruption, which this clause requires be minimised.",
    "source": {
     "doc": "dora",
     "retrieved": "2026-09-20",

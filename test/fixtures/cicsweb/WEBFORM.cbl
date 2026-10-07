@@ -1,0 +1,13 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. WEBFORM.
+      * A form field comes back in VALUE, not INTO, and is web input.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-VAL              PIC X(40).
+       01 WS-VLEN             PIC S9(8) COMP VALUE 40.
+       PROCEDURE DIVISION.
+           EXEC CICS WEB READ FORMFIELD('NAME') VALUE(WS-VAL)
+                VALUELENGTH(WS-VLEN) END-EXEC
+           EXEC CICS WEB WRITE HTTPHEADER('X-NAME') NAMELENGTH(6)
+                VALUE(WS-VAL) VALUELENGTH(WS-VLEN) END-EXEC
+           EXEC CICS RETURN END-EXEC.

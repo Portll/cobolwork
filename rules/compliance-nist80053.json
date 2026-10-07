@@ -1456,11 +1456,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-dynamic-transfer",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item decides which program CICS transfers to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-cics-sysid",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A file record decides which region a CICS command is shipped to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-sysid",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item decides which region a CICS command is shipped to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1482,11 +1508,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-system-resource",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item names the resource an EXEC CICS SET changes. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-dynamic-file-path",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A file record decides which file is opened. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-file-path",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item decides which file is opened. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1508,11 +1560,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-program-load",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item decides which program is called. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-dynamic-sql",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A file record reaches dynamic SQL. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-sql",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item reaches dynamic SQL. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1534,11 +1612,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-extrapartition-queue",
+   "framework": "nist-800-53r5",
+   "clause": "SC-7",
+   "title": "Boundary Protection",
+   "rationale": "The rule reports: A CICS queue item is written to a transient-data queue that leaves the region. That is information crossing a managed interface through a channel the program opened itself, which this control requires be monitored and controlled.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Monitor and control communications at the external managed interfaces to the system and at key internal managed interfaces within the system"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-http-header",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A file record is written into a header of the response. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-http-header",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item is written into a header of the response. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1560,11 +1664,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-internal-reader",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item is written into a job the internal reader submits. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-message-queue",
    "framework": "nist-800-53r5",
    "clause": "SC-7",
    "title": "Boundary Protection",
    "rationale": "The rule reports: A file record is put on a message queue. That is information crossing a managed interface through a channel the program opened itself, which this control requires be monitored and controlled.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Monitor and control communications at the external managed interfaces to the system and at key internal managed interfaces within the system"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-message-queue",
+   "framework": "nist-800-53r5",
+   "clause": "SC-7",
+   "title": "Boundary Protection",
+   "rationale": "The rule reports: A CICS queue item is put on a message queue. That is information crossing a managed interface through a channel the program opened itself, which this control requires be monitored and controlled.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1586,11 +1716,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-os-command",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item reaches an operating-system command routine. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-outbound-host",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A file record decides the host or path this program sends a request to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-outbound-host",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item decides the host or path this program sends a request to. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1612,11 +1768,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-outbound-http",
+   "framework": "nist-800-53r5",
+   "clause": "SC-7",
+   "title": "Boundary Protection",
+   "rationale": "The rule reports: A CICS queue item is sent to a remote server over HTTP. That is information crossing a managed interface through a channel the program opened itself, which this control requires be monitored and controlled.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Monitor and control communications at the external managed interfaces to the system and at key internal managed interfaces within the system"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-queue-name",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A file record names the queue a command reads, writes or deletes. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-queue-name",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item names the queue a command reads, writes or deletes. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",
@@ -1638,11 +1820,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-socket-send",
+   "framework": "nist-800-53r5",
+   "clause": "SC-7",
+   "title": "Boundary Protection",
+   "rationale": "The rule reports: A CICS queue item is written to a network socket. That is information crossing a managed interface through a channel the program opened itself, which this control requires be monitored and controlled.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Monitor and control communications at the external managed interfaces to the system and at key internal managed interfaces within the system"
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-web-response",
    "framework": "nist-800-53r5",
    "clause": "SI-10",
    "title": "Information Input Validation",
    "rationale": "The rule reports: A file record is written into the response this program returns. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
+   "source": {
+    "doc": "nist80053",
+    "retrieved": "2026-09-20",
+    "quote": "Check the validity of the following information inputs"
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-web-response",
+   "framework": "nist-800-53r5",
+   "clause": "SI-10",
+   "title": "Information Input Validation",
+   "rationale": "The rule reports: A CICS queue item is written into the response this program returns. That is an information input reaching an operation without its validity having been checked, which is what this control requires.",
    "source": {
     "doc": "nist80053",
     "retrieved": "2026-09-20",

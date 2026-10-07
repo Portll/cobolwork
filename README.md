@@ -54,7 +54,7 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 
 | Area | What is reported |
 |---|---|
-| Data flow | untrusted input - the command line, a job's `PARM` or in-stream data, a CICS terminal or web request - reaching an OS command, dynamic SQL, a dynamic `CALL`, `LINK` or `XCTL`, a file name, the internal reader, a subscript or length, decimal arithmetic, a record key or a log, across programs |
+| Data flow | untrusted input - the command line, a job's `PARM` or in-stream data, a CICS terminal or web request, a CICS queue item - reaching an OS command, dynamic SQL, a dynamic `CALL`, `LINK` or `XCTL`, a file name, the internal reader, a subscript or length, decimal arithmetic, a record key or a log, across programs |
 | Checks | a check counts only where it runs first, on every route; one that leaves the value safe for the sink clears the route |
 | Screen fields | a field the BMS map protects, read back and used to choose a record: the 3270 hidden form field |
 | Exfiltration | database rows and file records leaving through web calls, sockets, MQ, extrapartition queues or service calls |
@@ -414,10 +414,10 @@ and to a COBIT 2019 practice by identifier alone:
 
 | File | Instrument | Rules mapped |
 |---|---|---|
-| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 233 |
-| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 231, and 2 recorded as unmapped |
-| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 231, and 2 recorded as unmapped |
-| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 231, and 2 recorded as unmapped |
+| `rules/compliance-dora.json` | Regulation (EU) 2022/2554 (DORA) | 249 |
+| `rules/compliance-ffiec.json` | FFIEC IT Examination Handbook | 247, and 2 recorded as unmapped |
+| `rules/compliance-nist80053.json` | NIST SP 800-53 Rev. 5.2.0 | 247, and 2 recorded as unmapped |
+| `rules/compliance-cobit2019.json` | COBIT 2019 (ISACA), identifiers only | 247, and 2 recorded as unmapped |
 
 A COBIT 2019 row names the objective or practice and gives this project's own rationale; no ISACA
 text is reproduced, so reading what a practice says needs a copy of the framework. The practice is

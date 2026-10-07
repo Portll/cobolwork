@@ -203,6 +203,23 @@ translated.
    declares DFHCOMMAREA; DFHRESP and DFHVALUE in a VALUE clause. Nothing is taken from
    Open-COBOL-ESQL, GnuCOBOL or IBM's translators (`build-gate.md` §16).
 
+8. **The flow engine reads the table's reading, not the CALL text.** The translation is the compile
+   artifact. The flow engine, the rule sets and the control analysis read each EXEC block through
+   `lib/exec-reading.mjs`: its options' argument tokens, its words, the command the table names and
+   each option's direction. The block stays a node on its own line, so a finding's fingerprint, the
+   end a RETURN or XCTL makes and the unconfirmed HANDLE and WHENEVER branches (5, 5c) stay out of
+   the flow graph; a CALL would return, and its arguments name no option.
+   - 5a: every reader takes the command from the reading.
+   - 5b: the control analysis takes an option as written only where the table says CICS returns a
+     value in it, receives or both. A command or option the table lacks is read as before.
+   - 5c: a value CICS returns is a source where it comes from outside the program. A web request's
+     form field, query parameter and header, which WEB READ, WEB READNEXT and WEB EXTRACT return,
+     are `cics-web`. An item READQ TS or READQ TD returns, and the data a START passed that RETRIEVE
+     returns, are `cics-queue`: stored by another task, whoever can write the queue or start the
+     transaction controls it, and it is data at rest as a file record is. Its 16 rules mirror the file
+     record's and warn in the build gate until their precision is measured. What ASSIGN, INQUIRE
+     and QUERY SECURITY return describes CICS itself and is no source.
+
 ## 4. Order of work
 
 | Step | Family | Measured by |
@@ -211,7 +228,7 @@ translated.
 | 2 | SQL: cursors (DECLARE, OPEN, FETCH, CLOSE), PREPARE, EXECUTE | same, plus dynamic-SQL flow findings unchanged |
 | 3 | CICS: file control, program control, RETURN, RESP; HANDLE CONDITION as `GO TO ... DEPENDING`, unconfirmed until observed; and what the probe showed common: BMS and terminal SEND and RECEIVE, TS and TD queues, time, storage, START and RETRIEVE, containers, counters, ASSIGN, ADDRESS, SYNCPOINT, ENQ and DEQ | cobc acceptance; commarea and transfer findings unchanged |
 | 4 | CICS: WEB and DOCUMENT, the system programming commands (INQUIRE, SET), the rest of terminal control | cobc acceptance; web and terminal flow findings unchanged |
-| 5 | The flow engine reads the CALLs instead of re-parsing blocks | every flow finding over the 500 set unchanged or explained |
+| 5 | The flow engine reads the table's reading of each block instead of re-parsing it (decision 8): 5a the command, 5b the direction, 5c returned values as sources | 5a and 5b: every finding over the corpus's CICS repositories unchanged or explained; 5c: each new finding explained |
 | 6 | `cobolwork build --precompile` checks each EXEC program's translation with the caller's cobc or gcobol before its compile runs (`build-gate.md` §8b) | the build scenarios B6.12 to B6.15, with a CICS program |
 
 Step 1, measured 2026-09-27 with `diag/precompile-probe.mjs` over the 500-repository set, up to 40
@@ -246,6 +263,15 @@ name a file with DATASET pass it as FILE is passed. Every block a command of ste
 it. `diag/precompile-probe.mjs` gives step 3's counts, 413 of 776 CICS programs, 113 of 198 mixed
 and 106 of 317 SQL-only: a command outside the table already compiled, with every name passed BY
 REFERENCE, so what step 4 changes is the direction step 5 reads.
+
+Step 5, measured 2026-10-07 by full scans of the 72 repositories of the 500 that hold EXEC CICS,
+with `COBOLWORK_FREE_MEMORY_MB=16000` so that no scan stopped for memory: 5a and 5b leave all 27,703
+findings as they were. 5c adds 161 and changes none: 107 `cics-queue-to-cics-dynamic-transfer`, 30
+`cics-queue-to-socket-send`, 16 `cics-queue-to-queue-name`, 5 `cics-queue-to-dynamic-file-path` and 3
+`cics-web-to-reference-modification`, from a length WEB EXTRACT returns. In BankDemo's SBANK00P a
+READQ TS restores saved state whose next program is LINKed to. Its queue-name routes are false: the
+RETRIEVE fills the queue name, which two MOVEs overwrite before the DELETEQ, and a write kills no
+route in the flow engine, for any source.
 
 ## 5. Out of scope
 

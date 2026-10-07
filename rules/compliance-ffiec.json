@@ -1456,11 +1456,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-dynamic-transfer",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item decides which program CICS transfers to. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-cics-sysid",
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A file record decides which region a CICS command is shipped to. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-sysid",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item decides which region a CICS command is shipped to. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -1482,11 +1508,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-cics-system-resource",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item names the resource an EXEC CICS SET changes. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-dynamic-file-path",
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A file record decides which file is opened. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-file-path",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item decides which file is opened. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -1508,11 +1560,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-program-load",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item decides which program is called. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-dynamic-sql",
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A file record reaches dynamic SQL. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-dynamic-sql",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item reaches dynamic SQL. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -1534,11 +1612,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-extrapartition-queue",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A CICS queue item is written to a transient-data queue that leaves the region. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-http-header",
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A file record is written into a header of the response. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-http-header",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item is written into a header of the response. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -1560,11 +1664,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-internal-reader",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item is written into a job the internal reader submits. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-message-queue",
    "framework": "ffiec",
    "clause": "IS II.C.19",
    "title": "Encryption",
    "rationale": "The rule reports: A file record is put on a message queue. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-message-queue",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A CICS queue item is put on a message queue. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -1586,11 +1716,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-os-command",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item reaches an operating-system command routine. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-outbound-host",
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A file record decides the host or path this program sends a request to. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-outbound-host",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item decides the host or path this program sends a request to. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -1612,11 +1768,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-outbound-http",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A CICS queue item is sent to a remote server over HTTP. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-queue-name",
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A file record names the queue a command reads, writes or deletes. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-queue-name",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item names the queue a command reads, writes or deletes. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",
@@ -1638,11 +1820,37 @@
   },
   {
    "kind": "compliance",
+   "ruleId": "cics-queue-to-socket-send",
+   "framework": "ffiec",
+   "clause": "IS II.C.19",
+   "title": "Encryption",
+   "rationale": "The rule reports: A CICS queue item is written to a network socket. That is an authentication credential or sensitive data left unprotected, which this control requires be encrypted in storage and in transit.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Encryption is used to secure communications and data storage, particularly authentication credentials and the transmission of sensitive information."
+   }
+  },
+  {
+   "kind": "compliance",
    "ruleId": "file-record-to-web-response",
    "framework": "ffiec",
    "clause": "DA&M V",
    "title": "Development",
    "rationale": "The rule reports: A file record is written into the response this program returns. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
+   "source": {
+    "doc": "ffiec",
+    "retrieved": "2026-09-20",
+    "quote": "Secure coding practices help developers minimize the potential for known source code-related vulnerabilities in the development phase."
+   }
+  },
+  {
+   "kind": "compliance",
+   "ruleId": "cics-queue-to-web-response",
+   "framework": "ffiec",
+   "clause": "DA&M V",
+   "title": "Development",
+   "rationale": "The rule reports: A CICS queue item is written into the response this program returns. That is a source code-related vulnerability of the kind secure coding practices exist to minimise.",
    "source": {
     "doc": "ffiec",
     "retrieved": "2026-09-20",

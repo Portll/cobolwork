@@ -31,7 +31,7 @@ test('a quote is compared with whitespace collapsed and punctuation folded', () 
 });
 
 test('the catalogue holds every rule the engine can report', () => {
-  assert.equal(CATALOGUE.size, 233);
+  assert.equal(CATALOGUE.size, 249);
   assert.equal(CATALOGUE.get('input-selects-program').set, 'abend');
   assert.equal(CATALOGUE.get('zowe-mcp-tier-full').set, 'zowe');
   assert.ok(CATALOGUE.has('cics-commarea-without-length-check'));
@@ -39,6 +39,7 @@ test('the catalogue holds every rule the engine can report', () => {
   assert.ok(CATALOGUE.has('jcl-racf-password'), 'the credential pack counts');
   assert.equal(CATALOGUE.get('jcl-instream-credential').set, 'jcl');
   assert.equal(CATALOGUE.get('database-to-message-queue').set, 'flow');
+  assert.equal(CATALOGUE.get('cics-queue-to-os-command').set, 'flow');
   assert.equal(CATALOGUE.get('display-echoes-a-credential').set, 'log');
 });
 

@@ -36,8 +36,9 @@ export function parseIbmListing(text) {
     out.units.push(unit);
     unit = null;
   };
-  for (const cr of text.split('\n')) {
-    const raw = cr.replace(/\r$/, '');
+  // A form feed starts a page as a new line does: some spools carry one mid-line, the page header
+  // spliced onto a source line.
+  for (const raw of text.split(/\r?\n|\f/)) {
     const line = withoutCarriageControl(raw);
     const trimmed = line.trim();
     if (HEADER.test(line)) {

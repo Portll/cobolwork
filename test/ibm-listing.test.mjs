@@ -111,6 +111,24 @@ test('an EXEC SQL INCLUDE expansion comments out the statement and nothing befor
   assert.deepEqual(lines.map((l) => l[6]), [' ', ' ', ' ', ' ', '*', '*', '*', ' ', ' ', ' ', undefined]);
 });
 
+test('a page header spliced onto a source line by a form feed does not take the line with it', () => {
+  const listing = [
+    '   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8',
+    '   000001         000100 IDENTIFICATION DIVISION.',
+    '   000002         000200 PROGRAM-ID. SPLICED.',
+    '   000003         000300 DATA DIVISION.',
+    '   000004         000400 WORKING-STORAGE SECTION.',
+    '   000005         000500 01  EM-TIME PIC X(6).                                              \f1PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P231130  SPLICED   Date 10/07/2026  Time 09:00:00   Page     2',
+    '   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8',
+    '   000006         000600 PROCEDURE DIVISION.',
+    'End of compilation 1,  program SPLICED,  no statements flagged.',
+  ].join('\n');
+  const r = parseIbmListing(listing);
+  assert.equal(r.compiler, 'IBM Enterprise COBOL for z/OS 6.4.0 P231130');
+  assert.deepEqual(r.units[0].source.map((s) => s.line), [1, 2, 3, 4, 5, 6]);
+  assert.match(r.units[0].source[4].card, /01  EM-TIME PIC X\(6\)\./);
+});
+
 test('a 4.2 map gives displacements within the record from the block displacement', () => {
   const u = parseIbmListing(LISTING_4).units[0];
   assert.equal(u.name, 'MAT510');

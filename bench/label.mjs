@@ -96,17 +96,27 @@ const controlOf = (byAbend) => byAbend?.control ?? '0';
 // the program as the records of the DD it is written on.
 const FED_BY_DD = new Set(['file-record', 'jcl-instream']);
 
-// Every DD the program assigns, and SYSIN, holding each fill.
+// Every DD the program assigns, and SYSIN, holding each fill. A DD's records are as long as its
+// file's fixed record: a longer line is a length conflict (FILE STATUS 04), which a program that
+// checks its status takes as a fatal error before it reaches anything it does with the record.
 function fileRecordVariants(program, byAbend) {
-  const files = parseFile(program).programs.flatMap((p) => p.files || []);
-  const dds = [...new Set([...files.flatMap((x) => ddNames(x.assign)), 'SYSIN'])];
+  const programs = parseFile(program).programs;
+  const lengthOf = new Map();
+  for (const p of programs) {
+    for (const f of p.files || []) {
+      const fd = (p.fds || []).find((d) => d.name === f.name);
+      const length = fd?.fixedLength || null;
+      for (const dd of ddNames(f.assign)) if (length && !lengthOf.has(dd)) lengthOf.set(dd, length);
+    }
+  }
+  const dds = [...new Set([...programs.flatMap((p) => p.files || []).flatMap((x) => ddNames(x.assign)), 'SYSIN'])];
   const holding = (record) => (dir) => ['run', program, ...dds.flatMap((dd) => {
     const path = join(dir, dd);
-    writeFileSync(path, `${Array(RECORDS).fill(record).join('\n')}\n`);
+    writeFileSync(path, `${Array(RECORDS).fill(record(lengthOf.get(dd) || RECORD)).join('\n')}\n`);
     return ['--dd', `${dd}=${path}:text`];
   })];
-  const control = { name: 'records of the control', args: holding(controlOf(byAbend).repeat(RECORD)) };
-  return fills(byAbend).map((fill) => ({ name: `records ${fill.name}`, args: holding(fill.text(RECORD)), control }));
+  const control = { name: 'records of the control', args: holding((n) => controlOf(byAbend).repeat(n)) };
+  return fills(byAbend).map((fill) => ({ name: `records ${fill.name}`, args: holding(fill.text), control }));
 }
 
 // GnuCOBOL's command-line and environment statements, which Enterprise COBOL does not have and

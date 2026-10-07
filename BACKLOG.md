@@ -601,10 +601,21 @@ that declares it rather than to whoever merged the findings. What that specifica
   looks only at its own call's return. The bounds are what ACAS needs with a margin, 79 million
   edges for one walk and 2.1 billion in all (operator, 2026-10-07): its flow set takes about 265 to
   290 s at 3.8 GB, walks every source and reports 185 findings, where the earlier bounds of 5
-  million and 500 million cut 82 walks and gave 120. Unieuro walks about 320 of its 166,586 sources
-  before the total bound. Walking every Unieuro source needs the walk to share work across call
-  contexts or across sources, which today's walk, one breadth-first search per source with its
-  first route kept, cannot do exactly.
+  million and 500 million cut 82 walks and gave 120.
+
+  One walk now serves every source at its start node with the same reach class, replayed from the
+  states it reached at sink nodes, and a state whose node can reach no sink under its call context
+  is left: its node's reach with no unmatched return, the reach of each return point its context
+  names, and any caller's past the outermost. Every report stays the same byte for byte: the 500
+  corpus, cnafbadboy, ACAS, four large repositories and a tenth of Unieuro. On that tenth the walks
+  examine 84 million edges where they examined 280 million, 5,984 walks for 16,426 sources, and the
+  flow set runs in 106 s against 285 s. The whole estate does not move: its first eleven walks, from
+  fields of ATTRIB, CALC3 and LEGGIPN that programs throughout the estate read, each reach millions
+  of states and eight are cut at 79 million edges, and those walks with the refusals of their
+  credited findings spend the 2.1 billion before a twelfth source is walked, with or without the
+  sharing. Walking every Unieuro source needs the walk to share work across call contexts, which
+  the first-route rule does not allow exactly, or a bound per source that leaves every source a
+  walk, 2.1 billion over 166,586 sources being about 12,600 edges each. Either is a decision.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

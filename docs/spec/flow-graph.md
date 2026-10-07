@@ -112,7 +112,8 @@ Removes the 4.7 million array slots in `Batch/` and the arrays that hold them.
   and frozen into compressed-row form before the walk: `outStart[id]..outStart[id + 1]` indexes
   `outTo` and `outMeta`. `outMeta` points into an interned table of `{ why, dir, at, link }`,
   which repeats heavily: one verb at one line moves many fields.
-- The walk loops (`canReach`, the per-source walk and `refuse`) read the arrays directly. Building
+- The walk loops (`canReach` and `innerReach`, the walk per start node and reach class, and
+  `refuse`) read the arrays directly. Building
   findings reads a node through a small accessor, since it touches few nodes.
 
 Expected: the JavaScript objects the graph holds fall from millions to the few tables and sparse

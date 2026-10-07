@@ -4,7 +4,9 @@
 // macros stubbed as `&L DS 0H`. A value is stable when A and B agree on it, so no graded value
 // depends on what a macro expands to. <out>/<sha256>.json holds, per file, the open-code statements'
 // location counters, the open-code symbols, the ESD and z390's errors; stdout gets a summary per split.
-//   Z390=/path/to/z390 node diag/hlasm-oracle.mjs <corpus-root> <out-dir> [--jobs 6] [--split dev,heldout] [--force]
+//   Z390=/path/to/z390 node diag/hlasm-oracle.mjs <corpus-root> <out-dir> [--jobs 6] [--split dev,heldout] [--force] [--maclib dir,dir]
+// --maclib: system macro libraries searched ahead of z390's own, as SYS1.MACLIB would be for the
+// code's era (the MVS 3.8j macros for MVS 3.8j source).
 // <corpus-root> holds <split>/<repo>/<path> and members/<repo>/<NAME>.<ext>.
 import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, readdirSync, rmSync, existsSync, realpathSync } from 'node:fs';
 import { join, basename, extname, relative } from 'node:path';
@@ -130,10 +132,11 @@ function stageLibrary(dir, lib) {
 function main(args) {
   const Z390 = process.env.Z390;
   if (!Z390 || !existsSync(join(Z390, 'z390.jar'))) { console.error('set Z390 to an unpacked z390 release'); process.exit(2); }
-  const valued = new Set(['--jobs', '--split']);
+  const valued = new Set(['--jobs', '--split', '--maclib']);
   const flag = (name, dflt) => (args.includes(name) ? args[args.indexOf(name) + 1] : dflt);
   const [root, outDir] = args.filter((a, i) => !a.startsWith('--') && !valued.has(args[i - 1]));
-  if (!root || !outDir) { console.error('usage: node diag/hlasm-oracle.mjs <corpus-root> <out-dir> [--jobs 6] [--split dev,heldout] [--force]'); process.exit(2); }
+  if (!root || !outDir) { console.error('usage: node diag/hlasm-oracle.mjs <corpus-root> <out-dir> [--jobs 6] [--split dev,heldout] [--force] [--maclib dir,dir]'); process.exit(2); }
+  const maclibs = flag('--maclib', '').split(',').filter(Boolean).map((d) => `+${d}`).join('');
   const jobs = Number(flag('--jobs', 6));
   const splits = flag('--split', 'dev,heldout').split(',').filter(Boolean);
   const force = args.includes('--force');
@@ -151,7 +154,7 @@ function main(args) {
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, `${name}.MLC`), source);
     const child = spawn('java', ['-classpath', join(Z390, 'z390.jar'), '-Xrs', '-Xmx400m', 'mz390', `${name}.MLC`,
-      `sysmac(+${stub}+${join(Z390, 'mac')}+${lib})`, `syscpy(+${join(Z390, 'mac')}+${lib})`, 'xref', 'printall'], { cwd: dir });
+      `sysmac(+${stub}${maclibs}+${join(Z390, 'mac')}+${lib})`, `syscpy(${maclibs}+${join(Z390, 'mac')}+${lib})`, 'xref', 'printall'], { cwd: dir });
     let out = '';
     let timedOut = false;
     child.stdout.on('data', (b) => { out += b; });

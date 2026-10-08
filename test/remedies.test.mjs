@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { ALL_RULES } from '../lib/kernel/registry.mjs';
 import { availablePacks, readPack, packProblems, validationOf } from '../lib/packs.mjs';
 import { catalogue } from '../lib/advice.mjs';
+import './pin-machine.mjs';
 
 // Defect rules allowed to go without a remedy. None: every rule left without one is an info rule
 // (context or coverage evidence), which carries none because a fix would assert a defect it does not

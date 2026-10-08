@@ -32,7 +32,9 @@ test('every module in lib/sets is registered, and every registered set has a mod
   const modules = readdirSync(SETS)
     .filter((f) => f.endsWith('.mjs'))
     .map((f) => f.slice(0, -'.mjs'.length));
-  const registered = new Set(RULE_SETS);
+  // The practice set runs for `cobolwork advise` alone: a scan is a security report, and a quality
+  // finding in it would be a claim the scan does not make. lib/advice.mjs is its one caller.
+  const registered = new Set([...RULE_SETS, 'practice']);
 
   assert.deepEqual(modules.filter((m) => !registered.has(m)), [],
     'a set module nobody registered never runs, and reports no zero on its own behalf either');

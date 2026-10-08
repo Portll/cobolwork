@@ -1,9 +1,10 @@
 // The two-model labeller's prompts, its reading of an answer and its counts (bench/label-models.mjs); no model is called.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { excerpt, JUDGE_VERDICTS, judgePrompt, modelsFromEnv, parseVerdict, promptFor, promptForPlant, tally } from '../bench/label-models.mjs';
+import { excerpt, JUDGE_VERDICTS, judgePrompt, modelsFromEnv, parseVerdict, promptFor, promptForPlant, readItems, tally } from '../bench/label-models.mjs';
 import { scanAll } from '../lib/scan.mjs';
 import './pin-machine.mjs';
 
@@ -88,4 +89,12 @@ test('a rescoring outranks the judge, the judge outranks the models, and the she
   const s = sheet(rows, [], 'disputed');
   assert.match(s, /## y/);
   assert.doesNotMatch(s, /## x/);
+});
+
+test('questions read from a file keep the first of any item named twice', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'cobolwork-label-items-'));
+  const file = join(dir, 'q.jsonl');
+  writeFileSync(file, ['{"set":"unknown","item":"r/P.cbl:9:x","prompt":"first"}', '{"set":"unknown","item":"r/P.cbl:9:x","prompt":"second"}', '{"set":"generated","item":"r/P.cbl:9:x","prompt":"other set"}', ''].join('\n'));
+  assert.deepEqual(readItems(file).map((i) => i.prompt), ['first', 'other set']);
+  rmSync(dir, { recursive: true, force: true });
 });

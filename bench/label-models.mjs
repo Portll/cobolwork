@@ -8,18 +8,20 @@
 //        --planted <seed.json> [--per-label 40] [--out results.jsonl] [--summary file]
 //        [--model A|B|J] [--timeout seconds] [--parallel 4] [--prompts-only]
 //   node bench/label-models.mjs --calibrate --unknown --corpus <root> --execution <label.json> ...
+//   node bench/label-models.mjs --calibrate --items <questions.jsonl> [--model A|B|J] ...
 //
 // Each reviewer is named by the environment: CW_MODEL_A_URL, CW_MODEL_A and CW_MODEL_A_KEY, and
 // the same with _B, an OpenAI-compatible chat endpoint on the operator's own machine, or with the
 // URL `claude`, a Claude model through the Claude Code command line (operator 2026-10-08: Sonnet
-// beside Gemma, Opus judging). The
-// judge, J, is Claude through the Claude Code command line (CW_JUDGE_MODEL, claude-opus-5-5 by
-// default): it reads the code and both models' answers, and may answer that no consensus is
-// reached or that no label is recommended. --model asks one of A, B or J, so each runs when its
-// host is free; J asks only about items both models have answered. Answers are written a line at
-// a time to --out, and a second run asks only what is not answered yet. --unknown asks about every
-// finding whose execution label is unknown, which has no known answer to measure against. Calibration writes no
-// label: the rule that lets an answer stand for a label is the operator's, set from these numbers.
+// beside Gemma, Opus judging). The judge, J, is Claude through the Claude Code command line
+// (CW_JUDGE_MODEL, claude-opus-5-5 by default): it reads the code and both models' answers, and
+// may answer that no consensus is reached or that no label is recommended. --model asks one of A,
+// B or J, so each runs when its host is free; J asks only about items both models have answered.
+// Answers are written a line at a time to --out, and a second run asks only what is not answered
+// yet. --unknown asks about every finding whose execution label is unknown, which has no known
+// answer to measure against. --items asks the questions in a file, written by --prompts-only or by
+// bench/negatives.mjs, so no corpus is read. Calibration writes no label: the rule that lets an
+// answer stand for a label is the operator's, set from these numbers.
 import { createHash } from 'node:crypto';
 import http from 'node:http';
 import https from 'node:https';
@@ -45,7 +47,7 @@ const AROUND = 3;
 const SYSTEM = 'You review COBOL programs for security flaws. You answer with one JSON object and nothing else.';
 
 // The question every prompt ends with; the code before it is what changes.
-const QUESTION = 'Question: can input from the source reach the sink\'s operand, unchanged in meaning and not checked or restricted, on some route a run of this program could take?\n'
+export const QUESTION = 'Question: can input from the source reach the sink\'s operand, unchanged in meaning and not checked or restricted, on some route a run of this program could take?\n'
   + 'First list every statement between the source and the sink that tests, restricts or replaces the value (an IF, an EVALUATE and its WHEN OTHER, a SEARCH, a MOVE of a literal, a host variable), with its line and what it lets through. Then decide.\n'
   + 'Answer with JSON only: {"checks": [{"line": <n>, "what": "<what it allows>"}], "verdict": "reaches" | "does-not-reach" | "unsure", "reason": "<one sentence>"}';
 
@@ -81,7 +83,7 @@ function declarations(text, items) {
 }
 
 // A prompt within the cap: the parts in order, each cut where the cap falls, with what was cut said.
-function capped(parts) {
+export function capped(parts) {
   let out = '';
   for (const p of parts) {
     if (out.length + p.length <= PROMPT_CAP) { out += p; continue; }
@@ -320,13 +322,31 @@ function plantedItems(seedFile, corpus, per) {
   return { items, skipped };
 }
 
+// Questions written earlier by --prompts-only or bench/negatives.mjs --prompts, one per line, the
+// first of any item named twice.
+export function readItems(file) {
+  const seen = new Set();
+  return readFileSync(file, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)).filter((it) => {
+    const k = `${it.set}\0${it.item}`;
+    return !seen.has(k) && seen.add(k);
+  });
+}
+
+// One answer as a line of the answers file. `meta` is what an item carries about how it was made.
+function rowFor(model, modelId, it, answer, allowed) {
+  return { model, modelId, set: it.set, item: it.item, rule: it.rule, truth: it.truth, ...(it.fingerprint ? { fingerprint: it.fingerprint } : {}), ...(it.meta ? { meta: it.meta } : {}),
+    promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
+    ...(answer.costUsd != null ? { costUsd: answer.costUsd } : {}), ...(answer.error ? { error: answer.error } : parseVerdict(answer.text, allowed)) };
+}
+
 async function calibrate(opts) {
   const judging = opts.only === 'J';
   const models = judging ? [] : modelsFromEnv().filter((m) => !opts.only || m.name === opts.only);
   if (!judging && models.length < (opts.only ? 1 : 2) && !opts.promptsOnly) throw new Error('name two models: CW_MODEL_A_URL, CW_MODEL_A, CW_MODEL_A_KEY and the same with _B');
-  const exec = executionItems(opts.execution, opts.corpus, opts.unknown ? 'unknown' : 'confirmed');
-  const planted = opts.unknown ? { items: [], skipped: 0 } : plantedItems(opts.planted, opts.corpus, opts.perLabel);
-  const items = [...exec.items, ...planted.items];
+  const given = opts.items ? readItems(opts.items) : null;
+  const exec = given ? { items: [], wanted: 0, matched: 0 } : executionItems(opts.execution, opts.corpus, opts.unknown ? 'unknown' : 'confirmed');
+  const planted = given || opts.unknown ? { items: [], skipped: 0 } : plantedItems(opts.planted, opts.corpus, opts.perLabel);
+  const items = given || [...exec.items, ...planted.items];
   if (opts.promptsOnly) {
     writeFileSync(opts.out, items.map((it) => `${JSON.stringify(it)}\n`).join(''));
     return { execution: { wanted: exec.wanted, matched: exec.matched }, planted: { items: planted.items.length, skipped: planted.skipped }, results: {} };
@@ -345,8 +365,7 @@ async function calibrate(opts) {
     const todo = items.filter((it) => !done.has(`${m.name}\0${it.set}\0${it.item}`));
     await pool(todo, m.url === 'claude' ? opts.parallel : 1, async (it) => {
       const answer = m.url === 'claude' ? await askClaude(it.prompt, opts.timeoutMs, m.model) : await ask(m, it.prompt, opts.timeoutMs);
-      const row = { model: m.name, modelId: m.model, set: it.set, item: it.item, rule: it.rule, truth: it.truth, ...(it.fingerprint ? { fingerprint: it.fingerprint } : {}), promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
-        ...(answer.costUsd != null ? { costUsd: answer.costUsd } : {}), ...(answer.error ? { error: answer.error } : parseVerdict(answer.text)) };
+      const row = rowFor(m.name, m.model, it, answer, VERDICTS);
       appendFileSync(opts.out, `${JSON.stringify(row)}\n`);
       rows.push(row);
     });
@@ -356,9 +375,9 @@ async function calibrate(opts) {
     const answered = new Map(rows.map((r) => [`${r.model}\0${r.set}\0${r.item}`, r]));
     const todo = items.filter((it) => !done.has(`J\0${it.set}\0${it.item}`) && answered.has(`A\0${it.set}\0${it.item}`) && answered.has(`B\0${it.set}\0${it.item}`));
     await pool(todo, opts.parallel, async (it) => {
-      const answer = await askClaude(judgePrompt(it.prompt, answered.get(`A\0${it.set}\0${it.item}`), answered.get(`B\0${it.set}\0${it.item}`)), opts.timeoutMs, process.env.CW_JUDGE_MODEL || 'claude-opus-5-5');
-      const row = { model: 'J', modelId: process.env.CW_JUDGE_MODEL || 'claude-opus-5-5', set: it.set, item: it.item, rule: it.rule, truth: it.truth, ...(it.fingerprint ? { fingerprint: it.fingerprint } : {}), promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
-        ...(answer.costUsd != null ? { costUsd: answer.costUsd } : {}), ...(answer.error ? { error: answer.error } : parseVerdict(answer.text, JUDGE_VERDICTS)) };
+      const judge = process.env.CW_JUDGE_MODEL || 'claude-opus-5-5';
+      const answer = await askClaude(judgePrompt(it.prompt, answered.get(`A\0${it.set}\0${it.item}`), answered.get(`B\0${it.set}\0${it.item}`)), opts.timeoutMs, judge);
+      const row = rowFor('J', judge, it, answer, JUDGE_VERDICTS);
       appendFileSync(opts.out, `${JSON.stringify(row)}\n`);
       rows.push(row);
     });
@@ -380,13 +399,14 @@ async function main(argv) {
     else if (a === '--corpus') opts.corpus = argv[++i];
     else if (a === '--execution') opts.execution = argv[++i];
     else if (a === '--planted') opts.planted = argv[++i];
+    else if (a === '--items') opts.items = argv[++i];
     else if (a === '--per-label') opts.perLabel = Number(argv[++i]);
     else if (a === '--out') opts.out = argv[++i];
     else if (a === '--summary') opts.summary = argv[++i];
     else if (a === '--timeout') opts.timeoutMs = Number(argv[++i]) * 1000;
   }
-  if (!opts.calibrate || !opts.corpus || !opts.execution || (!opts.planted && !opts.unknown)) {
-    process.stderr.write('usage: node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json> --planted <seed.json> [--per-label 40] [--out file] [--summary file] [--timeout seconds] [--parallel n] [--prompts-only] [--model A|B|J] [--unknown]\n');
+  if (!opts.calibrate || (!opts.items && (!opts.corpus || !opts.execution || (!opts.planted && !opts.unknown)))) {
+    process.stderr.write('usage: node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json> --planted <seed.json> [--per-label 40] [--out file] [--summary file] [--timeout seconds] [--parallel n] [--prompts-only] [--model A|B|J] [--unknown]\n       node bench/label-models.mjs --calibrate --items <questions.jsonl> [--out file] [--summary file] [--timeout seconds] [--parallel n] [--model A|B|J]\n');
     return 2;
   }
   const summary = await calibrate(opts);

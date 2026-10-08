@@ -5,22 +5,31 @@
 // each one, so an item also says whether the analyser itself gets it right: a negative it reports
 // is a false alarm of its own, which is what a model reviewing its findings has to catch.
 //
-//   node bench/negatives.mjs [--out <dir>] [--json <file> [--with-files]] [--rule <id>]
+// --prompts writes each item as a question for bench/label-models.mjs --items: the rule, the source
+// and the sink, and every line of the program, asked as a finding of the corpus is asked.
+//
+//   node bench/negatives.mjs [--out <dir>] [--json <file> [--with-files]] [--prompts <file>]
+//        [--rule <id>]
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { scanAll } from '../lib/scan.mjs';
 import { RULES } from '../lib/sets/flow.mjs';
+import { capped, excerpt, QUESTION } from './label-models.mjs';
 
-// Where the input comes from: what the program declares and the statement that fills WS-IN.
-// `numeric` sources land in a numeric field for the sinks that need one.
+const ALLOWED = ["'CWPGM1'", "'CWPGM2'"];
+
+// Where the input comes from: what the program declares, the statements that fill WS-IN, which of
+// them reads the input (`at`, the first by default) and how cobolwork names it.
 const SOURCES = {
-  'argv-or-env': { stmt: () => ['ACCEPT WS-IN FROM COMMAND-LINE'] },
-  'cics-terminal': { stmt: () => ['EXEC CICS RECEIVE INTO(WS-IN) LENGTH(WS-LEN)', '     END-EXEC'] },
-  'cics-web': { stmt: () => ['EXEC CICS WEB RECEIVE INTO(WS-IN) LENGTH(WS-LEN)', '     END-EXEC'] },
-  'cics-queue': { stmt: () => ["EXEC CICS READQ TS QUEUE('CWQ1') INTO(WS-IN)", '     LENGTH(WS-LEN) END-EXEC'] },
-  database: { stmt: () => ['EXEC SQL SELECT NAME INTO :WS-IN FROM CWT1', '     WHERE ID = 1 END-EXEC'] },
+  'argv-or-env': { detail: 'ACCEPT ... FROM COMMAND-LINE', stmt: () => ['ACCEPT WS-IN FROM COMMAND-LINE'] },
+  'cics-terminal': { detail: 'EXEC CICS RECEIVE', stmt: () => ['EXEC CICS RECEIVE INTO(WS-IN) LENGTH(WS-LEN)', '     END-EXEC'] },
+  'cics-web': { detail: 'EXEC CICS WEB RECEIVE', stmt: () => ['EXEC CICS WEB RECEIVE INTO(WS-IN) LENGTH(WS-LEN)', '     END-EXEC'] },
+  'cics-queue': { detail: 'EXEC CICS READQ TS INTO', stmt: () => ["EXEC CICS READQ TS QUEUE('CWQ1') INTO(WS-IN)", '     LENGTH(WS-LEN) END-EXEC'] },
+  database: { detail: 'EXEC SQL SELECT INTO host variable', stmt: () => ['EXEC SQL SELECT NAME INTO :WS-IN FROM CWT1', '     WHERE ID = 1 END-EXEC'] },
   'file-record': {
+    detail: 'READ ... INTO',
+    at: 1,
     env: ['       INPUT-OUTPUT SECTION.', '       FILE-CONTROL.', '           SELECT IN-FILE ASSIGN TO INDD.'],
     files: ['       FILE SECTION.', '       FD  IN-FILE.', '       01  IN-REC PIC X(80).'],
     stmt: () => ['OPEN INPUT IN-FILE', 'READ IN-FILE INTO WS-IN', 'CLOSE IN-FILE'],
@@ -32,16 +41,17 @@ const SOURCES = {
 // (a value that is only digits), `none` (no guard the analyser credits).
 const SINKS = {
   'os-command': { kind: 'set', use: (f) => [`CALL 'SYSTEM' USING ${f}`] },
-  'dynamic-sql': { kind: 'set', sql: true, use: (f) => [`EXEC SQL EXECUTE IMMEDIATE :${f} END-EXEC`] },
+  'dynamic-sql': { kind: 'set', use: (f) => [`EXEC SQL EXECUTE IMMEDIATE :${f} END-EXEC`] },
   'cics-dynamic-transfer': { kind: 'set', use: (f) => [`EXEC CICS LINK PROGRAM(${f}) END-EXEC`] },
   'dynamic-program-load': { kind: 'set', use: (f) => [`CALL ${f}`] },
   'queue-name': { kind: 'set', use: (f) => [`EXEC CICS WRITEQ TS QUEUE(${f}) FROM(WS-DATA)`, '     END-EXEC'] },
   'outbound-host': { kind: 'set', use: (f) => [`EXEC CICS WEB OPEN HOST(${f}) HOSTLENGTH(WS-LEN)`, '     SESSTOKEN(WS-TOKEN) END-EXEC'] },
   'cics-sysid': { kind: 'set', use: (f) => [`EXEC CICS LINK PROGRAM('CWPGM2') SYSID(${f})`, '     END-EXEC'] },
-  'connection-target': { kind: 'set', sql: true, use: (f) => [`EXEC SQL CONNECT TO :${f} END-EXEC`] },
+  'connection-target': { kind: 'set', use: (f) => [`EXEC SQL CONNECT TO :${f} END-EXEC`] },
   'web-response': { kind: 'set', use: (f) => [`EXEC CICS WEB SEND FROM(${f}) FROMLENGTH(WS-LEN)`, '     MEDIATYPE(WS-MEDIA) END-EXEC'] },
-  log: { kind: 'set', use: (f) => [`DISPLAY ${f}`], cics: true },
-  'unhandled-selector': { kind: 'set', use: (f) => [`EVALUATE ${f}`, "   WHEN 'A1'", '      CONTINUE', 'END-EVALUATE'] },
+  log: { kind: 'set', use: (f) => [`DISPLAY ${f}`] },
+  // Its branches name the allowed values, so a value an allow-list lets through has a branch to run.
+  'unhandled-selector': { kind: 'set', use: (f) => [`EVALUATE ${f}`, ...ALLOWED.map((v) => `   WHEN ${v}`), '      CONTINUE', 'END-EVALUATE'] },
   arithmetic: { kind: 'digits', numeric: true, use: (f) => [`COMPUTE WS-RESULT = ${f} + 1`] },
   subscript: { kind: 'bound', numeric: true, use: (f) => [`DISPLAY WS-ROW(${f})`] },
   'reference-modification': { kind: 'bound', numeric: true, use: (f) => [`DISPLAY WS-TEXT(${f}:1)`] },
@@ -51,15 +61,13 @@ const SINKS = {
   'text-truncation': { kind: 'none', use: (f) => [`STRING ${f} DELIMITED BY SIZE`, '   INTO WS-SHORT', 'END-STRING'] },
 };
 
-const ALLOWED = ["'CWPGM1'", "'CWPGM2'"];
-
 // A guard placed before the sink, and whether the sink is then safe: `truth` is the answer by
 // construction. `fits` says which sinks the guard means something for.
 const GUARDS = {
   // Negatives: the value cannot reach the sink in a form that makes it unsafe.
   'allow-list': { truth: 'does-not-reach', fits: (s) => s.kind === 'set', code: (f) => [`EVALUATE ${f}`, ...ALLOWED.map((v) => `   WHEN ${v}`), '      CONTINUE', '   WHEN OTHER', '      GOBACK', 'END-EVALUATE'] },
   'must-equal': { truth: 'does-not-reach', fits: (s) => s.kind === 'set', code: (f) => [`IF ${f} NOT = ${ALLOWED[0]}`, '   GOBACK', 'END-IF'] },
-  'condition-name': { truth: 'does-not-reach', fits: (s) => s.kind === 'set', code: (f) => [`MOVE ${f} TO WS-CHOICE`, 'IF NOT WS-CHOICE-OK', '   GOBACK', 'END-IF'], via: 'WS-CHOICE' },
+  'condition-name': { truth: 'does-not-reach', fits: (s) => s.kind === 'set', code: (f) => [`MOVE ${f} TO WS-CHOICE`, 'IF NOT WS-CHOICE-OK', '   GOBACK', 'END-IF'] },
   'numeric-test': { truth: 'does-not-reach', fits: (s) => s.kind === 'digits', code: (f) => [`IF ${f} IS NOT NUMERIC`, '   GOBACK', 'END-IF'] },
   'both-bounds': { truth: 'does-not-reach', fits: (s) => s.kind === 'bound', code: (f) => [`IF ${f} < 1 OR ${f} > 10`, '   GOBACK', 'END-IF'] },
   'upper-bound-fits': { truth: 'does-not-reach', fits: (s) => s.kind === 'none' && s.numeric, code: (f) => [`IF ${f} > 99`, '   GOBACK', 'END-IF'] },
@@ -107,30 +115,36 @@ const fixEighty8 = (lines) => {
   return lines;
 };
 
-function program(id, { srcKind, sinkName, guardName, placement }) {
+// An item's program files, the main program first, and where its source and its sink are. Every
+// main program is CWMAIN, so what a model is shown depends only on what the item is made of.
+function program({ srcKind, sinkName, guardName, placement }) {
   const src = SOURCES[srcKind];
   const sink = SINKS[sinkName];
   const guard = GUARDS[guardName];
   const numeric = !!sink.numeric;
   const field = placement === 'hops' ? 'WS-B' : 'WS-IN';
-  const guardField = guard.via && guardName !== 'condition-name' ? guard.via : field;
-  const body = [...guard.code(guardField, sink), ...sink.use(guardName === 'condition-name' ? field : field)];
-  const head = ['       IDENTIFICATION DIVISION.', `       PROGRAM-ID. ${id}.`, '       ENVIRONMENT DIVISION.', ...(src.env || []), '       DATA DIVISION.', ...(src.files || []),
-    '       WORKING-STORAGE SECTION.', ...fixEighty8(data(numeric))];
-  const proc = ['       PROCEDURE DIVISION.', '       MAIN-PARA.', ...src.stmt().map(line)];
-  const files = {};
-  if (placement === 'inline') proc.push(...body.map(line), line('GOBACK.'));
-  else if (placement === 'paragraph') proc.push(line('PERFORM USE-PARA'), line('GOBACK.'), '       USE-PARA.', ...body.map(line), line('EXIT.'));
-  else if (placement === 'hops') proc.push(line('MOVE WS-IN TO WS-A'), line('MOVE WS-A TO WS-B'), ...body.map(line), line('GOBACK.'));
+  const checks = guard.code(field, sink);
+  const main = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. CWMAIN.', '       ENVIRONMENT DIVISION.', ...(src.env || []), '       DATA DIVISION.', ...(src.files || []),
+    '       WORKING-STORAGE SECTION.', ...fixEighty8(data(numeric)), '       PROCEDURE DIVISION.', '       MAIN-PARA.'];
+  const source = { file: 'CWMAIN.cbl', line: main.length + (src.at || 0) + 1, text: src.detail };
+  main.push(...src.stmt().map(line));
+  let sinkLine;
+  const use = (lines) => { sinkLine = lines.length + checks.length + 1; lines.push(...[...checks, ...sink.use(field)].map(line)); };
+  const files = { 'CWMAIN.cbl': null };
+  if (placement === 'inline') { use(main); main.push(line('GOBACK.')); }
+  else if (placement === 'paragraph') { main.push(line('PERFORM USE-PARA'), line('GOBACK.'), '       USE-PARA.'); use(main); main.push(line('EXIT.')); }
+  else if (placement === 'hops') { main.push(line('MOVE WS-IN TO WS-A'), line('MOVE WS-A TO WS-B')); use(main); main.push(line('GOBACK.')); }
   else {
-    proc.push(line("CALL 'CWSUB' USING WS-IN"), line('GOBACK.'));
+    main.push(line("CALL 'CWSUB' USING WS-IN"), line('GOBACK.'));
     const sub = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. CWSUB.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
       ...fixEighty8(data(numeric)).filter((l) => !/WS-IN /.test(l)), '       LINKAGE SECTION.', `       01  WS-IN ${numeric ? 'PIC 9(4)' : 'PIC X(8)'}.`,
-      '       PROCEDURE DIVISION USING WS-IN.', ...body.map(line), line('GOBACK.')];
+      '       PROCEDURE DIVISION USING WS-IN.'];
+    use(sub);
+    sub.push(line('GOBACK.'));
     files['CWSUB.cbl'] = `${sub.join('\n')}\n`;
   }
-  files[`${id}.cbl`] = `${[...head, ...proc].join('\n')}\n`;
-  return files;
+  files['CWMAIN.cbl'] = `${main.join('\n')}\n`;
+  return { files, at: { source, sink: { file: placement === 'subprogram' ? 'CWSUB.cbl' : 'CWMAIN.cbl', line: sinkLine } } };
 }
 
 // Every item the templates make for the path rules they cover, each with its answer.
@@ -146,13 +160,30 @@ export function items({ rule = null } = {}) {
         // Each guard inline, and in one deeper placement, taken in turn across the guards.
         for (const placement of ['inline', PLACEMENTS[1 + (deep++ % 3)]]) {
           const id = `CW${String(out.length + 1).padStart(4, '0')}`;
-          out.push({ id, rule: r, source: srcKind, sink: sinkName, guard: guardName, placement, truth: guard.truthFor?.[sinkName] || guard.truth, files: program(id, { srcKind, sinkName, guardName, placement }) });
+          out.push({ id, rule: r, source: srcKind, sink: sinkName, guard: guardName, placement, truth: guard.truthFor?.[sinkName] || guard.truth, ...program({ srcKind, sinkName, guardName, placement }) });
         }
       }
     }
   }
   return out;
 }
+
+// An item asked as a finding of the corpus is asked (bench/label-models.mjs): the rule, the source,
+// the sink and, since a program here is short, every line of each file.
+export function questionFor(item) {
+  const r = RULES[item.rule];
+  const { source, sink } = item.at;
+  const code = Object.entries(item.files).map(([name, text]) => {
+    const n = text.replace(/\n$/, '').split('\n').length;
+    return `\nCode of ${name}:\n${excerpt(text, Array.from({ length: n }, (_, k) => k + 1), 0)}\n`;
+  });
+  return `${capped([`Rule: ${item.rule}: ${r.text}${r.cwe ? ` (${r.cwe})` : ''}.\n`, `Source: ${source.file}:${source.line}: ${source.text}\n`, `Sink: ${sink.file}:${sink.line}\n`, ...code])}\n${QUESTION}`;
+}
+
+// The question line for --prompts: keyed by what the item is made of, so it keeps its key when
+// templates are added.
+export const questionLine = (it) => ({ set: 'generated', item: `${it.rule}/${it.guard}/${it.placement}`, rule: it.rule, truth: it.truth,
+  meta: { id: it.id, source: it.source, sink: it.sink, guard: it.guard, placement: it.placement, engine: it.engine }, prompt: questionFor(it) });
 
 // What cobolwork reports for an item: whether its rule fires, and with a guard that stops it.
 export function engineVerdict(item) {
@@ -187,6 +218,7 @@ function main(argv) {
     const k = `${it.truth} -> ${it.engine}`;
     summary.engine[k] = (summary.engine[k] || 0) + 1;
   }
+  if (opts.prompts) writeFileSync(opts.prompts, all.map((it) => `${JSON.stringify(questionLine(it))}\n`).join(''));
   if (opts.json) writeFileSync(opts.json, `${JSON.stringify(opts.withFiles ? all : all.map(({ files, ...rest }) => rest), null, 1)}\n`);
   process.stdout.write(`${JSON.stringify(summary, null, 1)}\n`);
   return 0;

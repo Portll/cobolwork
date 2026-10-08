@@ -1,0 +1,13 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ENTRYPT.
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01  LK-AREA PIC X(8).
+       PROCEDURE DIVISION.
+       MAIN-PARA.
+           DISPLAY 'MAIN'.
+           GOBACK.
+           ENTRY 'SECOND' USING LK-AREA.
+       SECOND-PARA.
+           DISPLAY LK-AREA.
+           GOBACK.

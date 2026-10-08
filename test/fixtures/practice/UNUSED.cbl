@@ -1,0 +1,31 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. UNUSED.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+           EXEC SQL INCLUDE SQLCA END-EXEC.
+       01  WS-HOST-ONLY PIC X(8).
+       01  WS-NEVER.
+           05  WS-NEVER-A PIC X.
+           05  WS-NEVER-B PIC 9.
+       01  WS-GROUP.
+           05  WS-CHILD PIC X.
+       01  WS-FLAG PIC X.
+           88  FLAG-ON VALUE 'Y'.
+       01  WS-BASE PIC X(4).
+       01  WS-OVER REDEFINES WS-BASE PIC 9(4).
+       01  WS-COUNT PIC 99.
+       01  WS-TABLE.
+           05  WS-ENTRY OCCURS 1 TO 10 DEPENDING ON WS-COUNT PIC X.
+       01  FILLER PIC X(10) VALUE 'FILLER'.
+           COPY UNUSEDCP.
+       LINKAGE SECTION.
+       01  LK-UNUSED PIC X.
+       PROCEDURE DIVISION.
+           EXEC SQL SELECT NAME INTO :WS-HOST-ONLY FROM T END-EXEC.
+           MOVE 'A' TO WS-CHILD.
+           IF FLAG-ON
+               DISPLAY 'ON'
+           END-IF.
+           MOVE 1 TO WS-OVER.
+           DISPLAY WS-ENTRY(1).
+           GOBACK.

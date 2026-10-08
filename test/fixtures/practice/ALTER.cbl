@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ALTERED.
+       PROCEDURE DIVISION.
+       MAIN-PARA.
+           ALTER SWITCH-PARA TO PROCEED TO SECOND-WAY.
+           PERFORM SWITCH-PARA THRU SWITCH-EXIT.
+           GOBACK.
+       SWITCH-PARA.
+           GO TO FIRST-WAY.
+       FIRST-WAY.
+           DISPLAY 'FIRST'.
+           GO TO SWITCH-EXIT.
+       SECOND-WAY.
+           DISPLAY 'SECOND'.
+       SWITCH-EXIT.
+           EXIT.

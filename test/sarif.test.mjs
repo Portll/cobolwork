@@ -244,3 +244,11 @@ test('an advisory a finding rests on is not given as a related location', () => 
   assert.deepEqual(run.artifacts.map((a) => a.location.uri), ['A.cbl', 'Dockerfile']);
   assert.deepEqual(run.results[0].relatedLocations.map((l) => l.physicalLocation.artifactLocation.uri), ['A.cbl']);
 });
+
+test('the tool and its components carry the package version when the caller names none', () => {
+  const { version } = JSON.parse(readFileSync(join(HERE, '..', 'package.json'), 'utf8'));
+  const run = toSarif(scanAll(join(CASES, '001-argv-reaches-os-command'), { only: ['flow'] })).runs[0];
+  assert.equal(run.tool.driver.version, version);
+  assert.ok(run.tool.extensions.length > 0);
+  for (const e of run.tool.extensions) assert.equal(e.version, version, e.name);
+});

@@ -407,8 +407,11 @@ its finding in a fresh scan, and one that matches no finding is counted as unjoi
 names its label source. A confirmed finding or a reported flaw is right, a refuted finding or a
 reported near-miss is wrong, and an unknown is neither: precision is the range from every unknown
 being wrong to every unknown being right, one number only where nothing is unknown. Recall comes
-from planted labels alone, the only ones where every flaw is known. The table is published with each
-release.
+from planted labels alone, the only ones where every flaw is known. `bench/label-review.mjs labels`
+writes model labels, source `model`, under the operator's rule of 2026-10-08: a finding with no known
+answer takes the judge's verdict where the judge gives one, and the operator's rescoring where there
+is one. Reaches counts right, does-not-reach wrong, and a withheld answer unknown, in a stratum of
+its own. The table is published with each release.
 `diag/score-corpus.mjs` scores each verdict against the execution labels, with a Wilson interval over
 the labels that decided it.
 

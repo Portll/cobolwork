@@ -7,6 +7,7 @@
 //        [--per-rule <n>] [--out review.md]
 //   node bench/label-review.mjs rescore --ledger <ledger.jsonl> --set <set> --item <item> --verdict <verdict> --who <name> --why <text>
 //   node bench/label-review.mjs final --answers <answers.jsonl> [--ledger <ledger.jsonl>] [--out final.json]
+//   node bench/label-review.mjs labels --answers <answers.jsonl> [--ledger <ledger.jsonl>] [--out labels.json]
 import { createHash } from 'node:crypto';
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { JUDGE_VERDICTS } from './label-models.mjs';
@@ -85,6 +86,23 @@ export function finals(rows, ledger) {
   return { counts, items };
 }
 
+// Labels for bench/precision.mjs, source `model`: each finding with no known answer, by its final
+// answer. An answer withheld, or no answer, leaves the label unknown.
+export function modelLabels(rows, ledger) {
+  const rescored = rescorings(ledger);
+  const out = [];
+  for (const e of byItem(rows).values()) {
+    if (e.truth) continue;
+    const at = /^([^/]+)\/(.+):(\d+):([^:]+)$/.exec(e.item);
+    if (!at) continue;
+    const f = finalOf(e, rescored.get(keyOf(e)));
+    const fingerprint = Object.values(e.answers).find((r) => r.fingerprint)?.fingerprint;
+    out.push({ source: 'model', by: f.by, repo: at[1], path: at[2], line: Number(at[3]), rule: at[4], ...(fingerprint ? { fingerprint } : {}),
+      label: f.verdict === 'reaches' || f.verdict === 'does-not-reach' ? f.verdict : 'unknown', ...(f.by === 'operator' ? { why: f.why } : {}) });
+  }
+  return out;
+}
+
 function main(argv) {
   const [command, ...rest] = argv;
   const opts = {};
@@ -103,9 +121,15 @@ function main(argv) {
     if (opts.out) writeFileSync(opts.out, text); else process.stdout.write(text);
     return 0;
   }
+  if (command === 'labels' && opts.answers) {
+    const text = `${JSON.stringify({ tool: 'cobolwork-label-review', labels: modelLabels(lines(opts.answers), lines(opts.ledger)) }, null, 1)}\n`;
+    if (opts.out) writeFileSync(opts.out, text); else process.stdout.write(text);
+    return 0;
+  }
   process.stderr.write('usage: node bench/label-review.mjs sheet --answers <file> --prompts <file> [--only disputed|withheld|all] [--per-rule n] [--out file]\n'
     + `       node bench/label-review.mjs rescore --ledger <file> --set <set> --item <item> --verdict <${JUDGE_VERDICTS.join('|')}> --who <name> --why <text>\n`
-    + '       node bench/label-review.mjs final --answers <file> [--ledger <file>] [--out file]\n');
+    + '       node bench/label-review.mjs final --answers <file> [--ledger <file>] [--out file]\n'
+    + '       node bench/label-review.mjs labels --answers <file> [--ledger <file>] [--out file]\n');
   return 2;
 }
 

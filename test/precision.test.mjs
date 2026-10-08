@@ -98,3 +98,19 @@ test('labels made on a rewritten copy are their own stratum, never pooled with t
   assert.deepEqual(out.byRule[rule]['execution-rewritten'].precision, { low: 0.5, high: 1 });
   assert.deepEqual(out.byRule[rule]['execution-rewritten+extended'].precision, { low: 1, high: 1 });
 });
+
+test('a model label is its own stratum: the judge\'s reaches is right, does-not-reach wrong, a withheld answer unknown', () => {
+  assert.equal(outcomeOf({ source: 'model', label: 'reaches' }), 'right');
+  assert.equal(outcomeOf({ source: 'model', label: 'does-not-reach' }), 'wrong');
+  assert.equal(outcomeOf({ source: 'model', label: 'unknown' }), 'unknown');
+  const dir = mkdtempSync(join(tmpdir(), 'cobolwork-precision-model-'));
+  const file = join(dir, 'model.json');
+  writeFileSync(file, JSON.stringify({ labels: [
+    { source: 'model', rule: 'r', label: 'reaches' }, { source: 'model', rule: 'r', label: 'does-not-reach' }, { source: 'model', rule: 'r', label: 'unknown' },
+    { source: 'execution', rule: 'r', label: 'confirmed' },
+  ] }));
+  const doc = precision([file]);
+  rmSync(dir, { recursive: true, force: true });
+  assert.deepEqual(doc.byRule.r.model.precision, { low: 0.333, high: 0.667 });
+  assert.deepEqual(doc.byRule.r.execution.precision, { low: 1, high: 1 });
+});

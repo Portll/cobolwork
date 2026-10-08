@@ -116,3 +116,22 @@ test('a sheet can hold a few items of each rule, the same ones on every run', as
   assert.deepEqual(new Set(once.map((i) => i.split(':').pop())), new Set(['r1', 'r2']));
   assert.deepEqual(shown(sheet([...rows].reverse(), [], 'all', 1)).sort(), [...once].sort());
 });
+
+test('model labels take the operator\'s rescoring, else the judge\'s answer, and only for findings with no known answer', async () => {
+  const { modelLabels } = await import('../bench/label-review.mjs');
+  const row = (model, item, verdict, extra = {}) => ({ model, set: 'unknown', item, rule: item.split(':').pop(), truth: null, verdict, fingerprint: 'fp', ...extra });
+  const rows = [
+    row('J', 'repo1/src/P.cbl:12:argv-or-env-to-os-command', 'reaches'),
+    row('J', 'repo1/src/P.cbl:30:argv-or-env-to-log', 'does-not-reach'),
+    row('J', 'repo2/Q.cbl:7:argv-or-env-to-log', 'not-recommended'),
+    { model: 'J', set: 'generated', item: 'argv-or-env-to-log/none/inline', rule: 'argv-or-env-to-log', truth: 'reaches', verdict: 'reaches' },
+  ];
+  const ledger = [{ set: 'unknown', item: 'repo1/src/P.cbl:30:argv-or-env-to-log', verdict: 'reaches', who: 'operator', why: 'the IF tests another field' }];
+  const labels = modelLabels(rows, ledger);
+  assert.deepEqual(labels.map((l) => [l.repo, l.path, l.line, l.label, l.by]), [
+    ['repo1', 'src/P.cbl', 12, 'reaches', 'judge'],
+    ['repo1', 'src/P.cbl', 30, 'reaches', 'operator'],
+    ['repo2', 'Q.cbl', 7, 'unknown', 'judge'],
+  ]);
+  assert.ok(labels.every((l) => l.source === 'model' && l.fingerprint === 'fp'));
+});

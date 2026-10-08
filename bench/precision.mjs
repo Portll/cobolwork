@@ -3,8 +3,8 @@
 //
 //   node bench/precision.mjs <labels.json>... [--corpus <root>] [--out file] [--md file]
 //
-// Each file is what bench/label.mjs (source `execution`) or bench/seed.mjs (source `planted`)
-// wrote. Every number names its label source. An unknown is never counted as right or wrong: a
+// Each file is what bench/label.mjs (source `execution`), bench/seed.mjs (source `planted`) or
+// bench/label-review.mjs labels (source `model`) wrote. Every number names its label source. An unknown is never counted as right or wrong: a
 // rule's precision is the range from every unknown being false to every unknown being true, and is
 // one number only where nothing is unknown. Execution labels are joined to their findings'
 // verdicts by fingerprint, by scanning each labelled repository under --corpus again.
@@ -17,8 +17,10 @@ import { scanAll } from '../lib/scan.mjs';
 const stratumOf = (l) => (l.labelledOn ? `${l.source}-${l.labelledOn}` : l.source);
 
 // What a label says of a reported finding: right, wrong, or unknown; and of a planted flaw nobody
-// reported, that it was missed. A near-miss nobody reported says nothing about precision.
+// reported, that it was missed. A near-miss nobody reported says nothing about precision. A model
+// label is the judge's or the operator's answer: reaches is right, does-not-reach wrong.
 export function outcomeOf(l) {
+  if (l.source === 'model') return l.label === 'reaches' ? 'right' : l.label === 'does-not-reach' ? 'wrong' : 'unknown';
   if (l.source === 'planted') {
     if (l.reported) return l.label === 'flaw' ? 'right' : 'wrong';
     return l.label === 'flaw' ? 'missed' : null;
@@ -44,10 +46,13 @@ function tally(into, key, source, outcome) {
   c[outcome]++;
 }
 
+// Labels a fresh scan can join to their findings by fingerprint.
+const joinable = (l) => (l.source === 'execution' || l.source === 'model') && l.fingerprint;
+
 // The verdict of each finding the labels name, by repository and fingerprint.
 function verdicts(corpus, labels) {
   const out = new Map();
-  for (const repo of new Set(labels.filter((l) => l.source === 'execution' && l.fingerprint).map((l) => l.repo ?? ''))) {
+  for (const repo of new Set(labels.filter(joinable).map((l) => l.repo ?? ''))) {
     const root = repo ? join(corpus, repo) : corpus;
     let report;
     try { report = scanAll(root, { only: ['flow'] }); } catch { continue; }
@@ -74,7 +79,7 @@ export function precision(files, { corpus = null } = {}) {
     const outcome = outcomeOf(l);
     if (!outcome || !l.rule || !l.source) continue;
     tally(byRule, l.rule, stratumOf(l), outcome);
-    if (l.source !== 'execution' || !corpus) continue;
+    if (!joinable(l) || !corpus) continue;
     const verdict = verdictOf.get(`${l.repo ?? ''}|${l.fingerprint}`);
     if (verdict) tally(byVerdict, verdict, stratumOf(l), outcome); else unjoined++;
   }
@@ -98,10 +103,10 @@ export function markdown(doc) {
       `| \`${k}\` | ${s} ${m.labelled} | ${m.right} | ${m.wrong} | ${m.unknown} | ${range(m.precision)} | ${m.recall == null ? '-' : pct(m.recall)} |`)),
   ].join('\n');
   return [
-    `From ${doc.labels} machine labels in ${doc.sources.map((s) => `${s.file} (${s.sources.join(', ')})`).join(', ')}.`,
+    `From ${doc.labels} labels in ${doc.sources.map((s) => `${s.file} (${s.sources.join(', ')})`).join(', ')}.`,
     '',
     table('Rule', doc.byRule),
-    ...(doc.byVerdict ? ['', table('Verdict', doc.byVerdict), '', `${doc.unjoined} execution labels matched no finding of a fresh scan and are not in the verdict table.`] : []),
+    ...(doc.byVerdict ? ['', table('Verdict', doc.byVerdict), '', `${doc.unjoined} labels with a fingerprint matched no finding of a fresh scan and are not in the verdict table.`] : []),
     '',
   ].join('\n');
 }

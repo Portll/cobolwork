@@ -16,7 +16,8 @@
 // beside Gemma, Opus judging). The judge, J, is Claude through the Claude Code command line
 // (CW_JUDGE_MODEL, claude-opus-5-5 by default): it reads the code and both models' answers, and
 // may answer that no consensus is reached or that no label is recommended. --model asks one of A,
-// B or J, so each runs when its host is free; J asks only about items both models have answered.
+// B or J, so each runs when its host is free; J asks only about items both models have answered,
+// and with --swap is shown them in the other order, to measure whether the order sways it.
 // Answers are written a line at a time to --out, and a second run asks only what is not answered
 // yet. --unknown asks about every finding whose execution label is unknown, which has no known
 // answer to measure against. --items asks the questions in a file, written by --prompts-only or by
@@ -376,8 +377,9 @@ async function calibrate(opts) {
     const todo = items.filter((it) => !done.has(`J\0${it.set}\0${it.item}`) && answered.has(`A\0${it.set}\0${it.item}`) && answered.has(`B\0${it.set}\0${it.item}`));
     await pool(todo, opts.parallel, async (it) => {
       const judge = process.env.CW_JUDGE_MODEL || 'claude-opus-5-5';
-      const answer = await askClaude(judgePrompt(it.prompt, answered.get(`A\0${it.set}\0${it.item}`), answered.get(`B\0${it.set}\0${it.item}`)), opts.timeoutMs, judge);
-      const row = rowFor('J', judge, it, answer, JUDGE_VERDICTS);
+      const reviewers = [answered.get(`A\0${it.set}\0${it.item}`), answered.get(`B\0${it.set}\0${it.item}`)];
+      const answer = await askClaude(judgePrompt(it.prompt, ...(opts.swap ? reviewers.reverse() : reviewers)), opts.timeoutMs, judge);
+      const row = { ...rowFor('J', judge, it, answer, JUDGE_VERDICTS), ...(opts.swap ? { swapped: true } : {}) };
       appendFileSync(opts.out, `${JSON.stringify(row)}\n`);
       rows.push(row);
     });
@@ -396,6 +398,7 @@ async function main(argv) {
     else if (a === '--unknown') opts.unknown = true;
     else if (a === '--parallel') opts.parallel = Number(argv[++i]);
     else if (a === '--model') opts.only = argv[++i];
+    else if (a === '--swap') opts.swap = true;
     else if (a === '--corpus') opts.corpus = argv[++i];
     else if (a === '--execution') opts.execution = argv[++i];
     else if (a === '--planted') opts.planted = argv[++i];
@@ -406,7 +409,7 @@ async function main(argv) {
     else if (a === '--timeout') opts.timeoutMs = Number(argv[++i]) * 1000;
   }
   if (!opts.calibrate || (!opts.items && (!opts.corpus || !opts.execution || (!opts.planted && !opts.unknown)))) {
-    process.stderr.write('usage: node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json> --planted <seed.json> [--per-label 40] [--out file] [--summary file] [--timeout seconds] [--parallel n] [--prompts-only] [--model A|B|J] [--unknown]\n       node bench/label-models.mjs --calibrate --items <questions.jsonl> [--out file] [--summary file] [--timeout seconds] [--parallel n] [--model A|B|J]\n');
+    process.stderr.write('usage: node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json> --planted <seed.json> [--per-label 40] [--out file] [--summary file] [--timeout seconds] [--parallel n] [--prompts-only] [--model A|B|J] [--unknown]\n       node bench/label-models.mjs --calibrate --items <questions.jsonl> [--out file] [--summary file] [--timeout seconds] [--parallel n] [--model A|B|J] [--swap]\n');
     return 2;
   }
   const summary = await calibrate(opts);

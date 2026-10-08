@@ -8,8 +8,10 @@
 //        --planted <seed.json> [--per-label 40] [--out results.jsonl] [--summary file]
 //        [--model A|B|J] [--timeout seconds] [--prompts-only]
 //
-// Each local model is named by the environment: CW_MODEL_A_URL, CW_MODEL_A and CW_MODEL_A_KEY,
-// and the same with _B, an OpenAI-compatible chat endpoint on the operator's own machine. The
+// Each reviewer is named by the environment: CW_MODEL_A_URL, CW_MODEL_A and CW_MODEL_A_KEY, and
+// the same with _B, an OpenAI-compatible chat endpoint on the operator's own machine, or with the
+// URL `claude`, a Claude model through the Claude Code command line (operator 2026-10-08: Sonnet
+// beside Gemma, Opus judging). The
 // judge, J, is Claude through the Claude Code command line (CW_JUDGE_MODEL, claude-opus-5-5 by
 // default): it reads the code and both models' answers, and may answer that no consensus is
 // reached or that no label is recommended. --model asks one of A, B or J, so each runs when its
@@ -158,19 +160,19 @@ export function judgePrompt(prompt, a, b) {
     + 'Answer with JSON only: {"checks": [{"line": <n>, "what": "<what it allows>"}], "verdict": "reaches" | "does-not-reach" | "no-consensus" | "not-recommended", "reason": "<one sentence>"}';
 }
 
-// One question to the judge through the Claude Code command line, with no tools, settings or
-// servers, run from a scratch directory so no project's instructions reach it.
-function askJudge(prompt, timeoutMs, model = process.env.CW_JUDGE_MODEL || 'claude-opus-5-5') {
+// One question to Claude through the Claude Code command line, with no tools, settings or servers,
+// run from a scratch directory so no project's instructions reach it.
+function askClaude(prompt, timeoutMs, model) {
   const started = Date.now();
   const r = spawnSync('claude', ['-p', '--model', model, '--output-format', 'json', '--tools', '', '--no-session-persistence', '--system-prompt', SYSTEM,
     '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--disable-slash-commands'], { cwd: tmpdir(), input: prompt, encoding: 'utf8', timeout: timeoutMs, maxBuffer: 1 << 22 });
   if (r.error) return { error: r.error.code === 'ETIMEDOUT' ? `no answer in ${timeoutMs / 1000}s` : r.error.message, ms: Date.now() - started };
   try {
     const out = JSON.parse(r.stdout);
-    if (out.is_error) return { error: String(out.result || 'the judge failed').slice(0, 200), ms: Date.now() - started };
+    if (out.is_error) return { error: String(out.result || 'the call failed').slice(0, 200), ms: Date.now() - started };
     return { text: out.result ?? '', ms: Date.now() - started, costUsd: out.total_cost_usd };
   } catch {
-    return { error: `the judge wrote no JSON (exit ${r.status})`, ms: Date.now() - started };
+    return { error: `the command wrote no JSON (exit ${r.status})`, ms: Date.now() - started };
   }
 }
 
@@ -316,9 +318,9 @@ async function calibrate(opts) {
   for (const m of models) {
     for (const it of items) {
       if (done.has(`${m.name}\0${it.set}\0${it.item}`)) continue;
-      const answer = await ask(m, it.prompt, opts.timeoutMs);
+      const answer = m.url === 'claude' ? askClaude(it.prompt, opts.timeoutMs, m.model) : await ask(m, it.prompt, opts.timeoutMs);
       const row = { model: m.name, modelId: m.model, set: it.set, item: it.item, rule: it.rule, truth: it.truth, promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
-        ...(answer.error ? { error: answer.error } : parseVerdict(answer.text)) };
+        ...(answer.costUsd != null ? { costUsd: answer.costUsd } : {}), ...(answer.error ? { error: answer.error } : parseVerdict(answer.text)) };
       appendFileSync(opts.out, `${JSON.stringify(row)}\n`);
       rows.push(row);
     }
@@ -331,7 +333,7 @@ async function calibrate(opts) {
       const a = answered('A', it);
       const b = answered('B', it);
       if (!a || !b) continue;
-      const answer = askJudge(judgePrompt(it.prompt, a, b), opts.timeoutMs);
+      const answer = askClaude(judgePrompt(it.prompt, a, b), opts.timeoutMs, process.env.CW_JUDGE_MODEL || 'claude-opus-5-5');
       const row = { model: 'J', modelId: process.env.CW_JUDGE_MODEL || 'claude-opus-5-5', set: it.set, item: it.item, rule: it.rule, truth: it.truth, promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
         ...(answer.costUsd != null ? { costUsd: answer.costUsd } : {}), ...(answer.error ? { error: answer.error } : parseVerdict(answer.text, JUDGE_VERDICTS)) };
       appendFileSync(opts.out, `${JSON.stringify(row)}\n`);

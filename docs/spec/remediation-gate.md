@@ -250,8 +250,11 @@ cobc otherwise: `--ironwork <path>` names ironwork, `--cobc <path>` names cobc, 
 gate takes the first `ironwork` on `PATH`, then the first `cobc`, each resolved to an absolute file
 and skipping any `PATH` entry that is relative or lies inside the repository. `compiled` names the
 compiler that ran, and where it is cobc found on `PATH`, that no ironwork was. ironwork runs as
-`ironwork check` and a program compiles at return code 0 or 4, as in the build gate
-([build-gate.md](build-gate.md) §8a); cobc runs as `cobc -fsyntax-only`. Either runs with a working
+`ironwork check --diagnostics json` and a program compiles at return code 0 or 4, as in the build
+gate ([build-gate.md](build-gate.md) §8a); cobc runs as `cobc -fsyntax-only`. ironwork's errors are
+read by id as the build gate reads them: a head whose errors are none of them the program's own, such
+as a construct ironwork refuses by name (IWR), or whose check ended some other way, is undecided
+rather than a regression, `compile` is null, and `compiled` and `reasons` say so with its error lines. Either runs with a working
 directory outside the repository, base and head alike, with the directories that hold the tree's
 copybooks, on every program file the patch changed and every program whose resolved `COPY`
 statements include a file the patch changed: a one-line copybook edit breaks the programs that copy
@@ -396,6 +399,10 @@ applies the patch to the working tree or a second commit.
 #### G3.3a A program that stopped compiling carries the compiler's error lines
     Given a compiler that fails the head with four error lines
     Then  reasons carry the first three, each named by the path in the repository
+
+#### G3.3b A program the compiler cannot decide after the patch leaves compile undecided
+    Given a compiler that passed the base and cannot decide the head, as ironwork cannot at an IWR id
+    Then  compile is null, compiled says so, and reasons carry its error lines
 
 #### G3.4 The same inputs give the same document
     When  the gate runs twice on the same revisions

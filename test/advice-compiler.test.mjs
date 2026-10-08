@@ -9,7 +9,6 @@ import { fileURLToPath } from 'node:url';
 import './pin-machine.mjs';
 import { compilerAdvice } from '../lib/advice-compiler.mjs';
 import { advise } from '../lib/advice.mjs';
-import { parseMessages } from '../lib/ironwork.mjs';
 import { schemaProblems } from './schema-check.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -54,27 +53,6 @@ function tree(files) {
   return root;
 }
 
-test('the message parser reads id, severity, text, path and line from captured ironwork check output', () => {
-  const root = '/r';
-  const out = [
-    '/r/MIX.cbl:10:20: IWC0001-S WS-UNDEFINED is not defined',
-    '/r/cpy/MEMB3.cpy:2:22: warning: IWX0014-W VALUES outside a level-88 entry (Micro Focus; Enterprise COBOL writes VALUE there): it is read as VALUE',
-    '/r/MIX.cbl: warning: IWC0055-W no STOP RUN, GOBACK or EXIT PROGRAM in the program: check that it ends',
-    "/r/MIX.cbl:4:12: warning: IWC0056-W CALL 'CEECBLDY' under INTDATE(LILIAN): CEECBLDY gives an ANSI integer date",
-    '/lib/M.cpy:3:8: IWS0002-S COPY NOPE: no such member in the copy libraries',
-    'ironwork: an unlabelled line',
-    '',
-  ].join('\n');
-  assert.deepEqual(parseMessages(out, { root, program: '/r/MIX.cbl' }), [
-    { id: 'IWC0001', severity: 'S', text: 'WS-UNDEFINED is not defined', path: 'MIX.cbl', line: 10 },
-    { id: 'IWX0014', severity: 'W', text: 'VALUES outside a level-88 entry (Micro Focus; Enterprise COBOL writes VALUE there): it is read as VALUE', path: 'cpy/MEMB3.cpy', line: 2 },
-    { id: 'IWC0055', severity: 'W', text: 'no STOP RUN, GOBACK or EXIT PROGRAM in the program: check that it ends', path: 'MIX.cbl', line: null },
-    { id: 'IWC0056', severity: 'W', text: "CALL '…' under INTDATE(LILIAN): CEECBLDY gives an ANSI integer date", path: 'MIX.cbl', line: 4 },
-    { id: 'IWS0002', severity: 'S', text: 'COPY NOPE: no such member in the copy libraries', path: '/lib/M.cpy', line: 3 },
-    { id: null, severity: null, text: 'ironwork: an unlabelled line', path: 'MIX.cbl', line: null },
-  ]);
-});
-
 test('the message catalogue lists every id once and gives every W, E and X message a remedy', () => {
   const ids = CATALOGUE.messages.map((m) => m.id);
   assert.equal(new Set(ids).size, ids.length);
@@ -87,19 +65,22 @@ test('the message catalogue lists every id once and gives every W, E and X messa
   assert.ok(CATALOGUE.source.commit && CATALOGUE.source.retrieved && CATALOGUE.source.path === 'docs/messages.md');
 });
 
-// A stand-in that answers as ironwork 0.9.0 did for each fixture, under strict and extended.
+// A stand-in that answers as ironwork 0.9.0 did for each fixture, under strict and extended, with
+// --diagnostics json.
 function stub(dir) {
   const path = join(dir, 'ironwork-stub');
+  const say = (id, severity, line, col, message) => `printf '{"col":${col},"file":"%s","id":"${id}","line":${line},"member":null,"message":"${message}","severity":"${severity}"}\\n' "$file" >&2`;
   writeFileSync(path, [
     '#!/bin/sh',
     'if [ "$1" = --version ]; then echo "ironwork for COBOL 9.9.9"; exit 0; fi',
     'file="$2"; ext=no',
     'for a in "$@"; do [ "$a" = extended ] && ext=yes; done',
     'case "$file" in',
-    '  */NOSTOP.cbl) echo "$file: warning: IWC0055-W no STOP RUN, GOBACK or EXIT PROGRAM in the program: check that it ends" >&2; exit 4;;',
-    '  */MF.cbl) if [ $ext = yes ]; then echo "$file:7:20: warning: IWX0003-W <> (Micro Focus and GnuCOBOL; Enterprise COBOL writes NOT =) is read as NOT =" >&2; exit 4; fi',
-    '    echo "$file:7:20: IWS0065-S <> is not an Enterprise COBOL relational operator: it writes NOT =" >&2; exit 12;;',
-    '  */R1.cbl|*/R2.cbl) echo "$file:9:12: IWR0064-S FUNCTION FOO is not supported yet" >&2; exit 12;;',
+    `  */NOSTOP.cbl) ${say('IWC0055', 'W', 'null', 'null', 'no STOP RUN, GOBACK or EXIT PROGRAM in the program: check that it ends')}; exit 4;;`,
+    `  */MF.cbl) if [ $ext = yes ]; then ${say('IWX0003', 'W', 7, 20, '<> (Micro Focus and GnuCOBOL; Enterprise COBOL writes NOT =) is read as NOT =')}; exit 4; fi`,
+    `    ${say('IWS0065', 'S', 7, 20, '<> is not an Enterprise COBOL relational operator: it writes NOT =')}; exit 12;;`,
+    `  */R1.cbl|*/R2.cbl) ${say('IWR0064', 'S', 9, 12, 'FUNCTION FOO is not supported yet')}; exit 12;;`,
+    `  */Q1.cbl) ${say('IWQ0001', 'S', 9, 12, 'a message of an area this cobolwork does not read')}; ${say('IWQ0002', 'W', 8, 12, 'a warning of that area')}; exit 12;;`,
     'esac',
     'exit 0',
     '',
@@ -114,7 +95,7 @@ test('a stand-in ironwork: items by id, R refusals counted once, the census from
   try {
     const r = compilerAdvice(root, { ironwork: stub(bin) });
     assert.deepEqual(r.estate.compiler, { tool: 'ironwork', version: '9.9.9' });
-    assert.deepEqual(r.estate.programs, { count: 5, compiled: 2, failed: 1, notModelled: 2, unresolved: 0, unrun: 0 });
+    assert.deepEqual(r.estate.programs, { count: 5, compiled: 2, failed: 1, notModelled: 2, unresolved: 0, unread: 0, unrun: 0 });
     assert.deepEqual(r.estate.dialect, { ibmStrict: 2, extendedOnly: 1, extensions: { IWX0003: 1 } });
     assert.deepEqual(r.items.map((i) => [i.ref, i.sev, i.where.path, i.where.line, i.where.program]), [
       ['IWX0003', 'info', 'MF.cbl', 7, 'MF'],
@@ -140,6 +121,21 @@ test('a stand-in ironwork: items by id, R refusals counted once, the census from
     assert.deepEqual(schemaProblems(doc, schema, schema, '$', load), []);
     assert.ok(doc.items.some((i) => i.kind === 'compile' && i.ref === 'IWC0055'));
     assert.deepEqual(doc.catalogue.compiler.map((c) => c.id), ['IWC0055', 'IWX0003']);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(bin, { recursive: true, force: true });
+  }
+});
+
+test('a stand-in ironwork: an id of an area cobolwork does not read is no item, and its program is not decided', posix, () => {
+  const root = tree({ 'CLEAN.cbl': FIXTURES['CLEAN.cbl'], 'Q1.cbl': program('Q1', ['GOBACK.']) });
+  const bin = mkdtempSync(join(tmpdir(), 'cw-advice-stub-'));
+  try {
+    const r = compilerAdvice(root, { ironwork: stub(bin) });
+    assert.deepEqual(r.estate.programs, { count: 2, compiled: 1, failed: 0, notModelled: 0, unresolved: 0, unread: 1, unrun: 0 });
+    assert.deepEqual(r.items, []);
+    assert.ok(r.unmeasured.includes('ironwork check: 1 program(s) stop at a message whose id this cobolwork does not read, so whether they compile is not decided'), r.unmeasured.join(' | '));
+    assert.ok(r.unmeasured.includes('ironwork check gave message ids this cobolwork does not read (IWQ0001, IWQ0002), which are not items'), r.unmeasured.join(' | '));
   } finally {
     rmSync(root, { recursive: true, force: true });
     rmSync(bin, { recursive: true, force: true });
@@ -175,7 +171,7 @@ test('ironwork: a program using <> is an IWX item and compiles only under --comp
     assert.equal(r.estate.dialect.extendedOnly, 1);
     assert.equal(r.estate.dialect.ibmStrict, 2);
     assert.equal(r.estate.dialect.extensions.IWX0003, 1);
-    assert.deepEqual(r.estate.programs, { count: 3, compiled: 2, failed: 1, notModelled: 0, unresolved: 0, unrun: 0 });
+    assert.deepEqual(r.estate.programs, { count: 3, compiled: 2, failed: 1, notModelled: 0, unresolved: 0, unread: 0, unrun: 0 });
     const doc = advise(root, { ironwork: IRONWORK });
     assert.deepEqual(schemaProblems(doc, schema, schema, '$', load), []);
   } finally { rmSync(root, { recursive: true, force: true }); }

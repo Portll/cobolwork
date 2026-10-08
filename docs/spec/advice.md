@@ -55,9 +55,13 @@ The advice document is that join, done once, by the tool, with every item naming
 refuses. Its messages become `compile` items keyed by id: S messages as `high` with no remedy text,
 E as `med`, W as `low`, and X, the Micro Focus and GnuCOBOL forms, as `info`, each with the remedy
 `rules/ironwork-messages.json` gives that id. A program strict refuses and extended compiles is read
-from its extended run, so one form is one item. R messages, constructs ironwork does not model, make
-no item; they count in `estate.programs.notModelled` and are named once in `unmeasured`, as are
-IWL, ironwork's own limits, and I messages make nothing. A message in a copy member several programs
+from its extended run, so one form is one item. Only a message about the program is an item, read by
+its id as `build --ironwork` reads it ([build-gate.md](build-gate.md) §8a). R messages, constructs
+ironwork does not model, make no item; they count in `estate.programs.notModelled` and are named once
+in `unmeasured`, as are IWL, ironwork's own limits, and I messages make nothing. A missing member
+(IWS0002), how ironwork was run (IWO0004, IWO0005) and a translator's field (IWC0001) make no item. An
+id in an area this cobolwork does not read makes no item and is named in `unmeasured`, and a program
+that stops at one counts in `estate.programs.unread`. A message in a copy member several programs
 copy is one item, under the first program; `estate.dialect.extensions` counts programs per form. The
 run is bounded at 5,000 programs and 30 minutes, and what the bound left is counted in `unrun` and
 named in `unmeasured`.

@@ -46,15 +46,20 @@ test('the gate takes --ironwork, then --cobc, then ironwork on PATH, then cobc o
   } finally { for (const d of [repo, both, cobcOnly, none]) rmSync(d, { recursive: true, force: true }); }
 });
 
-test('ironworkCompiler compiles at 0 and 4 and keeps only E, S and U messages, at their path', posix, () => {
+test('ironworkCompiler compiles at 0 and 4, fails on the program\'s own errors, and keeps only E, S and U messages, at their path', posix, () => {
   const dir = mkdtempSync(join(tmpdir(), 'cw-gate-iw-stub-'));
   try {
     const stub = join(dir, 'ironwork-stub');
+    const say = (id, severity, line, message) => `printf '{"col":${line ? 20 : 'null'},"file":"%s","id":"${id}","line":${line ?? 'null'},"member":null,"message":"${message}","severity":"${severity}"}\\n' "$2" >&2`;
     writeFileSync(stub, [
       '#!/bin/sh',
+      'case " $* " in *" --diagnostics json "*) ;; *) exit 2;; esac',
       'case "$2" in',
-      '  */W.cbl) echo "$2: warning: IWC0055-W no STOP RUN, GOBACK or EXIT PROGRAM in the program: check that it ends" >&2; exit 4;;',
-      `  */E.cbl) echo "$2:10:20: IWC0001-S WS-X is not defined" >&2; echo "$2:11:20: IWS0065-S 'ABC' <> 1" >&2; echo "$2: warning: IWC0055-W no STOP RUN" >&2; exit 12;;`,
+      `  */W.cbl) ${say('IWC0055', 'W', null, 'no STOP RUN, GOBACK or EXIT PROGRAM in the program: check that it ends')}; exit 4;;`,
+      `  */E.cbl) ${say('IWC0101', 'S', 10, 'WS-X is not defined')}; ${say('IWS0065', 'S', 11, "'\\''ABC'\\'' <> 1")}; ${say('IWC0055', 'W', null, 'no STOP RUN')}; exit 12;;`,
+      `  */R.cbl) ${say('IWR0001', 'S', 12, 'XML PARSE VALIDATING WITH X')}; exit 12;;`,
+      `  */Q.cbl) ${say('IWQ0001', 'S', 13, 'an id of an area this cobolwork does not read')}; exit 12;;`,
+      '  */T.cbl) exit 2;;',
       'esac',
       'exit 0',
       '',
@@ -63,9 +68,12 @@ test('ironworkCompiler compiles at 0 and 4 and keeps only E, S and U messages, a
     const run = ironworkCompiler(stub);
     assert.deepEqual(run(join(dir, 'W.cbl')), { ok: true, messages: [] });
     assert.deepEqual(run(join(dir, 'E.cbl')), { ok: false, messages: [
-      `${join(dir, 'E.cbl')}:10: IWC0001-S WS-X is not defined`,
+      `${join(dir, 'E.cbl')}:10: IWC0101-S WS-X is not defined`,
       `${join(dir, 'E.cbl')}:11: IWS0065-S '…' <> 1`,
     ] });
+    assert.deepEqual(run(join(dir, 'R.cbl')), { ok: null, messages: [`${join(dir, 'R.cbl')}:12: IWR0001-S XML PARSE VALIDATING WITH X`] });
+    assert.equal(run(join(dir, 'Q.cbl')).ok, null);
+    assert.deepEqual(run(join(dir, 'T.cbl')), { ok: null, messages: [] });
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

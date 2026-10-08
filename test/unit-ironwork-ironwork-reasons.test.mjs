@@ -5,7 +5,7 @@ import { ironworkReasons } from '../lib/ironwork.mjs';
 import './pin-machine.mjs';
 
 test('returns an empty array when every result list is empty', () => {
-  const result = { failed: [], notModelled: [], unresolved: [], unrun: [], programs: 0 };
+  const result = { failed: [], notModelled: [], unresolved: [], unread: [], unrun: [], programs: 0 };
   assert.deepEqual(ironworkReasons(result), []);
 });
 
@@ -17,7 +17,7 @@ test('reports the failed count and the first ten failures with their locations',
     member: i % 2 ? `m${i}` : undefined,
     message: `err ${i}`,
   }));
-  const result = { failed, notModelled: [], unresolved: [], unrun: [], programs: 12 };
+  const result = { failed, notModelled: [], unresolved: [], unread: [], unrun: [], programs: 12 };
   const reasons = ironworkReasons(result);
   assert.equal(reasons[0], 'ironwork check: 12 of 12 program(s) do not compile as Enterprise COBOL');
   assert.equal(reasons.length, 1 + 10);
@@ -31,6 +31,7 @@ test('reports a single notModelled program with its location and message', () =>
     failed: [],
     notModelled: [{ path: 'src/x.cbl', line: 5, col: 8, member: 'M', message: 'EIB is not defined' }],
     unresolved: [],
+    unread: [],
     unrun: [],
     programs: 1,
   };
@@ -44,6 +45,7 @@ test('reports unresolved copies without listing individual entries', () => {
     failed: [],
     notModelled: [],
     unresolved: [{ path: 'src/a.cbl' }, { path: 'src/b.cbl' }],
+    unread: [],
     unrun: [],
     programs: 2,
   };
@@ -57,6 +59,7 @@ test('reports unrun programs with the first path and reason', () => {
     failed: [],
     notModelled: [],
     unresolved: [],
+    unread: [],
     unrun: [
       { path: 'src/skip.cbl', why: 'no compiler' },
       { path: 'src/skip2.cbl', why: 'no compiler' },
@@ -73,6 +76,7 @@ test('omits the line and member suffix when they are absent', () => {
     failed: [{ path: 'src/n.cbl', message: 'boom' }],
     notModelled: [],
     unresolved: [],
+    unread: [],
     unrun: [],
     programs: 1,
   };
@@ -87,14 +91,16 @@ test('emits one reason per non-empty result section in order', () => {
     failed: [{ path: 'f.cbl', line: 1, col: 1, message: 'm' }],
     notModelled: [{ path: 'n.cbl', line: 2, col: 2, message: 'm' }],
     unresolved: [{ path: 'u.cbl' }],
+    unread: [{ path: 'q.cbl', line: 3, col: 8, id: 'IWQ0001', message: 'm' }],
     unrun: [{ path: 'r.cbl', why: 'w' }],
-    programs: 4,
+    programs: 5,
   };
   assert.deepEqual(ironworkReasons(result), [
-    'ironwork check: 1 of 4 program(s) do not compile as Enterprise COBOL',
+    'ironwork check: 1 of 5 program(s) do not compile as Enterprise COBOL',
     'f.cbl:1:1: m',
     'ironwork check: 1 program(s) use what ironwork does not model yet, so whether they compile is not decided; the first is n.cbl:2:2: m',
     "ironwork check: 1 program(s) copy a member the copy libraries do not hold; name the estate's with --copylib",
+    'ironwork check: 1 program(s) stop at a message whose id this cobolwork does not read, so whether they compile is not decided; the first is q.cbl:3:8 IWQ0001: m',
     'ironwork check: 1 program(s) were not checked; the first, r.cbl: w',
   ]);
 });

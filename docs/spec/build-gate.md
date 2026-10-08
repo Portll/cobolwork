@@ -410,21 +410,31 @@ defaults, and the check reads both.
 
 ## 8a. Checking with ironwork
 
-ironwork compiles COBOL as IBM Enterprise COBOL does, and `ironwork check <program> -I <dir>…`
-stops after the front end and exits with IBM's highest return code: 0 clean, 4 warnings only
-(the program compiles), 8, 12 or 16 when it does not. Errors come first on standard error as
-`file:line:col: message`; `warning:` and `informational:` lines after them are not read. cobolwork runs it as a separate program, as it runs
-`cobc`, and links nothing of it.
+ironwork compiles COBOL as IBM Enterprise COBOL does, and `ironwork check <program> --diagnostics
+json -I <dir>…` stops after the front end and exits with IBM's highest return code: 0 clean, 4
+warnings only (the program compiles), 8, 12 or 16 when it does not; any other status is ironwork
+stopping on its own. Each message is one JSON object a line on standard error, with its id, severity,
+place and text, from ironwork 0.9.0. cobolwork decides from the exit status and the ids, never from a
+message's wording. It runs ironwork as a separate program, as it runs `cobc`, and links nothing of it.
 
 - It runs only on a pass, once per program in the tree, with the tree's copy directories and every
   `--copylib` as `-I`, and ironwork applies each program's own `CBL` and `PROCESS` cards. The options
   check reads the tree as it does with no compiler (§7).
 - The path is resolved as the compiler's is, and one inside the repository is refused with exit 2.
-- Each program lands in one of four lists in `compiled`: `failed`, a program ironwork rejects;
-  `notModelled`, one it refuses by name for a construct it does not model yet, or whose only errors
-  are a field the CICS, DL/I or SQL translator declares (`DIBSTAT is not defined`); `unresolved`, one
-  that copies a member no copy library holds; `unrun`, one whose check ended some other way or took
-  more than 60 seconds.
+- An E, S or U message is read by its id's area, the letter after `IW` in ironwork's
+  `docs/messages.md`: S, C, O, P, X and J are rules the program breaks; R is a construct ironwork
+  refuses by name because it does not model it yet; L is one of ironwork's own limits. Three ids are
+  read apart from their area: IWS0002, a member no copy library holds, and IWO0004 and IWO0005, the
+  environment and flags ironwork was run with. An IWC0001, a name not defined, is the translator's
+  where the source at the message's line and column holds a field the CICS, DL/I or SQL translator
+  declares, such as `DIBSTAT`.
+- Each program lands in one of five lists in `compiled`, the first that applies: `failed`, an error
+  is the program's own; `unread`, an error carries an id in an area this cobolwork does not read, or
+  no id, and cobolwork cannot tell the program's error from ironwork's gap; `unrun`, the check ended
+  with no error message or took more than 60 seconds, an error was about how ironwork was run, or
+  `ironwork --version` names a release older than 0.9.0, which is then not run; `unresolved`, a member
+  no copy library holds; `notModelled`, every error is ironwork's: an R or L id, or a translator's
+  field.
 - `compile` is `false` with any program in `failed`, and the gate exits 4 as for a compiler. It is
   `null` where every other program is one ironwork could not decide: the gate exits 3, or, where the
   policy says `warn` for coverage, passes with `compile` in `relaxed`. What ironwork has not modelled
@@ -1148,10 +1158,10 @@ are about what the default, `warn`, does with them.
     Then  the gate exits 4, compile is false, and failed names the program, line and message with the literal replaced
 
 #### B6.7 A construct ironwork does not model yet leaves the build undecided
-    Given a program ironwork refuses as not supported yet
+    Given a program ironwork refuses by name, with an IWR id
     Then  the gate exits 3 and compile is null
     And   under coverage warn the gate exits 0 with compile in relaxed
-    And   a statement verb ironwork stops at, or a field a translator declares, is not modelled either
+    And   an IWC0001 at a field a translator declares is not modelled either, and a syntax error at a statement verb fails
 
 #### B6.8 A fail runs no ironwork
     Given a finding that blocks
@@ -1163,10 +1173,10 @@ are about what the default, `warn`, does with them.
 
 #### B6.11 A program with warnings only compiles; errors are read past warning and informational lines
     Given a program ironwork checks at 4 with a warning, and one at 8 with an error, a warning and an informational line
-    Then  the first counts as accepted and warned, and the second fails naming only its error
+    Then  the first counts as accepted and warned, and the second fails naming only its error and its id
 
 #### B6.10 A copybook no library holds leaves the program unresolved, not failed
-    Given a program ironwork reports copying a member the copy libraries do not hold
+    Given a program ironwork rejects with IWS0002, a member the copy libraries do not hold
     Then  compile is null and unresolved names the program
 
 #### B6.12 --precompile checks a CICS program's translation before the compiler runs
@@ -1187,6 +1197,10 @@ are about what the default, `warn`, does with them.
 #### B6.15 A program holding EXEC DLI is not translated, and is named
     Given a program holding EXEC DLI among the compiler's arguments
     Then  precompiled.skipped names it, and the compiler command runs
+
+#### B6.16 A message id this cobolwork does not read leaves the build undecided
+    Given a program ironwork rejects with an error whose id is in an area cobolwork does not read
+    Then  the gate exits 3, compile is null, and unread names the program, its place and the id
 
 ### B7 - What the gate emits
 

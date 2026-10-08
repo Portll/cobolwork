@@ -355,6 +355,21 @@ test('G3.3a A program that stopped compiling carries the compiler\'s error lines
   assert.deepEqual(said, [1, 2, 3].map((n) => `the compiler: P.cbl:${n}: error: syntax error ${n}`));
 });
 
+test('G3.3b A program the compiler cannot decide after the patch leaves compile undecided, with its lines', { skip }, () => {
+  const root = repo({ 'P.cbl': BASE });
+  const fp = fingerprintOf(root, osCommandIn('P.cbl'));
+  patch(root, { 'P.cbl': program('P', [ACCEPT, MOVE, 'GOBACK.']) });
+  const headUndecided = {
+    run: (file) => (readFileSync(file, 'latin1').includes(CALL) ? { ok: true, messages: [] }
+      : { ok: null, messages: [`${file}:3: IWR0001-S a construct the compiler does not model`] }),
+    label: 'ironwork check',
+  };
+  const doc = gate(root, fp, { compiler: headUndecided });
+  assert.equal(doc.checks.compile, null);
+  assert.match(doc.compiled, /^1 program\(s\) after the patch stop where the compiler cannot decide under ironwork check/);
+  assert.ok(doc.reasons.includes('the compiler: P.cbl:3: IWR0001-S a construct the compiler does not model'), doc.reasons.join('\n'));
+});
+
 test('G3.4 The same inputs give the same document', { skip }, () => {
   const root = repo({ 'P.cbl': BASE });
   const fp = fingerprintOf(root, osCommandIn('P.cbl'));

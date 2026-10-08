@@ -132,24 +132,28 @@ function standInCobc(name = 'cobc') {
   chmodSync(path, 0o755);
   return { path, args: () => (existsSync(`${path}.args`) ? readFileSync(`${path}.args`, 'utf8').trim().split('\n') : null) };
 }
-// An ironwork, outside every repository, that answers check as ironwork would for a few marked
-// programs and records each run's arguments on a line of its own.
+// An ironwork 0.9.0, outside every repository, that answers check with --diagnostics json as
+// ironwork would for a few marked programs and records each run's arguments on a line of its own. A
+// message at DIBSTAT is placed where the program holds it.
+const said = (id, severity, line, col, message) => `printf '{"col":%s,"file":"%s","id":"${id}","line":%s,"member":null,"message":"%s","severity":"${severity}"}\\n' ${col} "$2" ${line} "${message}" >&2`;
 function standInIronwork() {
   const dir = mkdtempSync(join(tmpdir(), 'cw-ironwork-'));
   const path = join(dir, 'ironwork');
   writeFileSync(path, [
     '#!/bin/sh',
-    'if [ "$1" = "--version" ]; then echo "ironwork for COBOL 0.1.1"; exit 0; fi',
+    'if [ "$1" = "--version" ]; then echo "ironwork for COBOL 0.9.0"; exit 0; fi',
     'printf "%s " "$@" >> "$0.args"; echo >> "$0.args"',
-    'if grep -q BADNAME "$2"; then echo "$2:7:12: \'NOPE\' is not a data name" >&2; exit 12; fi',
-    'if grep -q CORRESPONDING "$2"; then echo "$2:9:12: MOVE CORRESPONDING is not supported yet" >&2; exit 12; fi',
-    'if grep -q GONEMARK "$2"; then echo "$2:6:8: COPY GONE: no such member in the copy libraries" >&2; exit 12; fi',
-    'if grep -q ENTRYMARK "$2"; then echo "$2:9:12: a statement, found ENTRY" >&2; exit 12; fi',
-    'if grep -q DIBMARK "$2"; then echo "$2:9:12: DIBSTAT is not defined" >&2; exit 12; fi',
-    'if grep -q DLIMARK "$2"; then echo "$2:9:12: EXEC DLI GU is not supported: ironwork for COBOL does not run IMS DL/I calls" >&2; echo "$2:10:12: DIBSTAT is not defined" >&2; exit 12; fi',
-    'if grep -q WORDMARK "$2"; then echo "$2:9:12: a statement, found DIVISION" >&2; exit 12; fi',
-    'if grep -q WARNMARK "$2"; then echo "$2:3:8: warning: THREAD is not on the CBL card" >&2; exit 4; fi',
-    'if grep -q EMARK "$2"; then echo "$2:8:12: \'NOPE\' is not a data name" >&2; echo "$2: warning: THREAD is not on the CBL card" >&2; echo "informational: 1 program" >&2; exit 8; fi',
+    'at=$(awk \'/DIBSTAT/ { print NR " " index($0, "DIBSTAT"); exit }\' "$2"); dl=${at% *}; dc=${at#* }',
+    `if grep -q BADNAME "$2"; then ${said('IWS0001', 'S', 7, 12, "'NOPE' is not a data name")}; exit 12; fi`,
+    `if grep -q CORRESPONDING "$2"; then ${said('IWR0002', 'S', 9, 12, 'MOVE CORRESPONDING is not supported yet')}; exit 12; fi`,
+    `if grep -q GONEMARK "$2"; then ${said('IWS0002', 'S', 6, 8, 'COPY GONE: no such member in the copy libraries')}; exit 12; fi`,
+    `if grep -q ENTRYMARK "$2"; then ${said('IWS0001', 'S', 9, 12, 'a statement, found ENTRY')}; exit 12; fi`,
+    `if grep -q DIBMARK "$2"; then ${said('IWC0001', 'S', '$dl', '$dc', 'DIBSTAT is not defined')}; exit 12; fi`,
+    `if grep -q DLIMARK "$2"; then ${said('IWR0002', 'S', 9, 12, 'EXEC DLI GU is not supported: ironwork for COBOL does not run IMS DL/I calls')}; ${said('IWC0001', 'S', '$dl', '$dc', 'DIBSTAT is not defined')}; exit 12; fi`,
+    `if grep -q QMARK "$2"; then ${said('IWQ0001', 'S', 9, 12, 'an id of an area this cobolwork does not read')}; exit 12; fi`,
+    `if grep -q WORDMARK "$2"; then ${said('IWS0001', 'S', 9, 12, 'a statement, found DIVISION')}; exit 12; fi`,
+    `if grep -q WARNMARK "$2"; then ${said('IWC0112', 'W', 3, 8, 'THREAD is not on the CBL card')}; exit 4; fi`,
+    `if grep -q EMARK "$2"; then ${said('IWS0099', 'E', 8, 12, "'NOPE' is not a data name")}; ${said('IWC0112', 'W', 'null', 'null', 'THREAD is not on the CBL card')}; ${said('IWP0002', 'I', 'null', 'null', '1 program')}; exit 8; fi`,
     'exit 0',
   ].join('\n') + '\n');
   chmodSync(path, 0o755);
@@ -703,13 +707,13 @@ test('B6.5 ironwork checks every program after a pass, with the tree\'s copy dir
   assert.equal(r.exit, 0);
   assert.equal(r.doc.checks.compile, true);
   assert.equal(r.doc.compiled.tool, 'ironwork');
-  assert.equal(r.doc.compiled.version, 'ironwork for COBOL 0.1.1');
+  assert.equal(r.doc.compiled.version, 'ironwork for COBOL 0.9.0');
   assert.deepEqual([r.doc.compiled.programs, r.doc.compiled.accepted], [2, 2]);
   assert.deepEqual(r.doc.compiled.argv.slice(0, 2), ['check', '<program>']);
   assert.match(r.doc.compiled.argv.slice(2).join(' '), /(^| )-I copy( |$)/);
   const runs = iw.runs();
   assert.equal(runs.length, 2);
-  for (const run of runs) assert.match(run, /^check \S+\.cbl (-I \S+ )*-I \S+\/copy\s*$/);
+  for (const run of runs) assert.match(run, /^check \S+\.cbl --diagnostics json (-I \S+ )*-I \S+\/copy\s*$/);
   assert.equal(r.provenance.compiler.tool, 'ironwork');
   assert.match(r.provenance.compiler.sha256, /^[0-9a-f]{64}$/);
 });
@@ -722,8 +726,8 @@ test('B6.6 A program ironwork rejects exits 4, and its message quotes no literal
   assert.equal(r.exit, 4);
   assert.equal(r.doc.checks.compile, false);
   assert.equal(r.doc.compiled.status, 12);
-  assert.deepEqual(r.doc.compiled.failed, [{ path: 'B.cbl', line: 7, col: 12, message: "'…' is not a data name", errors: 1 }]);
-  assert.ok(r.doc.reasons.includes("B.cbl:7:12: '…' is not a data name"));
+  assert.deepEqual(r.doc.compiled.failed, [{ path: 'B.cbl', line: 7, col: 12, id: 'IWS0001', message: "'…' is not a data name", errors: 1 }]);
+  assert.ok(r.doc.reasons.includes("B.cbl:7:12 IWS0001: '…' is not a data name"), r.doc.reasons.join('\n'));
   assert.equal(JSON.stringify(r.doc).includes('NOPE'), false);
   assert.match(buildSummaryLine(r.doc), /ironwork: 1 of 2 programs do not compile/);
 });
@@ -740,10 +744,11 @@ test('B6.7 A construct ironwork does not model yet leaves the build undecided', 
   assert.equal(warned.exit, 0);
   assert.deepEqual(warned.doc.relaxed, ['compile']);
   assert.match(buildSummaryLine(warned.doc), /pass \(relaxed: compile\); .*ironwork: 1 program not decided/);
-  // A field the DL/I translator declares is its gap too; a statement it stops at is the program's
-  // error, now that ironwork reads ENTRY and ALTER.
-  const quiet = (id, name) => program(id, [`01 WS-${name} PIC X.`], ['GOBACK.']);
-  const r = build(repo({ 'E.cbl': quiet('E', 'ENTRYMARK'), 'D.cbl': quiet('D', 'DIBMARK'), 'L.cbl': quiet('L', 'DLIMARK'), 'W.cbl': quiet('W', 'WORDMARK') }), { ironwork: iw.path });
+  // A field the DL/I translator declares, read at the message's place in the source, is its gap
+  // too; a statement ironwork stops at is the program's error.
+  const quiet = (id, name, body = ['GOBACK.']) => program(id, [`01 WS-${name} PIC X.`], body);
+  const dib = (id, name) => quiet(id, name, [`MOVE DIBSTAT TO WS-${name}`, 'GOBACK.']);
+  const r = build(repo({ 'E.cbl': quiet('E', 'ENTRYMARK'), 'D.cbl': dib('D', 'DIBMARK'), 'L.cbl': dib('L', 'DLIMARK'), 'W.cbl': quiet('W', 'WORDMARK') }), { ironwork: iw.path });
   assert.deepEqual(r.doc.compiled.notModelled.map((x) => x.path).sort(), ['D.cbl', 'L.cbl']);
   assert.deepEqual(r.doc.compiled.failed.map((x) => x.path).sort(), ['E.cbl', 'W.cbl']);
   assert.equal(r.exit, 4);
@@ -775,7 +780,7 @@ test('B6.11 A program with warnings only compiles; errors are read past warning 
   const quiet = (id, name) => program(id, [`01 WS-${name} PIC X.`], ['GOBACK.']);
   const r = build(repo({ 'W.cbl': quiet('W', 'WARNMARK'), 'E.cbl': quiet('E', 'EMARK') }), { ironwork: iw.path });
   assert.deepEqual([r.doc.compiled.accepted, r.doc.compiled.warned], [1, 1]);
-  assert.deepEqual(r.doc.compiled.failed, [{ path: 'E.cbl', line: 8, col: 12, message: "'…' is not a data name", errors: 1 }]);
+  assert.deepEqual(r.doc.compiled.failed, [{ path: 'E.cbl', line: 8, col: 12, id: 'IWS0099', message: "'…' is not a data name", errors: 1 }]);
   assert.equal(r.exit, 4);
 });
 
@@ -787,6 +792,17 @@ test('B6.10 A copybook no library holds leaves the program unresolved, not faile
   assert.deepEqual(r.doc.compiled.failed, []);
   assert.equal(r.doc.compiled.unresolved[0].path, 'G.cbl');
   assert.ok(r.doc.reasons.some((x) => /copy a member the copy libraries do not hold; name the estate's with --copylib/.test(x)));
+});
+
+test('B6.16 A message id this cobolwork does not read leaves the build undecided', { skip: skip || posix }, () => {
+  const iw = standInIronwork();
+  const r = build(repo({ 'Q.cbl': program('Q', ['01 WS-QMARK PIC X.'], ['GOBACK.']) }), { ironwork: iw.path });
+  assert.equal(r.exit, 3);
+  assert.equal(r.doc.checks.compile, null);
+  assert.deepEqual([r.doc.compiled.failed, r.doc.compiled.notModelled], [[], []]);
+  assert.deepEqual(r.doc.compiled.unread, [{ path: 'Q.cbl', line: 9, col: 12, id: 'IWQ0001', message: 'an id of an area this cobolwork does not read' }]);
+  assert.ok(r.doc.reasons.some((x) => /1 program\(s\) stop at a message whose id this cobolwork does not read/.test(x)), r.doc.reasons.join('\n'));
+  assert.match(buildSummaryLine(r.doc), /ironwork: 1 program not decided/);
 });
 
 // B7 - What the gate emits
@@ -1234,8 +1250,8 @@ test('build --pds-export --ironwork checks the members written out under their n
     const doc = absolute(root, { pdsExport: true, ironwork: iw.path });
     assert.equal(doc.checks.compile, false);
     assert.deepEqual(doc.compiled.failed.map((d) => d.path), ['IBMUSER.COBOL/BADPGM']);
-    assert.deepEqual(doc.compiled.argv, ['check', '<program>', '-I', 'IBMUSER.COBOL', '-I', 'IBMUSER.COPYLIB']);
-    assert.match(iw.runs()[0], /IBMUSER\.COBOL\/BADPGM -I \S+IBMUSER\.COBOL -I \S+IBMUSER\.COPYLIB/);
+    assert.deepEqual(doc.compiled.argv, ['check', '<program>', '--diagnostics', 'json', '-I', 'IBMUSER.COBOL', '-I', 'IBMUSER.COPYLIB']);
+    assert.match(iw.runs()[0], /IBMUSER\.COBOL\/BADPGM --diagnostics json -I \S+IBMUSER\.COBOL -I \S+IBMUSER\.COPYLIB/);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 

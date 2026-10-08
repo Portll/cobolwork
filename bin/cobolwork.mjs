@@ -59,7 +59,7 @@ const USAGE = `cobolwork ${VERSION} — COBOL, JCL and CICS security analysis, n
                                every remediation and best practice for the repository in one document:
                                each item names the rule, practice or compiler message it rests on, with
                                the catalogue they point into and what could not be measured
-  cobolwork gate <repo> --base <ref> [--head <ref>] --target <fingerprint>
+  cobolwork gate <repo> --base <ref> [--head <ref>] --target <fingerprint> [--ironwork <path> | --cobc <path>]
                                whether a patch fixed that finding and moved nothing else: pass, fail
                                or undecided, with the reason for each check that did not pass
   cobolwork capabilities [--json]
@@ -110,8 +110,9 @@ Options
   --report <file>       tui, explain: read a stored scan report instead of scanning
   --keys ispf|modern    tui: F3 and a command line, or Esc and letters (default ispf)
   --target <fingerprint>  gate: the finding the patch is meant to fix, as the base reports it
-  --cobc <path>         gate: the COBOL compiler to check the patch with; by default the first cobc on
-                        PATH outside the repository, and without one the document says not compiled
+  --cobc <path>         gate: check the patch with this cobc -fsyntax-only rather than ironwork; by
+                        default ironwork, then cobc, from PATH outside the repository, and without
+                        either the document says not compiled
   --exit-code           gate: exit 0 on pass, 1 on fail, 3 on undecided rather than 0 whenever it ran
   --target-only         gate: judge only the target and coverage, for a revision others have changed since
   --policy <file>       build: an organisation's floor policy, from outside the repository; the
@@ -126,7 +127,8 @@ Options
                         where one may be, a build with no --allowed-signers fails the check
   --ironwork <path>     build: after a pass, run ironwork check on every program, for an estate that
                         compiles with IBM Enterprise COBOL; a program ironwork rejects exits 4, one it
-                        does not model yet leaves the build undecided
+                        does not model yet leaves the build undecided. gate: check the patch with
+                        ironwork check. advise: compile every program and read its messages
   --precompile          build -- <compiler>: after a pass, translate each program the compiler command
                         names that holds EXEC SQL or EXEC CICS and run the compiler on it with
                         -fsyntax-only; one it refuses exits 4 and the command after -- does not run
@@ -328,13 +330,15 @@ if (opts.json && opts._.length && opts._[0] !== 'capabilities') {
   process.stderr.write(`cobolwork: --json is for capabilities; every other command writes JSON unless --format says otherwise\n`);
   process.exit(2);
 }
-const buildFlag = ['policy', 'provenance', 'provenanceFormat', 'artifact', 'equivalence', 'ironwork'].find((k) => opts[k] !== undefined) || (compilerArgv ? '' : null);
+const buildFlag = ['policy', 'provenance', 'provenanceFormat', 'artifact', 'equivalence'].find((k) => opts[k] !== undefined) || (compilerArgv ? '' : null);
 if (opts.provenanceFormat !== undefined && !['cobolwork', 'slsa'].includes(opts.provenanceFormat)) { process.stderr.write(`cobolwork: --provenance-format takes cobolwork or slsa; got ${opts.provenanceFormat}\n`); process.exit(2); }
 if ((opts.provenanceFormat !== undefined || opts.artifact) && !opts.provenance) { process.stderr.write('cobolwork: --provenance-format and --artifact describe the --provenance file; name it\n'); process.exit(2); }
 if (buildFlag !== null && opts._.length && opts._[0] !== 'build') {
   process.stderr.write(`cobolwork: ${buildFlag ? `--${buildFlag}` : '--'} is for build only\n`);
   process.exit(2);
 }
+const IRONWORK_COMMANDS = ['build', 'gate', 'advise'];
+if (opts.ironwork !== undefined && opts._.length && !IRONWORK_COMMANDS.includes(opts._[0])) { process.stderr.write(`cobolwork: --ironwork is for ${IRONWORK_COMMANDS.join(', ')}\n`); process.exit(2); }
 // A misspelled set would run nothing and report a clean zero.
 const badSets = (opts.only || []).filter(s => !RULE_SETS.includes(s));
 if (badSets.length || (opts.only && !opts.only.length)) { process.stderr.write(`cobolwork: --only takes ${RULE_SETS.join(',')}; got ${badSets.join(',') || 'nothing'}\n`); process.exit(2); }
@@ -429,7 +433,7 @@ try {
     if (opts.only || opts.repos) { process.stderr.write('cobolwork: gate judges one repository with every rule set; --only and --repos do not apply\n'); process.exit(2); }
     // A suppression is not a fix, so the gate reads findings as the engine reports them.
     if (opts.baseline || opts.noBaseline) { process.stderr.write('cobolwork: gate applies no baseline; --baseline and --no-baseline do not apply\n'); process.exit(2); }
-    const doc = gateRefs(root, opts.base, opts.head || null, opts.target, { cobc: opts.cobc, targetOnly: opts.targetOnly === true });
+    const doc = gateRefs(root, opts.base, opts.head || null, opts.target, { cobc: opts.cobc, ironwork: opts.ironwork || null, targetOnly: opts.targetOnly === true });
     stampRevisions(doc.summary, opts.head || null);
     emit(doc, opts);
     if (opts.exitCode) process.exitCode = VERDICT_EXIT[doc.verdict];

@@ -59,7 +59,7 @@ adds:
 ## 3. The command
 
 ```
-cobolwork gate <repo> --base <ref> [--head <ref>] --target <fingerprint> [--cobc <path>] [--exit-code]
+cobolwork gate <repo> --base <ref> [--head <ref>] --target <fingerprint> [--ironwork <path> | --cobc <path>] [--exit-code]
 ```
 
 - `--head` defaults to the working tree, as `diff` does: tracked files and untracked ones git does
@@ -213,7 +213,7 @@ base fingerprint; `CALL "SYSTEM"` for `CALL 'SYSTEM'` changes the fingerprint an
   "outcome": "still-reported",
   "pairedBy": "scope",
   "checks": { "target": false, "added": true, "layout": true, "calls": true, "configuration": true, "coverage": true, "compile": null },
-  "compiled": "not compiled: no cobc on PATH outside the repository",
+  "compiled": "not compiled: no ironwork on PATH outside the repository, and no cobc on PATH outside the repository",
   "reasons": ["..."],
   "repositoryText": ["target.path", "target.program", "reasons"],
   "summary": { "mode": "gate", "base": "HEAD", "head": "3f2a9c1", "flowModel": "...", "toolVersion": "...", "introduced": 0, "resolved": 0, "changedFiles": 1, "coverageIncomplete": false }
@@ -245,17 +245,23 @@ target's files, and the files of the sinks and sources its outcome reads, are di
 
 ## 9. The compiler
 
-Optional, and never taken from the reviewed tree. `--cobc <path>` names it; otherwise the first
-`cobc` on `PATH`, resolved to an absolute file and skipping any `PATH` entry that is relative or lies
-inside the repository. It runs with a working directory outside the repository, base and head
-alike, as `cobc -fsyntax-only` with the directories that hold the tree's copybooks, on every program
-file the patch changed and every program whose resolved `COPY` statements include a file the patch
-changed: a one-line copybook edit breaks the programs that copy it, not the copybook. Only a
-regression fails: a program that did not compile before cannot fail the gate for not compiling
-after, because the gate cannot tell a missing copy library from a broken patch. A program that
-stopped compiling adds up to three of the compiler's error lines to `reasons`, each as
-`the compiler: <path>:<line>: error: ...` with the path as the repository names it, so a drafter's
-next attempt knows where its patch broke the program.
+Optional, and never taken from the reviewed tree. The compiler is ironwork where there is one and
+cobc otherwise: `--ironwork <path>` names ironwork, `--cobc <path>` names cobc, and with neither the
+gate takes the first `ironwork` on `PATH`, then the first `cobc`, each resolved to an absolute file
+and skipping any `PATH` entry that is relative or lies inside the repository. `compiled` names the
+compiler that ran, and where it is cobc found on `PATH`, that no ironwork was. ironwork runs as
+`ironwork check` and a program compiles at return code 0 or 4, as in the build gate
+([build-gate.md](build-gate.md) §8a); cobc runs as `cobc -fsyntax-only`. Either runs with a working
+directory outside the repository, base and head alike, with the directories that hold the tree's
+copybooks, on every program file the patch changed and every program whose resolved `COPY`
+statements include a file the patch changed: a one-line copybook edit breaks the programs that copy
+it, not the copybook. Only a regression fails: a program that did not compile before cannot fail
+the gate for not compiling after, because the gate cannot tell a missing copy library from a broken
+patch. A program that stopped compiling adds up to three of the compiler's error lines to
+`reasons`, each as `the compiler: <path>:<line>: error: ...` from cobc or
+`the compiler: <path>:<line>: IWC0001-S ...` from ironwork, with the path as the repository names it
+and ironwork's quoted literals replaced by `'…'`, so a drafter's next attempt knows where its patch
+broke the program.
 
 Each run of the compiler is stopped at 60 seconds, at most 50 programs are compiled, and the whole
 check has one budget of 10 minutes; past either limit `compile` is null and `compiled` says which.

@@ -6,7 +6,8 @@
 //
 //   node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json>
 //        --planted <seed.json> [--per-label 40] [--out results.jsonl] [--summary file]
-//        [--model A|B|J] [--timeout seconds] [--prompts-only]
+//        [--model A|B|J] [--timeout seconds] [--parallel 4] [--prompts-only]
+//   node bench/label-models.mjs --calibrate --unknown --corpus <root> --execution <label.json> ...
 //
 // Each reviewer is named by the environment: CW_MODEL_A_URL, CW_MODEL_A and CW_MODEL_A_KEY, and
 // the same with _B, an OpenAI-compatible chat endpoint on the operator's own machine, or with the
@@ -16,12 +17,13 @@
 // default): it reads the code and both models' answers, and may answer that no consensus is
 // reached or that no label is recommended. --model asks one of A, B or J, so each runs when its
 // host is free; J asks only about items both models have answered. Answers are written a line at
-// a time to --out, and a second run asks only what is not answered yet. Calibration writes no
+// a time to --out, and a second run asks only what is not answered yet. --unknown asks about every
+// finding whose execution label is unknown, which has no known answer to measure against. Calibration writes no
 // label: the rule that lets an answer stand for a label is the operator's, set from these numbers.
 import { createHash } from 'node:crypto';
 import http from 'node:http';
 import https from 'node:https';
-import { spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -35,7 +37,9 @@ export const VERDICTS = ['reaches', 'does-not-reach', 'unsure'];
 // What the judge may answer: a verdict, that the answers and the code settle nothing, or that no
 // label should be given at all (the code shown is not enough to decide).
 export const JUDGE_VERDICTS = ['reaches', 'does-not-reach', 'no-consensus', 'not-recommended'];
-const PROMPT_CAP = 12000;
+const PROMPT_CAP = 20000;
+// A file's code is shown whole from the source to the sink where it spans no more than this.
+const SPAN = 220;
 const AROUND = 3;
 
 const SYSTEM = 'You review COBOL programs for security flaws. You answer with one JSON object and nothing else.';
@@ -113,7 +117,11 @@ export function promptFor(f, read) {
     let text;
     try { text = read(file); } catch { continue; }
     const decl = declarations(text, items.get(file) || new Set());
-    parts.push(`\nCode of ${file}:\n${excerpt(text, [...lines, ...decl])}\n`);
+    // Every line between the first and last statement of the route, where the stretch is short
+    // enough: what runs between two hops can test, change or replace the value.
+    const [lo, hi] = [Math.min(...lines), Math.max(...lines)];
+    const shown = hi - lo <= SPAN ? Array.from({ length: hi - lo + 1 }, (_, k) => lo + k) : [...lines];
+    parts.push(`\nCode of ${file}:\n${excerpt(text, [...shown, ...decl])}\n`);
   }
   return `${capped(parts)}\n${QUESTION}`;
 }
@@ -164,16 +172,32 @@ export function judgePrompt(prompt, a, b) {
 // run from a scratch directory so no project's instructions reach it.
 function askClaude(prompt, timeoutMs, model) {
   const started = Date.now();
-  const r = spawnSync('claude', ['-p', '--model', model, '--output-format', 'json', '--tools', '', '--no-session-persistence', '--system-prompt', SYSTEM,
-    '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--disable-slash-commands'], { cwd: tmpdir(), input: prompt, encoding: 'utf8', timeout: timeoutMs, maxBuffer: 1 << 22 });
-  if (r.error) return { error: r.error.code === 'ETIMEDOUT' ? `no answer in ${timeoutMs / 1000}s` : r.error.message, ms: Date.now() - started };
-  try {
-    const out = JSON.parse(r.stdout);
-    if (out.is_error) return { error: String(out.result || 'the call failed').slice(0, 200), ms: Date.now() - started };
-    return { text: out.result ?? '', ms: Date.now() - started, costUsd: out.total_cost_usd };
-  } catch {
-    return { error: `the command wrote no JSON (exit ${r.status})`, ms: Date.now() - started };
-  }
+  return new Promise((done) => {
+    const child = spawn('claude', ['-p', '--model', model, '--output-format', 'json', '--tools', '', '--no-session-persistence', '--system-prompt', SYSTEM,
+      '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--disable-slash-commands'], { cwd: tmpdir(), stdio: ['pipe', 'pipe', 'ignore'] });
+    let out = '';
+    const timer = setTimeout(() => { child.kill(); done({ error: `no answer in ${timeoutMs / 1000}s`, ms: Date.now() - started }); }, timeoutMs);
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', (c) => { out += c; });
+    child.on('error', (e) => { clearTimeout(timer); done({ error: e.message, ms: Date.now() - started }); });
+    child.on('close', (code) => {
+      clearTimeout(timer);
+      try {
+        const o = JSON.parse(out);
+        if (o.is_error) return done({ error: String(o.result || 'the call failed').slice(0, 200), ms: Date.now() - started });
+        done({ text: o.result ?? '', ms: Date.now() - started, costUsd: o.total_cost_usd });
+      } catch {
+        done({ error: `the command wrote no JSON (exit ${code})`, ms: Date.now() - started });
+      }
+    });
+    child.stdin.end(prompt);
+  });
+}
+
+// `work` over `list`, at most `n` at a time.
+async function pool(list, n, work) {
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(n, list.length) }, async () => { while (next < list.length) await work(list[next++]); }));
 }
 
 export function modelsFromEnv(env = process.env) {
@@ -213,7 +237,8 @@ export function tally(rows) {
     const s = (out[r.set] ||= { models: {}, both: { agreed: 0, agreedRight: 0, agreedWrong: 0, items: 0 } });
     const m = (s.models[r.model] ||= { positives: 0, negatives: 0, rightOnPositives: 0, rightOnNegatives: 0, unsure: 0, withheld: 0, errors: 0 });
     if (r.error) { m.errors++; continue; }
-    if (r.truth === 'reaches') { m.positives++; if (r.verdict === 'reaches') m.rightOnPositives++; } else { m.negatives++; if (r.verdict === 'does-not-reach') m.rightOnNegatives++; }
+    m.verdicts = { ...(m.verdicts || {}), [r.verdict]: ((m.verdicts || {})[r.verdict] || 0) + 1 };
+    if (r.truth === 'reaches') { m.positives++; if (r.verdict === 'reaches') m.rightOnPositives++; } else if (r.truth) { m.negatives++; if (r.verdict === 'does-not-reach') m.rightOnNegatives++; }
     if (r.verdict === 'unsure') m.unsure++;
     if (r.verdict === 'no-consensus' || r.verdict === 'not-recommended') m.withheld++;
     const id = `${r.set}\0${r.item}`;
@@ -227,7 +252,7 @@ export function tally(rows) {
     s.items++;
     if (a.verdict === b.verdict && a.verdict !== 'unsure') {
       s.agreed++;
-      if (a.verdict === a.truth) s.agreedRight++; else s.agreedWrong++;
+      if (a.truth) { if (a.verdict === a.truth) s.agreedRight++; else s.agreedWrong++; }
     }
   }
   for (const s of Object.values(out)) {
@@ -242,10 +267,10 @@ export function tally(rows) {
   return out;
 }
 
-// The execution set: each confirmed label's finding, found again by fingerprint (or rule, path
+// The execution set: each confirmed label's finding (or, for --unknown, each unknown one's), found again by fingerprint (or rule, path
 // and line) in a scan of its repository.
-function executionItems(labelsFile, corpus) {
-  const confirmed = JSON.parse(readFileSync(labelsFile, 'utf8')).labels.filter((l) => l.label === 'confirmed');
+function executionItems(labelsFile, corpus, which = 'confirmed') {
+  const confirmed = JSON.parse(readFileSync(labelsFile, 'utf8')).labels.filter((l) => l.label === which);
   const items = [];
   const byRepo = Map.groupBy(confirmed, (l) => l.repo);
   let matched = 0;
@@ -258,7 +283,7 @@ function executionItems(labelsFile, corpus) {
       const f = findings.find((x) => x.fingerprint === l.fingerprint) || findings.find((x) => x.rule === l.rule && x.path === l.path && x.line === l.line);
       if (!f) continue;
       matched++;
-      items.push({ set: 'execution', item: `${repo}/${l.path}:${l.line}:${l.rule}`, rule: l.rule, truth: 'reaches', prompt: promptFor(f, read) });
+      items.push({ set: which === 'confirmed' ? 'execution' : which, item: `${repo}/${l.path}:${l.line}:${l.rule}`, rule: l.rule, truth: which === 'confirmed' ? 'reaches' : null, fingerprint: l.fingerprint, prompt: promptFor(f, read) });
     }
   }
   return { items, wanted: confirmed.length, matched };
@@ -299,8 +324,8 @@ async function calibrate(opts) {
   const judging = opts.only === 'J';
   const models = judging ? [] : modelsFromEnv().filter((m) => !opts.only || m.name === opts.only);
   if (!judging && models.length < (opts.only ? 1 : 2) && !opts.promptsOnly) throw new Error('name two models: CW_MODEL_A_URL, CW_MODEL_A, CW_MODEL_A_KEY and the same with _B');
-  const exec = executionItems(opts.execution, opts.corpus);
-  const planted = plantedItems(opts.planted, opts.corpus, opts.perLabel);
+  const exec = executionItems(opts.execution, opts.corpus, opts.unknown ? 'unknown' : 'confirmed');
+  const planted = opts.unknown ? { items: [], skipped: 0 } : plantedItems(opts.planted, opts.corpus, opts.perLabel);
   const items = [...exec.items, ...planted.items];
   if (opts.promptsOnly) {
     writeFileSync(opts.out, items.map((it) => `${JSON.stringify(it)}\n`).join(''));
@@ -314,31 +339,29 @@ async function calibrate(opts) {
     writeFileSync(opts.out, kept.map((r) => `${JSON.stringify(r)}\n`).join(''));
     for (const r of kept) { rows.push(r); done.add(`${r.model}\0${r.set}\0${r.item}`); }
   }
-  // Every question to one model before the next, so the host loads each model once.
+  // Every question to one model before the next, so the host loads each model once. A local host
+  // takes one question at a time; the command line takes --parallel.
   for (const m of models) {
-    for (const it of items) {
-      if (done.has(`${m.name}\0${it.set}\0${it.item}`)) continue;
-      const answer = m.url === 'claude' ? askClaude(it.prompt, opts.timeoutMs, m.model) : await ask(m, it.prompt, opts.timeoutMs);
-      const row = { model: m.name, modelId: m.model, set: it.set, item: it.item, rule: it.rule, truth: it.truth, promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
+    const todo = items.filter((it) => !done.has(`${m.name}\0${it.set}\0${it.item}`));
+    await pool(todo, m.url === 'claude' ? opts.parallel : 1, async (it) => {
+      const answer = m.url === 'claude' ? await askClaude(it.prompt, opts.timeoutMs, m.model) : await ask(m, it.prompt, opts.timeoutMs);
+      const row = { model: m.name, modelId: m.model, set: it.set, item: it.item, rule: it.rule, truth: it.truth, ...(it.fingerprint ? { fingerprint: it.fingerprint } : {}), promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
         ...(answer.costUsd != null ? { costUsd: answer.costUsd } : {}), ...(answer.error ? { error: answer.error } : parseVerdict(answer.text)) };
       appendFileSync(opts.out, `${JSON.stringify(row)}\n`);
       rows.push(row);
-    }
+    });
   }
   // The judge, on each item both models answered.
   if (judging) {
-    const answered = (name, it) => rows.find((r) => r.model === name && r.set === it.set && r.item === it.item);
-    for (const it of items) {
-      if (done.has(`J\0${it.set}\0${it.item}`)) continue;
-      const a = answered('A', it);
-      const b = answered('B', it);
-      if (!a || !b) continue;
-      const answer = askClaude(judgePrompt(it.prompt, a, b), opts.timeoutMs, process.env.CW_JUDGE_MODEL || 'claude-opus-5-5');
-      const row = { model: 'J', modelId: process.env.CW_JUDGE_MODEL || 'claude-opus-5-5', set: it.set, item: it.item, rule: it.rule, truth: it.truth, promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
+    const answered = new Map(rows.map((r) => [`${r.model}\0${r.set}\0${r.item}`, r]));
+    const todo = items.filter((it) => !done.has(`J\0${it.set}\0${it.item}`) && answered.has(`A\0${it.set}\0${it.item}`) && answered.has(`B\0${it.set}\0${it.item}`));
+    await pool(todo, opts.parallel, async (it) => {
+      const answer = await askClaude(judgePrompt(it.prompt, answered.get(`A\0${it.set}\0${it.item}`), answered.get(`B\0${it.set}\0${it.item}`)), opts.timeoutMs, process.env.CW_JUDGE_MODEL || 'claude-opus-5-5');
+      const row = { model: 'J', modelId: process.env.CW_JUDGE_MODEL || 'claude-opus-5-5', set: it.set, item: it.item, rule: it.rule, truth: it.truth, ...(it.fingerprint ? { fingerprint: it.fingerprint } : {}), promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
         ...(answer.costUsd != null ? { costUsd: answer.costUsd } : {}), ...(answer.error ? { error: answer.error } : parseVerdict(answer.text, JUDGE_VERDICTS)) };
       appendFileSync(opts.out, `${JSON.stringify(row)}\n`);
       rows.push(row);
-    }
+    });
   }
   const summary = { tool: 'cobolwork-label-models', models: models.map((m) => ({ name: m.name, model: m.model })), execution: { wanted: exec.wanted, matched: exec.matched }, planted: { items: planted.items.length, skipped: planted.skipped }, results: tally(rows) };
   if (opts.summary) writeFileSync(opts.summary, `${JSON.stringify(summary, null, 1)}\n`);
@@ -346,11 +369,13 @@ async function calibrate(opts) {
 }
 
 async function main(argv) {
-  const opts = { perLabel: 40, timeoutMs: 600000, out: 'label-models.jsonl' };
+  const opts = { perLabel: 40, timeoutMs: 600000, out: 'label-models.jsonl', parallel: 4 };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--calibrate') opts.calibrate = true;
     else if (a === '--prompts-only') opts.promptsOnly = true;
+    else if (a === '--unknown') opts.unknown = true;
+    else if (a === '--parallel') opts.parallel = Number(argv[++i]);
     else if (a === '--model') opts.only = argv[++i];
     else if (a === '--corpus') opts.corpus = argv[++i];
     else if (a === '--execution') opts.execution = argv[++i];
@@ -360,8 +385,8 @@ async function main(argv) {
     else if (a === '--summary') opts.summary = argv[++i];
     else if (a === '--timeout') opts.timeoutMs = Number(argv[++i]) * 1000;
   }
-  if (!opts.calibrate || !opts.corpus || !opts.execution || !opts.planted) {
-    process.stderr.write('usage: node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json> --planted <seed.json> [--per-label 40] [--out file] [--summary file] [--timeout seconds] [--prompts-only] [--model A|B]\n');
+  if (!opts.calibrate || !opts.corpus || !opts.execution || (!opts.planted && !opts.unknown)) {
+    process.stderr.write('usage: node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json> --planted <seed.json> [--per-label 40] [--out file] [--summary file] [--timeout seconds] [--parallel n] [--prompts-only] [--model A|B|J] [--unknown]\n');
     return 2;
   }
   const summary = await calibrate(opts);

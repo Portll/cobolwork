@@ -15,8 +15,8 @@ change any of them, and its release notes say so.
 - **Documents and their schemas**, below.
 - **The fingerprint, `cobolwork/v1`.** What goes into a finding's fingerprint and pairing keys.
   `test/identity-golden.test.mjs` pins the hashes, so a change to the inputs fails it.
-
-The JavaScript exports of `lib/` are not covered.
+- **The library**, from the first release after 0.9.0: the names `@portll/cobolwork` exports,
+  below.
 
 ## Exit statuses
 
@@ -69,9 +69,35 @@ as version 1. A newer version than the release reads is refused, and the message
 versions. A key the site file does not hold is named under `summary.siteWarnings`, and one a witness
 feed or reachability extract does not hold under `summary.feedWarnings`.
 
+## The library
+
+`package.json` exports one entry point, `lib/index.mjs`, and Node refuses an import of any other
+file in the package. Each name below keeps its name and kind until a major release.
+`test/library-exports.test.mjs` lists them and fails when an export is added, removed, renamed or
+changes kind, until its list and this table agree.
+
+| Name | Kind | What it is for |
+|---|---|---|
+| `scan` | function | `scan(root, options)` runs the flow rule set over a directory and returns its `cobolwork-flow` report: what `cobolwork flow` writes before it adds fingerprints and estate facts and applies the baseline. |
+| `RULES` | object | The flow rule set's rules by rule id, each with its severity, CWE and description. |
+| `analyze` | function | `analyze(root, options)` is the cross-program data flow under `scan`: each route from a source to a sink with its hops and checks, and counts of what the analysis read. |
+| `inventory` | function | `inventory(root, options)` returns the `cobolwork-inventory` document `cobolwork inventory` writes: counts of the programs, copybooks and JCL found, and the copybooks and files that could not be read. |
+| `toSarif` | function | `toSarif(report, { toolVersion })` turns a scan or flow report into SARIF 2.1.0. `toolVersion` defaults to this package's version. |
+| `parseFile` | function | `parseFile(file, options)` reads a COBOL source file and parses it with its copybooks expanded. |
+| `parseSource` | function | `parseSource(text, file, options)` parses source text already read, as `parseFile` does. |
+| `detectFormat` | function | `detectFormat(text)` names the reference format the source is in: `fixed`, `free`, `variable` or `terminal`. |
+| `normalize` | function | `normalize(text, format, defines, std)` keeps each line's program text by line number, without comments or the sequence area, and applies the `>>` directives with the `defines` Map. |
+| `tokenize` | function | `tokenize(normalized, file)` splits what `normalize` returns into tokens, with its diagnostics. |
+| `buildFileIndex` | function | `buildFileIndex(root)` lists a directory's files as every rule set walks it, with the directories it could not list and the symbolic links it did not follow. |
+
+What `scan` and `inventory` return follows their schemas under Documents. What `analyze`, the
+parser functions and `buildFileIndex` return, and what `RULES` holds beyond its rule ids, can change
+in a minor release, and the release notes say so.
+
 ## How a contract changes
 
-- **Additions** come in a minor release: a rule, a command, an option, or a key in a document
-  cobolwork writes. A program that reads cobolwork's documents should ignore keys it does not know.
+- **Additions** come in a minor release: a rule, a command, an option, a key in a document cobolwork
+  writes, or a name the library exports. A program that reads cobolwork's documents should ignore
+  keys it does not know.
 - **A rename** keeps the old name working as an alias for one major release, and using it warns.
 - **A deprecation** warns for at least one minor release before the major release that removes it.

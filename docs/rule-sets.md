@@ -524,6 +524,22 @@ finding count over fields nobody read is not a clean result. Every report carrie
 and `toolVersion`, and every report of a command that follows data flow also carries `flowModel`
 (currently `byte-range`), so a stored result says what produced it.
 
+## Practices, for the advice document
+
+`cobolwork advise` runs one more set, outside the scan: the best practices a repository misses.
+They are not security findings and never enter a scan report. A paragraph or section no PERFORM,
+GO TO, THRU range, SORT or MERGE procedure, USE, EXEC block, ALTER or ENTRY reaches and the code
+above it cannot fall into; statements after an unconditional STOP RUN or GOBACK with no paragraph
+header between; a WORKING-STORAGE or LOCAL-STORAGE record the program declares in its own source
+and never names, with REDEFINES, RENAMES, OCCURS DEPENDING ON, 88 levels and EXEC host variables
+all counted as naming; a run-time check the policy requires that no CBL or PROCESS card, compile
+step or declared site default turns on; a program with no option card at all; and the elements
+IBM's Language Reference lists as obsolete, ALTER and a GO TO without a procedure name among them.
+A program whose copybooks are not all in the tree, or whose parse was not clean, is read for options
+and obsolete elements only, and the summary says why. Measured over 300 corpus repositories and
+18,643 programs against the control-flow graph, no paragraph the set calls dead in a program's own
+file is one the graph reaches. The rules carry `measured: false` until their samples are read.
+
 ## Compliance
 
 What the mapping in `rules/compliance-*.json` does not claim travels with it. The clause choice is a

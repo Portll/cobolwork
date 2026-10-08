@@ -37,7 +37,13 @@
    ],
    "severity": "crit",
    "risk": "executes a program on the partner node",
-   "rationale": "RUN TASK runs a program on the node at the other end of the transfer. It is remote execution written into a repository, and the machine it runs on is by definition one this repository does not control."
+   "rationale": "RUN TASK runs a program on the node at the other end of the transfer. It is remote execution written into a repository, and the machine it runs on is by definition one this repository does not control.",
+   "remedy": "Remove RUN TASK from the process, or agree the program with the partner node's owner and restrict the userid it runs under there to that program.",
+   "steps": [
+    "Name the program RUN TASK starts and the node it runs on.",
+    "Remove the RUN TASK, or agree with the partner node's owner that this process may start that program.",
+    "Have the partner restrict the userid the task runs under to the one program."
+   ]
   },
   {
    "id": "cd-run-job",
@@ -48,7 +54,13 @@
    ],
    "severity": "crit",
    "risk": "submits a job on the partner node",
-   "rationale": "RUN JOB submits JCL for execution on the partner node. Everything true of RUN TASK is true here, with the submitted job's own authority added to it."
+   "rationale": "RUN JOB submits JCL for execution on the partner node. Everything true of RUN TASK is true here, with the submitted job's own authority added to it.",
+   "remedy": "Remove RUN JOB from the process, or agree the job with the partner node's owner and keep the submitted JCL on that node under its own change control.",
+   "steps": [
+    "Name the job RUN JOB submits and the node it runs on.",
+    "Remove the RUN JOB, or agree with the partner node's owner that this process may submit that job.",
+    "Keep the submitted JCL on the partner node under its own change control, not in a dataset this process supplies."
+   ]
   },
   {
    "id": "cd-signon-password",
@@ -59,7 +71,13 @@
    ],
    "severity": "crit",
    "risk": "carries a userid and password in the process",
-   "rationale": "A SIGNON whose USERID operand carries a second positional value is supplying a password in the process text. The credential is then in the repository, readable by everyone who can read it."
+   "rationale": "A SIGNON whose USERID operand carries a second positional value is supplying a password in the process text. The credential is then in the repository, readable by everyone who can read it.",
+   "remedy": "Remove the password from the SIGNON and sign on through the security exit or PassTicket support the installation configures, then change the password the repository has exposed.",
+   "steps": [
+    "Remove the password from the SIGNON USERID operand.",
+    "Sign on with the job's own security environment, through the security exit or PassTicket support the installation configures.",
+    "Change the exposed password, and remove it from the repository's history."
+   ]
   },
   {
    "id": "cd-snode-credentials",
@@ -70,7 +88,13 @@
    ],
    "severity": "crit",
    "risk": "carries the partner node's credentials",
-   "rationale": "SNODEID supplies the security credentials used on the partner node. Like SIGNON with a password, a second positional value is a secret, and it is a secret for a system this repository does not own."
+   "rationale": "SNODEID supplies the security credentials used on the partner node. Like SIGNON with a password, a second positional value is a secret, and it is a secret for a system this repository does not own.",
+   "remedy": "Remove the password from SNODEID and have the partner node map this node's userid through its own user authorization, then change the password the repository has exposed.",
+   "steps": [
+    "Remove the password from the SNODEID operand.",
+    "Ask the partner node's owner to authorize this node's userid through the partner's own user authorization.",
+    "Change the exposed password on the partner node, and remove it from the repository's history."
+   ]
   },
   {
    "id": "cd-copy-outbound",
@@ -81,7 +105,8 @@
    ],
    "severity": "med",
    "risk": "transfers a dataset to another node",
-   "rationale": "A COPY naming a secondary node moves data off this system. It is the ordinary purpose of the product rather than a defect, and it is listed at a severity that says so, because an egress path is worth seeing even when it is intended."
+   "rationale": "A COPY naming a secondary node moves data off this system. It is the ordinary purpose of the product rather than a defect, and it is listed at a severity that says so, because an egress path is worth seeing even when it is intended.",
+   "remedy": "Confirm the destination node and the dataset's classification are intended, and send it over Secure+ where the data must be protected in transit."
   },
   {
    "id": "cd-submit",
@@ -92,7 +117,8 @@
    ],
    "severity": "high",
    "risk": "submits a further process from a dataset",
-   "rationale": "SUBMIT runs another Connect:Direct process named by a dataset. What that process does is decided elsewhere, so the reachable behaviour of this job is not visible in this job."
+   "rationale": "SUBMIT runs another Connect:Direct process named by a dataset. What that process does is decided elsewhere, so the reachable behaviour of this job is not visible in this job.",
+   "remedy": "Code the further process's statements in this process, so they are reviewed with it, or keep the dataset it is read from under the same change control and write access as this job."
   },
   {
    "id": "cd-batch-interface",

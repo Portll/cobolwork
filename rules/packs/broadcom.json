@@ -32,6 +32,7 @@
    "severity": "high",
    "risk": "creates a logonid",
    "rationale": "An INSERT while the session is in logonid maintenance mode creates a logonid. The mode matters: without it this matches SQL INSERT INTO, which a corpus measurement over 125 repositories found 322 times. A logonid created from a job in a repository is a credential whose existence is decided by whoever can commit.",
+   "remedy": "Create logonids through the ACF2 administration process the security team owns, not from a job in this repository. Where batch maintenance must stay, keep the job where only security administrators can change it.",
    "requiresContext": "acf2-lid-mode"
   },
   {
@@ -44,6 +45,7 @@
    "severity": "high",
    "risk": "alters a logonid, including its privileges",
    "rationale": "CHANGE against a logonid alters its attributes. The privileged attributes here are the ones that matter, and the same statement carries both ordinary and privileged changes.",
+   "remedy": "Make logonid changes through the security team's administration process rather than from a committed job, and have each privileged attribute a change sets approved before it is applied.",
    "requiresContext": "acf2-lid-mode"
   },
   {
@@ -56,6 +58,7 @@
    "severity": "high",
    "risk": "changes an access rule set",
    "rationale": "Access rule maintenance decides who may reach which dataset or resource. Changing it from a job means the access model is edited by whoever can edit the repository.",
+   "remedy": "Maintain access rule sets through the security team's change process, not from an application job. Where rules are kept as source, keep that source where only security administrators can change it.",
    "setsContext": "acf2-lid-mode",
    "setsContextPattern": "^\\s*SET\\s+(?:LID|RULE|PROFILE|RESOURCE)\\b"
   },
@@ -68,7 +71,13 @@
    ],
    "severity": "crit",
    "risk": "changes a global system option",
-   "rationale": "GSO records are installation-wide security options. A change here affects every user and every resource at once, which makes it the highest-value single statement in the product."
+   "rationale": "GSO records are installation-wide security options. A change here affects every user and every resource at once, which makes it the highest-value single statement in the product.",
+   "remedy": "Change GSO records only through the security team's controlled change process, never from an application job.",
+   "steps": [
+    "Remove the SET CONTROL(GSO) maintenance from the job.",
+    "Raise the option change with the security team, who make it through their own change process.",
+    "Check the job library's history for earlier GSO changes run from it, and confirm each one with the security team."
+   ]
   },
   {
    "id": "topsecret-acid-create",
@@ -79,7 +88,8 @@
    ],
    "severity": "high",
    "risk": "creates an ACID",
-   "rationale": "TSS CREATE defines a new accessor identity. As with an ACF2 logonid, an identity created from a committed job is decided by whoever can commit."
+   "rationale": "TSS CREATE defines a new accessor identity. As with an ACF2 logonid, an identity created from a committed job is decided by whoever can commit.",
+   "remedy": "Create ACIDs through the Top Secret administration process the security team owns, not from a job in this repository."
   },
   {
    "id": "topsecret-permit",
@@ -90,7 +100,8 @@
    ],
    "severity": "high",
    "risk": "grants access to a resource",
-   "rationale": "TSS PERMIT grants an ACID access to a resource. It is the statement that turns an identity into an authorisation, and it is the one an attacker most wants to be able to issue."
+   "rationale": "TSS PERMIT grants an ACID access to a resource. It is the statement that turns an identity into an authorisation, and it is the one an attacker most wants to be able to issue.",
+   "remedy": "Grant access through the security team's request and approval process, not from a committed job. Where a grant must be scripted, keep the script where only security administrators can change it."
   },
   {
    "id": "topsecret-addto-privilege",
@@ -101,7 +112,13 @@
    ],
    "severity": "crit",
    "risk": "grants a bypassing or master-level attribute",
-   "rationale": "The attributes matched here remove or bypass normal validation. An ACID carrying one of them is outside the controls every other identity is subject to, which is a different class of finding from an ordinary grant."
+   "rationale": "The attributes matched here remove or bypass normal validation. An ACID carrying one of them is outside the controls every other identity is subject to, which is a different class of finding from an ordinary grant.",
+   "remedy": "Remove the bypassing or master-level attribute from the job. Grant such an attribute only through the security team's controlled process, to a named identity, and review who holds it.",
+   "steps": [
+    "Remove the TSS ADDTO that grants the attribute from the job.",
+    "List the ACIDs that hold the attribute now, and confirm each one with the security team.",
+    "Have the security team grant any attribute still needed through their own process."
+   ]
   },
   {
    "id": "topsecret-revoke",
@@ -112,7 +129,8 @@
    ],
    "severity": "med",
    "risk": "removes an identity or an authorisation",
-   "rationale": "Removing access from a job is less immediately dangerous than granting it, and it is still the security model being edited from a repository. It is listed so the route is visible, at a severity that says which way round it is."
+   "rationale": "Removing access from a job is less immediately dangerous than granting it, and it is still the security model being edited from a repository. It is listed so the route is visible, at a severity that says which way round it is.",
+   "remedy": "Remove access through the security team's administration process rather than from an application job, so the change is approved and recorded where the rest of the security model is."
   }
  ],
  "programs": [

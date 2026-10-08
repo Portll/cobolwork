@@ -32,7 +32,8 @@
    ],
    "severity": "high",
    "risk": "orders or forces a job into the active schedule",
-   "rationale": "ORDER places a job into the active environment and FORCE does so regardless of its scheduling criteria. A job that can force another job has escaped the schedule that was reviewed, and what it forces is named here rather than in the scheduler."
+   "rationale": "ORDER places a job into the active environment and FORCE does so regardless of its scheduling criteria. A job that can force another job has escaped the schedule that was reviewed, and what it forces is named here rather than in the scheduler.",
+   "remedy": "Order work through the scheduler's own definitions rather than from a job. Where a job must order another, name the table and job exactly and limit, in Control-M security, what the job's user may order or force."
   },
   {
    "id": "ctm-autoedit-variable-in-command",
@@ -43,7 +44,8 @@
    ],
    "severity": "med",
    "risk": "substitutes a scheduler variable into the statement at run time",
-   "rationale": "An AutoEdit variable is replaced by the scheduler before the statement runs, so what the committed text says is not what executes. The value comes from the scheduler's own tables, which are outside this repository and outside this review."
+   "rationale": "An AutoEdit variable is replaced by the scheduler before the statement runs, so what the committed text says is not what executes. The value comes from the scheduler's own tables, which are outside this repository and outside this review.",
+   "remedy": "Keep AutoEdit variables out of statements that change authority or data. Where one must be substituted, define it in a scheduler table under change control and check the value the statement receives."
   },
   {
    "id": "ctm-runas-owner",
@@ -54,7 +56,8 @@
    ],
    "severity": "high",
    "risk": "runs work under a named identity other than the submitter's",
-   "rationale": "Naming an owner runs the work with that identity's authority rather than the submitter's. Whether that is a privilege escalation depends on the identity, which is why this is reported rather than judged."
+   "rationale": "Naming an owner runs the work with that identity's authority rather than the submitter's. Whether that is a privilege escalation depends on the identity, which is why this is reported rather than judged.",
+   "remedy": "Name an owner whose authority is no wider than the work needs, and let Control-M security decide which submitters may run work under it."
   },
   {
    "id": "ctm-security-utility",
@@ -65,7 +68,13 @@
    ],
    "severity": "crit",
    "risk": "changes Control-M security definitions",
-   "rationale": "The scheduler's own security definitions decide who may order, force or delete work across the estate. Editing them from a job puts the scheduler's access model in the hands of whoever can commit."
+   "rationale": "The scheduler's own security definitions decide who may order, force or delete work across the estate. Editing them from a job puts the scheduler's access model in the hands of whoever can commit.",
+   "remedy": "Change Control-M security definitions only through the scheduler's administration process, never from a job in this repository.",
+   "steps": [
+    "Remove the CTMSEC or DEFINE/UPDATE USER statements from the job.",
+    "Raise the change with the scheduler's administrators, who make it through their own process.",
+    "Compare the current security definitions with the ones the job would set, and confirm any difference with the administrators."
+   ]
   },
   {
    "id": "ctm-delete-condition",
@@ -76,7 +85,8 @@
    ],
    "severity": "med",
    "risk": "deletes a scheduling condition other work waits on",
-   "rationale": "Conditions are how one job tells another it may start. Deleting one releases whatever was waiting, so the effect of this statement is on jobs it does not name and whose definitions are not in this repository."
+   "rationale": "Conditions are how one job tells another it may start. Deleting one releases whatever was waiting, so the effect of this statement is on jobs it does not name and whose definitions are not in this repository.",
+   "remedy": "Delete a condition only from the job flow that owns it, naming the condition and its date exactly, and check which jobs wait on it before the change."
   },
   {
    "id": "ctm-file-watcher-command",
@@ -87,7 +97,8 @@
    ],
    "severity": "low",
    "risk": "waits on a file and triggers work when it appears",
-   "rationale": "A file watcher turns the arrival of a dataset into the start of work. It is an entry point driven by something outside the job, and it is listed at low severity so the route is visible rather than because arrival is itself suspicious."
+   "rationale": "A file watcher turns the arrival of a dataset into the start of work. It is an entry point driven by something outside the job, and it is listed at low severity so the route is visible rather than because arrival is itself suspicious.",
+   "remedy": "Confirm who can create the dataset the watcher waits on, and restrict write access to it to the process that should start the work."
   },
   {
    "id": "ctm-utility-step",

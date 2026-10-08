@@ -35,6 +35,12 @@ import { optableLevel } from '../lib/hlasm/optable.mjs';
 
 const STARTED = new Date().toISOString();
 
+// Whatever escapes the run, a closed standard output among it, exits 2: Node's own 1 reads as a fail.
+process.on('uncaughtException', (e) => {
+  process.stderr.write(`cobolwork: ${printable(e && e.message ? e.message : e)}\n`);
+  process.exit(2);
+});
+
 const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 
 const USAGE = `cobolwork ${VERSION} — COBOL, JCL and CICS security analysis, no runtime dependencies
@@ -151,7 +157,8 @@ Options
   --certificate-oidc-issuer <url>, [--trusted-root <file>] [--insecure-ignore-tlog]
                         evidence verify: a transparency-log bundle over a seal, checked by cosign
 
-Exit codes: 0 the command ran, 2 it could not run. A run that examined nothing says so in
+Exit codes: 0 the command ran, 2 it could not run; build, gate --exit-code and evidence verify exit
+with their verdict, as STABILITY.md's Exit statuses gives. A run that examined nothing says so in
 summary.filesScanned and summary.nosrc rather than reporting a clean zero.
 `;
 

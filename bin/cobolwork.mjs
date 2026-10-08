@@ -26,6 +26,7 @@ import { nodeTerminal } from '../lib/tui/terminal.mjs';
 import { runTui } from '../lib/tui/run.mjs';
 import { explainFinding } from '../lib/explain.mjs';
 import { advise } from '../lib/advice.mjs';
+import { adviceToSarif, adviceToMarkdown } from '../lib/advice-render.mjs';
 import { printable } from '../lib/kernel/printable.mjs';
 import { startEvidence, recordInputs, recordHashed, recordFindings, recordOutput, recordVerdict, recordBaselineWrite, finishEvidence } from '../lib/evidence/run.mjs';
 import { evidenceCommand } from '../lib/evidence/cli.mjs';
@@ -79,7 +80,7 @@ const USAGE = `cobolwork ${VERSION} — COBOL, JCL and CICS security analysis, n
                                3 undetermined
 
 Options
-  --format json|sarif   output format (default json)
+  --format json|sarif|md output format (default json; md is for advise)
   --out <file>          write to a file instead of stdout
   --repos               treat each immediate subdirectory as its own repository
   --only <sets>         comma-separated subset of ${RULE_SETS.join(',')}
@@ -279,11 +280,16 @@ if (opts.needsValue) { process.stderr.write(`cobolwork: ${opts.needsValue} needs
 // A format nobody implements would print JSON and exit 0, which is the same shape of quiet wrong
 // answer as a misspelled rule set. SARIF is a findings document, so the commands that do not
 // produce findings say so rather than ignoring the flag.
-const FORMATS = ['json', 'sarif'];
+const FORMATS = ['json', 'sarif', 'md'];
 if (!FORMATS.includes(opts.format)) { process.stderr.write(`cobolwork: --format takes ${FORMATS.join(',')}; got ${opts.format}\n`); process.exit(2); }
-const SARIF_COMMANDS = ['scan', 'diff', 'build'];
+const SARIF_COMMANDS = ['scan', 'diff', 'build', 'advise'];
+const MD_COMMANDS = ['advise'];
 if (opts.format === 'sarif' && opts._.length && !SARIF_COMMANDS.includes(opts._[0])) {
   process.stderr.write(`cobolwork: ${opts._[0]} has no SARIF form; ${SARIF_COMMANDS.join(' and ')} do\n`);
+  process.exit(2);
+}
+if (opts.format === 'md' && opts._.length && !MD_COMMANDS.includes(opts._[0])) {
+  process.stderr.write(`cobolwork: --format md is for ${MD_COMMANDS.join(', ')}\n`);
   process.exit(2);
 }
 // A trace only exists where data flow ran, so the commands that never produce one refuse the flag
@@ -508,7 +514,12 @@ try {
   } else if (command === 'advise') {
     const doc = advise(root, { systemDirs, ironwork: opts.ironwork || null, baseline: opts.baseline, noBaseline: opts.noBaseline === true });
     recordInputs(journal, 0, root);
-    emit(doc, opts);
+    if (opts.format === 'sarif') emit(adviceToSarif(doc), opts);
+    else if (opts.format === 'md') {
+      const text = adviceToMarkdown(doc);
+      recordOutput(journal, 'report', text, opts.out || null);
+      if (opts.out) writeFileSync(opts.out, text); else process.stdout.write(text);
+    } else emit(doc, opts);
     if (doc.unmeasured.length) process.stderr.write(`cobolwork: ${doc.unmeasured.length} part(s) unmeasured: ${doc.unmeasured[0]}\n`);
   } else if (command === 'explain') {
     const fingerprint = opts._[2];

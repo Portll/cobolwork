@@ -46,3 +46,17 @@ test('renders are deterministic', () => {
   assert.equal(JSON.stringify(adviceToSarif(doc)), JSON.stringify(adviceToSarif(advise(CASE))));
   assert.equal(adviceToMarkdown(doc), adviceToMarkdown(advise(CASE)));
 });
+
+test('the CLI writes SARIF and Markdown for advise and refuses md elsewhere', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const BIN = join(HERE, '..', 'bin', 'cobolwork.mjs');
+  const sarif = spawnSync(process.execPath, [BIN, 'advise', CASE, '--format', 'sarif'], { encoding: 'utf8' });
+  assert.equal(sarif.status, 0, sarif.stderr);
+  assert.equal(JSON.parse(sarif.stdout).runs[0].tool.driver.name, 'cobolwork-advice');
+  const md = spawnSync(process.execPath, [BIN, 'advise', CASE, '--format', 'md'], { encoding: 'utf8' });
+  assert.equal(md.status, 0, md.stderr);
+  assert.match(md.stdout, /^# Advice for /);
+  const refused = spawnSync(process.execPath, [BIN, 'scan', CASE, '--format', 'md'], { encoding: 'utf8' });
+  assert.equal(refused.status, 2);
+  assert.match(refused.stderr, /--format md is for advise/);
+});

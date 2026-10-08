@@ -307,7 +307,59 @@
      "type": "string"
     },
     "fixAt": {
-     "type": "object"
+     "type": "object",
+     "required": [
+      "path",
+      "line",
+      "item",
+      "test"
+     ],
+     "properties": {
+      "program": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "path": {
+       "type": "string"
+      },
+      "line": {
+       "type": "integer"
+      },
+      "item": {
+       "type": "string"
+      },
+      "test": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "description": "The test to place before the operation; null where no test makes it safe."
+      },
+      "why": {
+       "type": "string"
+      },
+      "builtInto": {
+       "type": "object",
+       "required": [
+        "item",
+        "path",
+        "line"
+       ],
+       "properties": {
+        "item": {
+         "type": "string"
+        },
+        "path": {
+         "type": "string"
+        },
+        "line": {
+         "type": "integer"
+        }
+       }
+      }
+     }
     }
    }
   },

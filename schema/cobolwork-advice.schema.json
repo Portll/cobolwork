@@ -1,0 +1,792 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Portll/cobolwork/schema/cobolwork-advice.schema.json",
+  "title": "cobolwork advice",
+  "description": "One document per repository: every remediation and best practice cobolwork can state for it, each item naming the rule, practice or compiler message it rests on. A later minor release may add keys; a reader ignores keys it does not know.",
+  "type": "object",
+  "required": [
+    "tool",
+    "schemaVersion",
+    "generatedBy",
+    "repository",
+    "estate",
+    "catalogue",
+    "items",
+    "summary",
+    "unmeasured"
+  ],
+  "properties": {
+    "tool": {
+      "const": "cobolwork-advice"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatedBy": {
+      "type": "object",
+      "required": [
+        "toolVersion",
+        "identity",
+        "flowModel"
+      ],
+      "properties": {
+        "toolVersion": {
+          "type": "string"
+        },
+        "toolRevision": {
+          "$ref": "#/$defs/revision"
+        },
+        "identity": {
+          "type": "string",
+          "description": "The fingerprint version in force."
+        },
+        "flowModel": {
+          "type": "string"
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "name",
+        "revision"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "revision": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The git commit the tree is at, where it is a checkout."
+        }
+      }
+    },
+    "estate": {
+      "type": "object",
+      "required": [
+        "files",
+        "programs",
+        "compiler",
+        "dialect",
+        "options"
+      ],
+      "properties": {
+        "files": {
+          "type": "object",
+          "required": [
+            "programs",
+            "copybooks",
+            "jcl",
+            "bms",
+            "hlasm",
+            "ims",
+            "db2",
+            "pli",
+            "other"
+          ],
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "programs": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "What the compiler made of every program; null when no compiler ran.",
+          "required": [
+            "count",
+            "compiled",
+            "failed",
+            "notModelled",
+            "unresolved",
+            "unrun"
+          ],
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "compiler": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "tool",
+            "version"
+          ],
+          "properties": {
+            "tool": {
+              "const": "ironwork"
+            },
+            "version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "dialect": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "How many programs compile as Enterprise COBOL alone, how many need the Micro Focus and GnuCOBOL forms, and which forms, by ironwork message id.",
+          "required": [
+            "ibmStrict",
+            "extendedOnly",
+            "extensions"
+          ],
+          "properties": {
+            "ibmStrict": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "extendedOnly": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "extensions": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "options": {
+          "type": "object",
+          "required": [
+            "observed",
+            "programsWithCards",
+            "policy"
+          ],
+          "properties": {
+            "observed": {
+              "type": "object",
+              "description": "Each watched option family, with how many programs set each value on their CBL or PROCESS cards.",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "programsWithCards": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "policy": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "catalogue": {
+      "type": "object",
+      "required": [
+        "rules",
+        "practices",
+        "compiler"
+      ],
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "set",
+              "sev",
+              "evidence",
+              "text",
+              "impact",
+              "remedy",
+              "steps",
+              "references",
+              "compliance"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "set": {
+                "type": "string"
+              },
+              "sev": {
+                "enum": [
+                  "info",
+                  "low",
+                  "med",
+                  "high",
+                  "crit"
+                ]
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "cwe": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "impact": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "remedy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "references": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/reference"
+                }
+              },
+              "compliance": {
+                "$ref": "#/$defs/compliance"
+              },
+              "measured": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "whenPrivileged": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "practices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "class",
+              "sev",
+              "text",
+              "why",
+              "how",
+              "references",
+              "compliance"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "class": {
+                "type": "string"
+              },
+              "sev": {
+                "enum": [
+                  "info",
+                  "low",
+                  "med",
+                  "high",
+                  "crit"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "why": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "how": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "references": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/reference"
+                }
+              },
+              "compliance": {
+                "$ref": "#/$defs/compliance"
+              },
+              "measured": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "compiler": {
+          "type": "array",
+          "description": "The ironwork messages this document may cite as compile items.",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "severity",
+              "text"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^IW[A-Z][0-9]{4}$"
+              },
+              "severity": {
+                "enum": [
+                  "I",
+                  "W",
+                  "E",
+                  "S",
+                  "U"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "remedy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "practice": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "ref",
+          "where",
+          "sev",
+          "remediation",
+          "compliance",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "finding",
+              "practice",
+              "compile",
+              "option",
+              "inventory"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "description": "The rule id, practice id or ironwork message id the item rests on."
+          },
+          "where": {
+            "type": "object",
+            "required": [
+              "path",
+              "line"
+            ],
+            "properties": {
+              "path": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "program": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "paragraph": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "item": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "detail": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          },
+          "sev": {
+            "enum": [
+              "info",
+              "low",
+              "med",
+              "high",
+              "crit"
+            ]
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "cwe": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "verdict": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "exploitability": {
+            "type": "object"
+          },
+          "remediation": {
+            "type": "object",
+            "required": [
+              "text",
+              "steps",
+              "fixAt",
+              "gate"
+            ],
+            "properties": {
+              "text": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "fixAt": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/fixAt"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "gate": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "How cobolwork gate judges a patch for this item, where it can.",
+                "required": [
+                  "target"
+                ],
+                "properties": {
+                  "target": {
+                    "type": "string"
+                  },
+                  "checks": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "compliance": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "framework",
+                "clause"
+              ],
+              "properties": {
+                "framework": {
+                  "type": "string"
+                },
+                "clause": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "source": {
+            "enum": [
+              "cobolwork",
+              "ironwork"
+            ]
+          },
+          "witnessed": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "items",
+        "byKind",
+        "bySev",
+        "byVerdict",
+        "byProgram",
+        "byFramework",
+        "suppressed",
+        "ordered"
+      ],
+      "properties": {
+        "items": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byKind": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "bySev": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "byVerdict": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "byProgram": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "byFramework": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "suppressed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coverageIncomplete": {
+          "type": "boolean"
+        },
+        "ordered": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Every item id, most pressing first."
+        }
+      }
+    },
+    "unmeasured": {
+      "type": "array",
+      "description": "What this document could not measure, and why; never an empty pass.",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "reference": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "section": {
+          "type": "string"
+        }
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "clause"
+          ],
+          "properties": {
+            "clause": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "fixAt": {
+      "type": "object",
+      "required": [
+        "path",
+        "line",
+        "item",
+        "test"
+      ],
+      "properties": {
+        "program": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "type": "string"
+        },
+        "line": {
+          "type": "integer"
+        },
+        "item": {
+          "type": "string"
+        },
+        "test": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The test to place before the operation; null where no test makes it safe."
+        },
+        "why": {
+          "type": "string"
+        },
+        "builtInto": {
+          "type": "object",
+          "required": [
+            "item",
+            "path",
+            "line"
+          ],
+          "properties": {
+            "item": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "line": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "revision": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "The commit cobolwork was built from, whether its tree held changes, the release tag, and whether this was read from a checkout or the release; null where none of them can be read.",
+      "properties": {
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dirty": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "tag": {
+          "type": "string"
+        },
+        "from": {
+          "enum": [
+            "checkout",
+            "release"
+          ]
+        }
+      }
+    }
+  }
+}

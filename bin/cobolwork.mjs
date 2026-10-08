@@ -25,6 +25,7 @@ import { readReport } from '../lib/tui/model.mjs';
 import { nodeTerminal } from '../lib/tui/terminal.mjs';
 import { runTui } from '../lib/tui/run.mjs';
 import { explainFinding } from '../lib/explain.mjs';
+import { advise } from '../lib/advice.mjs';
 import { printable } from '../lib/kernel/printable.mjs';
 import { startEvidence, recordInputs, recordHashed, recordFindings, recordOutput, recordVerdict, recordBaselineWrite, finishEvidence } from '../lib/evidence/run.mjs';
 import { evidenceCommand } from '../lib/evidence/cli.mjs';
@@ -54,6 +55,10 @@ const USAGE = `cobolwork ${VERSION} — COBOL, JCL and CICS security analysis, n
   cobolwork explain <path> <fingerprint>
                                one finding with the source line of every hop its trace kept and the
                                declaration of every item on its path; unlike a report, this carries source
+  cobolwork advise <path> [--ironwork <path>]
+                               every remediation and best practice for the repository in one document:
+                               each item names the rule, practice or compiler message it rests on, with
+                               the catalogue they point into and what could not be measured
   cobolwork gate <repo> --base <ref> [--head <ref>] --target <fingerprint>
                                whether a patch fixed that finding and moved nothing else: pass, fail
                                or undecided, with the reason for each check that did not pass
@@ -301,7 +306,7 @@ if (gateFlag && opts._.length && opts._[0] !== 'gate') {
   process.stderr.write(`cobolwork: --${gateFlag.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)} is for gate only\n`);
   process.exit(2);
 }
-const COPYLIB_COMMANDS = ['scan', 'flow', 'inventory', 'diff', 'build', 'baseline', 'tui', 'explain', 'sbom'];
+const COPYLIB_COMMANDS = ['scan', 'flow', 'inventory', 'diff', 'build', 'baseline', 'tui', 'explain', 'sbom', 'advise'];
 if (opts.copylib && opts._.length && !COPYLIB_COMMANDS.includes(opts._[0])) {
   process.stderr.write(`cobolwork: ${opts._[0]} reads no copybooks; ${COPYLIB_COMMANDS.join(', ')} do\n`);
   process.exit(2);
@@ -496,6 +501,11 @@ try {
     const terminal = nodeTerminal();
     process.once('exit', () => terminal.stop());
     await runTui({ report, terminal, keymap: opts.keys || 'ispf', color: !process.env.NO_COLOR });
+  } else if (command === 'advise') {
+    const doc = advise(root, { systemDirs, ironwork: opts.ironwork || null, baseline: opts.baseline, noBaseline: opts.noBaseline === true });
+    recordInputs(journal, 0, root);
+    emit(doc, opts);
+    if (doc.unmeasured.length) process.stderr.write(`cobolwork: ${doc.unmeasured.length} part(s) unmeasured: ${doc.unmeasured[0]}\n`);
   } else if (command === 'explain') {
     const fingerprint = opts._[2];
     if (!fingerprint) { process.stderr.write('cobolwork: explain needs <path> <fingerprint>\n'); process.exit(2); }

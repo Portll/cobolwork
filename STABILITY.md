@@ -48,6 +48,7 @@ in each finding too, and a test holds the documents cobolwork writes to them.
 | `cobolwork-parse` | 1 | `schema/cobolwork-parse.schema.json` |
 | `cobolwork-baseline` | 1 | `schema/cobolwork-baseline.schema.json` |
 | `cobolwork-evidence` | 1 | `schema/cobolwork-evidence.schema.json` |
+| `cobolwork-advice` | 1 | `schema/cobolwork-advice.schema.json` |
 | SARIF | 2.1.0 | The coverage property bag: `schema/cobolwork-coverage.schema.json` |
 | CycloneDX SBOM | 1.6 | |
 | Evidence records | `cobolwork-evidence/v1` | `docs/spec/evidence.md`; record kinds in `test/fixtures/evidence/kinds.tsv` |

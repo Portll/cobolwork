@@ -12,6 +12,7 @@ import { capabilities } from '../lib/capabilities.mjs';
 import { DEFAULT_POLICY } from '../lib/policy.mjs';
 import { scanAll } from '../lib/scan.mjs';
 import { explainFinding } from '../lib/explain.mjs';
+import { advise } from '../lib/advice.mjs';
 import { baselineEntries, BASELINE_VERSION } from '../lib/baseline.mjs';
 import { witnessFeed } from '../bench/witness.mjs';
 import './pin-machine.mjs';
@@ -93,6 +94,10 @@ test('an explain packet conforms to its schema', () => {
   const report = scanAll(CASE);
   const packet = explainFinding(report, report.findings[0].fingerprint, { root: CASE });
   conforms(packet, 'cobolwork-explain');
+});
+
+test('an advice document conforms to its schema', () => {
+  conforms(advise(CASE), 'cobolwork-advice');
 });
 
 test('parse, baseline and evidence output conform to their schemas', () => {

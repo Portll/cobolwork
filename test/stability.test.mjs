@@ -10,6 +10,7 @@ import { WITNESS_VERSION } from '../lib/exploitability.mjs';
 import { REACH_VERSION } from '../lib/reach.mjs';
 import { BUILD_EXIT } from '../lib/build.mjs';
 import { VERDICT_EXIT } from '../lib/gate.mjs';
+import { EXIT } from '../lib/exit.mjs';
 import { FINGERPRINT_VERSION } from '../lib/kernel/identity.mjs';
 import './pin-machine.mjs';
 
@@ -39,10 +40,26 @@ test('the files cobolwork reads are listed at the versions it reads', () => {
   assert.equal(cells(rowNaming('Build policy'))[1], `\`policyVersion\`: ${capabilities().build.defaultPolicy.policyVersion}`);
 });
 
-test('the exit statuses STABILITY.md gives are the ones build and gate use', () => {
+test('the exit statuses STABILITY.md gives are the ones build, gate and evidence verify use', () => {
+  assert.equal(cells(rowNaming('| Every command'))[1], `${EXIT.pass} done; ${EXIT.couldNotRun} a usage error, or the command could not run`);
   assert.equal(cells(rowNaming('| `build`'))[1],
-    `${BUILD_EXIT.pass} pass, ${BUILD_EXIT.fail} fail, ${BUILD_EXIT.undecided} undecided, ${BUILD_EXIT.compilerFailed} the compiler failed after a pass, 2 could not run`);
-  assert.equal(cells(rowNaming('| `gate --exit-code`'))[1], `${VERDICT_EXIT.pass} pass, ${VERDICT_EXIT.fail} fail, ${VERDICT_EXIT.undecided} undecided, 2 could not run`);
+    `${BUILD_EXIT.pass} pass, ${BUILD_EXIT.fail} fail, ${BUILD_EXIT.undecided} undecided, ${BUILD_EXIT.compilerFailed} the compiler failed after a pass, ${EXIT.couldNotRun} could not run`);
+  assert.equal(cells(rowNaming('| `gate --exit-code`'))[1], `${VERDICT_EXIT.pass} pass, ${VERDICT_EXIT.fail} fail, ${VERDICT_EXIT.undecided} undecided, ${EXIT.couldNotRun} could not run`);
+  assert.equal(cells(rowNaming('| `evidence verify`'))[1], `${EXIT.pass} verified and sealed, ${EXIT.fail} broken or not sealed, ${EXIT.undecided} undetermined, ${EXIT.couldNotRun} could not run`);
+  assert.deepEqual(capabilities().build.exit, { ...BUILD_EXIT, couldNotRun: EXIT.couldNotRun });
+  assert.deepEqual(capabilities().gate.exit, { ...VERDICT_EXIT, couldNotRun: EXIT.couldNotRun });
+});
+
+test('the table cobolwork shares with ironwork gives each status cobolwork uses one meaning', () => {
+  const at = STABILITY.indexOf('## Exit statuses');
+  const section = STABILITY.slice(at, STABILITY.indexOf('\n## ', at));
+  const meaning = Object.fromEntries(section.split('\n').filter((l) => /^\| \d+ \|/.test(l)).map((l) => cells(l)).map(([s, m]) => [Number(s), m]));
+  assert.deepEqual(Object.keys(meaning).map(Number), Object.values(EXIT).sort((a, b) => a - b));
+  assert.match(meaning[EXIT.pass], /answered yes/);
+  assert.match(meaning[EXIT.fail], /the verdict is no/);
+  assert.match(meaning[EXIT.couldNotRun], /^It could not run/);
+  assert.match(meaning[EXIT.undecided], /^Undecided/);
+  assert.match(meaning[EXIT.compilerFailed], /^The compiler refused a program/);
 });
 
 test('STABILITY.md names every schema in schema/', () => {

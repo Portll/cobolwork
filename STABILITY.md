@@ -20,12 +20,38 @@ change any of them, and its release notes say so.
 
 ## Exit statuses
 
+cobolwork and ironwork, the compiler cobolwork reads, give each status one meaning:
+
+| Status | Meaning |
+|---|---|
+| 0 | It ran. A command that gives a verdict answered yes: pass, verified, equivalent, RETURN-CODE 0. |
+| 1 | It ran, and the verdict is no: fail, broken, diverged, a RETURN-CODE other than 0. |
+| 2 | It could not run: a usage error, or an input it cannot use. Nothing was judged. |
+| 3 | Undecided: it ran, and what it could not read, or does not model, leaves no verdict. |
+| 4 | The compiler refused a program: in cobolwork, after the checks passed. |
+
+A command whose purpose is a verdict exits with it: `build` and `evidence verify` here, `compare` and
+`job --expected` in ironwork. A command that reports exits 0 whenever it ran, whatever it found, and
+`--exit-code` asks it for its verdict instead: `gate` here, `run`, `cics` and `job` in ironwork. A
+status from 5 up is one product's own, and that product's table names it. In cobolwork 1 is only
+ever a verdict: a failure of its own, standard output closing before the document is written among
+them, is 2.
+
+A status that passes a return code through is not a verdict and keeps that code's range. ironwork's
+`check` and `compile` exit with the compile's return code, as IBM's compiler does, and its `run`,
+`cics` and `job` with the program's RETURN-CODE up to 238, keeping 239 and above for the ends
+ironwork gives a run, so a run ironwork stopped is never read as the program's own code. ironwork's
+README, under Exit status, gives each of its commands' statuses. cobolwork passes no return code
+through: `build`'s 4 stands for whatever status the compiler gave.
+
+cobolwork's commands:
+
 | Command | Status |
 |---|---|
 | Every command | 0 done; 2 a usage error, or the command could not run |
 | `build` | 0 pass, 1 fail, 3 undecided, 4 the compiler failed after a pass, 2 could not run |
 | `gate --exit-code` | 0 pass, 1 fail, 3 undecided, 2 could not run |
-| `evidence verify` | 0 verified and sealed, 1 broken or not sealed, 3 undetermined, 2 a usage error |
+| `evidence verify` | 0 verified and sealed, 1 broken or not sealed, 3 undetermined, 2 could not run |
 
 ## Documents
 

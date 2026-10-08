@@ -366,9 +366,10 @@ value, then answers `reaches`, `does-not-reach` or `unsure`. A judge, Claude Opu
 Claude Code command line with no tools or project settings, reads the same code and both answers
 unnamed, and answers `reaches`, `does-not-reach`, `no-consensus` where the code shown does not
 settle it, or `not-recommended` where no label should be given. `bench/label-review.mjs` is the
-operator's oversight: a sheet of each item with every answer and the code, a ledger of the
-operator's rescorings, and the final answer per item, where a rescoring outranks the judge and the
-judge outranks the two models (operator 2026-10-08). `--calibrate` asks about findings whose
+operator's oversight: a sheet of each item with every answer and the code, or of a few items of
+each rule chosen the same way on every run, a ledger of the operator's rescorings, and the final
+answer per item, where a rescoring outranks the judge and the judge outranks the two models
+(operator 2026-10-08). `--calibrate` asks about findings whose
 answer is known, execution-confirmed findings and planted flaws and near-misses, and reports each
 model's and the judge's accuracy, withheld share, and how often the two models agree and are
 right. It writes no label: the rule that lets an answer stand for a label is the operator's, set

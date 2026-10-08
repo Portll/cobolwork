@@ -3,9 +3,11 @@
 // from, a ledger of rescorings, and the final answer per item, where a rescoring outranks the
 // judge and the judge outranks the two models (docs/spec/reach.md §9.6).
 //
-//   node bench/label-review.mjs sheet --answers <answers.jsonl> --prompts <prompts.jsonl> [--only disputed|withheld|all] [--out review.md]
+//   node bench/label-review.mjs sheet --answers <answers.jsonl> --prompts <prompts.jsonl> [--only disputed|withheld|all]
+//        [--per-rule <n>] [--out review.md]
 //   node bench/label-review.mjs rescore --ledger <ledger.jsonl> --set <set> --item <item> --verdict <verdict> --who <name> --why <text>
 //   node bench/label-review.mjs final --answers <answers.jsonl> [--ledger <ledger.jsonl>] [--out final.json]
+import { createHash } from 'node:crypto';
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { JUDGE_VERDICTS } from './label-models.mjs';
 
@@ -46,12 +48,19 @@ const withheld = (e) => ['no-consensus', 'not-recommended'].includes(e.answers.J
 
 const said = (r) => (r ? `**${r.verdict}**${r.reason ? `: ${r.reason}` : ''}${r.checks?.length ? `\n  checks: ${r.checks.map((c) => `${c.line ?? '?'} ${c.what}`).join('; ')}` : ''}` : '(no answer)');
 
-export function sheet(rows, prompts, only = 'all') {
+// Up to `n` items of each rule, in an order set by each item's name rather than by its repository,
+// so a rule's sample is not one estate's copies.
+export function perRuleSample(entries, n) {
+  const order = (e) => createHash('sha1').update(e.item).digest('hex');
+  return [...Map.groupBy(entries, (e) => e.rule).values()].flatMap((g) => g.sort((a, b) => (order(a) < order(b) ? -1 : 1)).slice(0, n));
+}
+
+export function sheet(rows, prompts, only = 'all', perRule = 0) {
   const promptOf = new Map(prompts.map((p) => [keyOf(p), p.prompt]));
   const pick = only === 'disputed' ? disputed : only === 'withheld' ? withheld : () => true;
-  const out = ['# Model answers to review', '', `Items: ${only}. Rescore with the command under each item; a rescoring outranks every model.`, ''];
-  for (const e of byItem(rows).values()) {
-    if (!pick(e)) continue;
+  const picked = [...byItem(rows).values()].filter(pick);
+  const out = ['# Model answers to review', '', `Items: ${only}${perRule ? `, up to ${perRule} a rule` : ''}. Rescore with the command under each item; a rescoring outranks every model.`, ''];
+  for (const e of perRule ? perRuleSample(picked, perRule) : picked) {
     out.push(`## ${e.item}`, '', `Set ${e.set}, rule ${e.rule}${e.truth ? `, known answer ${e.truth}` : ''}.`, '',
       `- Judge: ${said(e.answers.J)}`, `- Model A: ${said(e.answers.A)}`, `- Model B: ${said(e.answers.B)}`, '',
       '<details><summary>Code shown to the models</summary>', '', '```', promptOf.get(keyOf(e)) || '(not in the prompts file)', '```', '', '</details>', '',
@@ -81,7 +90,7 @@ function main(argv) {
   const opts = {};
   for (let i = 0; i < rest.length; i++) if (rest[i].startsWith('--')) opts[rest[i].slice(2)] = rest[++i];
   if (command === 'sheet' && opts.answers) {
-    const text = sheet(lines(opts.answers), lines(opts.prompts), opts.only || 'all');
+    const text = sheet(lines(opts.answers), lines(opts.prompts), opts.only || 'all', Number(opts['per-rule']) || 0);
     if (opts.out) writeFileSync(opts.out, text); else process.stdout.write(text);
     return 0;
   }
@@ -94,7 +103,7 @@ function main(argv) {
     if (opts.out) writeFileSync(opts.out, text); else process.stdout.write(text);
     return 0;
   }
-  process.stderr.write('usage: node bench/label-review.mjs sheet --answers <file> --prompts <file> [--only disputed|withheld|all] [--out file]\n'
+  process.stderr.write('usage: node bench/label-review.mjs sheet --answers <file> --prompts <file> [--only disputed|withheld|all] [--per-rule n] [--out file]\n'
     + `       node bench/label-review.mjs rescore --ledger <file> --set <set> --item <item> --verdict <${JUDGE_VERDICTS.join('|')}> --who <name> --why <text>\n`
     + '       node bench/label-review.mjs final --answers <file> [--ledger <file>] [--out file]\n');
   return 2;

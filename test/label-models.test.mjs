@@ -98,3 +98,14 @@ test('questions read from a file keep the first of any item named twice', () => 
   assert.deepEqual(readItems(file).map((i) => i.prompt), ['first', 'other set']);
   rmSync(dir, { recursive: true, force: true });
 });
+
+test('a sheet can hold a few items of each rule, the same ones on every run', async () => {
+  const { sheet } = await import('../bench/label-review.mjs');
+  const row = (item, rule) => ({ model: 'J', set: 'unknown', item, rule, verdict: 'reaches' });
+  const rows = [row('repo1/P.cbl:1:r1', 'r1'), row('repo2/P.cbl:1:r1', 'r1'), row('repo3/P.cbl:1:r1', 'r1'), row('repo1/Q.cbl:9:r2', 'r2')];
+  const shown = (s) => [...s.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+  const once = shown(sheet(rows, [], 'all', 1));
+  assert.equal(once.length, 2);
+  assert.deepEqual(new Set(once.map((i) => i.split(':').pop())), new Set(['r1', 'r2']));
+  assert.deepEqual(shown(sheet([...rows].reverse(), [], 'all', 1)).sort(), [...once].sort());
+});

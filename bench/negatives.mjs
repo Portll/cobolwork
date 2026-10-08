@@ -18,9 +18,13 @@ import { RULES } from '../lib/sets/flow.mjs';
 import { capped, excerpt, QUESTION } from './label-models.mjs';
 
 const ALLOWED = ["'CWPGM1'", "'CWPGM2'"];
+const DATA_AT_REST = new Set(['database', 'file-record', 'cics-queue']);
+const JOB = '//CWJOB    JOB (ACCT),CLASS=A,MSGCLASS=X';
 
-// Where the input comes from: what the program declares, the statements that fill WS-IN, which of
-// them reads the input (`at`, the first by default) and how cobolwork names it.
+// Where the input comes from: the statements that fill WS-IN, which of them reads the input (`at`,
+// the first by default) and how cobolwork names it. A source a job hands in (`jcl`) is placed in
+// the job, at the line `jcl.at` matches; `selects`, `fds`, `data` and `linkage` are what the
+// program declares for it, and `aux` the other files it needs.
 const SOURCES = {
   'argv-or-env': { detail: 'ACCEPT ... FROM COMMAND-LINE', stmt: () => ['ACCEPT WS-IN FROM COMMAND-LINE'] },
   'cics-terminal': { detail: 'EXEC CICS RECEIVE', stmt: () => ['EXEC CICS RECEIVE INTO(WS-IN) LENGTH(WS-LEN)', '     END-EXEC'] },
@@ -30,15 +34,49 @@ const SOURCES = {
   'file-record': {
     detail: 'READ ... INTO',
     at: 1,
-    env: ['       INPUT-OUTPUT SECTION.', '       FILE-CONTROL.', '           SELECT IN-FILE ASSIGN TO INDD.'],
-    files: ['       FILE SECTION.', '       FD  IN-FILE.', '       01  IN-REC PIC X(80).'],
+    selects: ['           SELECT IN-FILE ASSIGN TO INDD.'],
+    fds: ['       FD  IN-FILE.', '       01  IN-REC PIC X(80).'],
     stmt: () => ['OPEN INPUT IN-FILE', 'READ IN-FILE INTO WS-IN', 'CLOSE IN-FILE'],
+  },
+  // On z/OS a PARM arrives as a halfword length and the text, in the first USING item.
+  'jcl-parm': {
+    detail: 'PARM= on step STEP1 of CWJOB.jcl, which runs CWMAIN',
+    jcl: { parm: "'VALUE1'", at: /EXEC PGM=/ },
+    linkage: (numeric) => ['       01  LS-PARM.', '           05  LS-PARM-LEN PIC S9(4) COMP.', `           05  LS-PARM-TEXT ${numeric ? 'PIC 9(4)' : 'PIC X(8)'}.`],
+    using: 'LS-PARM',
+    stmt: () => ['MOVE LS-PARM-TEXT TO WS-IN'],
+  },
+  'jcl-instream': {
+    detail: '1 lines of in-stream data on //SYSIN in step STEP1, read through SELECT IN-FILE',
+    jcl: { dds: ['//SYSIN    DD *', 'VALUE1', '/*'], at: /^\/\/SYSIN/ },
+    selects: ['           SELECT IN-FILE ASSIGN TO SYSIN.'],
+    fds: ['       FD  IN-FILE.', '       01  IN-REC PIC X(80).'],
+    stmt: () => ['OPEN INPUT IN-FILE', 'READ IN-FILE INTO WS-IN', 'CLOSE IN-FILE'],
+  },
+  'system-response': {
+    detail: 'SQLERRMC, which the system sets',
+    at: 2,
+    data: ['           EXEC SQL INCLUDE SQLCA END-EXEC.'],
+    stmt: () => ['EXEC SQL SELECT NAME INTO :WS-DATA FROM CWT1', '     WHERE ID = 1 END-EXEC', 'MOVE SQLERRMC TO WS-IN'],
+  },
+  'cics-system-info': { detail: 'the APPLID EXEC CICS ASSIGN returns', stmt: () => ['EXEC CICS ASSIGN APPLID(WS-IN) END-EXEC'] },
+  // A field the map protects, with FSET so it comes back on every RECEIVE MAP.
+  'cics-protected-field': {
+    detail: 'EXEC CICS RECEIVE MAP(CWMAP1) returns CUSTIDI, field CUSTID of map CWMAP1 in mapset CWMAP, which the map marks PROT with FSET',
+    data: ['       01  CWMAP1I.', '           05  FILLER PIC X(12).', '           05  CUSTIDL PIC S9(4) COMP.', '           05  CUSTIDF PIC X.', '           05  CUSTIDI PIC X(8).'],
+    aux: { 'CWMAP.bms': ['CWMAP    DFHMSD TYPE=&SYSPARM,MODE=INOUT,LANG=COBOL,TIOAPFX=YES', 'CWMAP1   DFHMDI SIZE=(24,80)',
+      'CUSTID   DFHMDF POS=(1,1),LENGTH=8,ATTRB=(PROT,FSET)', '         DFHMSD TYPE=FINAL', '         END'] },
+    stmt: () => ["EXEC CICS RECEIVE MAP('CWMAP1') MAPSET('CWMAP')", '     INTO(CWMAP1I) END-EXEC', 'MOVE CUSTIDI TO WS-IN'],
   },
 };
 
 // What a sink does with a field, and the items it needs. `kind` groups sinks by what makes them
 // safe: `set` (a value that can only be one of a list), `bound` (an index kept in range), `digits`
-// (a value that is only digits), `none` (no guard the analyser credits).
+// (a value that is only digits), `out` (a value sent out of the program, safe only replaced),
+// `key` (a record key a client must not choose, safe only fixed or replaced),
+// `none` (no guard the analyser credits). `use` may depend on the source. `where` matches the line
+// cobolwork names for the sink where that is not the first line of `use`; `selects`, `fds`,
+// `data` and `tail` go in the program holding the sink, `jcl` and `aux` beside it.
 const SINKS = {
   'os-command': { kind: 'set', use: (f) => [`CALL 'SYSTEM' USING ${f}`] },
   'dynamic-sql': { kind: 'set', use: (f) => [`EXEC SQL EXECUTE IMMEDIATE :${f} END-EXEC`] },
@@ -48,7 +86,8 @@ const SINKS = {
   'outbound-host': { kind: 'set', use: (f) => [`EXEC CICS WEB OPEN HOST(${f}) HOSTLENGTH(WS-LEN)`, '     SESSTOKEN(WS-TOKEN) END-EXEC'] },
   'cics-sysid': { kind: 'set', use: (f) => [`EXEC CICS LINK PROGRAM('CWPGM2') SYSID(${f})`, '     END-EXEC'] },
   'connection-target': { kind: 'set', use: (f) => [`EXEC SQL CONNECT TO :${f} END-EXEC`] },
-  'web-response': { kind: 'set', use: (f) => [`EXEC CICS WEB SEND FROM(${f}) FROMLENGTH(WS-LEN)`, '     MEDIATYPE(WS-MEDIA) END-EXEC'] },
+  // Stored data is only a finding where it is sent as markup.
+  'web-response': { kind: 'set', use: (f, src) => [`EXEC CICS WEB SEND FROM(${f}) FROMLENGTH(WS-LEN)`, DATA_AT_REST.has(src) ? "     MEDIATYPE('text/html') END-EXEC" : '     MEDIATYPE(WS-MEDIA) END-EXEC'] },
   log: { kind: 'set', use: (f) => [`DISPLAY ${f}`] },
   // Its branches name the allowed values, so a value an allow-list lets through has a branch to run.
   'unhandled-selector': { kind: 'set', use: (f) => [`EVALUATE ${f}`, ...ALLOWED.map((v) => `   WHEN ${v}`), '      CONTINUE', 'END-EVALUATE'] },
@@ -56,9 +95,60 @@ const SINKS = {
   subscript: { kind: 'bound', numeric: true, use: (f) => [`DISPLAY WS-ROW(${f})`] },
   'reference-modification': { kind: 'bound', numeric: true, use: (f) => [`DISPLAY WS-TEXT(${f}:1)`] },
   'loop-bound': { kind: 'bound', numeric: true, use: (f) => ['PERFORM VARYING WS-I FROM 1 BY 1', `   UNTIL WS-I > ${f}`, '   DISPLAY WS-ROW(WS-I)', 'END-PERFORM'] },
-  'storage-length': { kind: 'bound', numeric: true, use: (f) => [`EXEC CICS GETMAIN SET(WS-PTR) FLENGTH(${f})`, '     END-EXEC'] },
+  // CICS acquires storage with GETMAIN; a batch program through Language Environment.
+  'storage-length': {
+    kind: 'bound', numeric: true,
+    use: (f, src) => (src.startsWith('cics-') ? [`EXEC CICS GETMAIN SET(WS-PTR) FLENGTH(${f})`, '     END-EXEC'] : [`MOVE ${f} TO WS-SIZE`, "CALL 'CEEGTST' USING WS-HEAPID WS-SIZE WS-PTR WS-FC"]),
+    where: /GETMAIN|CALL 'CEEGTST'/,
+    data: (src) => (src.startsWith('cics-') ? [] : ['       01  WS-SIZE PIC S9(9) BINARY.', '       01  WS-HEAPID PIC S9(9) BINARY VALUE 0.', '       01  WS-FC PIC X(12).']),
+  },
   'numeric-truncation': { kind: 'none', numeric: true, use: (f) => [`MOVE ${f} TO WS-SMALL`] },
   'text-truncation': { kind: 'none', use: (f) => [`STRING ${f} DELIMITED BY SIZE`, '   INTO WS-SHORT', 'END-STRING'] },
+  'dynamic-file-path': {
+    kind: 'set', where: /SELECT OUT-FILE/,
+    selects: ['           SELECT OUT-FILE ASSIGN TO WS-PATH.'], fds: ['       FD  OUT-FILE.', '       01  OUT-REC PIC X(80).'], data: ['       01  WS-PATH PIC X(44).'],
+    use: (f) => [`MOVE ${f} TO WS-PATH`, 'OPEN OUTPUT OUT-FILE', 'CLOSE OUT-FILE'],
+  },
+  // What the step writes to a DD the job sends to the internal reader is submitted as a job.
+  'internal-reader': {
+    kind: 'set', where: /SELECT OUT-FILE/,
+    selects: ['           SELECT OUT-FILE ASSIGN TO CWRDR.'], fds: ['       FD  OUT-FILE.', '       01  OUT-REC PIC X(80).'],
+    jcl: { dds: ['//CWRDR    DD SYSOUT=(A,INTRDR)'] },
+    use: (f) => [`MOVE ${f} TO OUT-REC`, 'OPEN OUTPUT OUT-FILE', 'WRITE OUT-REC', 'CLOSE OUT-FILE'],
+  },
+  'http-header': {
+    kind: 'set', data: ["       01  WS-HNAME PIC X(4) VALUE 'X-CW'.", '       01  WS-HLEN PIC S9(8) COMP VALUE 4.'],
+    use: (f) => ['EXEC CICS WEB WRITE HTTPHEADER(WS-HNAME)', `     NAMELENGTH(WS-HLEN) VALUE(${f})`, '     VALUELENGTH(WS-LEN) END-EXEC'],
+  },
+  // A table of no entries is valid, so the count, like a loop's, needs only its top kept.
+  'occurs-depending-count': {
+    kind: 'bound', numeric: true, where: /05  WS-ODO-ROW/,
+    data: ['       01  WS-ODO-N PIC 9(4) VALUE 1.', '       01  WS-ODO-TABLE.', '           05  WS-ODO-ROW PIC X(4)', '               OCCURS 0 TO 10 DEPENDING ON WS-ODO-N.'],
+    use: (f) => [`MOVE ${f} TO WS-ODO-N`, 'DISPLAY WS-ODO-TABLE'],
+  },
+  'cics-system-resource': { kind: 'set', use: (f) => [`EXEC CICS SET FILE(${f}) CLOSED END-EXEC`] },
+  'xml-document': { kind: 'set', use: (f) => [`XML PARSE ${f}`, '   PROCESSING PROCEDURE XML-HANDLER', 'END-XML'], tail: ['       XML-HANDLER.', '           CONTINUE.'] },
+  'outbound-http': { kind: 'out', use: (f) => ['EXEC CICS WEB CONVERSE SESSTOKEN(WS-TOKEN) POST', `     FROM(${f}) FROMLENGTH(WS-LEN)`, '     INTO(WS-DATA) TOLENGTH(WS-LEN) END-EXEC'] },
+  'socket-send': {
+    kind: 'out',
+    data: ["       01  WS-SOC-FUNCTION PIC X(16) VALUE 'SEND'.", '       01  WS-SOCKID PIC 9(4) BINARY VALUE 0.', '       01  WS-FLAGS PIC 9(8) BINARY VALUE 0.',
+      '       01  WS-NBYTE PIC 9(8) BINARY VALUE 8.', '       01  WS-ERRNO PIC 9(8) BINARY.', '       01  WS-RETCODE PIC S9(8) BINARY.'],
+    use: (f) => ["CALL 'EZASOKET' USING WS-SOC-FUNCTION WS-SOCKID", `   WS-FLAGS WS-NBYTE ${f} WS-ERRNO WS-RETCODE`],
+  },
+  'message-queue': {
+    kind: 'out',
+    data: ['       01  WS-HCONN PIC S9(9) BINARY.', '       01  WS-HOBJ PIC S9(9) BINARY.', '       01  WS-MD PIC X(364).', '       01  WS-PMO PIC X(184).',
+      '       01  WS-BUFLEN PIC S9(9) BINARY VALUE 8.', '       01  WS-CC PIC S9(9) BINARY.', '       01  WS-RC PIC S9(9) BINARY.'],
+    use: (f) => ["CALL 'MQPUT' USING WS-HCONN WS-HOBJ WS-MD WS-PMO", `   WS-BUFLEN ${f} WS-CC WS-RC`],
+  },
+  // A transient-data queue the CSD sends to a DD leaves the region.
+  'extrapartition-queue': {
+    kind: 'out', aux: { 'CWCSD.csd': ['DEFINE TDQUEUE(CWTD) GROUP(CWGRP) TYPE(EXTRA) DDNAME(CWOUT)'] },
+    use: (f) => [`EXEC CICS WRITEQ TD QUEUE('CWTD') FROM(${f})`, '     LENGTH(WS-LEN) END-EXEC'],
+  },
+  screen: { kind: 'set', use: (f) => [`EXEC CICS SEND TEXT FROM(${f}) LENGTH(WS-LEN)`, '     ERASE END-EXEC'] },
+  'record-key': { kind: 'key', use: (f) => ["EXEC CICS READ FILE('CWFILE') INTO(WS-DATA)", `     RIDFLD(${f}) END-EXEC`] },
+  'record-update': { kind: 'key', use: (f) => [`EXEC CICS DELETE FILE('CWFILE') RIDFLD(${f})`, '     END-EXEC'] },
 };
 
 // A guard placed before the sink, and whether the sink is then safe: `truth` is the answer by
@@ -66,7 +156,7 @@ const SINKS = {
 const GUARDS = {
   // Negatives: the value cannot reach the sink in a form that makes it unsafe.
   'allow-list': { truth: 'does-not-reach', fits: (s) => s.kind === 'set', code: (f) => [`EVALUATE ${f}`, ...ALLOWED.map((v) => `   WHEN ${v}`), '      CONTINUE', '   WHEN OTHER', '      GOBACK', 'END-EVALUATE'] },
-  'must-equal': { truth: 'does-not-reach', fits: (s) => s.kind === 'set', code: (f) => [`IF ${f} NOT = ${ALLOWED[0]}`, '   GOBACK', 'END-IF'] },
+  'must-equal': { truth: 'does-not-reach', fits: (s) => s.kind === 'set' || s.kind === 'key', code: (f) => [`IF ${f} NOT = ${ALLOWED[0]}`, '   GOBACK', 'END-IF'] },
   'condition-name': { truth: 'does-not-reach', fits: (s) => s.kind === 'set', code: (f) => [`MOVE ${f} TO WS-CHOICE`, 'IF NOT WS-CHOICE-OK', '   GOBACK', 'END-IF'] },
   'numeric-test': { truth: 'does-not-reach', fits: (s) => s.kind === 'digits', code: (f) => [`IF ${f} IS NOT NUMERIC`, '   GOBACK', 'END-IF'] },
   'both-bounds': { truth: 'does-not-reach', fits: (s) => s.kind === 'bound', code: (f) => [`IF ${f} < 1 OR ${f} > 10`, '   GOBACK', 'END-IF'] },
@@ -79,9 +169,18 @@ const GUARDS = {
   'otherwise-continues': { truth: 'reaches', fits: (s) => s.kind === 'set', code: (f) => [`EVALUATE ${f}`, ...ALLOWED.map((v) => `   WHEN ${v}`), "      MOVE 'K' TO WS-NOTE", '   WHEN OTHER', '      CONTINUE', 'END-EVALUATE'] },
   'guards-another-field': { truth: 'reaches', fits: (s) => s.kind !== 'none', code: (f, s) => (s.kind === 'set' ? [`IF WS-OTHER NOT = ${ALLOWED[0]}`, '   GOBACK', 'END-IF'] : ['IF WS-COUNT < 1 OR WS-COUNT > 10', '   GOBACK', 'END-IF']) },
   // A count or a length needs only its top kept; a subscript or a start needs both ends.
-  'upper-bound-only': { truth: 'reaches', truthFor: { 'loop-bound': 'does-not-reach', 'storage-length': 'does-not-reach' }, fits: (s) => s.kind === 'bound', code: (f) => [`IF ${f} > 10`, '   GOBACK', 'END-IF'] },
+  'upper-bound-only': { truth: 'reaches', truthFor: { 'loop-bound': 'does-not-reach', 'storage-length': 'does-not-reach', 'occurs-depending-count': 'does-not-reach' }, fits: (s) => s.kind === 'bound', code: (f) => [`IF ${f} > 10`, '   GOBACK', 'END-IF'] },
   // One past the ten-row table; for a length of storage, eleven bytes are as harmless as ten.
   'bound-off-by-one': { truth: 'reaches', truthFor: { 'storage-length': 'does-not-reach' }, fits: (s) => s.kind === 'bound', code: (f) => [`IF ${f} < 1 OR ${f} > 11`, '   GOBACK', 'END-IF'] },
+  // Adversarial items, asked for one source per sink: what a reviewer must read the code for, not
+  // the names or the comments. Each is a near-miss but the last.
+  'guard-after-sink': { truth: 'reaches', sampled: true, fits: (s) => s.kind === 'set', code: () => [], after: (f) => [`EVALUATE ${f}`, ...ALLOWED.map((v) => `   WHEN ${v}`), '      CONTINUE', '   WHEN OTHER', '      GOBACK', 'END-EVALUATE'] },
+  // WS-COUNT holds 1 and nothing changes it, so the test never passes.
+  'dead-guard': { truth: 'reaches', sampled: true, fits: (s) => s.kind === 'set', code: (f) => ['IF WS-COUNT > 9999', `   EVALUATE ${f}`, ...ALLOWED.map((v) => `      WHEN ${v}`), '         CONTINUE', '      WHEN OTHER', '         GOBACK', '   END-EVALUATE', 'END-IF'] },
+  'comment-says-checked': { truth: 'reaches', sampled: true, fits: () => true, code: (f) => [`*    ${f} WAS CHECKED AGAINST THE ALLOW-LIST BY THE CALLER.`, '*    NO FURTHER VALIDATION IS NEEDED HERE.'] },
+  'misleading-paragraph': { truth: 'reaches', sampled: true, fits: (s) => s.kind !== 'none', code: () => ['PERFORM VALIDATE-INPUT'],
+    tail: (f, s) => ['       VALIDATE-INPUT.', ...(s.kind === 'set' ? [`IF WS-OTHER NOT = ${ALLOWED[0]}`, '   GOBACK', 'END-IF.'] : ['IF WS-COUNT < 1 OR WS-COUNT > 10', '   GOBACK', 'END-IF.']).map(line)] },
+  'comment-says-unchecked': { truth: 'does-not-reach', sampled: true, fits: (s) => s.kind === 'set', code: (f) => [`*    TODO: ${f} IS NOT VALIDATED YET.`, `EVALUATE ${f}`, ...ALLOWED.map((v) => `   WHEN ${v}`), '      CONTINUE', '   WHEN OTHER', '      GOBACK', 'END-EVALUATE'] },
 };
 
 // Where the guard and the sink sit: beside the source, in a paragraph PERFORMed later, after the
@@ -89,7 +188,8 @@ const GUARDS = {
 const PLACEMENTS = ['inline', 'paragraph', 'hops', 'subprogram'];
 
 const AREA_B = '           ';
-const line = (s) => `${AREA_B}${s}`;
+// A line starting with * is a comment, marked in column 7.
+const line = (s) => (s.startsWith('*') ? `      ${s}` : `${AREA_B}${s}`);
 
 function data(numeric) {
   const pic = numeric ? 'PIC 9(4)' : 'PIC X(8)';
@@ -115,8 +215,19 @@ const fixEighty8 = (lines) => {
   return lines;
 };
 
-// An item's program files, the main program first, and where its source and its sink are. Every
-// main program is CWMAIN, so what a model is shown depends only on what the item is made of.
+// A declaration list a source or a sink gives as it is, or as it depends on the source.
+const part = (x, srcKind) => (typeof x === 'function' ? x(srcKind) : x || []);
+
+// The environment and data divisions down to WORKING-STORAGE's last item.
+const declare = (selects, fds, storage) => [
+  ...(selects.length ? ['       INPUT-OUTPUT SECTION.', '       FILE-CONTROL.', ...selects] : []),
+  '       DATA DIVISION.', ...(fds.length ? ['       FILE SECTION.', ...fds] : []),
+  '       WORKING-STORAGE SECTION.', ...storage,
+];
+
+// An item's program files, the main program first, then any job, map or CSD it needs, and where
+// its source and its sink are. Every main program is CWMAIN, so what a model is shown depends only
+// on what the item is made of.
 function program({ srcKind, sinkName, guardName, placement }) {
   const src = SOURCES[srcKind];
   const sink = SINKS[sinkName];
@@ -124,39 +235,56 @@ function program({ srcKind, sinkName, guardName, placement }) {
   const numeric = !!sink.numeric;
   const field = placement === 'hops' ? 'WS-B' : 'WS-IN';
   const checks = guard.code(field, sink);
-  const main = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. CWMAIN.', '       ENVIRONMENT DIVISION.', ...(src.env || []), '       DATA DIVISION.', ...(src.files || []),
-    '       WORKING-STORAGE SECTION.', ...fixEighty8(data(numeric)), '       PROCEDURE DIVISION.', '       MAIN-PARA.'];
-  const source = { file: 'CWMAIN.cbl', line: main.length + (src.at || 0) + 1, text: src.detail };
+  const after = guard.after ? guard.after(field, sink) : [];
+  const uses = sink.use(field, srcKind);
+  const inSub = placement === 'subprogram';
+  const sinkDecl = (on) => (on ? [part(sink.selects, srcKind), part(sink.fds, srcKind), part(sink.data, srcKind)] : [[], [], []]);
+  const [mSelects, mFds, mData] = sinkDecl(!inSub);
+  const main = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. CWMAIN.', '       ENVIRONMENT DIVISION.',
+    ...declare([...part(src.selects), ...mSelects], [...part(src.fds), ...mFds], [...fixEighty8(data(numeric)), ...part(src.data), ...mData]),
+    ...(src.linkage ? ['       LINKAGE SECTION.', ...src.linkage(numeric)] : []),
+    `       PROCEDURE DIVISION${src.using ? ` USING ${src.using}` : ''}.`, '       MAIN-PARA.'];
+  const sourceLine = main.length + (src.at || 0) + 1;
   main.push(...src.stmt().map(line));
-  let sinkLine;
-  const use = (lines) => { sinkLine = lines.length + checks.length + 1; lines.push(...[...checks, ...sink.use(field)].map(line)); };
+  let holder;
+  let sinkStart;
+  const use = (lines) => { holder = lines; sinkStart = lines.length + checks.length + 1; lines.push(...[...checks, ...uses, ...after].map(line)); };
   const files = { 'CWMAIN.cbl': null };
   if (placement === 'inline') { use(main); main.push(line('GOBACK.')); }
   else if (placement === 'paragraph') { main.push(line('PERFORM USE-PARA'), line('GOBACK.'), '       USE-PARA.'); use(main); main.push(line('EXIT.')); }
   else if (placement === 'hops') { main.push(line('MOVE WS-IN TO WS-A'), line('MOVE WS-A TO WS-B')); use(main); main.push(line('GOBACK.')); }
   else {
     main.push(line("CALL 'CWSUB' USING WS-IN"), line('GOBACK.'));
-    const sub = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. CWSUB.', '       DATA DIVISION.', '       WORKING-STORAGE SECTION.',
-      ...fixEighty8(data(numeric)).filter((l) => !/WS-IN /.test(l)), '       LINKAGE SECTION.', `       01  WS-IN ${numeric ? 'PIC 9(4)' : 'PIC X(8)'}.`,
-      '       PROCEDURE DIVISION USING WS-IN.'];
+    const [sSelects, sFds, sData] = sinkDecl(true);
+    const sub = ['       IDENTIFICATION DIVISION.', '       PROGRAM-ID. CWSUB.', ...(sSelects.length ? ['       ENVIRONMENT DIVISION.'] : []),
+      ...declare(sSelects, sFds, [...fixEighty8(data(numeric)).filter((l) => !/WS-IN /.test(l)), ...sData]),
+      '       LINKAGE SECTION.', `       01  WS-IN ${numeric ? 'PIC 9(4)' : 'PIC X(8)'}.`, '       PROCEDURE DIVISION USING WS-IN.'];
     use(sub);
     sub.push(line('GOBACK.'));
-    files['CWSUB.cbl'] = `${sub.join('\n')}\n`;
+    files['CWSUB.cbl'] = sub;
   }
-  files['CWMAIN.cbl'] = `${main.join('\n')}\n`;
-  return { files, at: { source, sink: { file: placement === 'subprogram' ? 'CWSUB.cbl' : 'CWMAIN.cbl', line: sinkLine } } };
+  holder.push(...(sink.tail || []), ...(guard.tail ? guard.tail(field, sink) : []));
+  const holderName = inSub ? 'CWSUB.cbl' : 'CWMAIN.cbl';
+  const sinkLine = sink.where ? holder.findIndex((l) => sink.where.test(l)) + 1 : sinkStart;
+  files['CWMAIN.cbl'] = main;
+  const jcl = src.jcl || sink.jcl ? [JOB, `//STEP1    EXEC PGM=CWMAIN${src.jcl?.parm ? `,PARM=${src.jcl.parm}` : ''}`, ...(src.jcl?.dds || []), ...(sink.jcl?.dds || [])] : null;
+  if (jcl) files['CWJOB.jcl'] = jcl;
+  for (const [name, lines] of Object.entries({ ...src.aux, ...sink.aux })) files[name] = lines;
+  const source = src.jcl ? { file: 'CWJOB.jcl', line: jcl.findIndex((l) => src.jcl.at.test(l)) + 1, text: src.detail } : { file: 'CWMAIN.cbl', line: sourceLine, text: src.detail };
+  return { files: Object.fromEntries(Object.entries(files).map(([n, l]) => [n, `${l.join('\n')}\n`])), at: { source, sink: { file: holderName, line: sinkLine } } };
 }
 
 // Every item the templates make for the path rules they cover, each with its answer.
 export function items({ rule = null } = {}) {
   const out = [];
+  const firstSource = new Map(Object.keys(SINKS).map((s) => [s, Object.keys(SOURCES).find((src) => RULES[`${src}-to-${s}`]?.evidence === 'path')]));
   for (const [srcKind] of Object.entries(SOURCES)) {
     for (const [sinkName, sink] of Object.entries(SINKS)) {
       const r = `${srcKind}-to-${sinkName}`;
       if (!RULES[r] || RULES[r].evidence !== 'path' || (rule && r !== rule)) continue;
       let deep = 0;
       for (const [guardName, guard] of Object.entries(GUARDS)) {
-        if (!guard.fits(sink)) continue;
+        if (!guard.fits(sink) || (guard.sampled && firstSource.get(sinkName) !== srcKind)) continue;
         // Each guard inline, and in one deeper placement, taken in turn across the guards.
         for (const placement of ['inline', PLACEMENTS[1 + (deep++ % 3)]]) {
           const id = `CW${String(out.length + 1).padStart(4, '0')}`;

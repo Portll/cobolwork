@@ -374,10 +374,17 @@ model's and the judge's accuracy, withheld share, and how often the two models a
 right. It writes no label: the rule that lets an answer stand for a label is the operator's, set
 from those numbers, and labels it then gives are a stratum of their own, never pooled with
 execution labels.
-`bench/negatives.mjs` makes programs whose answer is known by construction, for each path rule a
-source and a sink template cover: a guard that makes the sink safe (an allow-list, a condition-name
-on a copy, a SEARCH of a table, a bound, a literal moved over the value) or a near-miss of one that
-does not, beside the source, in a PERFORMed paragraph, after two MOVEs, or in a called subprogram.
+`bench/negatives.mjs` makes programs whose answer is known by construction, for every path rule: a
+guard that makes the sink safe (an allow-list, a condition-name on a copy, a SEARCH of a table, a
+bound, a literal moved over the value) or a near-miss of one that does not, beside the source, in a
+PERFORMed paragraph, after two MOVEs, or in a called subprogram. A PARM or in-stream data comes with
+the job that hands it in, a protected field with its map, and a transient-data queue with the CSD
+that sends it out of the region. A value sent out of the program is safe only when replaced, and a
+record key only when fixed or replaced: an allow-list still lets a client pick among its keys. For
+one source per sink there are also items a reviewer must read the code for: a guard after the
+sink, a guard inside a test that never passes, a comment saying the value was checked, a paragraph
+named VALIDATE-INPUT that tests another field, and a real allow-list under a comment saying the
+value is not validated.
 Each item records cobolwork's own verdict, so a negative it reports is one of its false alarms.
 `--prompts` writes each item as the corpus's findings are asked, with every line of each file, and
 `bench/label-models.mjs --items` asks the questions in such a file without reading a corpus.

@@ -456,6 +456,33 @@ the provenance statement and ironwork's options in force, each to its NIST contr
 practice, and `evidence verify` names the clauses of what it checked
 ([docs/spec/evidence.md](docs/spec/evidence.md) §9).
 
+## One document of advice
+
+`cobolwork advise <path>` writes one document for a repository: every remediation and every best
+practice cobolwork can state for it, each item naming the rule, practice or compiler message it rests
+on, with the catalogue those ids point into. It is the join a reader otherwise makes by hand across
+the scan report, the rule tables, the compliance files, the inventory and the compiler.
+
+```sh
+cobolwork advise .                          # the document, as JSON
+cobolwork advise . --ironwork ironwork      # with every program compiled by ironwork check
+cobolwork advise . --format sarif           # the same items as SARIF, remedies in help
+cobolwork advise . --format md              # the same items as a page a person reads
+```
+
+The document carries five kinds of item. A `finding` is a scan finding with its fingerprint, its
+verdict and a typed fix location. A `practice` is a best practice the repository misses: a paragraph
+nothing reaches, a record nothing names, a run-time check no option turns on, an obsolete element.
+A `compile` item is an ironwork message about a program, keyed by its id. An `option` item is a
+compiler option a program lacks or sets against the policy. An `inventory` item is a copybook, file
+or encoding the tools could not take in. Items sort by severity, then by how far the verdict goes,
+then by kind and place, and `summary.ordered` lists them in that order.
+
+What it could not measure it says in `unmeasured`, and never leaves blank: without `--ironwork` the
+compiler, dialect and program parts are null and the list says so. Formats were frozen at 0.9.0; this
+is a new document at version 1, `schema/cobolwork-advice.schema.json`, and
+[docs/spec/advice.md](docs/spec/advice.md) states the rules it keeps.
+
 ## Tests
 
     npm test

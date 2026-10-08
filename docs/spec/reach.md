@@ -357,6 +357,16 @@ shows only that these inputs did not, so refuting a finding needs every route to
 (§9.8).
 `bench/seed.mjs` adds planted labels: a flaw or a near-miss put into a real program, labelled by
 construction, and whether the scan reported it.
+`bench/label-models.mjs` asks two local models, each an OpenAI-compatible endpoint the operator
+names in the environment, whether a finding's input reaches its sink unchecked: `reaches`,
+`does-not-reach` or `unsure`. A prompt shows the rule, the source and the sink, and the code of
+each statement on the route with the declarations of its items; it does not list the analyser's
+route, which a model leans towards, and which a planted near-miss does not have. `--calibrate`
+asks both models about findings whose answer is known, execution-confirmed findings and planted
+flaws and near-misses, and reports each model's accuracy on each side, its unsure share, and how
+often the two agree and are right. It writes no label: the rule that lets the two models'
+agreement stand for a label is the operator's, set from those numbers, and labels it then gives
+are a stratum of their own, never pooled with execution labels.
 `bench/label-interface.mjs` labels the abend findings of a subprogram fuzzed at its interface
 (evidence.md §13.6), source `execution-interface`, from one corpus run that also fuzzed every main
 program with `-L` on the repository's program directories. A main-program finding at the same rule,

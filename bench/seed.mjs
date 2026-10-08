@@ -474,7 +474,7 @@ export const OPERATORS = {
 
 // The copybooks a program pulls in by COPY or EXEC SQL INCLUDE, followed through nesting.
 const COPY = /\b(?:COPY|INCLUDE)\s+['"]?([A-Z0-9$#@_-]+)/gi;
-function includes(byName, file) {
+export function includes(byName, file) {
   const want = [file];
   const seen = new Set(want);
   for (let i = 0; i < want.length; i++) {

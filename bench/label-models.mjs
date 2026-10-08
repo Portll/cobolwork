@@ -1,19 +1,27 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Two local models asked whether a finding's input reaches its sink, measured on findings whose
-// answer is known before either is trusted with one that is not (docs/spec/reach.md §9.6).
+// Two local models and a judge asked whether a finding's input reaches its sink, measured on
+// findings whose answer is known before any is trusted with one that is not (docs/spec/reach.md
+// §9.6). The operator reviews and rescores through bench/label-review.mjs, and a rescoring
+// outranks every model.
 //
 //   node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json>
 //        --planted <seed.json> [--per-label 40] [--out results.jsonl] [--summary file]
+//        [--model A|B|J] [--timeout seconds] [--prompts-only]
 //
-// Each model is named by the environment: CW_MODEL_A_URL, CW_MODEL_A and CW_MODEL_A_KEY, and the
-// same with _B. A model is an OpenAI-compatible chat endpoint the operator runs on their own
-// machine. --model A or B asks one of them, so each can run when its host is free; the tally pairs
-// the two once both have answered. --prompts-only writes the questions to --out and asks no model. Answers are written a
-// line at a time to --out; a second run with the same file asks
-// only what is not answered yet. Calibration writes no label: the rule that lets the two models'
-// agreement stand for a label is the operator's, set from these numbers.
+// Each local model is named by the environment: CW_MODEL_A_URL, CW_MODEL_A and CW_MODEL_A_KEY,
+// and the same with _B, an OpenAI-compatible chat endpoint on the operator's own machine. The
+// judge, J, is Claude through the Claude Code command line (CW_JUDGE_MODEL, claude-opus-5-5 by
+// default): it reads the code and both models' answers, and may answer that no consensus is
+// reached or that no label is recommended. --model asks one of A, B or J, so each runs when its
+// host is free; J asks only about items both models have answered. Answers are written a line at
+// a time to --out, and a second run asks only what is not answered yet. Calibration writes no
+// label: the rule that lets an answer stand for a label is the operator's, set from these numbers.
 import { createHash } from 'node:crypto';
+import http from 'node:http';
+import https from 'node:https';
+import { spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { directoryTree } from '../lib/kernel/source-tree.mjs';
 import { scanAll } from '../lib/scan.mjs';
@@ -22,6 +30,9 @@ import { readSource } from '../lib/sources.mjs';
 import { includes, OPERATORS } from './seed.mjs';
 
 export const VERDICTS = ['reaches', 'does-not-reach', 'unsure'];
+// What the judge may answer: a verdict, that the answers and the code settle nothing, or that no
+// label should be given at all (the code shown is not enough to decide).
+export const JUDGE_VERDICTS = ['reaches', 'does-not-reach', 'no-consensus', 'not-recommended'];
 const PROMPT_CAP = 12000;
 const AROUND = 3;
 
@@ -29,7 +40,8 @@ const SYSTEM = 'You review COBOL programs for security flaws. You answer with on
 
 // The question every prompt ends with; the code before it is what changes.
 const QUESTION = 'Question: can input from the source reach the sink\'s operand, unchanged in meaning and not checked or restricted, on some route a run of this program could take?\n'
-  + 'Answer with JSON only: {"verdict": "reaches" | "does-not-reach" | "unsure", "reason": "<one sentence>"}';
+  + 'First list every statement between the source and the sink that tests, restricts or replaces the value (an IF, an EVALUATE and its WHEN OTHER, a SEARCH, a MOVE of a literal, a host variable), with its line and what it lets through. Then decide.\n'
+  + 'Answer with JSON only: {"checks": [{"line": <n>, "what": "<what it allows>"}], "verdict": "reaches" | "does-not-reach" | "unsure", "reason": "<one sentence>"}';
 
 // The numbered lines of `text` within `around` of each of `lines`, merged where they meet.
 export function excerpt(text, lines, around = AROUND) {
@@ -117,18 +129,48 @@ export function promptForPlant(rule, host, planted) {
   ])}\n${QUESTION}`;
 }
 
-// A model's answer as one of VERDICTS: the first JSON object in the text, fenced or not; anything
-// else is unsure.
-export function parseVerdict(text) {
+// A model's answer as one of `allowed`: the first JSON object in the text, fenced or not, with the
+// checks it named; anything else is the last of `allowed`'s undecided answers.
+export function parseVerdict(text, allowed = VERDICTS) {
   const s = String(text || '');
+  const undecided = allowed.includes('unsure') ? 'unsure' : 'no-consensus';
   const start = s.indexOf('{');
   const end = s.lastIndexOf('}');
-  if (start < 0 || end < start) return { verdict: 'unsure', reason: null, unparsed: s.length };
+  const none = { verdict: undecided, reason: null, unparsed: s.length };
+  if (start < 0 || end < start) return none;
   try {
     const o = JSON.parse(s.slice(start, end + 1));
-    return VERDICTS.includes(o.verdict) ? { verdict: o.verdict, reason: typeof o.reason === 'string' ? o.reason.slice(0, 300) : null } : { verdict: 'unsure', reason: null, unparsed: s.length };
+    if (!allowed.includes(o.verdict)) return none;
+    const checks = Array.isArray(o.checks) ? o.checks.slice(0, 20).map((c) => ({ line: Number(c?.line) || null, what: String(c?.what ?? '').slice(0, 200) })) : [];
+    return { verdict: o.verdict, reason: typeof o.reason === 'string' ? o.reason.slice(0, 300) : null, checks };
   } catch {
-    return { verdict: 'unsure', reason: null, unparsed: s.length };
+    return none;
+  }
+}
+
+// The judge's question: the same code, and the two reviewers' answers, unnamed.
+export function judgePrompt(prompt, a, b) {
+  const shown = (r) => JSON.stringify({ checks: r.checks || [], verdict: r.verdict, reason: r.reason });
+  return `${prompt.replace(QUESTION, '').trimEnd()}\n\n${QUESTION.split('\n')[0]}\n\n`
+    + `Two reviewers answered:\nReviewer 1: ${shown(a)}\nReviewer 2: ${shown(b)}\n\n`
+    + 'Judge from the code, not from the reviewers: check each statement they named, and any they missed.\n'
+    + 'Answer "no-consensus" where the code shown does not settle it, and "not-recommended" where no label should be given because the code needed to decide is not shown.\n'
+    + 'Answer with JSON only: {"checks": [{"line": <n>, "what": "<what it allows>"}], "verdict": "reaches" | "does-not-reach" | "no-consensus" | "not-recommended", "reason": "<one sentence>"}';
+}
+
+// One question to the judge through the Claude Code command line, with no tools, settings or
+// servers, run from a scratch directory so no project's instructions reach it.
+function askJudge(prompt, timeoutMs, model = process.env.CW_JUDGE_MODEL || 'claude-opus-5-5') {
+  const started = Date.now();
+  const r = spawnSync('claude', ['-p', '--model', model, '--output-format', 'json', '--tools', '', '--no-session-persistence', '--system-prompt', SYSTEM,
+    '--setting-sources', '', '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--disable-slash-commands'], { cwd: tmpdir(), input: prompt, encoding: 'utf8', timeout: timeoutMs, maxBuffer: 1 << 22 });
+  if (r.error) return { error: r.error.code === 'ETIMEDOUT' ? `no answer in ${timeoutMs / 1000}s` : r.error.message, ms: Date.now() - started };
+  try {
+    const out = JSON.parse(r.stdout);
+    if (out.is_error) return { error: String(out.result || 'the judge failed').slice(0, 200), ms: Date.now() - started };
+    return { text: out.result ?? '', ms: Date.now() - started, costUsd: out.total_cost_usd };
+  } catch {
+    return { error: `the judge wrote no JSON (exit ${r.status})`, ms: Date.now() - started };
   }
 }
 
@@ -136,44 +178,51 @@ export function modelsFromEnv(env = process.env) {
   return ['A', 'B'].map((k) => ({ name: k, url: env[`CW_MODEL_${k}_URL`], model: env[`CW_MODEL_${k}`], key: env[`CW_MODEL_${k}_KEY`] })).filter((m) => m.url && m.model);
 }
 
-// One question to one model; the answer's text, or an error.
-async function ask(m, prompt, timeoutMs) {
+// One question to one model; the answer's text, or an error. node:http rather than fetch, whose
+// five-minute wait for a response's headers is shorter than a busy host takes to answer.
+function ask(m, prompt, timeoutMs) {
   const started = Date.now();
-  try {
-    const r = await fetch(`${m.url.replace(/\/$/, '')}/v1/chat/completions`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', ...(m.key ? { authorization: `Bearer ${m.key}` } : {}) },
-      body: JSON.stringify({ model: m.model, temperature: 0, max_tokens: 300, reasoning_effort: 'none', messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: prompt }] }),
-      signal: AbortSignal.timeout(timeoutMs),
+  const url = new URL(`${m.url.replace(/\/$/, '')}/v1/chat/completions`);
+  const body = JSON.stringify({ model: m.model, temperature: 0, max_tokens: 300, reasoning_effort: 'none', messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: prompt }] });
+  const client = url.protocol === 'https:' ? https : http;
+  return new Promise((done) => {
+    const req = client.request(url, { method: 'POST', headers: { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body), ...(m.key ? { authorization: `Bearer ${m.key}` } : {}) } }, (res) => {
+      let text = '';
+      res.setEncoding('utf8');
+      res.on('data', (c) => { text += c; });
+      res.on('end', () => {
+        if (res.statusCode !== 200) return done({ error: `HTTP ${res.statusCode}`, ms: Date.now() - started });
+        try { done({ text: JSON.parse(text).choices?.[0]?.message?.content ?? '', ms: Date.now() - started }); } catch { done({ error: 'the answer is not JSON', ms: Date.now() - started }); }
+      });
     });
-    if (!r.ok) return { error: `HTTP ${r.status}`, ms: Date.now() - started };
-    const body = await r.json();
-    return { text: body.choices?.[0]?.message?.content ?? '', ms: Date.now() - started };
-  } catch (e) {
-    return { error: e.name === 'TimeoutError' ? `no answer in ${timeoutMs / 1000}s` : e.message, ms: Date.now() - started };
-  }
+    req.setTimeout(timeoutMs, () => req.destroy(new Error(`no answer in ${timeoutMs / 1000}s`)));
+    req.on('error', (e) => done({ error: e.message, ms: Date.now() - started }));
+    req.end(body);
+  });
 }
 
-// Per model and per set: each verdict against the known answer, and the two models together.
+// Per set: each model's verdicts against the known answer; the two local models together; and
+// the judge, whose labelled answers are its reaches and does-not-reach, and whose withheld ones are
+// no-consensus and not-recommended.
 export function tally(rows) {
   const out = {};
-  const key = (r) => `${r.set}`;
   const byItem = new Map();
   for (const r of rows) {
-    const s = (out[key(r)] ||= { models: {}, both: { agreed: 0, agreedRight: 0, agreedWrong: 0, items: 0 } });
-    const m = (s.models[r.model] ||= { positives: 0, negatives: 0, rightOnPositives: 0, rightOnNegatives: 0, unsure: 0, errors: 0 });
+    const s = (out[r.set] ||= { models: {}, both: { agreed: 0, agreedRight: 0, agreedWrong: 0, items: 0 } });
+    const m = (s.models[r.model] ||= { positives: 0, negatives: 0, rightOnPositives: 0, rightOnNegatives: 0, unsure: 0, withheld: 0, errors: 0 });
     if (r.error) { m.errors++; continue; }
     if (r.truth === 'reaches') { m.positives++; if (r.verdict === 'reaches') m.rightOnPositives++; } else { m.negatives++; if (r.verdict === 'does-not-reach') m.rightOnNegatives++; }
     if (r.verdict === 'unsure') m.unsure++;
+    if (r.verdict === 'no-consensus' || r.verdict === 'not-recommended') m.withheld++;
     const id = `${r.set}\0${r.item}`;
-    if (!byItem.has(id)) byItem.set(id, []);
-    byItem.get(id).push(r);
+    if (!byItem.has(id)) byItem.set(id, {});
+    byItem.get(id)[r.model] = r;
   }
   for (const answers of byItem.values()) {
-    if (answers.length < 2) continue;
-    const s = out[key(answers[0])].both;
+    const { A: a, B: b } = answers;
+    if (!a || !b) continue;
+    const s = out[a.set].both;
     s.items++;
-    const [a, b] = answers;
     if (a.verdict === b.verdict && a.verdict !== 'unsure') {
       s.agreed++;
       if (a.verdict === a.truth) s.agreedRight++; else s.agreedWrong++;
@@ -183,6 +232,9 @@ export function tally(rows) {
     for (const m of Object.values(s.models)) {
       m.accuracyOnPositives = m.positives ? m.rightOnPositives / m.positives : null;
       m.accuracyOnNegatives = m.negatives ? m.rightOnNegatives / m.negatives : null;
+      const labelled = m.positives + m.negatives - m.unsure - m.withheld;
+      m.labelled = labelled;
+      m.rightWhenLabelled = labelled ? (m.rightOnPositives + m.rightOnNegatives) / labelled : null;
     }
   }
   return out;
@@ -242,8 +294,9 @@ function plantedItems(seedFile, corpus, per) {
 }
 
 async function calibrate(opts) {
-  const models = modelsFromEnv().filter((m) => !opts.only || m.name === opts.only);
-  if (models.length < (opts.only ? 1 : 2) && !opts.promptsOnly) throw new Error('name two models: CW_MODEL_A_URL, CW_MODEL_A, CW_MODEL_A_KEY and the same with _B');
+  const judging = opts.only === 'J';
+  const models = judging ? [] : modelsFromEnv().filter((m) => !opts.only || m.name === opts.only);
+  if (!judging && models.length < (opts.only ? 1 : 2) && !opts.promptsOnly) throw new Error('name two models: CW_MODEL_A_URL, CW_MODEL_A, CW_MODEL_A_KEY and the same with _B');
   const exec = executionItems(opts.execution, opts.corpus);
   const planted = plantedItems(opts.planted, opts.corpus, opts.perLabel);
   const items = [...exec.items, ...planted.items];
@@ -253,7 +306,12 @@ async function calibrate(opts) {
   }
   const done = new Set();
   const rows = [];
-  if (existsSync(opts.out)) for (const line of readFileSync(opts.out, 'utf8').split('\n').filter(Boolean)) { const r = JSON.parse(line); rows.push(r); done.add(`${r.model}\0${r.set}\0${r.item}`); }
+  // A question that failed is asked again; the answers kept are the ones a model gave.
+  if (existsSync(opts.out)) {
+    const kept = readFileSync(opts.out, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)).filter((r) => !r.error);
+    writeFileSync(opts.out, kept.map((r) => `${JSON.stringify(r)}\n`).join(''));
+    for (const r of kept) { rows.push(r); done.add(`${r.model}\0${r.set}\0${r.item}`); }
+  }
   // Every question to one model before the next, so the host loads each model once.
   for (const m of models) {
     for (const it of items) {
@@ -261,6 +319,21 @@ async function calibrate(opts) {
       const answer = await ask(m, it.prompt, opts.timeoutMs);
       const row = { model: m.name, modelId: m.model, set: it.set, item: it.item, rule: it.rule, truth: it.truth, promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
         ...(answer.error ? { error: answer.error } : parseVerdict(answer.text)) };
+      appendFileSync(opts.out, `${JSON.stringify(row)}\n`);
+      rows.push(row);
+    }
+  }
+  // The judge, on each item both models answered.
+  if (judging) {
+    const answered = (name, it) => rows.find((r) => r.model === name && r.set === it.set && r.item === it.item);
+    for (const it of items) {
+      if (done.has(`J\0${it.set}\0${it.item}`)) continue;
+      const a = answered('A', it);
+      const b = answered('B', it);
+      if (!a || !b) continue;
+      const answer = askJudge(judgePrompt(it.prompt, a, b), opts.timeoutMs);
+      const row = { model: 'J', modelId: process.env.CW_JUDGE_MODEL || 'claude-opus-5-5', set: it.set, item: it.item, rule: it.rule, truth: it.truth, promptSha1: createHash('sha1').update(it.prompt).digest('hex'), ms: answer.ms,
+        ...(answer.costUsd != null ? { costUsd: answer.costUsd } : {}), ...(answer.error ? { error: answer.error } : parseVerdict(answer.text, JUDGE_VERDICTS)) };
       appendFileSync(opts.out, `${JSON.stringify(row)}\n`);
       rows.push(row);
     }

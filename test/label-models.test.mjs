@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { excerpt, modelsFromEnv, parseVerdict, promptFor, promptForPlant, tally } from '../bench/label-models.mjs';
+import { excerpt, JUDGE_VERDICTS, judgePrompt, modelsFromEnv, parseVerdict, promptFor, promptForPlant, tally } from '../bench/label-models.mjs';
 import { scanAll } from '../lib/scan.mjs';
 import './pin-machine.mjs';
 
@@ -34,7 +34,7 @@ test('a planted program\'s prompt shows the lines the plant added, flaw and near
 });
 
 test('an answer is the first JSON object in it, fenced or not, and anything else is unsure', () => {
-  assert.deepEqual(parseVerdict('{"verdict":"reaches","reason":"no check"}'), { verdict: 'reaches', reason: 'no check' });
+  assert.deepEqual(parseVerdict('{"checks":[{"line":12,"what":"date or uptime"}],"verdict":"reaches","reason":"no check"}'), { verdict: 'reaches', reason: 'no check', checks: [{ line: 12, what: 'date or uptime' }] });
   assert.equal(parseVerdict('```json\n{"verdict": "does-not-reach", "reason": "allow list"}\n```').verdict, 'does-not-reach');
   assert.equal(parseVerdict('It reaches the sink.').verdict, 'unsure');
   assert.equal(parseVerdict('{"verdict": "maybe"}').verdict, 'unsure');
@@ -54,8 +54,38 @@ test('the counts give each model\'s accuracy on each side and how often the two 
   assert.deepEqual([t.models.A.accuracyOnPositives, t.models.A.accuracyOnNegatives, t.models.A.unsure], [1, 0, 1]);
   assert.equal(t.models.B.errors, 1);
   assert.deepEqual(t.both, { agreed: 2, agreedRight: 1, agreedWrong: 1, items: 2 });
+  const judged = tally([...rows, { model: 'J', set: 'planted', item: 'x', truth: 'reaches', verdict: 'reaches' }, { model: 'J', set: 'planted', item: 'y', truth: 'does-not-reach', verdict: 'no-consensus' }]).planted.models.J;
+  assert.deepEqual([judged.labelled, judged.withheld, judged.rightWhenLabelled], [1, 1, 1]);
+});
+
+test('the judge may withhold a label, and reads the reviewers\' checks without their names', () => {
+  assert.equal(parseVerdict('{"verdict":"not-recommended","reason":"the copybook is not shown"}', JUDGE_VERDICTS).verdict, 'not-recommended');
+  assert.equal(parseVerdict('{"verdict":"unsure"}', JUDGE_VERDICTS).verdict, 'no-consensus');
+  const p = judgePrompt('Rule: r.\nCode:\n    1 X\n', { verdict: 'reaches', checks: [{ line: 1, what: 'nothing' }], reason: 'r', model: 'A' }, { verdict: 'does-not-reach', checks: [], reason: 's', model: 'B' });
+  assert.match(p, /Reviewer 1: \{"checks":\[\{"line":1,"what":"nothing"\}\],"verdict":"reaches","reason":"r"\}/);
+  assert.doesNotMatch(p, /"model"/);
+  assert.match(p, /"no-consensus" \| "not-recommended"/);
 });
 
 test('models are named by the environment and a model with no URL is left out', () => {
   assert.deepEqual(modelsFromEnv({ CW_MODEL_A_URL: 'http://h:1', CW_MODEL_A: 'qwen', CW_MODEL_B: 'gemma' }).map((m) => m.model), ['qwen']);
+});
+
+test('a rescoring outranks the judge, the judge outranks the models, and the sheet puts disputed items forward', async () => {
+  const { finals, sheet } = await import('../bench/label-review.mjs');
+  const rows = [
+    { model: 'A', set: 'planted', item: 'x', rule: 'r', truth: 'does-not-reach', verdict: 'reaches', reason: 'a' },
+    { model: 'B', set: 'planted', item: 'x', rule: 'r', truth: 'does-not-reach', verdict: 'reaches', reason: 'b' },
+    { model: 'J', set: 'planted', item: 'x', rule: 'r', truth: 'does-not-reach', verdict: 'reaches', reason: 'j' },
+    { model: 'A', set: 'planted', item: 'y', rule: 'r', truth: 'reaches', verdict: 'reaches' },
+    { model: 'B', set: 'planted', item: 'y', rule: 'r', truth: 'reaches', verdict: 'does-not-reach' },
+    { model: 'J', set: 'planted', item: 'y', rule: 'r', truth: 'reaches', verdict: 'no-consensus' },
+  ];
+  const ledger = [{ set: 'planted', item: 'x', verdict: 'does-not-reach', who: 'operator', why: 'the EVALUATE ends the run on any other value' }];
+  const f = finals(rows, ledger);
+  assert.deepEqual(f.counts, { items: 2, byOperator: 1, operatorChangedJudge: 1, withheld: 1, right: 1, wrong: 0 });
+  assert.equal(f.items.find((i) => i.item === 'x').by, 'operator');
+  const s = sheet(rows, [], 'disputed');
+  assert.match(s, /## y/);
+  assert.doesNotMatch(s, /## x/);
 });

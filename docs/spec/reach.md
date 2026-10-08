@@ -358,15 +358,22 @@ shows only that these inputs did not, so refuting a finding needs every route to
 `bench/seed.mjs` adds planted labels: a flaw or a near-miss put into a real program, labelled by
 construction, and whether the scan reported it.
 `bench/label-models.mjs` asks two local models, each an OpenAI-compatible endpoint the operator
-names in the environment, whether a finding's input reaches its sink unchecked: `reaches`,
-`does-not-reach` or `unsure`. A prompt shows the rule, the source and the sink, and the code of
-each statement on the route with the declarations of its items; it does not list the analyser's
-route, which a model leans towards, and which a planted near-miss does not have. `--calibrate`
-asks both models about findings whose answer is known, execution-confirmed findings and planted
-flaws and near-misses, and reports each model's accuracy on each side, its unsure share, and how
-often the two agree and are right. It writes no label: the rule that lets the two models'
-agreement stand for a label is the operator's, set from those numbers, and labels it then gives
-are a stratum of their own, never pooled with execution labels.
+names in the environment, whether a finding's input reaches its sink unchecked. A prompt shows the
+rule, the source and the sink, and the code of each statement on the route with the declarations of
+its items; it does not list the analyser's route, which a model leans towards, and which a planted
+near-miss does not have. Each model first lists the statements that test, restrict or replace the
+value, then answers `reaches`, `does-not-reach` or `unsure`. A judge, Claude Opus through the
+Claude Code command line with no tools or project settings, reads the same code and both answers
+unnamed, and answers `reaches`, `does-not-reach`, `no-consensus` where the code shown does not
+settle it, or `not-recommended` where no label should be given. `bench/label-review.mjs` is the
+operator's oversight: a sheet of each item with every answer and the code, a ledger of the
+operator's rescorings, and the final answer per item, where a rescoring outranks the judge and the
+judge outranks the two models (operator 2026-10-08). `--calibrate` asks about findings whose
+answer is known, execution-confirmed findings and planted flaws and near-misses, and reports each
+model's and the judge's accuracy, withheld share, and how often the two models agree and are
+right. It writes no label: the rule that lets an answer stand for a label is the operator's, set
+from those numbers, and labels it then gives are a stratum of their own, never pooled with
+execution labels.
 `bench/label-interface.mjs` labels the abend findings of a subprogram fuzzed at its interface
 (evidence.md §13.6), source `execution-interface`, from one corpus run that also fuzzed every main
 program with `-L` on the repository's program directories. A main-program finding at the same rule,

@@ -26,6 +26,13 @@ test('a finding\'s prompt names the rule, the source and the sink, and shows eac
   assert.ok(p.length < 12500);
 });
 
+test('a prompt can show the lines leading to the sink, and shows none of them unless asked', () => {
+  const f = scanAll(DIR, { only: ['flow'] }).findings.find((x) => x.rule === 'argv-or-env-to-os-command');
+  const first = '    1        IDENTIFICATION DIVISION.';
+  assert.ok(!promptFor(f, read).includes(first));
+  assert.ok(promptFor(f, read, { lead: 9 }).includes(first));
+});
+
 test('a planted program\'s prompt shows the lines the plant added, flaw and near-miss alike', () => {
   const host = read('P.cbl');
   const planted = host.replace('           GOBACK.', "           IF WS-IN NOT = 'date'\n              GOBACK\n           END-IF\n           GOBACK.");

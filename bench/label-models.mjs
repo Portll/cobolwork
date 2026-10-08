@@ -96,9 +96,10 @@ export function capped(parts) {
 
 // The prompt for a reported finding: the rule, its source and sink, and the code of each hop of
 // its route, with the declarations of the items on it. The route itself is not listed: a model
-// shown the analyser's conclusion leans to it, and a planted near-miss has none to show. `read` returns a file's text by the path
-// the finding names.
-export function promptFor(f, read) {
+// shown the analyser's conclusion leans to it, and a planted near-miss has none to show. `read`
+// returns a file's text by the path the finding names. `lead` adds that many lines before the sink:
+// the test of a branch the sink sits in can be above every hop, in a copybook shown only by its sink.
+export function promptFor(f, read, { lead = 0 } = {}) {
   const rule = RULES[f.rule];
   const src = (f.related || [])[0];
   const byFile = new Map();
@@ -124,7 +125,8 @@ export function promptFor(f, read) {
     // enough: what runs between two hops can test, change or replace the value.
     const [lo, hi] = [Math.min(...lines), Math.max(...lines)];
     const shown = hi - lo <= SPAN ? Array.from({ length: hi - lo + 1 }, (_, k) => lo + k) : [...lines];
-    parts.push(`\nCode of ${file}:\n${excerpt(text, [...shown, ...decl])}\n`);
+    const leading = file === f.path ? Array.from({ length: Math.min(lead, f.line - 1) }, (_, k) => f.line - 1 - k) : [];
+    parts.push(`\nCode of ${file}:\n${excerpt(text, [...shown, ...leading, ...decl])}\n`);
   }
   return `${capped(parts)}\n${QUESTION}`;
 }
@@ -272,7 +274,7 @@ export function tally(rows) {
 
 // The execution set: each confirmed label's finding (or, for --unknown, each unknown one's), found again by fingerprint (or rule, path
 // and line) in a scan of its repository.
-function executionItems(labelsFile, corpus, which = 'confirmed') {
+function executionItems(labelsFile, corpus, which = 'confirmed', lead = 0) {
   const confirmed = JSON.parse(readFileSync(labelsFile, 'utf8')).labels.filter((l) => l.label === which);
   const items = [];
   const byRepo = Map.groupBy(confirmed, (l) => l.repo);
@@ -286,7 +288,7 @@ function executionItems(labelsFile, corpus, which = 'confirmed') {
       const f = findings.find((x) => x.fingerprint === l.fingerprint) || findings.find((x) => x.rule === l.rule && x.path === l.path && x.line === l.line);
       if (!f) continue;
       matched++;
-      items.push({ set: which === 'confirmed' ? 'execution' : which, item: `${repo}/${l.path}:${l.line}:${l.rule}`, rule: l.rule, truth: which === 'confirmed' ? 'reaches' : null, fingerprint: l.fingerprint, prompt: promptFor(f, read) });
+      items.push({ set: which === 'confirmed' ? 'execution' : which, item: `${repo}/${l.path}:${l.line}:${l.rule}`, rule: l.rule, truth: which === 'confirmed' ? 'reaches' : null, fingerprint: l.fingerprint, prompt: promptFor(f, read, { lead }) });
     }
   }
   return { items, wanted: confirmed.length, matched };
@@ -345,7 +347,7 @@ async function calibrate(opts) {
   const models = judging ? [] : modelsFromEnv().filter((m) => !opts.only || m.name === opts.only);
   if (!judging && models.length < (opts.only ? 1 : 2) && !opts.promptsOnly) throw new Error('name two models: CW_MODEL_A_URL, CW_MODEL_A, CW_MODEL_A_KEY and the same with _B');
   const given = opts.items ? readItems(opts.items) : null;
-  const exec = given ? { items: [], wanted: 0, matched: 0 } : executionItems(opts.execution, opts.corpus, opts.unknown ? 'unknown' : 'confirmed');
+  const exec = given ? { items: [], wanted: 0, matched: 0 } : executionItems(opts.execution, opts.corpus, opts.unknown ? 'unknown' : 'confirmed', opts.lead);
   const planted = given || opts.unknown ? { items: [], skipped: 0 } : plantedItems(opts.planted, opts.corpus, opts.perLabel);
   const items = given || [...exec.items, ...planted.items];
   if (opts.promptsOnly) {
@@ -399,6 +401,7 @@ async function main(argv) {
     else if (a === '--parallel') opts.parallel = Number(argv[++i]);
     else if (a === '--model') opts.only = argv[++i];
     else if (a === '--swap') opts.swap = true;
+    else if (a === '--lead') opts.lead = Number(argv[++i]);
     else if (a === '--corpus') opts.corpus = argv[++i];
     else if (a === '--execution') opts.execution = argv[++i];
     else if (a === '--planted') opts.planted = argv[++i];
@@ -409,7 +412,7 @@ async function main(argv) {
     else if (a === '--timeout') opts.timeoutMs = Number(argv[++i]) * 1000;
   }
   if (!opts.calibrate || (!opts.items && (!opts.corpus || !opts.execution || (!opts.planted && !opts.unknown)))) {
-    process.stderr.write('usage: node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json> --planted <seed.json> [--per-label 40] [--out file] [--summary file] [--timeout seconds] [--parallel n] [--prompts-only] [--model A|B|J] [--unknown]\n       node bench/label-models.mjs --calibrate --items <questions.jsonl> [--out file] [--summary file] [--timeout seconds] [--parallel n] [--model A|B|J] [--swap]\n');
+    process.stderr.write('usage: node bench/label-models.mjs --calibrate --corpus <root> --execution <label.json> --planted <seed.json> [--per-label 40] [--out file] [--summary file] [--timeout seconds] [--parallel n] [--prompts-only] [--model A|B|J] [--unknown] [--lead lines]\n       node bench/label-models.mjs --calibrate --items <questions.jsonl> [--out file] [--summary file] [--timeout seconds] [--parallel n] [--model A|B|J] [--swap]\n');
     return 2;
   }
   const summary = await calibrate(opts);

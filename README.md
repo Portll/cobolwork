@@ -50,6 +50,23 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | `cobolwork build <repo> [--base <ref>] [-- <compiler> …]` | the build gate: every finding ranked LOW to KNOWN-EXPLOITABLE, the build stopped on the ones the policy blocks and on compiler options that let a bad index corrupt storage, and the compiler run only on a pass |
 | `cobolwork parse <file>` | one file's structure, for debugging |
 
+## Scope
+
+Reads: COBOL (fixed, free, variable and terminal format), copybooks, JCL, CICS BMS maps and CSD
+definitions, Db2 SQL and DDL, IMS DBDs, PSBs and DL/I calls, PL/I and HLASM. IBM Enterprise COBOL is
+the reference; GnuCOBOL and Micro Focus forms are read where the parser handles them.
+
+Refuses or leaves out: what no reader recognises is named in the report, and any unread source sets
+`coverageIncomplete`. Macros are not expanded, PL/I pointer and preprocessor flow is listed and not
+followed, and nothing is run.
+
+Unmeasured: rule precision is counted per label stratum (execution, planted, synthetic and model), and
+some error-severity rules have no label in any stratum. `bench/precision.mjs` lists them.
+
+Needs: Node 22 or later and no dependencies. ironwork is optional, for `build`, `gate` and compile checks.
+
+[docs/SCOPE.md](docs/SCOPE.md) gives each of these with where to check it.
+
 ## What it finds
 
 | Area | What is reported |

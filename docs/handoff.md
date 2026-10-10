@@ -194,7 +194,7 @@ findings against 22 from outside input.
 In order. Each item says what it is worth and what it costs.
 
 1. **Read CI after each push.** `.github/workflows/ci.yml` runs the suite serially on ubuntu with
-   Node 22 and 24 and on macOS and Windows with Node 22, and scans the benchmark on ubuntu.
+   Node 22 and 26 and on macOS and Windows with Node 22, and scans the benchmark on ubuntu.
 
 2. **Widen the machine labels.** `bench/label.mjs` runs each finding's verification plan in ironwork
    and `bench/precision.mjs` turns the labels into precision per rule. Each sink and source ironwork

@@ -16,11 +16,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 22 is the floor package.json declares, 24 is current. On Windows, report paths must stay
+        # 22 is the floor package.json declares, 26 is current. On Windows, report paths must stay
         # POSIX-shaped and diff must undo git's line-ending conversion.
         include:
           - { os: ubuntu-latest, node: '22' }
-          - { os: ubuntu-latest, node: '24' }
+          - { os: ubuntu-latest, node: '26' }
           - { os: macos-latest, node: '22' }
           - { os: windows-latest, node: '22' }
     steps:
@@ -73,7 +73,7 @@ jobs:
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: '22'
+          node-version: '26'
       - name: Compare the vendored run endings and the message areas with ironwork's
         env:
           COBOLWORK_IRONWORK_DIR: ${{ github.workspace }}/ironwork
@@ -90,7 +90,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: '22'
+          node-version: '26'
       # The benchmark cases are deliberately flawed COBOL. A run that reported them clean, or that
       # reported incomplete coverage over them, would mean the tool had stopped reading.
       - name: Scan

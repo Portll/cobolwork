@@ -7,7 +7,7 @@ the workflow and the upload still happens when the gate fails.
 
 ## What it does
 
-1. Installs Node 22.
+1. Installs Node 26.
 2. Installs `@portll/cobolwork` from npm at the requested version, or uses the copy in the
    action's own checkout when `version` is `local`.
 3. Runs `cobolwork build <path> --format sarif --out <sarif>`, adding `--base`, `--policy` and

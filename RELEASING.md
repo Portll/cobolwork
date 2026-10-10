@@ -18,14 +18,20 @@ It prints PASS, FAIL or TODO for each step and exits 1 on any FAIL.
    nothing, so activating the cut task is not a claim.
 2. **CI.** `--before` passes only when main's last CI run is for main's head and every job passed.
    A red job is fixed on main before the cut.
-3. **Notes.** Start from the commits `--before` lists since the previous release. Each feature and
-   fix there is either named in the notes or left out on purpose. Commit the notes as `docs/releases/<version>.md`
-   before the tag. They open with a
-   `## Summary` section, which the site renders as the release's row: the first paragraph is the
-   benefit, each line opening with a hyphen a sub-item, a paragraph opening `**Limit:**` the limit.
-4. **Version.** commit-phase moves `package.json`'s patch version with every commit; a minor or
-   major release is a commit that sets it by hand, with the subject
-   `chore: release cobolwork <version>`. The tag is the version at the tagged commit.
+3. **Changelog and notes.** On the commit that is to be tagged, run `node diag/changelog.mjs <version>`.
+   It writes the version's section at the top of `CHANGELOG.md` from `git log --no-merges` since the
+   previous `v*` tag, and copies that section into `docs/releases/<version>.md` under
+   `## Changes since <previous>`, which it owns to the end of the file. Write the notes' `## Summary`
+   above it: the first paragraph is the benefit, each line opening with a hyphen a sub-item, a
+   paragraph opening `**Limit:**` the limit; the site renders it as the release's row. Each feature
+   and fix `--before` lists is named in the Summary or left out on purpose. Never edit the changelog
+   section by hand: the notes are taken from it, not the changelog from the notes. Commit
+   `CHANGELOG.md` and `docs/releases/<version>.md` in the release commit (step 4), and run
+   `node diag/changelog.mjs --check <version>` before the tag. `test/changelog.test.mjs` fails CI
+   for a release commit whose changelog lacks the version's section.
+4. **Version.** Commit the changelog and notes with the version. commit-phase moves `package.json`'s
+   patch version with every commit; a minor or major release is a commit that sets it by hand, with
+   the subject `chore: release cobolwork <version>`. The tag is the version at the tagged commit.
 
 ## The tag and the registries
 

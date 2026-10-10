@@ -50,6 +50,8 @@ request and writes SARIF for code scanning: [docs/github-action.md](docs/github-
 | `cobolwork build <repo> [--base <ref>] [-- <compiler> …]` | the build gate: every finding ranked LOW to KNOWN-EXPLOITABLE, the build stopped on the ones the policy blocks and on compiler options that let a bad index corrupt storage, and the compiler run only on a pass |
 | `cobolwork parse <file>` | one file's structure, for debugging |
 
+Every command, option, exit status, environment variable and site file key is in the [reference](docs/reference/README.md).
+
 ## Scope
 
 Reads: COBOL (fixed, free, variable and terminal format), copybooks, JCL, CICS BMS maps and CSD

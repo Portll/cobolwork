@@ -53,6 +53,17 @@
      "documents": {
       "$ref": "#/$defs/strings",
       "description": "The tool names of the documents the command writes."
+     },
+     "summary": {
+      "type": "string",
+      "description": "What the command does."
+     },
+     "exit": {
+      "type": "array",
+      "description": "Each exit status the command gives and when.",
+      "items": {
+       "$ref": "#/$defs/statusRow"
+      }
      }
     }
    }
@@ -189,6 +200,104 @@
      "$ref": "#/$defs/strings"
     }
    }
+  },
+  "options": {
+   "type": "object",
+   "description": "Each option: the value it takes, or null for a flag, and what it does.",
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "value",
+     "summary"
+    ],
+    "properties": {
+     "value": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "summary": {
+      "type": "string"
+     },
+     "commands": {
+      "type": "object",
+      "description": "Wording for a command where the option means something different there.",
+      "additionalProperties": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "exitStatuses": {
+   "type": "array",
+   "description": "The statuses cobolwork and ironwork share, and what each means.",
+   "items": {
+    "$ref": "#/$defs/statusRow"
+   }
+  },
+  "environment": {
+   "type": "array",
+   "description": "The environment variables cobolwork reads.",
+   "items": {
+    "type": "object",
+    "required": [
+     "name",
+     "value",
+     "summary"
+    ],
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "value": {
+      "type": "string"
+     },
+     "summary": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "siteFile": {
+   "type": "object",
+   "description": "The site file: its name, its version and each key it reads.",
+   "required": [
+    "file",
+    "version",
+    "keys"
+   ],
+   "properties": {
+    "file": {
+     "type": "string"
+    },
+    "version": {
+     "type": "integer"
+    },
+    "keys": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "key",
+       "type",
+       "summary"
+      ],
+      "properties": {
+       "key": {
+        "type": "string"
+       },
+       "type": {
+        "type": "string"
+       },
+       "summary": {
+        "type": "string"
+       }
+      }
+     }
+    }
+   }
   }
  },
  "$defs": {
@@ -232,6 +341,22 @@
       "checkout",
       "release"
      ]
+    }
+   }
+  },
+  "statusRow": {
+   "type": "object",
+   "required": [
+    "status",
+    "meaning"
+   ],
+   "properties": {
+    "status": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "meaning": {
+     "type": "string"
     }
    }
   }

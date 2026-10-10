@@ -10,7 +10,8 @@
  },
  "properties": {
   "$schema": {
-   "type": "string"
+   "type": "string",
+   "description": "The schema this file follows, for an editor."
   },
   "version": {
    "description": "The site file version. A file without one is read as version 0, which holds the same keys as version 1.",

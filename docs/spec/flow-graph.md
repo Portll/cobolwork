@@ -235,6 +235,81 @@ thread's share of the control analysis fell from 204 s to 34 s, and it waited 41
 analyses a worker had started. What remains on the main thread is the parse, `summarise()` and the
 walk.
 
+### 4.6 Every source gets a walk
+
+Measured at `b0deb6e` on the whole Unieuro estate, the first eleven walks, from fields of ATTRIB,
+CALC3 and LEGGIPN that programs throughout the estate read, each reach millions of states, eight
+are cut at the 79 million edges one walk may take, and those walks with the refusals of their
+credited findings spend the 2.1 billion edges all walks share before a twelfth source is walked,
+and 167,365 sources are never walked. The bounds were set for ACAS, whose largest walk
+needs 78.7 million, and they give every edge to whichever walks come first.
+
+Each walk now leaves the walks still to come a reserve, `minWalkEdges` apiece, of the total: a walk
+may take `walkEdges`, but no more than what is left of the total once the reserve is set aside, and
+never less than `minWalkEdges`. A refusal walk (the second search that drops a credit) takes the
+same at the time it runs. The walks to come are counted first, one per start node and reach class,
+which is how `b0deb6e` walks. A walk that takes less than its share, which is nearly every walk,
+leaves the rest to those after it, so an estate within the total is walked as before, byte for
+byte: volume-10k, ezpz, apac and a tenth of Unieuro give the same reports. An estate past it walks
+every source and cuts its largest walks instead of leaving its last sources unwalked: ACAS, which
+had 303 sources unwalked and 1,603 findings, now walks every source with 70 walks cut at the floor
+and reports 1,845, the findings an unbounded walk gives it. Unieuro walks every source, 55,064 walks cut at the
+floor, and reports 96,668 flow findings where it reported 77,198, in 1,414 s against 2,613.
+
+The three are `flowWalk.walkEdges`, `flowWalk.totalEdges` and `flowWalk.minWalkEdges` in
+`cobolwork.site.json`, defaulting to 79 million, 2.1 billion and 20,000. The floor is what nine
+walks in ten on a tenth of Unieuro have found their last finding within; at 166,586 Unieuro
+sources it reserves 1.26 billion of the 2.1. The summary reports `edgesWalked` and
+`walkEdgesLeast`, the least any walk was given, and `readInPart` names it.
+
+### 4.7 Sharing work across call contexts
+
+The first giant walk of Unieuro, from ATTRIB's FC-RECORD, holds 6,807,751 states over 533,350
+nodes: 3,941,958 carry one of 388,672 call contexts, 1,085,602 carry none, and 4,009,979 are partial
+(a byte range of a group). A node is visited about nine times, once per context that reaches it,
+and inside a shared subprogram the states under one context repeat the states under another,
+differing only in which caller the value returns to. That repetition is what summaries remove.
+
+**Design: a summary per callee entry.** When a walk crosses a call edge into a callee's parameter
+`p` with taint `π` (whole, or a byte range), it asks for the summary of `(p, π, reach)` instead of
+walking the callee under its context. The summary is one breadth-first walk from `p` confined to
+the callee and what it calls, using summaries for those in turn, never returning past `p`'s own
+level, and records in order: every state at a node with sinks (an arrival, with its chain of hops
+from `p`), and every state at a linkage item that has a return edge (an exit, with its chain and
+its taint). The caller's walk then reports each arrival for its source, hops being the caller's
+chain to the call followed by the summary's chain, and enqueues each exit under its own context,
+from which the return edge crosses as it does today. A summary is computed once per `(p, π,
+reach)` and kept for the analysis; a callee that is being summarised when it is reached again (a
+recursive call) is walked plainly under its context, as now.
+
+**What stays the same.** Which sinks each source reaches, so the set of findings; the credit
+levels, since the credited route's checks are on the summary's chain and the refusal walk uses
+summaries the same way; the budget rule of 4.6, counted in edges the summaries and the walks
+examine together.
+
+**What changes.** The route a finding shows. Today it is the first route breadth-first search
+finds, the shortest in hops; with summaries it is the caller's first route to the call followed by
+the summary's first route inside, which is a route but not always the shortest, and where two
+routes tie the one shown may differ. `guard` names the check on the route shown, so it may name a
+different check of the same level. `hops` may be larger. A report comparison must therefore
+compare findings by rule, source, sink and credit level, not byte for byte, and count the routes
+that differ.
+
+**What it cannot reach.** The 1,085,602 states without a context are a value that has rested in a
+subprogram's own storage, from which the walk returns to every caller (the resting-storage rule):
+they are one state per caller continuation and no summary collapses them. Nor the 779,844 sink
+arrivals of that walk, each a finding to report. The giant walks therefore shrink by the context
+share, which the probe puts at about four fifths of their states, not to nothing; with the floor
+of 4.6 they still take what the reserve leaves them. The measure that decides whether to build it
+is the whole-estate walk time and the count of routes that differ on the 500 corpus, cnafbadboy
+and ACAS.
+
+**Refusals.** The refusal walk re-walks from the source refusing to leave a node where a credit
+holds. With summaries it must carry the same refusal into the callee: a summary computed for a
+refusal is keyed by the credit level and kind as well, or the refusal walks plainly within its
+budget as today. The second is simpler and bounded by 4.6; the first is exact to today's credits.
+The operator's ruling decides which.
+
 ## 5. How each change is committed
 
 One change per commit, in the order above. Each must pass, before it is committed:
@@ -269,3 +344,6 @@ or with every parse frozen) and `same2.mjs` (compare, naming the first differenc
   on the claim that location enters only at linking. It would lose cnafbadboy's three copies,
   which sit in different directories.
 - The default worker count (4.5): one fewer than the machine's threads, at most four.
+- Whether to build 4.7, and whether its refusals carry the refusal into summaries (exact credits,
+  more summaries) or walk plainly within the budget (simpler, credits may be lost where the budget
+  ends). Operator 2026-10-10: build it; the refusal choice is open.

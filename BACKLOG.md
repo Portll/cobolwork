@@ -615,7 +615,16 @@ that declares it rather than to whoever merged the findings. What that specifica
   credited findings spend the 2.1 billion before a twelfth source is walked, with or without the
   sharing. Walking every Unieuro source needs the walk to share work across call contexts, which
   the first-route rule does not allow exactly, or a bound per source that leaves every source a
-  walk, 2.1 billion over 166,586 sources being about 12,600 edges each. Either is a decision.
+  walk. The operator chose both on 2026-10-10.
+
+  Each walk now leaves the walks still to come a reserve of the total, `minWalkEdges` apiece: it
+  may take `walkEdges`, but no more than what is left once the reserve is set aside, and never
+  less than the reserve's share; a refusal takes the same. `cobolwork.site.json` sets the three as
+  `flowWalk`, defaulting to 79 million, 2.1 billion and 20,000 (docs/spec/flow-graph.md 4.6). An
+  estate within the total is walked as before, byte for byte. ACAS, which left 303 sources
+  unwalked at 1,603 findings, walks every source with 70 walks cut at the floor and reports 1,845,
+  the findings an unbounded walk gives it, in 571 s. Unieuro, whose first eleven walks took the whole total, walks every one of its sources, 55,064 cut at the floor, and reports 96,668 flow findings where it reported 77,198, in 1,414 s of flow set against 2,613, at 10.4 GB. Sharing work across call
+  contexts is designed in 4.7, for the operator's ruling on its refusals before it is built.
 
 - **The three extractions the language plan needs are built.** `lib/cards.mjs` holds the column model
   (COBOL's fixed and variable areas, the 72-column statement) and operand splitting, used by the JCL,

@@ -30,12 +30,27 @@ test('the schema describes every key the site file is read for, and no other', (
 });
 
 test('a file with every key the schema describes is read without a warning', () => {
-  const body = { $schema: 'x', version: SITE_VERSION, allowUnvalidatedPacks: false, runtimeVersions: { CICS: '6.1' } };
+  const body = { $schema: 'x', version: SITE_VERSION, allowUnvalidatedPacks: false, runtimeVersions: { CICS: '6.1' }, flowWalk: { walkEdges: 1000, totalEdges: 100000, minWalkEdges: 10 } };
   for (const k of READ_KEYS) if (!(k in body)) body[k] = ['PROD'];
   withSite(body, (dir) => {
     const site = loadSite(dir);
     assert.deepEqual(site.warnings, []);
     assert.deepEqual(site.problems, []);
+  });
+});
+
+test('flowWalk takes whole numbers of edges and names anything else', () => {
+  withSite({ systemNames: ['PAYR'], flowWalk: { walkEdges: 5000, totalEdges: 2.5, minWalkEdges: 0, edges: 1 } }, (dir) => {
+    const site = loadSite(dir);
+    assert.deepEqual(site.flowWalk, { walkEdges: 5000 });
+    assert.deepEqual(site.problems, [
+      'flowWalk.totalEdges: expected a whole number of edges, 1 or more',
+      'flowWalk.minWalkEdges: expected a whole number of edges, 1 or more',
+      'flowWalk.edges: not a key this cobolwork reads',
+    ]);
+  });
+  withSite({ systemNames: ['PAYR'], flowWalk: [1] }, (dir) => {
+    assert.deepEqual(loadSite(dir).problems, ['flowWalk: expected an object']);
   });
 });
 

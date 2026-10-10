@@ -168,6 +168,14 @@
      "type": "integer",
      "minimum": 0
     },
+    "walkEdgesLeast": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "edgesWalked": {
+     "type": "integer",
+     "minimum": 0
+    },
     "readInPart": {
      "type": "string"
     },

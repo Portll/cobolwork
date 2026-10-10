@@ -64,3 +64,17 @@ test('a walk that reaches its bound stops, keeps what it found, and says the cov
   assert.ok(none.summary.sourcesNotWalked > 0);
   assert.equal(none.summary.coverageIncomplete, true);
 });
+
+test('every walk to come is reserved its least, so a tight total still walks every source', () => {
+  const whole = scan(FIXTURES, { repos: ['pos'] });
+  const ample = scan(FIXTURES, { repos: ['pos'], totalEdges: whole.summary.edgesWalked + 2, minWalkEdges: 1 });
+  assert.equal(ample.findings.length, whole.findings.length);
+  assert.equal(ample.summary.coverageIncomplete, false);
+  const tight = scan(FIXTURES, { repos: ['pos'], totalEdges: 6, minWalkEdges: 1 });
+  assert.equal(tight.summary.sourcesNotWalked, 0);
+  assert.ok(tight.summary.walksCut > 0);
+  assert.equal(tight.summary.walkEdgesLeast, 1);
+  assert.match(tight.summary.readInPart, /each walk given 1 edges or more/);
+  const unreserved = scan(FIXTURES, { repos: ['pos'], totalEdges: 6, minWalkEdges: 1e9 });
+  assert.ok(unreserved.summary.sourcesNotWalked > 0);
+});

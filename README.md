@@ -1,7 +1,7 @@
 # cobolwork
 
 [![CI](https://github.com/Portll/cobolwork/actions/workflows/ci.yml/badge.svg)](https://github.com/Portll/cobolwork/actions/workflows/ci.yml)
-[![Node](https://img.shields.io/badge/node-%E2%89%A518-informational)](https://nodejs.org)
+[![Node](https://img.shields.io/badge/node-%E2%89%A522-informational)](https://nodejs.org)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-informational)](package.json)
 [![Licence](https://img.shields.io/badge/licence-AGPL--3.0--or--later-informational)](LICENSE)
 

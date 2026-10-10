@@ -388,7 +388,10 @@ named VALIDATE-INPUT that tests another field, and a real allow-list under a com
 value is not validated.
 Each item records cobolwork's own verdict, so a negative it reports is one of its false alarms.
 `--prompts` writes each item as the corpus's findings are asked, with every line of each file, and
-`bench/label-models.mjs --items` asks the questions in such a file without reading a corpus.
+`bench/label-models.mjs --items` asks the questions in such a file without reading a corpus. `--labels`
+writes each item as a label for the precision table, source `generated`, counted as planted labels
+are: a reported positive is right, a reported negative wrong, an unreported positive missed. Its
+programs are synthetic, and the stratum is never pooled with labels from real code.
 `bench/label-interface.mjs` labels the abend findings of a subprogram fuzzed at its interface
 (evidence.md §13.6), source `execution-interface`, from one corpus run that also fuzzed every main
 program with `-L` on the repository's program directories. A main-program finding at the same rule,
@@ -411,7 +414,10 @@ from planted labels alone, the only ones where every flaw is known. `bench/label
 writes model labels, source `model`, under the operator's rule of 2026-10-08: a finding with no known
 answer takes the judge's verdict where the judge gives one, and the operator's rescoring where there
 is one. Reaches counts right, does-not-reach wrong, and a withheld answer unknown, in a stratum of
-its own. The table is published with each release.
+its own. Each count also gives its unknown share, and, with `--assumptions` naming ironwork's register
+as `ironwork assumptions --json` writes it, how many of the labels that record their runs'
+assumptions rest on one ironwork chose rather than took from IBM's manuals. Every error-severity rule with no label that is right or
+wrong in any stratum is listed as unmeasured. The table is published with each release.
 `diag/score-corpus.mjs` scores each verdict against the execution labels, with a Wilson interval over
 the labels that decided it.
 

@@ -432,10 +432,10 @@ function runVariant(f, ctx, variant) {
 const abendText = (r) => `${r.abend}${r.noValue?.length ? `, where ${r.noValue.join(', ')} ${r.noValue.length > 1 ? 'have' : 'has'} no VALUE` : ''}`;
 
 // The ironwork assumptions a label's runs could have rested on, as their journals' close records
-// name them.
+// name them: an empty list where they rested on none, nothing where no run left a journal.
 export function restedOn(...runs) {
-  const ids = [...new Set(runs.flatMap((r) => r?.assumptions || []))].sort();
-  return ids.length ? { assumptions: ids } : {};
+  const recorded = runs.filter((r) => Array.isArray(r?.assumptions));
+  return recorded.length ? { assumptions: [...new Set(recorded.flatMap((r) => r.assumptions))].sort() } : {};
 }
 
 // The file a file-record finding's input is read from: the FD its record belongs to, or the file a

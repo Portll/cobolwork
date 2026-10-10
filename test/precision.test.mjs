@@ -8,6 +8,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { precision, outcomeOf, measure, markdown } from '../bench/precision.mjs';
 import { scanAll } from '../lib/scan.mjs';
+import { ALL_RULES } from '../lib/kernel/registry.mjs';
 import { scoreVerdicts, wilson, report } from '../diag/score-corpus.mjs';
 import './pin-machine.mjs';
 
@@ -57,7 +58,7 @@ test('labels from both sources are counted per rule, each under its own source',
   assert.deepEqual(r.planted.precision, { low: 0.5, high: 0.5 });
   assert.equal(r.planted.recall, 1);
   assert.equal(doc.byVerdict, undefined);
-  assert.match(markdown(doc), /\| `cics-terminal-to-log` \| execution 2 \| 1 \| 0 \| 1 \| 50% to 100% \|/);
+  assert.match(markdown(doc), /\| `cics-terminal-to-log` \| execution 2 \| 1 \| 0 \| 1 \| 50% \| - \| 50% to 100% \|/);
 }));
 
 test('execution labels are joined to their findings\' verdicts by fingerprint', () => {
@@ -113,4 +114,44 @@ test('a model label is its own stratum: the judge\'s reaches is right, does-not-
   rmSync(dir, { recursive: true, force: true });
   assert.deepEqual(doc.byRule.r.model.precision, { low: 0.333, high: 0.667 });
   assert.deepEqual(doc.byRule.r.execution.precision, { low: 1, high: 1 });
+});
+
+test('each count gives its unknown share and, with ironwork\'s register, how many labels rest on a chosen assumption', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'cobolwork-precision-chosen-'));
+  const labels = join(dir, 'labels.json');
+  const register = join(dir, 'register.json');
+  writeFileSync(labels, JSON.stringify({ labels: [
+    { source: 'execution', rule: 'r', label: 'confirmed', assumptions: ['C1'] },
+    { source: 'execution', rule: 'r', label: 'confirmed', assumptions: ['D1'] },
+    { source: 'execution', rule: 'r', label: 'unknown' },
+  ] }));
+  writeFileSync(register, JSON.stringify([{ id: 'C1', basis: 'chosen' }, { id: 'D1', basis: 'documented' }]));
+  const withRegister = precision([labels], { assumptions: register }).byRule.r.execution;
+  const without = precision([labels]).byRule.r.execution;
+  rmSync(dir, { recursive: true, force: true });
+  assert.deepEqual([withRegister.unknownShare, withRegister.recorded, withRegister.onChosen, withRegister.onChosenShare], [0.333, 2, 1, 0.5]);
+  assert.deepEqual([without.onChosen, without.onChosenShare], [null, null]);
+});
+
+test('every error-severity rule no label measures is named as unmeasured', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'cobolwork-precision-unmeasured-'));
+  const labels = join(dir, 'labels.json');
+  writeFileSync(labels, JSON.stringify({ labels: [
+    { source: 'execution', rule: 'argv-or-env-to-os-command', label: 'confirmed' },
+    { source: 'execution', rule: 'cics-terminal-to-os-command', label: 'unknown' },
+  ] }));
+  const doc = precision([labels]);
+  rmSync(dir, { recursive: true, force: true });
+  assert.ok(!doc.unmeasured.includes('argv-or-env-to-os-command'));
+  assert.ok(doc.unmeasured.includes('cics-terminal-to-os-command'), 'unknown labels alone measure nothing');
+  assert.ok(doc.unmeasured.every((id) => ['crit', 'high'].includes(ALL_RULES[id].sev)));
+  assert.match(markdown(doc), /^Unmeasured: \d+ error-severity rules/m);
+});
+
+test('a generated item counts as a planted one: reported positives right, reported negatives wrong, unreported positives missed', () => {
+  assert.equal(outcomeOf({ source: 'generated', label: 'reaches', reported: true }), 'right');
+  assert.equal(outcomeOf({ source: 'generated', label: 'does-not-reach', reported: true }), 'wrong');
+  assert.equal(outcomeOf({ source: 'generated', label: 'reaches', reported: false }), 'missed');
+  assert.equal(outcomeOf({ source: 'generated', label: 'does-not-reach', reported: false }), null);
+  assert.equal(measure({ labelled: 4, right: 2, wrong: 1, unknown: 0, missed: 1, recorded: 0, onChosen: 0 }, 'generated').recall, 0.667);
 });

@@ -6,9 +6,11 @@
 // is a false alarm of its own, which is what a model reviewing its findings has to catch.
 //
 // --prompts writes each item as a question for bench/label-models.mjs --items: the rule, the source
-// and the sink, and every line of the program, asked as a finding of the corpus is asked.
+// and the sink, and every line of the program, asked as a finding of the corpus is asked. --labels
+// writes each item as a label for bench/precision.mjs, source `generated`: its answer and whether
+// cobolwork reported it.
 //
-//   node bench/negatives.mjs [--out <dir>] [--json <file> [--with-files]] [--prompts <file>]
+//   node bench/negatives.mjs [--out <dir>] [--json <file> [--with-files]] [--prompts <file>] [--labels <file>]
 //        [--rule <id>]
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -346,6 +348,7 @@ function main(argv) {
     const k = `${it.truth} -> ${it.engine}`;
     summary.engine[k] = (summary.engine[k] || 0) + 1;
   }
+  if (opts.labels) writeFileSync(opts.labels, `${JSON.stringify({ tool: 'cobolwork-negatives', labels: all.map((it) => ({ source: 'generated', rule: it.rule, item: questionLine(it).item, label: it.truth, reported: it.engine.startsWith('reported') })) }, null, 1)}\n`);
   if (opts.prompts) writeFileSync(opts.prompts, all.map((it) => `${JSON.stringify(questionLine(it))}\n`).join(''));
   if (opts.json) writeFileSync(opts.json, `${JSON.stringify(opts.withFiles ? all : all.map(({ files, ...rest }) => rest), null, 1)}\n`);
   process.stdout.write(`${JSON.stringify(summary, null, 1)}\n`);

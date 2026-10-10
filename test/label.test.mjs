@@ -21,7 +21,8 @@ test('every field of eight bytes or more holds the marker in one of the eight sh
 
 test('a label carries the assumptions its runs could have rested on, once each, and none where the journals name none', () => {
   assert.deepEqual(restedOn({ assumptions: ['C12', 'C1'] }, { assumptions: ['C1', 'L19'] }), { assumptions: ['C1', 'C12', 'L19'] });
-  assert.deepEqual(restedOn({ assumptions: [] }, {}), {});
+  assert.deepEqual(restedOn({ assumptions: [] }, {}), { assumptions: [] });
+  assert.deepEqual(restedOn({}, { run: 'r2' }), {});
   assert.deepEqual(restedOn(), {});
 });
 

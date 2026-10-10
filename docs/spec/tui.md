@@ -4,8 +4,8 @@ A specification for `cobolwork tui` and `cobolwork explain`, written before eith
 scenarios below are the tests: each `#### <id>` heading is the name of exactly one test, and
 `test/tui-spec.test.mjs` fails if a heading has no test or a test names a heading that is not here.
 
-Status: proposed, 2026-09-24. Slices T0, T1 and X1 are specified in full; the rest are listed so
-the order is visible, and get their scenarios when they are started.
+Status: partly built. Slices T0, T1 and X1 are built, and each scenario has its test. T2 to T9 are
+not built: they are listed so the order is visible, and get their scenarios when they are started.
 
 ---
 

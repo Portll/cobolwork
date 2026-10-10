@@ -5,7 +5,7 @@ is asked to apply it, and the check that later confirms the fix held. The scenar
 tests: each `#### <id>` heading is the name of exactly one test, and `test/gate.test.mjs` fails if a
 heading has no test or a test names a heading that is not here.
 
-Status: proposed, 2026-09-24.
+Status: built. Every scenario below has its test in `test/gate.test.mjs`.
 
 ---
 

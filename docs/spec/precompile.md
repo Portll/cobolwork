@@ -1,10 +1,8 @@
 # The precompiler
 
 A specification for `lib/precompile.mjs`, which translates embedded SQL and CICS into COBOL a compiler
-accepts and the flow engine reads, line for line. Status: step 1 (SQL) built, 2026-09-27; step 3
-(CICS) built, 2026-09-27, with its HANDLE branch unconfirmed until observed; step 4 (WEB, DOCUMENT,
-INQUIRE and SET, APPC and the asynchronous API) built and step 6 (`build --precompile`) built,
-2026-10-05. The tables of verbs and
+accepts and the flow engine reads, line for line. Status: built, steps 1 to 6 of §4, with the HANDLE
+branch unconfirmed until observed. The tables of verbs and
 options are filled from IBM's documentation as each family is built, and nothing here is a copy of
 IBM's text or of another precompiler.
 

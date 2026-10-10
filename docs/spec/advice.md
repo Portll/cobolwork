@@ -5,7 +5,9 @@ ecosystem what to remediate and which practices it misses, and for the catalogue
 points into. `schema/cobolwork-advice.schema.json` is the shape; `test/advice.test.mjs` holds the
 document to it.
 
-Status: in progress, 2026-10-08 (cobolwork-roadmap 16, for 1.0).
+Status: partly built, 2026-10-10. Built: `cobolwork advise`, the schema, the catalogue, the JSON,
+SARIF and Markdown renders, and the `finding`, `practice`, `inventory` and ironwork `compile` items.
+Left: nothing yet writes an `option` item, though the schema defines it.
 
 ## 1. Why one document
 

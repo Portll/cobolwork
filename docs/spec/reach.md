@@ -5,7 +5,8 @@ what reaching it gives them" - without ever claiming more than the estate's own 
 Status: the fact layer, the reach annotation and a first effect slice landed 2026-09-25
 (`lib/reach.mjs`, wired in `lib/scan.mjs`); decisions 1, 2 and the effect shape (4) are made and
 built, 3 - the measurement gate - is open. Decision 5, a verdict per path finding that uses the word
-exploitable, was made 2026-09-30 and its first slice is built (`lib/exploitability.mjs`, §9).
+exploitable, was made 2026-09-30 and its first slice is built (`lib/exploitability.mjs`, §9), with the
+witness feed (§9.5) and the verification plan (§9.7). Negatives from coverage (§9.8) are not built.
 
 ## 1. The gap
 

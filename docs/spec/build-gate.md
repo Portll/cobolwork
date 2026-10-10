@@ -6,7 +6,7 @@ to compile when the policy says so. The scenarios below are the tests: each `###
 the name of exactly one test, and `test/build.test.mjs` fails if a heading has no test or a test
 names a heading that is not here.
 
-Status: proposed, 2026-09-26.
+Status: built. Every scenario below has its test in `test/build.test.mjs`.
 
 ---
 

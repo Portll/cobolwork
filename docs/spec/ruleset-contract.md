@@ -3,8 +3,8 @@
 A specification for making "rule set" an explicit thing the code enforces, rather than a naming
 convention the code hopes for.
 
-Status: proposed, 2026-09-20 (revision 3 — re-lensed through ports and adapters, then reconciled
-with the language-coverage plan).
+Status: built, with F3 reduced as the table below says. Written 2026-09-20 as revision 3, re-lensed
+through ports and adapters, then reconciled with the language-coverage plan.
 Measured against the working tree at that date: 9 rule sets, 79 rules, 206 tests — passing under
 `npm test` on one machine with 502 MB free, and failing 17 on another with 330 MB free, at the same
 commit. That is a defect in the tests rather than in the tool; §13 records why and what fixes it.

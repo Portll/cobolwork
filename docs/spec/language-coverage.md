@@ -3,8 +3,9 @@
 An execution plan for reading the four mainframe languages cobolwork does not read, and the one
 database definition language it half-reads through COBOL.
 
-Status: decided, 2026-10-01: all four languages are to be built, each shipping in the first release
-it is ready for and in 0.8.0 at the latest.
+Status: built. A scan reads BMS, IMS, Db2 DDL, HLASM and PL/I, and each phase below says where its
+definition of done is met. Not built: IMS ISRT and REPL as sinks, `ims-unqualified-destructive-call`
+and `ims-dbd-password-none` (§3), and symbolic maps for mapsets with GRPNAME or OCCURS fields (§10).
 Written 2026-09-20 for an engineer coming to it cold: it assumes the codebase, not the discussion
 that produced it.
 

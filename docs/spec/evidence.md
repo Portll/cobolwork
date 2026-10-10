@@ -7,7 +7,8 @@ CycloneDX bill of materials for a COBOL estate. The scenarios in §14 are the te
 `#### <id>` heading names exactly one test, and `test/evidence.test.mjs` fails if a heading has no
 test or a test names a heading that is not here.
 
-Status: proposed, 2026-09-30. ironwork's half is `docs/evidence.md` in ironwork.
+Status: built, on cobolwork's side: every scenario in §14 has its test in `test/evidence.test.mjs`.
+ironwork's half is `docs/evidence.md` in ironwork.
 
 ---
 

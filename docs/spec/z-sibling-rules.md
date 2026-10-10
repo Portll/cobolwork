@@ -1,6 +1,7 @@
 # The public record of z vulnerabilities, and how much of it a rule can reach
 
-Status: five of its twelve designs are built; see section 6. Written for an engineer coming to it
+Status: partly built. Nine of its twelve designs have shipped a rule and 113 of the 187 rows are
+reported; N-RECVLIMIT, N-XXE and N-CONNSTR have no rule. See section 6. Written for an engineer coming to it
 cold: it assumes the codebase, not the discussion that produced it.
 
 The study was measured against the working tree at 7949c7b, which then held 9 rule sets and 120

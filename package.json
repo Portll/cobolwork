@@ -1,6 +1,6 @@
 {
   "name": "@portll/cobolwork",
-  "version": "0.9.31",
+  "version": "0.9.32",
   "description": "COBOL, JCL and CICS security analysis with zero runtime dependencies: reference-format parser, cross-program data flow, mainframe credential rules. Plugs into commitwork.",
   "license": "AGPL-3.0-or-later",
   "author": "Portll <john@portll.net>",
@@ -35,7 +35,7 @@
     "STABILITY.md"
   ],
   "scripts": {
-    "test": "node --test",
+    "test": "node --test --test-concurrency=1",
     "prepack": "node diag/stamp-revision.mjs",
     "postpack": "node diag/stamp-revision.mjs --clear",
     "diag:grade": "node diag/grade-against-gnucobol.mjs",

@@ -16,17 +16,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 22 is the floor the package declares, 24 is current. Windows is not incidental: paths in
-        # a report are POSIX-shaped on every platform, the diff command has to defeat the
-        # line-ending conversion git does there by default, and the one CI failure this project
-        # has had was a glob that only Windows left unexpanded. Every platform-specific bug so far
-        # has been a Windows one.
-        #
-        # Three jobs, not a twelve-job grid: macOS was green in every run and no code here behaves
-        # differently on it.
+        # 22 is the floor package.json declares, 24 is current. On Windows, report paths must stay
+        # POSIX-shaped and diff must undo git's line-ending conversion.
         include:
           - { os: ubuntu-latest, node: '22' }
           - { os: ubuntu-latest, node: '24' }
+          - { os: macos-latest, node: '22' }
           - { os: windows-latest, node: '22' }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -49,10 +44,8 @@ jobs:
             if (n) { console.error(`cobolwork declares ${n} dependencies: ${d.join(", ")}`); process.exit(1); }
             console.log("no dependencies declared");
           '
-      # No shell is named: the script is bare `node --test` and node does its own discovery. It
-      # used to pass a glob, which npm hands to cmd on Windows, where nothing expands it and only
-      # node 21 and later would have. Naming bash here would not have helped — npm runs the script
-      # through its own shell, not this one.
+      # Serial, because the memory guard reads the whole machine's free memory. The script passes
+      # no glob: npm runs it through cmd on Windows, which would not expand one.
       - name: Test
         run: npm test
 

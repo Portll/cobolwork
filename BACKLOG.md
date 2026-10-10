@@ -669,16 +669,15 @@ only one of the five that does.
 
 ## Build and release
 
-- **CI runs on Linux and Windows.** `.github/workflows/ci.yml` runs `npm test` on ubuntu with Node
-  22 and 24 and on windows with Node 22, and scans the benchmark on ubuntu. Every platform-specific
-  failure so far has been a Windows one, which is why one Windows job stays in the matrix.
+- **CI runs on Linux, macOS and Windows.** `.github/workflows/ci.yml` runs `npm test` on ubuntu
+  with Node 22 and 24 and on macOS and Windows with Node 22, and scans the benchmark on ubuntu.
+  Every platform-specific failure so far has been a Windows one.
 
-- **The test suite is not reproducible across machines.** `npm test` runs `node --test`, which is
-  parallel. `test/memory.test.mjs` asserted on real machine state, and `available` is the lesser of
-  the heap's headroom and the whole machine's free memory, so its verdict depended on what else the
-  machine was doing: two runs on the same commit saw 206/206 and 189/206. The readers are injectable
-  now and the tests declare their machine, which fixes it — but the general point stands, so a
-  report of "all tests pass" should say how and where it was run.
+- **A test run depends on the machine it runs on.** `npm test` runs `node --test
+  --test-concurrency=1`, one file at a time. The memory guard's `available` is the lesser of the
+  heap's headroom and the whole machine's free memory. `test/pin-machine.mjs` pins the machine term
+  for a test and the scans it spawns, and leaves the heap term real. A report of "all tests pass"
+  should say how and where it was run.
 
 ## Integration
 

@@ -83,7 +83,7 @@ a machine with **0.1 to 0.4 GB** free, and at that level scans stop early: a cor
 then 42 of 125 repositories stop at the memory reserve, and the whole-benchmark test
 (`test/review.test.mjs`) failed 21 cases that pass alone.
 
-- Always `node --test --test-concurrency=1 test/*.test.mjs`. `npm test` is parallel.
+- Run the tests serially: `npm test` runs `node --test --test-concurrency=1`.
 - One heavy job at a time. A corpus measurement and a test run side by side poison both.
 - A failing test that runs a scan: rerun it alone before believing it. A test that must not depend
   on free memory gives the guard nothing to stop: a tree with no file a set reads.
@@ -193,9 +193,8 @@ findings against 22 from outside input.
 
 In order. Each item says what it is worth and what it costs.
 
-1. **Read CI after each push.** `.github/workflows/ci.yml` runs the suite on ubuntu with Node 22
-   and 24 and on windows with Node 22, and scans the benchmark on ubuntu. `npm test` is parallel
-   there; the serial run is still the one to trust locally.
+1. **Read CI after each push.** `.github/workflows/ci.yml` runs the suite serially on ubuntu with
+   Node 22 and 24 and on macOS and Windows with Node 22, and scans the benchmark on ubuntu.
 
 2. **Widen the machine labels.** `bench/label.mjs` runs each finding's verification plan in ironwork
    and `bench/precision.mjs` turns the labels into precision per rule. Each sink and source ironwork

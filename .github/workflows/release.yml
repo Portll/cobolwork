@@ -2,13 +2,17 @@ name: Release
 
 on:
   push:
-    tags: ['v*']
+    tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
       dry_run:
         description: 'Run the check and the builds; publish nothing'
         type: boolean
         default: true
+      action_v1:
+        description: "With dry_run off, on a release tag's ref: move the Action's v1 tag to that tag's commit (a yank's roll-back)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -110,10 +114,19 @@ jobs:
           package-manager-cache: false
       - name: Pack
         run: |
-          mkdir out
+          mkdir out "$RUNNER_TEMP/again"
           npm pack --pack-destination out
+          npm pack --pack-destination "$RUNNER_TEMP/again"
+          node diag/release-artefacts.mjs same "out/portll-cobolwork-$VERSION.tgz" "$RUNNER_TEMP/again/portll-cobolwork-$VERSION.tgz"
           mv "out/portll-cobolwork-$VERSION.tgz" "out/cobolwork-$VERSION.tgz"
           cp "out/cobolwork-$VERSION.tgz" out/cobolwork.tgz
+      - name: SBOM and SHA256SUMS
+        run: |
+          node diag/release-artefacts.mjs sbom "out/cobolwork-$VERSION.tgz" > "$RUNNER_TEMP/sbom.json"
+          mv "$RUNNER_TEMP/sbom.json" "out/cobolwork-$VERSION.cdx.json"
+          node diag/release-artefacts.mjs sums out/* > "$RUNNER_TEMP/SHA256SUMS"
+          mv "$RUNNER_TEMP/SHA256SUMS" out/SHA256SUMS
+          (cd out && sha256sum -c SHA256SUMS)
       - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: 'out/*'
@@ -144,7 +157,8 @@ jobs:
           path: out/
       - name: Create the release
         run: |
-          gh release create "$TAG" "out/cobolwork-$VERSION.tgz" out/cobolwork.tgz --verify-tag \
+          gh release create "$TAG" "out/cobolwork-$VERSION.tgz" out/cobolwork.tgz \
+            "out/cobolwork-$VERSION.cdx.json" out/SHA256SUMS --verify-tag \
             --title "cobolwork $VERSION" --notes-file "docs/releases/$VERSION.md"
 
   npm:
@@ -191,3 +205,28 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
         with:
           packages-dir: dist/
+
+  # Moves the Action's v1 tag to this release's commit, for stable 1.x.y releases. A dispatch on an
+  # earlier release's tag ref with action_v1 on and dry_run off moves it back. The environment's
+  # reviewer approves each move; its deploy key is the only writer the ruleset on refs/tags/v1 allows.
+  action-v1:
+    name: move the Action's v1 tag
+    if: >-
+      always() && needs.check.result == 'success' && needs.build.result == 'success' && needs.npm-pack.result == 'success'
+      && startsWith(needs.check.outputs.version, '1.') && !contains(needs.check.outputs.version, '-')
+      && ((github.event_name == 'push' && needs.release.result == 'success' && needs.npm.result == 'success' && needs.pypi.result == 'success')
+        || (github.event_name == 'workflow_dispatch' && inputs.action_v1 && !inputs.dry_run))
+    needs: [check, build, npm-pack, release, npm, pypi]
+    runs-on: ubuntu-latest
+    environment: action-v1
+    permissions: {}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ssh-key: ${{ secrets.ACTION_V1_DEPLOY_KEY }}
+      - name: Move v1
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git tag --force v1 "$GITHUB_SHA"
+          git push --force origin refs/tags/v1
+          git ls-remote --tags origin refs/tags/v1 | grep -q "^$GITHUB_SHA"

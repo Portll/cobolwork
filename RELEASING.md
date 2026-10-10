@@ -43,7 +43,9 @@ It prints PASS, FAIL or TODO for each step and exits 1 on any FAIL.
    them pass. Publishing is one job per registry, in order: GitHub release, npm, PyPI. Each
    job needs every build and the job before it. The GitHub release job has no environment and
    runs when the builds pass; each registry job then waits in the run's "Review deployments"
-   until the operator approves it.
+   until the operator approves it. After PyPI, a fourth job moves the Action's `v1` tag to the
+   release commit, behind the `action-v1` environment's approval; it runs for stable `1.x.y`
+   releases only.
    If a job fails, re-run that job from the run's page; never move or delete a release tag, since
    the tag ruleset forbids it. Until the npm trusted publisher is set (`npm trust github
    @portll/cobolwork --repo Portll/cobolwork --file release.yml --env npm --allow-publish`), the npm job
@@ -52,8 +54,11 @@ It prints PASS, FAIL or TODO for each step and exits 1 on any FAIL.
    publish job is skipped.
 6. **GitHub release.** The release job creates the release at the tag with `--verify-tag`, attaches
    the tarball the build packed as `cobolwork-<version>.tgz` and `cobolwork.tgz` (commitwork's pin
-   installs the first name), and takes its notes from `docs/releases/<version>.md`, which step 3
-   committed. The `check` job fails a tag whose commit lacks that file.
+   installs the first name), with `cobolwork-<version>.cdx.json` (the CycloneDX SBOM) and
+   `SHA256SUMS`, and takes its notes from `docs/releases/<version>.md`, which step 3
+   committed. The build packs twice and fails unless the two tarballs are the same bytes, and
+   attests every file it attaches: `gh attestation verify cobolwork-<version>.tgz -R Portll/cobolwork`
+   and `sha256sum -c SHA256SUMS` check a download. The `check` job fails a tag whose commit lacks that file.
 7. **npm.** The npm job publishes that tarball with `npm publish --access public` through trusted
    publishing: no token, no 2FA prompt, and provenance comes with it. A 409 "previously staged"
    means the publish is still processing, and the registry can take hours to show it. Steps 8 and 9
@@ -215,12 +220,17 @@ The project's `info.version` is its newest release that is not yanked (`latest_r
 ### Y5. The Action
 
 Workflows use `action.yml` as `Portll/cobolwork@main` or pinned to a commit
-([docs/github-action.md](docs/github-action.md)); there is no `v1` tag. Its default
+([docs/github-action.md](docs/github-action.md)); the `v1` tag moves only in the release workflow's
+`action-v1` job. Its default
 `version: latest` installs npm's `latest`, which Y3 moved. A workflow that sets `version: <bad>`
 keeps `<bad>`, and npm's deprecation message shows in its log. When the fault is in `action.yml`
 itself, revert it on main: `@main` workflows take the revert on their next run, and a workflow
 pinned to a commit keeps that commit until its owner moves the pin
-([GitHub](https://docs.github.com/en/actions/reference/security/secure-use)).
+([GitHub](https://docs.github.com/en/actions/reference/security/secure-use)). A workflow on `@v1`
+takes `action.yml` from wherever `v1` points. Move `v1` back to `<good>`'s commit by running
+`gh workflow run release.yml -R Portll/cobolwork --ref v<good> -f dry_run=false -f action_v1=true`
+and approving the `action-v1` deployment; Y1 rejects a waiting `action-v1` job of the bad run in the
+same way as a registry job.
 
 Check by re-running the pull request runs of Portll/cobolwork-action-test, which take the default
 `version`:

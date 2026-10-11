@@ -95,7 +95,8 @@
   },
   "hops": {
    "type": "integer",
-   "minimum": 0
+   "minimum": 0,
+   "description": "How many data items the route runs through, source and sink included: 1 where the operation reads the item the input arrived in; a group an item is read through or written into counts one, as a MOVE or a CALL argument does. The length of trace where nothing is elided. Not in the fingerprint or the pairing keys; docs/spec/flow-graph.md section 3.1."
   },
   "sources": {
    "type": "integer",
@@ -356,6 +357,101 @@
         },
         "line": {
          "type": "integer"
+        }
+       }
+      }
+     }
+    },
+    "witness": {
+     "type": "object",
+     "description": "The estate's test results for the finding (docs/spec/reach.md section 9.5): the newest result's own fields, the systems every result ran on, how many distinct systems reproduced it, and each result.",
+     "required": [
+      "outcome",
+      "by",
+      "on",
+      "system",
+      "from",
+      "systems",
+      "independent",
+      "results"
+     ],
+     "properties": {
+      "outcome": {
+       "enum": [
+        "reproduced",
+        "not-reproduced"
+       ]
+      },
+      "by": {
+       "type": "string"
+      },
+      "on": {
+       "type": "string",
+       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+      },
+      "system": {
+       "type": "string"
+      },
+      "reference": {
+       "type": "string"
+      },
+      "from": {
+       "type": "string",
+       "description": "The feed the result came from, whose tests it holds and when it was recorded."
+      },
+      "evidence": {
+       "type": "object",
+       "description": "The ironwork run the newest result cites, with the journal records that place it at the finding."
+      },
+      "systems": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       },
+       "uniqueItems": true,
+       "description": "Every system a result for the finding ran on, sorted, whatever the outcome."
+      },
+      "independent": {
+       "type": "integer",
+       "minimum": 0,
+       "description": "How many distinct systems reproduced it. Two results from one system count once. A count the reader joins; it does not enter the verdict or the severity."
+      },
+      "results": {
+       "type": "array",
+       "description": "Every result the feeds hold for the finding, by system then date; a not-reproduced result is here with its system and changes nothing.",
+       "items": {
+        "type": "object",
+        "required": [
+         "outcome",
+         "by",
+         "on",
+         "system",
+         "from"
+        ],
+        "properties": {
+         "outcome": {
+          "enum": [
+           "reproduced",
+           "not-reproduced"
+          ]
+         },
+         "by": {
+          "type": "string"
+         },
+         "on": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+         },
+         "system": {
+          "type": "string"
+         },
+         "reference": {
+          "type": "string"
+         },
+         "from": {
+          "type": "string",
+          "description": "The feed the result came from, whose tests it holds and when it was recorded."
+         }
         }
        }
       }

@@ -270,8 +270,43 @@ under `summary.feedWarnings`.
 - The newest result per fingerprint wins; on the same day a reproduction does. A result no path
   finding carries - the code changed since the test, or the route is gone - is listed under
   `summary.witnessUnmatched`.
+- A result without a `system` is refused and named under `summary.witnessFeedProblems`, as one
+  without an outcome, who or when is. It is not counted anywhere: a test nobody can place on a system
+  is not an unattributed witness, it is no witness.
 
 `summary.byWitness` counts the two outcomes. Nothing in it changes what a build blocks.
+
+The finding carries what the feeds hold for it under `exploitability.witness`: the newest result's
+own fields (`outcome`, `by`, `on`, `system`, `reference`, `evidence`) and `from`, the feed it
+came from, and under them every result by system:
+
+```json
+"witness": {
+  "outcome": "reproduced", "by": "jsmith", "on": "2026-09-28", "system": "CICSUAT1", "from": "witness.json (UAT regression, release 26.4, recorded 2026-09-29)",
+  "systems": ["CICSUAT1", "CICSUAT2"],
+  "independent": 1,
+  "results": [
+    { "outcome": "reproduced", "by": "jsmith", "on": "2026-09-28", "system": "CICSUAT1", "from": "witness.json (UAT regression, release 26.4, recorded 2026-09-29)" },
+    { "outcome": "not-reproduced", "by": "rlee", "on": "2026-09-27", "system": "CICSUAT2", "from": "uat2.json (UAT2 smoke, recorded 2026-09-27)" }
+  ]
+}
+```
+
+- `systems` is every system a result ran on, sorted, whatever the outcome.
+- `independent` is how many distinct systems reproduced it. Evidence from one system twice is one
+  piece of evidence: two reproductions on CICSUAT1 are `independent` 1, one on CICSUAT1 and one on
+  CICSUAT2 are 2. Independence is read from each result's `system` and never assumed from the feed
+  it arrived in or the person who ran it. It is a count and nothing else: it does not raise the
+  severity, and it does not decide the verdict, which the newest result does as above. A finding a
+  later test did not reproduce therefore carries the earlier reproduction in `independent` and in
+  `results`, and no confirmation.
+- `results` lists each result with its system, by system then date, and the feed it came from. A
+  `not-reproduced` result sits here with its system; it lowers nothing a reader can see except the
+  share of systems that reproduced, and it moves the finding out of no state it holds, `confirmed`
+  included where a newer reproduction made it so.
+- A result that cites a run whose journal does not place it at the finding is left out of the block
+  as it is left out of the verdict, and the finding is listed under `summary.witnessUnmatched` only
+  where no result for it remains.
 
 A result may cite the ironwork run that reproduced it, `"evidence": { "dir", "run" }`, the directory
 relative to the feed. The directory must verify (§9 of evidence.md) and its ledger must record the run;

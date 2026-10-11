@@ -143,7 +143,10 @@ Findings carry no source text, so a report can be stored and passed on without c
 with it.
 
 `trace` is one route, the shortest, and sources that reach one sink are merged into one finding,
-counted in `sources`. With `--all-routes`, `scan` and `flow` give each path finding `routes`: every
+counted in `sources`. `hops` is that route's length in data items, source and sink included: 1
+where the operation reads the item the input arrived in, and a group an item is read through or
+written into counts one as a `MOVE` does (`docs/spec/flow-graph.md` §3.1). It is a length and
+nothing else: it is outside the fingerprint and changes no severity or verdict. With `--all-routes`, `scan` and `flow` give each path finding `routes`: every
 source, and every statement on any route from one of them to the sink, by verb, file and line.
 `complete` is false where the walk stopped at its budget or a step has no statement the engine can
 place. It leaves out no statement on a route the engine follows, and may name one no route takes:

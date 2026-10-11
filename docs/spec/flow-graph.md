@@ -77,6 +77,24 @@ ends:
 - **Per program**: `programs[pk]` keeps `facts`, a `Map` from statement point to a `Uint32Array` of
   the checks holding there, and `reached`, plus call sites, parameters and the program's entries.
 
+### 3.1 The route's length: `hops`
+
+The walk is over nodes, and a path finding's `hops` is how many nodes the shortest route from its
+source to its sink runs through, source and sink included: the length of `trace` where nothing is
+elided. The convention is therefore 1 for a direct flow, where the operation reads the item the
+input arrived in (`ACCEPT WS-CMD FROM COMMAND-LINE` then `CALL 'SYSTEM' USING WS-CMD`), never 0.
+Every edge crossed adds one, and a group edge counts as a MOVE does: a value accepted into a child,
+moved as its group and read from a child of the receiving group is 4 hops (`WS-IN`, up to `WS-REC`,
+the MOVE to `WS-OUT`, down to `WS-CMD`), of which two are `group` steps in `trace`. Where several
+sources reach one sink the finding keeps the route with the fewest hops (`lib/sets/flow.mjs`), and
+a trace longer than 64 hops is elided in the middle while `hops` still gives the whole count.
+
+`hops` is a length, in its own field. It is not in the fingerprint or the pairing keys
+(`lib/kernel/identity.mjs` reads rule, scope, subject and the flagged line's text), it does not
+enter the severity, the rule id or the exploitability verdict, and the same tree gives the same
+count on every run. SARIF carries it as `properties.hops` on the result.
+`test/dataflow.test.mjs` holds the two fixtures above to their counts.
+
 ## 4. Design
 
 Five changes, each committed on its own and each exact.

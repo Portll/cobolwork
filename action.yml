@@ -68,6 +68,7 @@ runs:
         esac
         prefix="$TEMP_DIR/cobolwork-npm"
         npm install --prefix "$prefix" --no-audit --no-fund --ignore-scripts "@portll/cobolwork@$INPUT_VERSION"
+        npm audit signatures --prefix "$prefix"
         echo "bin=$prefix/node_modules/@portll/cobolwork/bin/cobolwork.mjs" >> "$GITHUB_OUTPUT"
 
     - name: Run the build gate

@@ -8,7 +8,8 @@ the workflow and the upload still happens when the gate fails.
 ## What it does
 
 1. Installs Node 26.
-2. Installs `@portll/cobolwork` from npm at the requested version, or uses the copy in the
+2. Installs `@portll/cobolwork` from npm at the requested version and checks its registry
+   signature and provenance attestation with `npm audit signatures`, or uses the copy in the
    action's own checkout when `version` is `local`.
 3. Runs `cobolwork build <path> --format sarif --out <sarif>`, adding `--base`, `--policy` and
    `--copylib` when they are given.
@@ -28,7 +29,7 @@ revision. With no `base` it judges the tree as it stands (absolute mode). On a `
 | `base` | the pull request base SHA, else empty | Revision to measure the change against. Empty means absolute mode. |
 | `policy` | none | An organisation policy file, from outside the repository being judged. |
 | `copylib` | none | Directories of system copybooks the source includes, comma-separated. |
-| `version` | `latest` | npm version or tag of `@portll/cobolwork`, or `local` for the action's own checkout. |
+| `version` | `latest` | npm version or tag of `@portll/cobolwork`, or `local` for the action's own checkout. A tag such as `latest` resolves afresh at every run; give an exact version, such as `0.9.0`, to run the same package each time. |
 | `sarif` | `cobolwork.sarif` | Where the SARIF file is written, relative to the workspace. |
 | `fail-on` | `fail` | `fail`: exit 1, 2 and 4 fail the step. `undecided`: exit 3 fails it as well. |
 

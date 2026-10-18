@@ -5,7 +5,9 @@ import './pin-machine.mjs';
 import { readdirSync, readFileSync } from 'node:fs';
 
 const dir = new URL('../.github/workflows/', import.meta.url);
-const workflows = readdirSync(dir).filter((f) => f.endsWith('.yml')).map((f) => [f, readFileSync(new URL(f, dir), 'utf8')]);
+// Windows checks the files out with CRLF line endings.
+const read = (f) => readFileSync(new URL(f, dir), 'utf8').replace(/\r\n/g, '\n');
+const workflows = readdirSync(dir).filter((f) => f.endsWith('.yml')).map((f) => [f, read(f)]);
 
 test('every workflow is indented with spaces and declares a name, triggers, permissions and jobs', () => {
   assert.ok(workflows.length >= 3);
@@ -26,7 +28,7 @@ test('every third-party action is pinned by full commit SHA with a version comme
 });
 
 test('the release workflow attests the npm tarball, checks the pack twice and moves v1 behind an environment', () => {
-  const text = readFileSync(new URL('release.yml', dir), 'utf8');
+  const text = read('release.yml');
   assert.match(text, /tags: \['v\*\.\*\.\*'\]/);
   assert.match(text, /attest-build-provenance@[0-9a-f]{40}[^\n]*\n\s+with:\n\s+subject-path: 'out\/\*'/);
   assert.match(text, /release-artefacts\.mjs same/);
@@ -39,7 +41,7 @@ test('the release workflow attests the npm tarball, checks the pack twice and mo
 });
 
 test('the Scorecard workflow runs on main and weekly with the least permissions', () => {
-  const text = readFileSync(new URL('scorecard.yml', dir), 'utf8');
+  const text = read('scorecard.yml');
   assert.match(text, /branches: \[main\]/);
   assert.match(text, /cron:/);
   assert.match(text, /^permissions: \{\}/m);

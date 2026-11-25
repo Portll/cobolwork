@@ -2,6 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { noticeIn } from '../diag/mvs38j-notice.mjs';
+import './pin-machine.mjs';
 
 const card = (text, sequence = '00010000') => text.padEnd(72) + sequence;
 

@@ -1,6 +1,7 @@
 // Parses ironwork diagnostic JSON lines into structured message objects (lib/ironwork.mjs parseMessages).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { resolve } from 'node:path';
 import { parseMessages } from '../lib/ironwork.mjs';
 import './pin-machine.mjs';
 
@@ -35,7 +36,8 @@ test('parses diagnostic without member', () => {
   assert.equal(res[0].path, 'p.cob');
   assert.equal(res[0].line, 3);
   assert.equal(res[0].col, 2);
-  assert.equal(res[0].file, '/r/p.cob');
+  // The program is resolved so its source can be read; on Windows '/r/p.cob' gains a drive.
+  assert.equal(res[0].file, resolve('/r/p.cob'));
   assert.equal(res[0].member, undefined);
 });
 

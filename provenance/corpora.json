@@ -1,0 +1,600 @@
+{
+ "about": "The corpora the HLASM, IMS and Db2 readers were measured on, and the IBM pages read while writing them. Neither is kept in this repository: the corpora are other people's code and the pages are IBM's. This records what each held and how it is fetched again. A repository is named <owner>_<repository> as on github.com.",
+ "corpora": {
+  "hlasm": {
+   "builder": "node diag/hlasm-corpus.mjs <out> --dev <500RandomCobolRepos>,<200RandomCobolRepos>,<300RandomCobolRepos> --heldout <3185RecentCobolRepos>",
+   "built": "2026-10-03T07:45:09.477Z",
+   "dedup": "sha256, dev first",
+   "oracle": "diag/hlasm-oracle.mjs <out> <out>/oracle, with z390",
+   "dev": {
+    "CitiusTech-Test_ts-cobol-carddemo": {
+     "corpus": "500RandomCobolRepos",
+     "files": 4,
+     "members": 66
+    },
+    "Deba-rakshit_testrepo": {
+     "corpus": "500RandomCobolRepos",
+     "files": 45,
+     "members": 180
+    },
+    "Pavansai0522_CABS-MAINFRAME-DEMO-TIER5": {
+     "corpus": "500RandomCobolRepos",
+     "files": 5,
+     "members": 27
+    },
+    "abekornelis_Bixite": {
+     "corpus": "500RandomCobolRepos",
+     "files": 24,
+     "members": 669
+    },
+    "genisysdev_bankdemo-develop_1785134939604": {
+     "corpus": "500RandomCobolRepos",
+     "files": 2,
+     "members": 107
+    },
+    "hrudaym6-hue_n8n-tryout": {
+     "corpus": "500RandomCobolRepos",
+     "files": 4,
+     "members": 65
+    },
+    "jarora8_GitPlay": {
+     "corpus": "500RandomCobolRepos",
+     "files": 26,
+     "members": 249
+    },
+    "m4b-work_BankMark": {
+     "corpus": "500RandomCobolRepos",
+     "files": 2,
+     "members": 107
+    },
+    "pratikdastw_hlasm_cics_cobol_sample": {
+     "corpus": "500RandomCobolRepos",
+     "files": 1,
+     "members": 2
+    },
+    "woodwork-junkie_dbb": {
+     "corpus": "500RandomCobolRepos",
+     "files": 2,
+     "members": 9
+    },
+    "ynaka-accenture_RaichoDemo": {
+     "corpus": "500RandomCobolRepos",
+     "files": 2,
+     "members": 24
+    },
+    "GitLeeRepo_HerculesMvsTk4Notes": {
+     "corpus": "200RandomCobolRepos",
+     "files": 2,
+     "members": 2
+    }
+   },
+   "heldout": {
+    "750021019_KR_automation_Sample": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 1,
+     "members": 1
+    },
+    "AxelChaban_Hospital": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 2,
+     "members": 37
+    },
+    "JulioVS_VSCode-Z-Workspace": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 49,
+     "members": 68
+    },
+    "SNAPKITTYWEST_cobalt-transformer-hackathon": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 2,
+     "members": 3
+    },
+    "bhargavg-amdocs_Mainframe-sample": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 2,
+     "members": 8
+    },
+    "codxaicontato_fluxocaixacoboldemo": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 1,
+     "members": 4
+    },
+    "dpeachpeach_irscog": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 3,
+     "members": 8
+    },
+    "inayat68_LiberM-C-Tulip-Documents": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 1,
+     "members": 79
+    },
+    "lock18_GitADCPDDL2": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 1,
+     "members": 50
+    },
+    "nlopez59_jim-sample": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 2,
+     "members": 12
+    },
+    "seiya8_zos": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 3,
+     "members": 3
+    },
+    "squid-protocol_language-crucible": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 7,
+     "members": 198
+    },
+    "strongbacktraining_idz-git-training": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 1,
+     "members": 16
+    },
+    "tedfoley-cog_cobol-batch-modernization-demo": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 1,
+     "members": 29
+    },
+    "vijayreddy-12_test-Raincode360": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 1,
+     "members": 100
+    },
+    "vijayreddy-12_test-app-repo": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 22,
+     "members": 194
+    },
+    "vishalvasant_telco-4": {
+     "corpus": "3185RecentCobolRepos",
+     "files": 1,
+     "members": 12
+    }
+   }
+  },
+  "db2": {
+   "selection": "files of the same four corpora that diag/db2-measure.mjs reads as Db2 DDL; the script that copied them was not kept",
+   "files": {
+    "dev": {
+     "AndreyDiasFerreira_Projeto6-COBOL": 1,
+     "ArulaAI_copilot-analyst-lab": 2,
+     "Bhanuprasadballuri_sonarqube": 1,
+     "CitiusTech-Test_ts-cobol-carddemo": 6,
+     "Dilhan-D_Tech_Lab": 1,
+     "Grandez_Serendipity": 5,
+     "IgorOffline_nevenadaw": 2,
+     "JMRoldanF_volume-10k": 1,
+     "MariusRepo_big_demo": 1,
+     "ParthiB42_zapibridge-mainframe-api": 4,
+     "Pavansai0522_CABS-MAINFRAME-DEMO-TIER5": 3,
+     "Remi-Debu_Cobol": 9,
+     "adabalaravi_sonar-scanning-examples-master": 1,
+     "alex-silvagomes_sonar-scanning-examples": 1,
+     "arunsidhu90_Sonar-Code-Analysis": 1,
+     "avishek-sen-gupta_cobol-rekt": 18,
+     "blreay_test": 3,
+     "digital-identity-architects_mainframe-cobol-db2-jcl-templates": 1,
+     "dustinvanbuskirk_sonar-scanning-examples": 1,
+     "genisysdev_bankdemo-develop_1785134939604": 21,
+     "godsend1024_sonar-scanning-examples": 1,
+     "hanmandlugorla_MySonarqube": 1,
+     "hrudaym6-hue_n8n-tryout": 7,
+     "inoppii_java-carddemo": 11,
+     "ivishalsinghal_Sonar-scanning-examples": 1,
+     "jcf608_PacificNationalBank": 501,
+     "joshjonesDEMO_fe-demo-repository": 53,
+     "jpsoareshotmail_prodesp-cobol-tester": 2,
+     "karna408_prog-langs": 1,
+     "learnersenthusiastic_examplesRepo": 1,
+     "m4b-work_BankMark": 21,
+     "nicolasgsobrino_mainframe": 6,
+     "parthavitest_SonarQube": 1,
+     "rajesh72ai_auto-dealer-sales-legacy": 51,
+     "rodcoh_CobolSql": 10,
+     "satheeswarann_cobol-with-sonar": 1,
+     "shahrilunijaya-source_mykastam-poc": 8,
+     "sravanvadlapalli_Sonarqube": 1,
+     "tedfoley-cog_acme-payroll-engine": 2,
+     "tgiken-sg_CobolTraining": 1,
+     "vivekkaushik1_qq-54": 1,
+     "vivekkaushik1_qq-63": 1,
+     "vivekkaushik2_Repository17": 1,
+     "vivekkaushik2_Repository5": 1,
+     "vivekkaushik2_Repository70": 1,
+     "vivekkaushik2_Repository77": 1,
+     "vivekkaushik2_Repository81": 1,
+     "vivekkaushik2_Repository92": 1,
+     "viveknalubandu_sonarexample": 1,
+     "vnknowledge2014_try-to-port-cobol-to-rust": 6,
+     "wrx81972_mainframe-incident-responder": 2,
+     "ynaka-accenture_RaichoDemo": 1
+    },
+    "heldout": {
+     "Emericdefay_poe-cobol-project": 1,
+     "JQuarticx_sonar-java": 1,
+     "MLNHRG_tossatel": 4,
+     "Nathanael-Fournier_Printastic": 3,
+     "OCamlPro_gnucobol-contrib": 15,
+     "Sreenivas333_sonarqube-2": 1,
+     "agilesolutions_account-update-service": 11,
+     "alcarrion_proyecto_cobol": 2,
+     "azizabacc_cobol-db2-node-angular": 1,
+     "bagideleep_CardsDemo": 6,
+     "bandaruanand1981_sonarqube": 1,
+     "changshanweixiao_scaning": 1,
+     "chinmayshah99_helloworld": 1,
+     "cobolnexapro_Hotel-managemet-system-case-study": 3,
+     "dbridera_poc-cobol-java": 3,
+     "dvandyke723_SonarQubeExamples": 1,
+     "jackmcgeachie_blitzy-pilot": 2,
+     "kishore12312312_SonarCloud": 1,
+     "leticiapuga_Desafio_06_Acelera_Maker": 4,
+     "linlianhuan_test": 1,
+     "mrsalexander707-crypto_wealth-platform-HK-poc": 1,
+     "prasadpashte1-glitch_MF_Creditcardapp": 6,
+     "robinsranjan007_Loan-Batch-Processor": 3,
+     "sekhar7619_sonar-bug-code-testing": 1,
+     "shoyu-ramen_LegacyLens": 42,
+     "tedfoley-cog_incentive-comprehension-demo": 3,
+     "tonmoypaul_sonar-scanning-examples": 1,
+     "vivekkaushik1_qq-14": 1,
+     "vivekkaushik1_qq-20": 1,
+     "vivekkaushik1_qq-31": 1,
+     "vivekkaushik1_qq-40": 1,
+     "vivekkaushik1_qq-9": 1,
+     "vivekkaushik1_qq-97": 1,
+     "vivekkaushik2_Repository35": 1,
+     "vivekkaushik2_Repository43": 1,
+     "vivekkaushik2_Repository50": 1,
+     "vivekkaushik2_Repository74": 1,
+     "vivekkaushik2_Repository98": 1,
+     "willdoescode_hello-world": 1
+    }
+   }
+  },
+  "ims": {
+   "selection": "files of the same four corpora that diag/ims-measure.mjs reads as IMS DBD or PSB source; the script that copied them was not kept",
+   "files": {
+    "dev": {
+     "CitiusTech-Test_ts-cobol-carddemo": 8,
+     "Deba-rakshit_testrepo": 9,
+     "Pavansai0522_CABS-MAINFRAME-DEMO-TIER5": 12,
+     "hrudaym6-hue_n8n-tryout": 8,
+     "inoppii_java-carddemo": 8,
+     "jcf608_PacificNationalBank": 480,
+     "nicolasgsobrino_mainframe": 8,
+     "rajesh72ai_auto-dealer-sales-legacy": 21,
+     "shahrilunijaya-source_mykastam-poc": 16,
+     "vnknowledge2014_try-to-port-cobol-to-rust": 8,
+     "ynaka-accenture_RaichoDemo": 2
+    },
+    "heldout": {
+     "bagideleep_CardsDemo": 8,
+     "prasadpashte1-glitch_MF_Creditcardapp": 8,
+     "shoyu-ramen_LegacyLens": 8
+    }
+   }
+  },
+  "hlasm-cbt": {
+   "source": "github.com/CBTTape, the cbt2git mirror of cbttape.org, one repository per CBT file",
+   "ruling": "operator 2026-10-04: admit CBT Tape screened; whole file out on restrictive or proprietary terms, member out on an IBM or vendor notice",
+   "dedup": "sha256 against corpus-hlasm dev+heldout (219 files), then CBT files in name order",
+   "split": "CBT file number mod 3 == 0 -> cbt-heldout, else cbt-dev",
+   "built": "2026-10-04T08:35:38.883Z",
+   "screen": {
+    "file": [
+     "non-commercial: \\bnon[- ]?commercial\\s+(?:use|purposes?)\\b",
+     "not-for-profit: \\bnot[- ]for[- ]profit\\s+(?:use|purposes?)\\b",
+     "commercial use barred: \\bcommercial\\s+use\\s+(?:is\\s+)?(?:prohibited|not\\s+permitted|forbidden|requires)\\b",
+     "commercial use priced: \\bfor\\s+(?:normal\\s+)?commercial\\s+use,?\\s+the\\s+(?:cost|price|fee)\\b",
+     "not in commercial products: \\b(?:used|included)\\s*,?\\s*(?:fully\\s+or\\s+in\\s+part\\s*,?\\s*)?in\\s+(?:any\\s+other|a\\s+commercial|any\\s+commercial|commercial|a\\s+paid)\\s+products?\\b|\\binto\\s+a\\s+paid\\s+product\\b",
+     "not to be given to other companies: \\b(?:must|may|shall)\\s+not\\s+be\\s+(?:sold,?\\s+)?(?:given|distributed|transferred|provided)[^.]{0,60}?\\bother\\s+(?:company|companies|data\\s+centers?|installations?|organi[sz]ations?)\\b",
+     "licence to a named party: \\blicen[cs]e\\s+is\\s+(?:hereby\\s+)?granted\\s+to\\s+(?!(?:distribute|use|copy|modify|anyone|everyone|all|any)\\b)[A-Z]",
+     "hobbyist licence: \\bhobbyist\"?\\s+(?:licen[cs]es?|use)\\b",
+     "reproduction barred: \\bno\\s+part\\s+of\\s+this\\s+(?:program|publication|software|code|material)\\s+may\\s+be\\s+reproduced\\b",
+     "permission for members or internal use only: \\bpermission\\s+is\\s+(?:hereby\\s+)?granted\\s+to\\s+members\\s+of\\b|\\bsolely\\s+for\\s+internal\\s+(?:distribution|use)\\b",
+     "personal use only: \\bpersonal\\s+use\\s+only\\b|\\bfor\\s+personal\\s+use\\b",
+     "property of a third party: \\b(?:is|are)\\s+the\\s+(?:sole\\s+|exclusive\\s+)?property\\s+of\\s+(?!IBM\\b)",
+     "licensed materials of a third party: \\bLICENSED\\s+MATERIALS?[\\s,-]+(?:PROGRAM[\\s,-]+)?PROPERTY\\s+OF\\s+(?!IBM\\b)",
+     "proprietary or confidential: \\b(?:proprietary|confidential)\\s+(?:and\\s+(?:confidential|proprietary)|information|material|software|program)\\b|\\btrade\\s+secrets?\\b",
+     "no disassembly or reverse engineering: \\bnot\\s+(?:be\\s+)?(?:disassembled|decompiled|reverse[- ]engineered)\\b",
+     "shareware or trial: \\bshareware\\b|\\btrial\\s+(?:period|version|copy)\\b|\\bevaluation\\s+(?:copy|version|only)\\b"
+    ],
+    "member": [
+     "\\bPROPERTY\\s+OF\\s+IBM\\b|\\bRESTRICTED\\s+MATERIALS?\\s+OF\\s+IBM\\b|\\bLICENSED\\s+MATERIALS?\\s*-\\s*PROGRAM\\s+PROPERTY\\b|\\bCOPYRIGHT\\s+(?:\\(C\\)\\s*)?(?:IBM|INTERNATIONAL\\s+BUSINESS\\s+MACHINES)\\b|\\b(?:IBM|INTERNATIONAL\\s+BUSINESS\\s+MACHINES)\\s+CORP(?:ORATION|\\.)?,?\\s+(?:19|20)\\d\\d\\b|\\(C\\)\\s*(?:COPYRIGHT\\s+)?IBM\\b|\\bCOPYRIGHT\\b.{0,40}\\bIBM\\s+(?:UK|UNITED\\s+KINGDOM|DEUTSCHLAND|FRANCE|JAPAN|CANADA|AUSTRALIA|WORLD\\s+TRADE)\\b",
+     "\\b5[67]\\d\\d-[A-Z0-9]{3}\\b.{0,80}\\b(?:COPYRIGHT|LICENSED|PROPERTY)\\b|\\b(?:COPYRIGHT|LICENSED|PROPERTY)\\b.{0,80}\\b5[67]\\d\\d-[A-Z0-9]{3}\\b",
+     "\\bCOPYRIGHT\\b[^\\n]{0,60}\\b(?:COMPUTER\\s+ASSOCIATES|CA,?\\s+INC|CA\\s+TECHNOLOGIES|BROADCOM|BMC\\s+SOFTWARE|COMPUWARE|CANDLE\\s+CORP(?:ORATION)?|BOOLE\\s*&?\\s*BABBAGE|LEGENT|STERLING\\s+SOFTWARE|SYNCSORT|PRECISELY|ROCKET\\s+SOFTWARE|MACRO\\s?4|CHICAGO-SOFT|TONE\\s+SOFTWARE|SOFTWARE\\s+AG|INNOVATION\\s+DATA|NEON\\s+SYSTEMS|MICRO\\s+FOCUS|AMDAHL|SAS\\s+INSTITUTE|FUJITSU|HITACHI|UNISYS|STORAGE\\s+TECHNOLOGY|STORAGETEK|EMC\\s+CORP|ORACLE|MICROSOFT|SUN\\s+MICROSYSTEMS|SIEMENS|LANDMARK\\s+SYSTEMS|ALLEN\\s+SYSTEMS|BETA\\s+SYSTEMS|OPENTECH|NEW\\s*ERA\\s+SOFTWARE|TREHAN|PHOENIX\\s+SOFTWARE|MAINSTAR|VANGUARD\\s+INTEGRITY|ISIS\\s+PAPYRUS|SOFTWARE\\s+ENGINEERING\\s+OF\\s+AMERICA|FUTURITY\\s+SOFTWARE|AUTOMATED\\s+SOFTWARE\\s+TOOLS|YCOS|BANKNET\\s+TECHNOLOGIES|MD-PALADIN|CONCENTRATED\\s+LOGIC)\\b|\\b(?:COMPUTER\\s+ASSOCIATES|CA,?\\s+INC|CA\\s+TECHNOLOGIES|BROADCOM|BMC\\s+SOFTWARE|COMPUWARE|CANDLE\\s+CORP(?:ORATION)?|BOOLE\\s*&?\\s*BABBAGE|LEGENT|STERLING\\s+SOFTWARE|SYNCSORT|PRECISELY|ROCKET\\s+SOFTWARE|MACRO\\s?4|CHICAGO-SOFT|TONE\\s+SOFTWARE|SOFTWARE\\s+AG|INNOVATION\\s+DATA|NEON\\s+SYSTEMS|MICRO\\s+FOCUS|AMDAHL|SAS\\s+INSTITUTE|FUJITSU|HITACHI|UNISYS|STORAGE\\s+TECHNOLOGY|STORAGETEK|EMC\\s+CORP|ORACLE|MICROSOFT|SUN\\s+MICROSYSTEMS|SIEMENS|LANDMARK\\s+SYSTEMS|ALLEN\\s+SYSTEMS|BETA\\s+SYSTEMS|OPENTECH|NEW\\s*ERA\\s+SOFTWARE|TREHAN|PHOENIX\\s+SOFTWARE|MAINSTAR|VANGUARD\\s+INTEGRITY|ISIS\\s+PAPYRUS|SOFTWARE\\s+ENGINEERING\\s+OF\\s+AMERICA|FUTURITY\\s+SOFTWARE|AUTOMATED\\s+SOFTWARE\\s+TOOLS|YCOS|BANKNET\\s+TECHNOLOGIES|MD-PALADIN|CONCENTRATED\\s+LOGIC)\\b[^\\n]{0,60}\\bCOPYRIGHT\\b|\\bUSE\\s+(?:IS\\s+)?PERMISSIBLE\\s+BY\\s+LICEN[CS]E\\s+ONLY\\b"
+    ]
+   },
+   "totals": {
+    "repos": 1047,
+    "members": 56253,
+    "binary": 13058,
+    "ebcdic": 0,
+    "excludedFiles": 64,
+    "membersInExcludedFiles": 17745,
+    "ibmMembers": 165,
+    "vendorMembers": 241,
+    "assembler": 7581,
+    "sniffMissed": 1847,
+    "iebupdteStreams": 379,
+    "duplicates": 660,
+    "notHlasm": 15,
+    "admitted": 6921,
+    "admittedBytes": 199701096
+   },
+   "admitted": {
+    "cbt-dev": {
+     "files": 4390,
+     "statements": 1861892,
+     "cbtFiles": 336
+    },
+    "cbt-heldout": {
+     "files": 2531,
+     "statements": 955015,
+     "cbtFiles": 181
+    }
+   }
+  },
+  "hlasm-mvs38j": {
+   "source": "jaymoseley.com/hercules/downloads/archives/mvssrc.tgz (MD5 c56ee75d5621de2e3c52658bcd02511d), volume MVSSRC, 21 PDS unloaded raw with dasdpdsu and decoded by the cobolwork EBCDIC decoder (fixed 80-byte records)",
+   "ruling": "operator 2026-10-04: MVS 3.8j after the CBT Tape, from the pristine optional-materials image, member out on an IBM notice",
+   "dedup": "sha256 against corpus-hlasm and corpus-hlasm-cbt (7140 files)",
+   "split": "by PDS: index mod 3 == 0 in name order -> mvs-heldout",
+   "built": "2026-10-04T15:07:07.411Z",
+   "heldoutPdses": [
+    "EREPSYM",
+    "ETC2402",
+    "SYM1-1",
+    "SYM1-4",
+    "SYM3",
+    "SYM4-3",
+    "SYM6-2"
+   ],
+   "totals": {
+    "members": 7206,
+    "ibmMembers": 10,
+    "assembler": 6768,
+    "sniffMissed": 23,
+    "duplicates": 822,
+    "notHlasm": 2,
+    "admitted": 5946,
+    "mvs-dev": {
+     "pdses": 14,
+     "files": 4042,
+     "statements": 5341178
+    },
+    "mvs-heldout": {
+     "pdses": 7,
+     "files": 1904,
+     "statements": 2187615
+    }
+   },
+   "admitted": {
+    "mvs-dev": {
+     "ESS1102": {
+      "files": 128,
+      "statements": 194808
+     },
+     "ETC1102": {
+      "files": 438,
+      "statements": 203579
+     },
+     "EVT1202": {
+      "files": 85,
+      "statements": 101161
+     },
+     "SOURCE": {
+      "files": 66,
+      "statements": 67301
+     },
+     "SYM1-2": {
+      "files": 253,
+      "statements": 606679
+     },
+     "SYM1-3": {
+      "files": 510,
+      "statements": 522904
+     },
+     "SYM2-1": {
+      "files": 411,
+      "statements": 464651
+     },
+     "SYM2-2": {
+      "files": 678,
+      "statements": 590747
+     },
+     "SYM4-1": {
+      "files": 331,
+      "statements": 584891
+     },
+     "SYM4-2": {
+      "files": 207,
+      "statements": 626481
+     },
+     "SYM5": {
+      "files": 357,
+      "statements": 346296
+     },
+     "SYM6-1": {
+      "files": 314,
+      "statements": 634304
+     },
+     "SYM7": {
+      "files": 263,
+      "statements": 397327
+     },
+     "TIOCOPT": {
+      "files": 1,
+      "statements": 49
+     }
+    },
+    "mvs-heldout": {
+     "EREPSYM": {
+      "files": 109,
+      "statements": 131747
+     },
+     "ETC2402": {
+      "files": 57,
+      "statements": 39239
+     },
+     "SYM1-1": {
+      "files": 696,
+      "statements": 606314
+     },
+     "SYM1-4": {
+      "files": 241,
+      "statements": 332386
+     },
+     "SYM3": {
+      "files": 32,
+      "statements": 58705
+     },
+     "SYM4-3": {
+      "files": 237,
+      "statements": 614915
+     },
+     "SYM6-2": {
+      "files": 532,
+      "statements": 404309
+     }
+    }
+   }
+  }
+ },
+ "documents": {
+  "fetch": "Each page is in IBM Docs under https://www.ibm.com/docs/en/<product>, found by its page name; an IMS path below is <product>/<plugin>/<page>. The copies read were saved from a browser. A scripted request to ibm.com was refused (HTTP 403) on 2026-11-25, so no fetch command is recorded as working.",
+  "db2-13-sql-reference": {
+   "product": "SSEPEK_13.0.0",
+   "title": "Db2 13 for z/OS SQL Reference",
+   "pages": [
+    "altertable",
+    "createauxiliarytable",
+    "createdatabase",
+    "createfunctionexternalscalar",
+    "createglobaltemptable",
+    "createindex",
+    "createlobtablespace",
+    "createprocedureexternal",
+    "createproceduresqlnative",
+    "createstogroup",
+    "createtable",
+    "createtablespace",
+    "createview",
+    "datatypes",
+    "theincludedsqlca"
+   ],
+   "usedFor": "lib/db2/stmt"
+  },
+  "ims-15.6": {
+   "product": "SSEPH2_15.6.0",
+   "title": "IMS 15.6 documentation",
+   "paths": [
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_altpcbstat.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_cat_db_pcb.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_cat_db_psb.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_cat_db_senseg.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_cat_db_sf.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_codspecblkpsbgen.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_dbpcbstat.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_psbgenstat.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_senfldstat.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.dag/ims_sensegstat.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.ins/ims_imssamplepsbs.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.ins/ims_ivpsampletable.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.mc/nondfs/ims_psbgenmessages_pcb.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.mc/nondfs/ims_psbgenmessages_pgen.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.mc/nondfs/ims_psbgenmessages_seg.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.mc/nondfs/ims_psbgenmessages_sfld.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgen.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgenaltpcbstmt.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgendlipcbstmt.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgenendstmt.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgenexam.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgenfastpathproc.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgengsampcbstmt.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgenpsbgenstmt.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgenrunning.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgensenfldstmt.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgensensegstmt.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc.sur/ims_psbgenucs.htm",
+    "SSEPH2_15.6.0/com.ibm.ims156.doc/ims_pdfs.htm"
+   ],
+   "pdfs": [
+    "IMS 15.6 System Utilities",
+    "IMS 15.6 Messages and Codes, Volume 2: Non-DFS Messages"
+   ],
+   "usedFor": "lib/ims/macro/psb.mjs"
+  },
+  "zos-3.1-language-environment": {
+   "product": "SSLTBW_3.1.0",
+   "plugin": "com.ibm.zos.v3r1.ceeam00",
+   "macros": [
+    "CEECAA",
+    "CEEDSA",
+    "CEEENTRY",
+    "CEEPPA",
+    "CEETERM"
+   ]
+  },
+  "enterprise-pli-6.1": {
+   "product": "SSY2V3_6.1",
+   "title": "Enterprise PL/I for z/OS 6.1 Language Reference",
+   "pages": [
+    "ctlproc",
+    "xf7d49"
+   ]
+  },
+  "hlasm-toolkit-1.6": {
+   "product": "SSENW6_1.6.0",
+   "title": "HLASM Toolkit Feature User's Guide (asmk200), structured programming macros"
+  },
+  "hlasm-1.6-language-reference": {
+   "see": "rules/hlasm-instructions.json sources"
+  },
+  "zos-3.1-macros": {
+   "z/OS 3.1 DFSMS Macro Instructions for Data Sets SC23-6852-60": [
+    "CLOSE",
+    "DCB",
+    "GET",
+    "OPEN",
+    "PUT",
+    "READ",
+    "WRITE"
+   ],
+   "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 1 (ABEND-HSPSERV) SA23-1369-60": [
+    "ABEND",
+    "ATTACH",
+    "CALL",
+    "ESPIE",
+    "ESTAE",
+    "FREEMAIN",
+    "GETMAIN"
+   ],
+   "z/OS 3.1 MVS Programming: Assembler Services Reference, Volume 2 (IARR2V-XCTLX) SA23-1370-60": [
+    "LINK",
+    "LOAD",
+    "RETURN",
+    "SAVE",
+    "SNAP",
+    "STORAGE",
+    "WTO",
+    "WTOR",
+    "XCTL"
+   ],
+   "z/OS 3.1 MVS Programming: Authorized Assembler Services Reference, Volume 3 (LLACOPY-SDUMPX) SA23-1374-60": [
+    "MODESET"
+   ],
+   "z/OS 3.1 MVS Programming: Authorized Assembler Services Reference, Volume 4 (SETFRR-WTOR) SA23-1375-60": [
+    "TESTAUTH"
+   ],
+   "z/OS 3.1 Security Server RACROUTE Macro Reference SA23-2294-60": [
+    "RACROUTE"
+   ]
+  }
+ }
+}

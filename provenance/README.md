@@ -113,3 +113,12 @@ with different answers. [`sources.json`](sources.json) records both, per publish
 each answer rests on. Only documents whose licence permits redistribution may be republished: the
 GnuCOBOL Programmer's Guide under the GNU FDL, and public-sector texts whose reuse terms allow it.
 Vendor manuals and ISO texts stay private copies.
+
+## The corpora and the pages read
+
+[`corpora.json`](corpora.json) records the corpora the HLASM, IMS and Db2 readers were measured on
+(the repositories or archive each came from, the screen, the split and the counts) and the IBM Docs
+pages read while writing those readers. Neither is committed: a corpus is other people's code and
+the pages are IBM's. The pages carry no hash because they were read from a browser and are not in
+the `feed/sources/` store, so this record says where each is, and nothing about what it said on the
+day it was read.
